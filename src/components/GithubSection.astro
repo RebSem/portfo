@@ -1,0 +1,49 @@
+---
+import { uiCopy } from '../data/site-content';
+---
+
+<section id="github" class="section reveal" aria-labelledby="github-title">
+  <div class="container section-shell">
+    <div class="section-head">
+      <h2 id="github-title" data-i18n-ru={uiCopy.github.title.ru} data-i18n-en={uiCopy.github.title.en}>{uiCopy.github.title.ru}</h2>
+      <p data-i18n-ru={uiCopy.github.subtitle.ru} data-i18n-en={uiCopy.github.subtitle.en}>{uiCopy.github.subtitle.ru}</p>
+    </div>
+
+    <div class="github-heatmap">
+      <div class="heatmap-topline">
+        <strong id="contributions-total">0</strong>
+        <span data-i18n-ru={uiCopy.github.totalLabel.ru} data-i18n-en={uiCopy.github.totalLabel.en}>{uiCopy.github.totalLabel.ru}</span>
+      </div>
+
+      <div id="contribution-grid" class="contribution-grid" role="img" aria-label="GitHub contribution heatmap"></div>
+
+      <div class="heatmap-legend" aria-hidden="true">
+        <span>0</span>
+        <div class="legend-level level-0"></div>
+        <div class="legend-level level-1"></div>
+        <div class="legend-level level-2"></div>
+        <div class="legend-level level-3"></div>
+        <div class="legend-level level-4"></div>
+        <span>max</span>
+      </div>
+
+      <p
+        id="contribution-tooltip"
+        class="contribution-tooltip"
+        data-hint-ru={uiCopy.github.hoverHint.ru}
+        data-hint-en={uiCopy.github.hoverHint.en}
+      >
+        {uiCopy.github.hoverHint.ru}
+      </p>
+
+      <p
+        id="github-error"
+        class="github-error hidden"
+        data-i18n-ru={uiCopy.github.unavailable.ru}
+        data-i18n-en={uiCopy.github.unavailable.en}
+      >
+        {uiCopy.github.unavailable.ru}
+      </p>
+    </div>
+  </div>
+</section>

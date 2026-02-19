@@ -1,0 +1,20 @@
+---
+import { telegramUrl, uiCopy } from '../data/site-content';
+---
+
+<section id="contact" class="section reveal" aria-labelledby="contact-title">
+  <div class="container contact-card">
+    <h2 id="contact-title" data-i18n-ru={uiCopy.contact.title.ru} data-i18n-en={uiCopy.contact.title.en}>{uiCopy.contact.title.ru}</h2>
+    <p data-i18n-ru={uiCopy.contact.subtitle.ru} data-i18n-en={uiCopy.contact.subtitle.en}>{uiCopy.contact.subtitle.ru}</p>
+    <a
+      class="button has-pug-peek"
+      href={telegramUrl}
+      target="_blank"
+      rel="noreferrer"
+      data-i18n-ru={uiCopy.contact.cta.ru}
+      data-i18n-en={uiCopy.contact.cta.en}
+    >
+      {uiCopy.contact.cta.ru}
+    </a>
+  </div>
+</section>
