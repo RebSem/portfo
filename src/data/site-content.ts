@@ -4,7 +4,9 @@ export const githubUsername = 'RebSem';
 export const telegramUrl = 'https://t.me/Michael_Semenov';
 export const email = 'perk77331@gmail.com';
 export const linkedinUrl = 'https://www.linkedin.com/in/mikhail-semenovv/';
-export const blogPath = '/posts';
+
+export const aboutPath = '/about';
+export const blogPath = '/blog';
 
 export const heroFallbackName = 'Mikhail Semenov';
 
@@ -102,14 +104,16 @@ export const aboutContent: AboutContent = {
 export const uiCopy = {
   nav: {
     about: { ru: 'Обо мне', en: 'About' },
-    github: { ru: 'GitHub', en: 'GitHub' },
-    projects: { ru: 'Проекты', en: 'Projects' },
-    contact: { ru: 'Контакты', en: 'Contact' },
     blog: blogLabel,
+    controlsAria: { ru: 'Элементы управления сайта', en: 'Site controls' },
+    primaryAria: { ru: 'Основная навигация', en: 'Primary navigation' },
   },
   hero: {
     badge: { ru: 'Личный сайт-визитка', en: 'Personal one-page portfolio' },
     cta: { ru: 'Написать в Telegram', en: 'Message me on Telegram' },
+    github: { ru: 'Мой GitHub', en: 'My GitHub' },
+    and: { ru: 'и', en: 'and' },
+    messageOnTelegram: { ru: 'написать в Telegram', en: 'message me on Telegram' },
   },
   github: {
     title: { ru: 'GitHub активность', en: 'GitHub activity' },
@@ -128,6 +132,10 @@ export const uiCopy = {
     unavailable: {
       ru: 'Не удалось загрузить данные GitHub. Попробуйте обновить страницу позже.',
       en: 'Unable to load GitHub data. Please refresh later.',
+    },
+    heatmapAria: {
+      ru: 'Тепловая карта вкладов GitHub',
+      en: 'GitHub contribution heatmap',
     },
   },
   about: {
@@ -150,18 +158,42 @@ export const uiCopy = {
     },
     repo: { ru: 'Репозиторий', en: 'Repository' },
     demo: { ru: 'Демо', en: 'Live demo' },
+    stackAria: { ru: 'Технологии проекта', en: 'Project technologies' },
+    statusInProgress: { ru: 'Статус: в процессе.', en: 'Status: in progress.' },
   },
-  contact: {
-    title: { ru: 'Связаться со мной', en: 'Contact me' },
+  blog: {
+    title: { ru: 'Блог', en: 'Blog' },
     subtitle: {
-      ru: 'Открыт к новым задачам, партнёрствам и техническим обсуждениям.',
-      en: 'Open to new projects, partnerships, and technical discussions.',
+      ru: 'Публикации о разработке, экспериментах и процессе создания продуктов.',
+      en: 'Posts about engineering, experiments, and product building.',
     },
-    cta: { ru: 'Написать в Telegram', en: 'Write on Telegram' },
+    readMore: { ru: 'Читать статью', en: 'Read post' },
+    empty: {
+      ru: 'Для этой локали пока нет опубликованных постов.',
+      en: 'No published posts for this locale yet.',
+    },
+    backToBlog: { ru: 'Вернуться в блог', en: 'Back to blog' },
+    langRu: { ru: 'Русский', en: 'Russian' },
+    langEn: { ru: 'Английский', en: 'English' },
+    tagsAria: { ru: 'Теги статьи', en: 'Post tags' },
+  },
+  footer: {
+    defaultNote: {
+      ru: 'Открыт к новым проектам и коллаборациям.',
+      en: 'Open to new projects and collaborations.',
+    },
+    blogNote: {
+      ru: 'Новые публикации появляются регулярно.',
+      en: 'New posts are published regularly.',
+    },
+    socialAria: {
+      ru: 'Ссылки на соцсети',
+      en: 'Social links',
+    },
   },
   localeToggleLabel: {
     ru: 'Switch to English',
-    en: 'Переключить на русский',
+    en: 'Switch to Russian',
   },
   themeToggle: themeToggleLabel,
   social: socialLabels,

@@ -1,0 +1,117 @@
+---
+import { aboutPath, blogPath, heroFallbackName, themeToggleLabel, uiCopy } from '../data/site-content';
+
+interface Props {
+  active: 'about' | 'blog';
+}
+
+const { active } = Astro.props;
+const isAbout = active === 'about';
+const isBlog = active === 'blog';
+---
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href={aboutPath}>{heroFallbackName}</a>
+
+    <div
+      class="header-controls"
+      role="navigation"
+      aria-label={uiCopy.nav.controlsAria.ru}
+      data-i18n-aria-ru={uiCopy.nav.controlsAria.ru}
+      data-i18n-aria-en={uiCopy.nav.controlsAria.en}
+    >
+      <nav
+        class="main-nav"
+        aria-label={uiCopy.nav.primaryAria.ru}
+        data-i18n-aria-ru={uiCopy.nav.primaryAria.ru}
+        data-i18n-aria-en={uiCopy.nav.primaryAria.en}
+      >
+        <a
+          class:list={['main-nav-link', isAbout && 'active-nav']}
+          href={aboutPath}
+          aria-current={isAbout ? 'page' : undefined}
+          data-i18n-ru={uiCopy.nav.about.ru}
+          data-i18n-en={uiCopy.nav.about.en}
+        >
+          {uiCopy.nav.about.ru}
+        </a>
+        <a
+          class:list={['main-nav-link', isBlog && 'active-nav']}
+          href={blogPath}
+          aria-current={isBlog ? 'page' : undefined}
+          data-i18n-ru={uiCopy.nav.blog.ru}
+          data-i18n-en={uiCopy.nav.blog.en}
+        >
+          {uiCopy.nav.blog.ru}
+        </a>
+      </nav>
+
+      <button
+        id="locale-toggle"
+        class="locale-toggle"
+        type="button"
+        data-toggle-ru="EN"
+        data-toggle-en="RU"
+        data-label-ru={uiCopy.localeToggleLabel.ru}
+        data-label-en={uiCopy.localeToggleLabel.en}
+        aria-label={uiCopy.localeToggleLabel.ru}
+      >
+        EN
+      </button>
+
+      <button
+        id="theme-btn"
+        class="theme-toggle"
+        type="button"
+        data-theme-dark-label-ru={themeToggleLabel.toDark.ru}
+        data-theme-dark-label-en={themeToggleLabel.toDark.en}
+        data-theme-light-label-ru={themeToggleLabel.toLight.ru}
+        data-theme-light-label-en={themeToggleLabel.toLight.en}
+        aria-label={themeToggleLabel.toDark.ru}
+      >
+        <span class="sr-only" data-i18n-ru={themeToggleLabel.toDark.ru} data-i18n-en={themeToggleLabel.toDark.en}>
+          {themeToggleLabel.toDark.ru}
+        </span>
+        <svg
+          class="theme-icon theme-icon-moon"
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+          <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+        </svg>
+        <svg
+          class="theme-icon theme-icon-sun"
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+          <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+          <path d="M3 12h1"></path>
+          <path d="M20 12h1"></path>
+          <path d="M12 3v1"></path>
+          <path d="M12 20v1"></path>
+          <path d="M5.6 5.6l.7 .7"></path>
+          <path d="M17.7 17.7l.7 .7"></path>
+          <path d="M6.3 18.3l-.7 .7"></path>
+          <path d="M18.4 6.4l-.7 .7"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>

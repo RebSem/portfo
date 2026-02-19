@@ -1,5 +1,6 @@
 const LOCALE_STORAGE_KEY = 'portfolio-locale';
 const THEME_STORAGE_KEY = 'portfolio-theme';
+const LOCALE_EVENT_NAME = 'portfolio:locale-change';
 
 let activeLocale = 'ru';
 let activeTheme = 'light';
@@ -122,7 +123,7 @@ const updateLocaleToggle = (locale) => {
   const ruToggle = localeToggle.dataset.toggleRu ?? 'EN';
   const enToggle = localeToggle.dataset.toggleEn ?? 'RU';
   const ruLabel = localeToggle.dataset.labelRu ?? 'Switch to English';
-  const enLabel = localeToggle.dataset.labelEn ?? 'Переключить на русский';
+  const enLabel = localeToggle.dataset.labelEn ?? 'Switch to Russian';
 
   localeToggle.textContent = withLocale(locale, ruToggle, enToggle);
   localeToggle.setAttribute('aria-label', withLocale(locale, ruLabel, enLabel));
@@ -142,6 +143,14 @@ const updateThemeToggleLabel = () => {
   const enLabel = targetIsLight ? lightEn : darkEn;
 
   themeToggle.setAttribute('aria-label', withLocale(activeLocale, ruLabel, enLabel));
+};
+
+const emitLocaleChange = (locale) => {
+  window.dispatchEvent(
+    new CustomEvent(LOCALE_EVENT_NAME, {
+      detail: { locale },
+    }),
+  );
 };
 
 const applyTheme = (theme, options = { manual: false }) => {
@@ -172,6 +181,7 @@ const applyLocale = (locale) => {
 
   activeLocale = locale;
   updateThemeToggleLabel();
+  emitLocaleChange(locale);
 };
 
 const initLocale = () => {
