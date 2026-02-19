@@ -1,0 +1,27 @@
+---
+import { aboutContent, uiCopy } from '../data/site-content';
+---
+
+<section id="about" class="section reveal" aria-labelledby="about-title">
+  <div class="container section-shell">
+    <div class="section-head">
+      <h2 id="about-title" data-i18n-ru={uiCopy.about.title.ru} data-i18n-en={uiCopy.about.title.en}>{uiCopy.about.title.ru}</h2>
+      <p data-i18n-ru={uiCopy.about.subtitle.ru} data-i18n-en={uiCopy.about.subtitle.en}>{uiCopy.about.subtitle.ru}</p>
+    </div>
+
+    <div class="about-grid">
+      <article class="about-card">
+        <p data-i18n-ru={aboutContent.intro.ru} data-i18n-en={aboutContent.intro.en}>{aboutContent.intro.ru}</p>
+      </article>
+
+      <article class="about-card">
+        <h3 data-i18n-ru={uiCopy.about.skillsTitle.ru} data-i18n-en={uiCopy.about.skillsTitle.en}>{uiCopy.about.skillsTitle.ru}</h3>
+        <ul class="skills-list">
+          {aboutContent.skills.map((skill) => (
+            <li>{skill}</li>
+          ))}
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>

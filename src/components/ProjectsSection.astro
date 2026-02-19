@@ -1,0 +1,49 @@
+---
+import { projects } from '../data/projects';
+import { uiCopy } from '../data/site-content';
+---
+
+<section id="projects" class="section reveal" aria-labelledby="projects-title">
+  <div class="container section-shell">
+    <div class="section-head">
+      <h2 id="projects-title" data-i18n-ru={uiCopy.projects.title.ru} data-i18n-en={uiCopy.projects.title.en}>{uiCopy.projects.title.ru}</h2>
+      <p data-i18n-ru={uiCopy.projects.subtitle.ru} data-i18n-en={uiCopy.projects.subtitle.en}>{uiCopy.projects.subtitle.ru}</p>
+    </div>
+
+    {
+      projects.length === 0 ? (
+        <p class="projects-empty" data-i18n-ru={uiCopy.projects.empty.ru} data-i18n-en={uiCopy.projects.empty.en}>
+          {uiCopy.projects.empty.ru}
+        </p>
+      ) : (
+        <div class="projects-grid">
+          {projects.map((project) => (
+            <article class:list={["project-card", project.featured && 'project-featured']}>
+              <h3 data-i18n-ru={project.title.ru} data-i18n-en={project.title.en}>{project.title.ru}</h3>
+              <p data-i18n-ru={project.summary.ru} data-i18n-en={project.summary.en}>{project.summary.ru}</p>
+
+              <ul class="project-stack">
+                {project.stack.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+
+              <div class="project-links">
+                {project.repoUrl && (
+                  <a href={project.repoUrl} target="_blank" rel="noreferrer" data-i18n-ru={uiCopy.projects.repo.ru} data-i18n-en={uiCopy.projects.repo.en}>
+                    {uiCopy.projects.repo.ru}
+                  </a>
+                )}
+                {project.demoUrl && (
+                  <a href={project.demoUrl} target="_blank" rel="noreferrer" data-i18n-ru={uiCopy.projects.demo.ru} data-i18n-en={uiCopy.projects.demo.en}>
+                    {uiCopy.projects.demo.ru}
+                  </a>
+                )}
+              </div>
+            </article>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</section>
