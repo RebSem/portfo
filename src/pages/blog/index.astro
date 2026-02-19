@@ -1,0 +1,119 @@
+---
+import { getCollection } from 'astro:content';
+import SiteFooter from '../../components/SiteFooter.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import { heroFallbackName, uiCopy } from '../../data/site-content';
+import Layout from '../../layouts/Layout.astro';
+import blogScriptUrl from '../../scripts/blog.js?url';
+import localeScriptUrl from '../../scripts/locale.js?url';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime(),
+);
+
+const initialDateFormat = new Intl.DateTimeFormat('ru-RU', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+---
+
+<Layout title={`${heroFallbackName} — Blog`} description="Blog section with engineering posts.">
+  <a
+    id="skip-to-content"
+    href="#main-content"
+    class="skip-link"
+    data-i18n-ru="Перейти к содержимому"
+    data-i18n-en="Skip to content"
+  >
+    Перейти к содержимому
+  </a>
+
+  <SiteHeader active="blog" />
+
+  <div class="divider-wrap" aria-hidden="true">
+    <hr class="divider" />
+  </div>
+
+  <main
+    id="main-content"
+    class="page-main"
+    data-title-ru={`${heroFallbackName} — Блог`}
+    data-title-en={`${heroFallbackName} — Blog`}
+    data-description-ru="Блог с публикациями о разработке и продуктах."
+    data-description-en="Blog with posts about engineering and products."
+  >
+    <section class="blog-index" aria-labelledby="blog-title">
+      <div class="section-head">
+        <h1 id="blog-title" data-i18n-ru={uiCopy.blog.title.ru} data-i18n-en={uiCopy.blog.title.en}>{uiCopy.blog.title.ru}</h1>
+        <p data-i18n-ru={uiCopy.blog.subtitle.ru} data-i18n-en={uiCopy.blog.subtitle.en}>{uiCopy.blog.subtitle.ru}</p>
+      </div>
+
+      <p
+        id="blog-empty"
+        class="blog-empty"
+        hidden={posts.length > 0}
+        data-i18n-ru={uiCopy.blog.empty.ru}
+        data-i18n-en={uiCopy.blog.empty.en}
+      >
+        {uiCopy.blog.empty.ru}
+      </p>
+
+      <ul id="blog-list" class="blog-list">
+        {
+          posts.map((post) => {
+            const isoDate = post.data.publishedAt.toISOString().slice(0, 10);
+            const langLabelRu = post.data.lang === 'ru' ? uiCopy.blog.langRu.ru : uiCopy.blog.langEn.ru;
+            const langLabelEn = post.data.lang === 'ru' ? uiCopy.blog.langRu.en : uiCopy.blog.langEn.en;
+
+            return (
+              <li class="blog-card" data-lang={post.data.lang}>
+                <article>
+                  <header class="blog-card-head">
+                    <p class="blog-card-meta">
+                      <time class="blog-date" datetime={isoDate} data-published={isoDate}>
+                        {initialDateFormat.format(post.data.publishedAt)}
+                      </time>
+                      <span class="blog-lang" data-i18n-ru={langLabelRu} data-i18n-en={langLabelEn}>
+                        {langLabelRu}
+                      </span>
+                    </p>
+                    <h2>
+                      <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+                    </h2>
+                  </header>
+
+                  <p>{post.data.description}</p>
+
+                  {post.data.tags.length > 0 && (
+                    <ul class="stack-list" aria-label={uiCopy.blog.tagsAria.ru} data-i18n-aria-ru={uiCopy.blog.tagsAria.ru} data-i18n-aria-en={uiCopy.blog.tagsAria.en}>
+                      {post.data.tags.map((tag) => (
+                        <li>{tag}</li>
+                      ))}
+                    </ul>
+                  )}
+
+                  <p>
+                    <a
+                      href={`/blog/${post.slug}`}
+                      class="blog-read-more"
+                      data-i18n-ru={uiCopy.blog.readMore.ru}
+                      data-i18n-en={uiCopy.blog.readMore.en}
+                    >
+                      {uiCopy.blog.readMore.ru}
+                    </a>
+                  </p>
+                </article>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </section>
+  </main>
+
+  <SiteFooter noteRu={uiCopy.footer.blogNote.ru} noteEn={uiCopy.footer.blogNote.en} />
+
+  <script type="module" src={localeScriptUrl}></script>
+  <script type="module" src={blogScriptUrl}></script>
+</Layout>

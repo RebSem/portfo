@@ -2,6 +2,18 @@ services:
   portfolio:
     build: .
     container_name: portfolio-site
+    env_file:
+      - .env
+    environment:
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      GITHUB_CACHE_FILE: ${GITHUB_CACHE_FILE:-/app/data/github-cache.json}
     ports:
-      - "4321:4321"
+      - "127.0.0.1:4321:4321"
+    volumes:
+      - /var/www/portfo/data:/app/data
     restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

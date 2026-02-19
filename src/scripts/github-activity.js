@@ -1,54 +1,17 @@
-const LOCALE_STORAGE_KEY = 'portfolio-locale';
-let activeLocale = 'ru';
 let contributionPayload = null;
 let activeContributionPoint = null;
+let activeLocale = document.documentElement.lang === 'ru' ? 'ru' : 'en';
+let activeStatus = 'loading';
 
 const withLocale = (locale, ruValue, enValue) => (locale === 'ru' ? ruValue : enValue);
 
-const pickNavigatorLocale = () => {
-  const lang = navigator.language.toLowerCase();
-  return lang.startsWith('ru') ? 'ru' : 'en';
-};
-
-const readLocale = () => {
-  const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY);
-  if (stored === 'ru' || stored === 'en') {
-    return stored;
-  }
-  return pickNavigatorLocale();
-};
-
-const writeLocale = (locale) => {
-  window.localStorage.setItem(LOCALE_STORAGE_KEY, locale);
-};
-
-const applyLocaleToElements = (locale) => {
-  document.documentElement.lang = locale;
-  document.body.dataset.locale = locale;
-
-  const localizedNodes = document.querySelectorAll('[data-i18n-ru][data-i18n-en]');
-  localizedNodes.forEach((node) => {
-    const ruValue = node.dataset.i18nRu;
-    const enValue = node.dataset.i18nEn;
-    if (!ruValue || !enValue) return;
-    node.textContent = withLocale(locale, ruValue, enValue);
-  });
-
-  const localeToggle = document.getElementById('locale-toggle');
-  if (localeToggle) {
-    const ruToggle = localeToggle.dataset.toggleRu ?? 'EN';
-    const enToggle = localeToggle.dataset.toggleEn ?? 'RU';
-    const ruLabel = localeToggle.dataset.labelRu ?? 'Switch to English';
-    const enLabel = localeToggle.dataset.labelEn ?? 'Переключить на русский';
-
-    localeToggle.textContent = withLocale(locale, ruToggle, enToggle);
-    localeToggle.setAttribute('aria-label', withLocale(locale, ruLabel, enLabel));
-  }
-
-  activeLocale = locale;
+const syncLocaleFromDocument = () => {
+  activeLocale = document.documentElement.lang === 'ru' ? 'ru' : 'en';
 };
 
 const setHeroStatus = (kind) => {
+  activeStatus = kind;
+
   const statusNode = document.getElementById('hero-status');
   if (!statusNode) return;
 
@@ -269,61 +232,31 @@ const hydrateGithub = async () => {
   }
 };
 
-const initLocaleHandling = () => {
-  const initialLocale = readLocale();
-  applyLocaleToElements(initialLocale);
+const onLocaleChange = () => {
+  syncLocaleFromDocument();
 
-  const localeToggle = document.getElementById('locale-toggle');
-  if (!localeToggle) return;
+  if (contributionPayload) {
+    updateContributions(contributionPayload);
+  } else {
+    renderContributionTooltip();
+  }
 
-  localeToggle.addEventListener('click', () => {
-    const nextLocale = activeLocale === 'ru' ? 'en' : 'ru';
-    applyLocaleToElements(nextLocale);
-    writeLocale(nextLocale);
-
-    if (contributionPayload) {
-      updateContributions(contributionPayload);
-    } else {
-      renderContributionTooltip();
-    }
-  });
+  setHeroStatus(activeStatus);
 };
 
-const initRevealAnimations = () => {
-  const nodes = document.querySelectorAll('.reveal');
-  if (nodes.length === 0) return;
-
-  const observer = new IntersectionObserver(
-    (entries, currentObserver) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('is-visible');
-        currentObserver.unobserve(entry.target);
-      });
-    },
-    {
-      rootMargin: '0px 0px -8% 0px',
-      threshold: 0.2,
-    },
-  );
-
-  nodes.forEach((node) => observer.observe(node));
-};
-
-const initPortfolioApp = () => {
-  if (document.body.dataset.appReady === 'true') {
+const initGithubActivity = () => {
+  if (!document.getElementById('contribution-grid')) {
     return;
   }
 
-  document.body.dataset.appReady = 'true';
-  initLocaleHandling();
-  initRevealAnimations();
+  syncLocaleFromDocument();
+  window.addEventListener('portfolio:locale-change', onLocaleChange);
   renderContributionTooltip();
   void hydrateGithub();
 };
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initPortfolioApp, { once: true });
+  document.addEventListener('DOMContentLoaded', initGithubActivity, { once: true });
 } else {
-  initPortfolioApp();
+  initGithubActivity();
 }
