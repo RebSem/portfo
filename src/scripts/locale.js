@@ -1,5 +1,3 @@
-import { navigate } from 'astro:transitions/client';
-
 const LOCALE_STORAGE_KEY = 'portfolio-locale';
 const THEME_STORAGE_KEY = 'portfolio-theme';
 const LOCALE_EVENT_NAME = 'portfolio:locale-change';
@@ -194,7 +192,7 @@ const applyLocale = (locale) => {
   emitLocaleChange(locale);
 };
 
-const tryNavigateToTranslatedPost = async (locale) => {
+const tryNavigateToTranslatedPost = (locale) => {
   const main = document.getElementById('main-content');
   if (!main) return false;
 
@@ -208,7 +206,13 @@ const tryNavigateToTranslatedPost = async (locale) => {
   const targetPath = `/blog/${targetSlug}`;
   if (window.location.pathname === targetPath) return false;
 
-  await navigate(targetPath);
+  const targetLink = document.querySelector(`a[href="${targetPath}"]`);
+  if (targetLink instanceof HTMLAnchorElement) {
+    targetLink.click();
+    return true;
+  }
+
+  window.location.assign(targetPath);
   return true;
 };
 
@@ -222,7 +226,7 @@ const toggleLocale = async () => {
 
   try {
     applyLocale(nextLocale);
-    await tryNavigateToTranslatedPost(nextLocale);
+    tryNavigateToTranslatedPost(nextLocale);
   } finally {
     state.localeSwitchInFlight = false;
   }
@@ -260,22 +264,6 @@ const bindDelegatedClicks = () => {
       return;
     }
 
-    const homeLink = target.closest('a[data-home-link="true"]');
-    if (!(homeLink instanceof HTMLAnchorElement)) return;
-    if (event.defaultPrevented) return;
-    if (event.button !== 0) return;
-    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-    if (window.location.pathname === '/') return;
-
-    event.preventDefault();
-
-    void (async () => {
-      try {
-        await navigate('/');
-      } catch {
-        window.location.assign('/');
-      }
-    })();
   });
 
   state.delegatedClicksBound = true;
