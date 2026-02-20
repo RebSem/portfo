@@ -43,6 +43,7 @@ jobs:
           ssh -o BatchMode=yes -o ConnectTimeout=20 -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" << 'EOF_REMOTE'
           set -euo pipefail
           cd /var/www/portfo/app
+          git remote set-url origin https://github.com/RebSem/portfo.git
           git fetch origin main
           git checkout main
           git pull --ff-only origin main
