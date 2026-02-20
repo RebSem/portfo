@@ -40,7 +40,7 @@ jobs:
 
       - name: Deploy on server
         run: |
-          ssh -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" << 'EOF_REMOTE'
+          ssh -o BatchMode=yes -o ConnectTimeout=20 -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" << 'EOF_REMOTE'
           set -euo pipefail
           cd /var/www/portfo/app
           git fetch origin main
