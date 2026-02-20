@@ -1,29 +1,28 @@
 ---
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
-import { projects } from '../data/projects';
+import SocialLinks from '../components/SocialLinks.astro';
 import {
   aboutParagraphs,
   githubUsername,
+  heroDisplayName,
   heroFallbackName,
   heroStatusError,
   heroStatusLoading,
   heroStatusReady,
   heroSubtitle,
-  telegramUrl,
   uiCopy,
 } from '../data/site-content';
 import Layout from '../layouts/Layout.astro';
 import githubScriptUrl from '../scripts/github-activity.js?url';
 import localeScriptUrl from '../scripts/locale.js?url';
 
-const profileUrl = `https://github.com/${githubUsername}`;
 const avatarUrl = `https://avatars.githubusercontent.com/${githubUsername}?size=560`;
 ---
 
 <Layout
   title={`${heroFallbackName} — About`}
-  description="Portfolio homepage with About, GitHub activity, and project highlights."
+  description="About page with engineering focus, AI integration work, and GitHub activity."
 >
   <a
     id="skip-to-content"
@@ -32,7 +31,7 @@ const avatarUrl = `https://avatars.githubusercontent.com/${githubUsername}?size=
     data-i18n-ru="Перейти к содержимому"
     data-i18n-en="Skip to content"
   >
-    Перейти к содержимому
+    Skip to content
   </a>
 
   <SiteHeader active="about" />
@@ -44,16 +43,19 @@ const avatarUrl = `https://avatars.githubusercontent.com/${githubUsername}?size=
   <main
     id="main-content"
     class="page-main"
-    data-title-ru={`${heroFallbackName} — Обо мне`}
-    data-title-en={`${heroFallbackName} — About`}
-    data-description-ru="Главная страница-портфолио с проектами и GitHub-активностью."
-    data-description-en="Portfolio homepage with projects and GitHub activity."
+    data-title-ru={`${heroDisplayName.ru} — Обо мне`}
+    data-title-en={`${heroDisplayName.en} — About`}
+    data-description-ru="Страница с профилем, подходом к разработке и живой GitHub-активностью."
+    data-description-en="Profile page with engineering approach and live GitHub activity."
   >
-    <section class="about-section">
-      <p class="about-eyebrow" data-i18n-ru={uiCopy.about.title.ru} data-i18n-en={uiCopy.about.title.en}>{uiCopy.about.title.ru}</p>
+    <section class="about-section" aria-labelledby="about-title">
+      <p class="about-eyebrow" data-i18n-ru={uiCopy.about.title.ru} data-i18n-en={uiCopy.about.title.en}>{uiCopy.about.title.en}</p>
+
       <h1 id="about-title">
-        <span id="hero-name">{heroFallbackName}</span>
+        <span id="hero-name" data-i18n-ru={heroDisplayName.ru} data-i18n-en={heroDisplayName.en}>{heroDisplayName.en}</span>
       </h1>
+
+      <p class="about-intro" data-i18n-ru={uiCopy.about.subtitle.ru} data-i18n-en={uiCopy.about.subtitle.en}>{uiCopy.about.subtitle.en}</p>
 
       <div class="about-grid">
         <div class="about-image-wrap">
@@ -61,47 +63,26 @@ const avatarUrl = `https://avatars.githubusercontent.com/${githubUsername}?size=
             id="hero-avatar"
             src={avatarUrl}
             loading="eager"
-            alt={`Портрет ${heroFallbackName}`}
-            data-i18n-alt-ru={`Портрет ${heroFallbackName}`}
-            data-i18n-alt-en={`${heroFallbackName} portrait`}
+            alt={`Portrait of ${heroDisplayName.en}`}
+            data-i18n-alt-ru={`Портрет ${heroDisplayName.ru}`}
+            data-i18n-alt-en={`Portrait of ${heroDisplayName.en}`}
           />
         </div>
 
         <div class="about-copy">
           <p id="hero-subtitle" data-i18n-ru={heroSubtitle.ru} data-i18n-en={heroSubtitle.en}>
-            {heroSubtitle.ru}
+            {heroSubtitle.en}
           </p>
 
           {
             aboutParagraphs.map((paragraph) => (
               <p data-i18n-ru={paragraph.ru} data-i18n-en={paragraph.en}>
-                {paragraph.ru}
+                {paragraph.en}
               </p>
             ))
           }
 
-          <p class="about-links">
-            <a
-              id="hero-github-link"
-              href={profileUrl}
-              target="_blank"
-              rel="noreferrer"
-              data-i18n-ru={uiCopy.hero.github.ru}
-              data-i18n-en={uiCopy.hero.github.en}
-            >
-              {uiCopy.hero.github.ru}
-            </a>
-            <span data-i18n-ru={uiCopy.hero.and.ru} data-i18n-en={uiCopy.hero.and.en}>{uiCopy.hero.and.ru}</span>
-            <a
-              href={telegramUrl}
-              target="_blank"
-              rel="noreferrer"
-              data-i18n-ru={uiCopy.hero.messageOnTelegram.ru}
-              data-i18n-en={uiCopy.hero.messageOnTelegram.en}
-            >
-              {uiCopy.hero.messageOnTelegram.ru}
-            </a>.
-          </p>
+          <SocialLinks className="social-links profile-social-links" />
 
           <p
             id="hero-status"
@@ -113,46 +94,29 @@ const avatarUrl = `https://avatars.githubusercontent.com/${githubUsername}?size=
             data-error-ru={heroStatusError.ru}
             data-error-en={heroStatusError.en}
           >
-            {heroStatusLoading.ru}
+            {heroStatusLoading.en}
           </p>
-
-          <div class="hero-actions">
-            <a
-              class="button"
-              href={telegramUrl}
-              target="_blank"
-              rel="noreferrer"
-              data-i18n-ru={uiCopy.hero.cta.ru}
-              data-i18n-en={uiCopy.hero.cta.en}
-            >
-              {uiCopy.hero.cta.ru}
-            </a>
-
-            <a class="button button-secondary" href={profileUrl} target="_blank" rel="noreferrer">
-              github.com/<span id="hero-login">{githubUsername}</span>
-            </a>
-          </div>
         </div>
       </div>
     </section>
 
     <section id="github" class="section-block" aria-labelledby="github-title">
       <div class="section-head">
-        <h2 id="github-title" data-i18n-ru={uiCopy.github.title.ru} data-i18n-en={uiCopy.github.title.en}>{uiCopy.github.title.ru}</h2>
-        <p data-i18n-ru={uiCopy.github.subtitle.ru} data-i18n-en={uiCopy.github.subtitle.en}>{uiCopy.github.subtitle.ru}</p>
+        <h2 id="github-title" data-i18n-ru={uiCopy.github.title.ru} data-i18n-en={uiCopy.github.title.en}>{uiCopy.github.title.en}</h2>
+        <p data-i18n-ru={uiCopy.github.subtitle.ru} data-i18n-en={uiCopy.github.subtitle.en}>{uiCopy.github.subtitle.en}</p>
       </div>
 
       <div class="github-heatmap">
         <div class="heatmap-topline">
           <strong id="contributions-total">0</strong>
-          <span data-i18n-ru={uiCopy.github.totalLabel.ru} data-i18n-en={uiCopy.github.totalLabel.en}>{uiCopy.github.totalLabel.ru}</span>
+          <span data-i18n-ru={uiCopy.github.totalLabel.ru} data-i18n-en={uiCopy.github.totalLabel.en}>{uiCopy.github.totalLabel.en}</span>
         </div>
 
         <div
           id="contribution-grid"
           class="contribution-grid"
           role="img"
-          aria-label={uiCopy.github.heatmapAria.ru}
+          aria-label={uiCopy.github.heatmapAria.en}
           data-i18n-aria-ru={uiCopy.github.heatmapAria.ru}
           data-i18n-aria-en={uiCopy.github.heatmapAria.en}
         ></div>
@@ -173,7 +137,7 @@ const avatarUrl = `https://avatars.githubusercontent.com/${githubUsername}?size=
           data-hint-ru={uiCopy.github.hoverHint.ru}
           data-hint-en={uiCopy.github.hoverHint.en}
         >
-          {uiCopy.github.hoverHint.ru}
+          {uiCopy.github.hoverHint.en}
         </p>
 
         <p
@@ -182,48 +146,9 @@ const avatarUrl = `https://avatars.githubusercontent.com/${githubUsername}?size=
           data-i18n-ru={uiCopy.github.unavailable.ru}
           data-i18n-en={uiCopy.github.unavailable.en}
         >
-          {uiCopy.github.unavailable.ru}
+          {uiCopy.github.unavailable.en}
         </p>
       </div>
-    </section>
-
-    <section id="projects" class="section-block" aria-labelledby="projects-title">
-      <div class="section-head">
-        <h2 id="projects-title" data-i18n-ru={uiCopy.projects.title.ru} data-i18n-en={uiCopy.projects.title.en}>{uiCopy.projects.title.ru}</h2>
-        <p data-i18n-ru={uiCopy.projects.subtitle.ru} data-i18n-en={uiCopy.projects.subtitle.en}>{uiCopy.projects.subtitle.ru}</p>
-      </div>
-
-      {
-        projects.length === 0 ? (
-          <p data-i18n-ru={uiCopy.projects.empty.ru} data-i18n-en={uiCopy.projects.empty.en}>
-            {uiCopy.projects.empty.ru}
-          </p>
-        ) : (
-          <div class="projects-list">
-            {projects.map((project) => (
-              <article class="project-card">
-                <h3 data-i18n-ru={project.title.ru} data-i18n-en={project.title.en}>{project.title.ru}</h3>
-                <p data-i18n-ru={project.summary.ru} data-i18n-en={project.summary.en}>{project.summary.ru}</p>
-
-                <ul
-                  class="stack-list"
-                  aria-label={uiCopy.projects.stackAria.ru}
-                  data-i18n-aria-ru={uiCopy.projects.stackAria.ru}
-                  data-i18n-aria-en={uiCopy.projects.stackAria.en}
-                >
-                  {project.stack.map((item) => (
-                    <li>{item}</li>
-                  ))}
-                </ul>
-
-                <p data-i18n-ru={uiCopy.projects.statusInProgress.ru} data-i18n-en={uiCopy.projects.statusInProgress.en}>
-                  {uiCopy.projects.statusInProgress.ru}
-                </p>
-              </article>
-            ))}
-          </div>
-        )
-      }
     </section>
   </main>
 

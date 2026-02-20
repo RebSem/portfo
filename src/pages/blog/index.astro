@@ -11,7 +11,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime(),
 );
 
-const initialDateFormat = new Intl.DateTimeFormat('ru-RU', {
+const initialDateFormat = new Intl.DateTimeFormat('en-US', {
   day: 'numeric',
   month: 'long',
   year: 'numeric',
@@ -26,7 +26,7 @@ const initialDateFormat = new Intl.DateTimeFormat('ru-RU', {
     data-i18n-ru="Перейти к содержимому"
     data-i18n-en="Skip to content"
   >
-    Перейти к содержимому
+    Skip to content
   </a>
 
   <SiteHeader active="blog" />
@@ -45,8 +45,8 @@ const initialDateFormat = new Intl.DateTimeFormat('ru-RU', {
   >
     <section class="blog-index" aria-labelledby="blog-title">
       <div class="section-head">
-        <h1 id="blog-title" data-i18n-ru={uiCopy.blog.title.ru} data-i18n-en={uiCopy.blog.title.en}>{uiCopy.blog.title.ru}</h1>
-        <p data-i18n-ru={uiCopy.blog.subtitle.ru} data-i18n-en={uiCopy.blog.subtitle.en}>{uiCopy.blog.subtitle.ru}</p>
+        <h1 id="blog-title" data-i18n-ru={uiCopy.blog.title.ru} data-i18n-en={uiCopy.blog.title.en}>{uiCopy.blog.title.en}</h1>
+        <p data-i18n-ru={uiCopy.blog.subtitle.ru} data-i18n-en={uiCopy.blog.subtitle.en}>{uiCopy.blog.subtitle.en}</p>
       </div>
 
       <p
@@ -56,7 +56,7 @@ const initialDateFormat = new Intl.DateTimeFormat('ru-RU', {
         data-i18n-ru={uiCopy.blog.empty.ru}
         data-i18n-en={uiCopy.blog.empty.en}
       >
-        {uiCopy.blog.empty.ru}
+        {uiCopy.blog.empty.en}
       </p>
 
       <ul id="blog-list" class="blog-list">
@@ -75,7 +75,7 @@ const initialDateFormat = new Intl.DateTimeFormat('ru-RU', {
                         {initialDateFormat.format(post.data.publishedAt)}
                       </time>
                       <span class="blog-lang" data-i18n-ru={langLabelRu} data-i18n-en={langLabelEn}>
-                        {langLabelRu}
+                        {langLabelEn}
                       </span>
                     </p>
                     <h2>
@@ -86,7 +86,7 @@ const initialDateFormat = new Intl.DateTimeFormat('ru-RU', {
                   <p>{post.data.description}</p>
 
                   {post.data.tags.length > 0 && (
-                    <ul class="stack-list" aria-label={uiCopy.blog.tagsAria.ru} data-i18n-aria-ru={uiCopy.blog.tagsAria.ru} data-i18n-aria-en={uiCopy.blog.tagsAria.en}>
+                    <ul class="stack-list" aria-label={uiCopy.blog.tagsAria.en} data-i18n-aria-ru={uiCopy.blog.tagsAria.ru} data-i18n-aria-en={uiCopy.blog.tagsAria.en}>
                       {post.data.tags.map((tag) => (
                         <li>{tag}</li>
                       ))}
@@ -100,7 +100,7 @@ const initialDateFormat = new Intl.DateTimeFormat('ru-RU', {
                       data-i18n-ru={uiCopy.blog.readMore.ru}
                       data-i18n-en={uiCopy.blog.readMore.en}
                     >
-                      {uiCopy.blog.readMore.ru}
+                      {uiCopy.blog.readMore.en}
                     </a>
                   </p>
                 </article>

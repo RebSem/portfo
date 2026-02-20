@@ -1,11 +1,15 @@
 #!/usr/bin/env node
-import { mkdir, writeFile, access } from 'node:fs/promises';
+import { access, mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
 
 const CONTENT_DIR = path.resolve(process.cwd(), 'src/content/blog');
 
-const usage = `Usage:\n  npm run new:post -- <slug> [--lang ru|en] [--title "Post title"]\n\nExample:\n  npm run new:post -- my-first-post --lang en --title "My first post"`;
+const usage = `Usage:
+  npm run new:post -- <slug> [--title "Post title"] [--title-ru "Заголовок"] [--title-en "Post title"]
+
+Example:
+  npm run new:post -- ai-in-product --title-ru "AI в продукте" --title-en "AI in Product"`;
 
 const sanitizeSlug = (value) =>
   value
@@ -14,6 +18,8 @@ const sanitizeSlug = (value) =>
     .replace(/[^a-z0-9\s-]/g, '')
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-');
+
+const escapeYaml = (value) => value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 
 const parseArgs = () => {
   const args = process.argv.slice(2);
@@ -30,22 +36,12 @@ const parseArgs = () => {
     process.exit(1);
   }
 
-  let lang = 'ru';
-  let title = 'New post';
+  let baseTitle = 'New post';
+  let titleRu = '';
+  let titleEn = '';
 
   for (let index = 1; index < args.length; index += 1) {
     const current = args[index];
-
-    if (current === '--lang') {
-      const value = args[index + 1];
-      if (value !== 'ru' && value !== 'en') {
-        console.error('`--lang` must be `ru` or `en`.');
-        process.exit(1);
-      }
-      lang = value;
-      index += 1;
-      continue;
-    }
 
     if (current === '--title') {
       const value = args[index + 1];
@@ -53,13 +49,38 @@ const parseArgs = () => {
         console.error('`--title` requires a value.');
         process.exit(1);
       }
-      title = value.trim();
+      baseTitle = value.trim();
       index += 1;
       continue;
     }
+
+    if (current === '--title-ru') {
+      const value = args[index + 1];
+      if (!value) {
+        console.error('`--title-ru` requires a value.');
+        process.exit(1);
+      }
+      titleRu = value.trim();
+      index += 1;
+      continue;
+    }
+
+    if (current === '--title-en') {
+      const value = args[index + 1];
+      if (!value) {
+        console.error('`--title-en` requires a value.');
+        process.exit(1);
+      }
+      titleEn = value.trim();
+      index += 1;
+    }
   }
 
-  return { slug, lang, title };
+  return {
+    slug,
+    titleRu: titleRu || baseTitle,
+    titleEn: titleEn || baseTitle,
+  };
 };
 
 const toDateStamp = (date) => {
@@ -69,27 +90,61 @@ const toDateStamp = (date) => {
   return `${year}-${month}-${day}`;
 };
 
+const buildTemplate = ({ lang, title, dateStamp, translationKey }) => {
+  const description = lang === 'ru' ? 'Краткое описание статьи.' : 'Short summary of the post.';
+  const body = lang === 'ru' ? 'Напишите русскую версию статьи.' : 'Write the English version of the post.';
+
+  return `---\ntitle: "${escapeYaml(title)}"\ndescription: "${description}"\npublishedAt: ${dateStamp}\nlang: ${lang}\ntranslationKey: ${translationKey}\ntags:\n  - engineering\ndraft: true\ncover: "/images/blog/${translationKey}/cover.jpg"\n---\n\n${body}\n`;
+};
+
+const ensureAbsent = async (filepath) => {
+  try {
+    await access(filepath);
+    return false;
+  } catch {
+    return true;
+  }
+};
+
 const run = async () => {
-  const { slug, lang, title } = parseArgs();
+  const { slug, titleRu, titleEn } = parseArgs();
   const date = new Date();
   const dateStamp = toDateStamp(date);
-  const filename = `${dateStamp}-${slug}-${lang}.mdx`;
-  const filepath = path.join(CONTENT_DIR, filename);
+  const translationKey = `${dateStamp}-${slug}`;
+
+  const files = [
+    {
+      lang: 'ru',
+      filepath: path.join(CONTENT_DIR, `${dateStamp}-${slug}-ru.mdx`),
+      template: buildTemplate({ lang: 'ru', title: titleRu, dateStamp, translationKey }),
+    },
+    {
+      lang: 'en',
+      filepath: path.join(CONTENT_DIR, `${dateStamp}-${slug}-en.mdx`),
+      template: buildTemplate({ lang: 'en', title: titleEn, dateStamp, translationKey }),
+    },
+  ];
 
   await mkdir(CONTENT_DIR, { recursive: true });
 
-  try {
-    await access(filepath);
-    console.error(`File already exists: ${filepath}`);
-    process.exit(1);
-  } catch {
-    // file does not exist
+  for (const entry of files) {
+    const available = await ensureAbsent(entry.filepath);
+    if (!available) {
+      console.error(`File already exists: ${entry.filepath}`);
+      process.exit(1);
+    }
   }
 
-  const template = `---\ntitle: "${title}"\ndescription: "Short summary for the post."\npublishedAt: ${dateStamp}\nlang: ${lang}\ntags:\n  - engineering\ndraft: true\n---\n\nWrite your post here.\n`;
+  for (const entry of files) {
+    await writeFile(entry.filepath, entry.template, 'utf8');
+  }
 
-  await writeFile(filepath, template, 'utf8');
-  console.log(`Created: ${filepath}`);
+  console.log('Created files:');
+  for (const entry of files) {
+    console.log(`- ${entry.filepath}`);
+  }
+  console.log(`translationKey: ${translationKey}`);
+  console.log(`Cover path template: /images/blog/${translationKey}/cover.jpg`);
 };
 
 run().catch((error) => {

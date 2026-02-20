@@ -1,3 +1,9 @@
+const state = window.__portfolioBlogState ?? {
+  localeListenerBound: false,
+};
+
+window.__portfolioBlogState = state;
+
 let activeLocale = document.documentElement.lang === 'ru' ? 'ru' : 'en';
 
 const resolveLocale = () => {
@@ -51,14 +57,25 @@ const syncBlogPage = () => {
   filterCardsByLocale();
 };
 
+const onLocaleChange = () => {
+  if (!document.getElementById('blog-list')) return;
+  syncBlogPage();
+};
+
 const initBlog = () => {
   if (!document.getElementById('blog-list')) {
     return;
   }
 
+  if (!state.localeListenerBound) {
+    window.addEventListener('portfolio:locale-change', onLocaleChange);
+    state.localeListenerBound = true;
+  }
+
   syncBlogPage();
-  window.addEventListener('portfolio:locale-change', syncBlogPage);
 };
+
+document.addEventListener('astro:page-load', initBlog);
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initBlog, { once: true });

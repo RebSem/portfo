@@ -1,16 +1,21 @@
-let contributionPayload = null;
-let activeContributionPoint = null;
-let activeLocale = document.documentElement.lang === 'ru' ? 'ru' : 'en';
-let activeStatus = 'loading';
+const state = window.__portfolioGithubState ?? {
+  contributionPayload: null,
+  activeContributionPoint: null,
+  activeLocale: document.documentElement.lang === 'ru' ? 'ru' : 'en',
+  activeStatus: 'loading',
+  localeListenerBound: false,
+};
+
+window.__portfolioGithubState = state;
 
 const withLocale = (locale, ruValue, enValue) => (locale === 'ru' ? ruValue : enValue);
 
 const syncLocaleFromDocument = () => {
-  activeLocale = document.documentElement.lang === 'ru' ? 'ru' : 'en';
+  state.activeLocale = document.documentElement.lang === 'ru' ? 'ru' : 'en';
 };
 
 const setHeroStatus = (kind) => {
-  activeStatus = kind;
+  state.activeStatus = kind;
 
   const statusNode = document.getElementById('hero-status');
   if (!statusNode) return;
@@ -18,15 +23,15 @@ const setHeroStatus = (kind) => {
   const ru = statusNode.getAttribute(`data-${kind}-ru`) ?? '';
   const en = statusNode.getAttribute(`data-${kind}-en`) ?? '';
   if (ru && en) {
-    statusNode.textContent = withLocale(activeLocale, ru, en);
+    statusNode.textContent = withLocale(state.activeLocale, ru, en);
   }
 };
 
-const formatMetric = (value) => new Intl.NumberFormat(activeLocale === 'ru' ? 'ru-RU' : 'en-US').format(value);
+const formatMetric = (value) => new Intl.NumberFormat(state.activeLocale === 'ru' ? 'ru-RU' : 'en-US').format(value);
 
 const formatLocalizedDate = (isoDate) => {
   const date = new Date(`${isoDate}T00:00:00.000Z`);
-  return new Intl.DateTimeFormat(activeLocale === 'ru' ? 'ru-RU' : 'en-US', {
+  return new Intl.DateTimeFormat(state.activeLocale === 'ru' ? 'ru-RU' : 'en-US', {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
@@ -35,7 +40,7 @@ const formatLocalizedDate = (isoDate) => {
 
 const formatContributionLabel = (count, isoDate) =>
   withLocale(
-    activeLocale,
+    state.activeLocale,
     `${count} вкладов • ${formatLocalizedDate(isoDate)}`,
     `${count} contributions • ${formatLocalizedDate(isoDate)}`,
   );
@@ -44,30 +49,21 @@ const renderContributionTooltip = () => {
   const tooltip = document.getElementById('contribution-tooltip');
   if (!tooltip) return;
 
-  if (activeContributionPoint) {
-    tooltip.textContent = formatContributionLabel(activeContributionPoint.count, activeContributionPoint.date);
+  if (state.activeContributionPoint) {
+    tooltip.textContent = formatContributionLabel(state.activeContributionPoint.count, state.activeContributionPoint.date);
     return;
   }
 
   const hintRu = tooltip.dataset.hintRu ?? '';
   const hintEn = tooltip.dataset.hintEn ?? '';
-  tooltip.textContent = withLocale(activeLocale, hintRu, hintEn);
+  tooltip.textContent = withLocale(state.activeLocale, hintRu, hintEn);
 };
 
 const updateProfile = (profile) => {
-  const heroName = document.getElementById('hero-name');
-  const heroLogin = document.getElementById('hero-login');
   const heroAvatar = document.getElementById('hero-avatar');
-  const heroLink = document.getElementById('hero-github-link');
-
-  if (heroName) heroName.textContent = profile.name || profile.login;
-  if (heroLogin) heroLogin.textContent = profile.login;
   if (heroAvatar) {
     heroAvatar.src = profile.avatarUrl;
     heroAvatar.alt = `${profile.name || profile.login} avatar`;
-  }
-  if (heroLink) {
-    heroLink.href = profile.profileUrl;
   }
 };
 
@@ -139,7 +135,7 @@ const bindContributionTooltip = () => {
     const countRaw = Number(cell.dataset.count ?? '0');
     if (!date) return;
 
-    activeContributionPoint = {
+    state.activeContributionPoint = {
       date,
       count: Number.isFinite(countRaw) ? countRaw : 0,
     };
@@ -163,14 +159,14 @@ const bindContributionTooltip = () => {
   });
 
   grid.addEventListener('mouseleave', () => {
-    activeContributionPoint = null;
+    state.activeContributionPoint = null;
     renderContributionTooltip();
   });
 
   grid.addEventListener('focusout', (event) => {
     const related = event.relatedTarget;
     if (!(related instanceof Node) || !grid.contains(related)) {
-      activeContributionPoint = null;
+      state.activeContributionPoint = null;
       renderContributionTooltip();
     }
   });
@@ -179,7 +175,7 @@ const bindContributionTooltip = () => {
 };
 
 const updateContributions = (payload) => {
-  contributionPayload = payload;
+  state.contributionPayload = payload;
 
   const totalNode = document.getElementById('contributions-total');
   if (totalNode) {
@@ -233,15 +229,17 @@ const hydrateGithub = async () => {
 };
 
 const onLocaleChange = () => {
+  if (!document.getElementById('contribution-grid')) return;
+
   syncLocaleFromDocument();
 
-  if (contributionPayload) {
-    updateContributions(contributionPayload);
+  if (state.contributionPayload) {
+    updateContributions(state.contributionPayload);
   } else {
     renderContributionTooltip();
   }
 
-  setHeroStatus(activeStatus);
+  setHeroStatus(state.activeStatus);
 };
 
 const initGithubActivity = () => {
@@ -249,11 +247,24 @@ const initGithubActivity = () => {
     return;
   }
 
+  if (!state.localeListenerBound) {
+    window.addEventListener('portfolio:locale-change', onLocaleChange);
+    state.localeListenerBound = true;
+  }
+
   syncLocaleFromDocument();
-  window.addEventListener('portfolio:locale-change', onLocaleChange);
+
+  if (state.contributionPayload) {
+    updateContributions(state.contributionPayload);
+    hideGithubError();
+    setHeroStatus('ready');
+  }
+
   renderContributionTooltip();
   void hydrateGithub();
 };
+
+document.addEventListener('astro:page-load', initGithubActivity);
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initGithubActivity, { once: true });
