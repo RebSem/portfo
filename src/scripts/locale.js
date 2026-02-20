@@ -11,6 +11,7 @@ const state = window.__portfolioLocaleState ?? {
   initialized: false,
   mediaBound: false,
   localeSwitchInFlight: false,
+  delegatedClicksBound: false,
 };
 
 window.__portfolioLocaleState = state;
@@ -211,66 +212,73 @@ const tryNavigateToTranslatedPost = async (locale) => {
   return true;
 };
 
-const bindHomeLinks = () => {
-  const links = document.querySelectorAll('a[data-home-link="true"]');
-  links.forEach((link) => {
-    if (!(link instanceof HTMLAnchorElement)) return;
-    if (link.dataset.listenerBound === 'true') return;
+const toggleLocale = async () => {
+  if (state.localeSwitchInFlight) return;
+  state.localeSwitchInFlight = true;
 
-    link.addEventListener('click', async (event) => {
-      if (event.defaultPrevented) return;
-      if (event.button !== 0) return;
-      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-      if (window.location.pathname === '/') return;
+  const nextLocale = state.activeLocale === 'ru' ? 'en' : 'ru';
+  state.activeLocale = nextLocale;
+  writeLocale(nextLocale);
 
+  try {
+    applyLocale(nextLocale);
+    await tryNavigateToTranslatedPost(nextLocale);
+  } finally {
+    state.localeSwitchInFlight = false;
+  }
+};
+
+const toggleTheme = () => {
+  const nextTheme = state.activeTheme === 'dark' ? 'light' : 'dark';
+  const setTheme = () => applyTheme(nextTheme, { manual: true });
+
+  if (typeof document.startViewTransition === 'function') {
+    document.startViewTransition(setTheme);
+  } else {
+    setTheme();
+  }
+};
+
+const bindDelegatedClicks = () => {
+  if (state.delegatedClicksBound) return;
+
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const localeToggle = target.closest('#locale-toggle');
+    if (localeToggle instanceof HTMLButtonElement) {
       event.preventDefault();
+      void toggleLocale();
+      return;
+    }
 
+    const themeToggle = target.closest('#theme-btn');
+    if (themeToggle instanceof HTMLButtonElement) {
+      event.preventDefault();
+      toggleTheme();
+      return;
+    }
+
+    const homeLink = target.closest('a[data-home-link="true"]');
+    if (!(homeLink instanceof HTMLAnchorElement)) return;
+    if (event.defaultPrevented) return;
+    if (event.button !== 0) return;
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    if (window.location.pathname === '/') return;
+
+    event.preventDefault();
+
+    void (async () => {
       try {
         await navigate('/');
       } catch {
         window.location.assign('/');
       }
-    });
-
-    link.dataset.listenerBound = 'true';
+    })();
   });
-};
 
-const bindControls = () => {
-  const localeToggle = document.getElementById('locale-toggle');
-  if (localeToggle && localeToggle.dataset.listenerBound !== 'true') {
-    localeToggle.addEventListener('click', async () => {
-      if (state.localeSwitchInFlight) return;
-      state.localeSwitchInFlight = true;
-
-      const nextLocale = state.activeLocale === 'ru' ? 'en' : 'ru';
-      state.activeLocale = nextLocale;
-      writeLocale(nextLocale);
-
-      try {
-        applyLocale(nextLocale);
-        await tryNavigateToTranslatedPost(nextLocale);
-      } finally {
-        state.localeSwitchInFlight = false;
-      }
-    });
-    localeToggle.dataset.listenerBound = 'true';
-  }
-
-  const themeToggle = document.getElementById('theme-btn');
-  if (themeToggle && themeToggle.dataset.listenerBound !== 'true') {
-    themeToggle.addEventListener('click', () => {
-      const nextTheme = state.activeTheme === 'dark' ? 'light' : 'dark';
-      const setTheme = () => applyTheme(nextTheme, { manual: true });
-
-      if (typeof document.startViewTransition === 'function') {
-        document.startViewTransition(setTheme);
-      } else {
-        setTheme();
-      }
-    });
-    themeToggle.dataset.listenerBound = 'true';
-  }
+  state.delegatedClicksBound = true;
 };
 
 const bindSystemThemeSync = () => {
@@ -307,8 +315,7 @@ const initLocale = () => {
 
   applyTheme(state.activeTheme);
   applyLocale(state.activeLocale);
-  bindHomeLinks();
-  bindControls();
+  bindDelegatedClicks();
 };
 
 document.addEventListener('astro:page-load', initLocale);

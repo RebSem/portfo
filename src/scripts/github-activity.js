@@ -4,6 +4,7 @@ const state = window.__portfolioGithubState ?? {
   activeLocale: document.documentElement.lang === 'ru' ? 'ru' : 'en',
   activeStatus: 'loading',
   localeListenerBound: false,
+  viewportListenerBound: false,
 };
 
 window.__portfolioGithubState = state;
@@ -69,6 +70,22 @@ const updateProfile = (profile) => {
 
 const dateToIso = (date) => date.toISOString().slice(0, 10);
 
+const alignHeatmapToLatest = () => {
+  const grid = document.getElementById('contribution-grid');
+  if (!(grid instanceof HTMLElement)) return;
+  if (!window.matchMedia('(max-width: 720px)').matches) return;
+
+  const maxScrollLeft = Math.max(0, grid.scrollWidth - grid.clientWidth);
+  grid.scrollLeft = maxScrollLeft;
+};
+
+const requestHeatmapAlignment = () => {
+  window.requestAnimationFrame(() => {
+    alignHeatmapToLatest();
+    window.setTimeout(alignHeatmapToLatest, 80);
+  });
+};
+
 const renderContributionGrid = (days) => {
   const grid = document.getElementById('contribution-grid');
   if (!grid) return;
@@ -124,6 +141,7 @@ const renderContributionGrid = (days) => {
   }
 
   grid.appendChild(fragment);
+  requestHeatmapAlignment();
 };
 
 const bindContributionTooltip = () => {
@@ -250,6 +268,18 @@ const initGithubActivity = () => {
   if (!state.localeListenerBound) {
     window.addEventListener('portfolio:locale-change', onLocaleChange);
     state.localeListenerBound = true;
+  }
+
+  if (!state.viewportListenerBound) {
+    window.addEventListener(
+      'resize',
+      () => {
+        if (!state.contributionPayload) return;
+        requestHeatmapAlignment();
+      },
+      { passive: true },
+    );
+    state.viewportListenerBound = true;
   }
 
   syncLocaleFromDocument();
