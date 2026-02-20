@@ -1,3 +1,217 @@
 ---
-return Astro.redirect('/about', 301);
+import { getCollection } from 'astro:content';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SocialLinks from '../components/SocialLinks.astro';
+import { projects } from '../data/projects';
+import { githubUsername, heroDisplayName, heroFallbackName, linkedinUrl, telegramUrl, uiCopy } from '../data/site-content';
+import Layout from '../layouts/Layout.astro';
+import blogScriptUrl from '../scripts/blog.js?url';
+import localeScriptUrl from '../scripts/locale.js?url';
+
+const visibleProjects = projects.filter((project) => !project.placeholder);
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
+  .slice(0, 6);
+
+const initialDateFormat = new Intl.DateTimeFormat('en-US', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: heroDisplayName.en,
+  alternateName: heroDisplayName.ru,
+  jobTitle: 'Product Manager (AI) / Product Engineer',
+  url: 'https://rebsem.ru/',
+  image: 'https://rebsem.ru/main-hero.jpg',
+  sameAs: [
+    `https://github.com/${githubUsername}`,
+    telegramUrl,
+    linkedinUrl,
+  ],
+};
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: heroDisplayName.en,
+  url: 'https://rebsem.ru/',
+  inLanguage: ['en', 'ru'],
+};
 ---
+
+<Layout
+  title={`${heroFallbackName} — Portfolio`}
+  description="Main page with profile intro, recent writing, and selected projects."
+>
+  <a
+    id="skip-to-content"
+    href="#main-content"
+    class="skip-link"
+    data-i18n-ru="Перейти к содержимому"
+    data-i18n-en="Skip to content"
+  >
+    Skip to content
+  </a>
+
+  <SiteHeader active="home" />
+
+  <div class="divider-wrap" aria-hidden="true">
+    <hr class="divider" />
+  </div>
+
+  <main
+    id="main-content"
+    class="page-main"
+    data-title-ru={`${heroDisplayName.ru} — Главная`}
+    data-title-en={`${heroDisplayName.en} — Home`}
+    data-description-ru="Главная страница с интро, свежими статьями и проектами."
+    data-description-en="Home page with intro, recent writing, and projects."
+  >
+    <section class="home-intro" aria-labelledby="home-title">
+      <div class="home-intro-copy">
+        <p class="about-eyebrow" data-i18n-ru={uiCopy.home.eyebrow.ru} data-i18n-en={uiCopy.home.eyebrow.en}>
+          {uiCopy.home.eyebrow.en}
+        </p>
+
+        <h1 id="home-title" data-i18n-ru={uiCopy.home.title.ru} data-i18n-en={uiCopy.home.title.en}>
+          {uiCopy.home.title.en}
+        </h1>
+
+        <p class="home-lead" data-i18n-ru={uiCopy.home.lead.ru} data-i18n-en={uiCopy.home.lead.en}>
+          {uiCopy.home.lead.en}
+        </p>
+
+        <SocialLinks className="social-links profile-social-links" />
+      </div>
+
+      <div class="home-avatar-wrap">
+        <img
+          class="home-avatar"
+          src="/main-hero.jpg"
+          width="320"
+          height="320"
+          loading="eager"
+          alt={uiCopy.home.photoAlt.en}
+          data-i18n-alt-ru={uiCopy.home.photoAlt.ru}
+          data-i18n-alt-en={uiCopy.home.photoAlt.en}
+        />
+      </div>
+    </section>
+
+    <section class="section-block" aria-labelledby="recent-title">
+      <div class="section-head">
+        <h2 id="recent-title" data-i18n-ru={uiCopy.home.postsTitle.ru} data-i18n-en={uiCopy.home.postsTitle.en}>
+          {uiCopy.home.postsTitle.en}
+        </h2>
+        <p data-i18n-ru={uiCopy.home.postsSubtitle.ru} data-i18n-en={uiCopy.home.postsSubtitle.en}>{uiCopy.home.postsSubtitle.en}</p>
+      </div>
+
+      <p
+        id="blog-empty"
+        class="blog-empty"
+        hidden={posts.length > 0}
+        data-i18n-ru={uiCopy.blog.empty.ru}
+        data-i18n-en={uiCopy.blog.empty.en}
+      >
+        {uiCopy.blog.empty.en}
+      </p>
+
+      <ul id="blog-list" class="blog-list home-blog-list">
+        {
+          posts.map((post) => {
+            const isoDate = post.data.publishedAt.toISOString().slice(0, 10);
+            const langLabelRu = post.data.lang === 'ru' ? uiCopy.blog.langRu.ru : uiCopy.blog.langEn.ru;
+            const langLabelEn = post.data.lang === 'ru' ? uiCopy.blog.langRu.en : uiCopy.blog.langEn.en;
+
+            return (
+              <li class="blog-card" data-lang={post.data.lang}>
+                <article>
+                  <header class="blog-card-head">
+                    <p class="blog-card-meta">
+                      <time class="blog-date" datetime={isoDate} data-published={isoDate}>
+                        {initialDateFormat.format(post.data.publishedAt)}
+                      </time>
+                      <span class="blog-lang" data-i18n-ru={langLabelRu} data-i18n-en={langLabelEn}>
+                        {langLabelEn}
+                      </span>
+                    </p>
+                    <h3>
+                      <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+                    </h3>
+                  </header>
+
+                  <p>{post.data.description}</p>
+                </article>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </section>
+
+    <section id="projects" class="section-block" aria-labelledby="projects-title">
+      <div class="section-head">
+        <h2 id="projects-title" data-i18n-ru={uiCopy.projects.title.ru} data-i18n-en={uiCopy.projects.title.en}>
+          {uiCopy.projects.title.en}
+        </h2>
+        <p data-i18n-ru={uiCopy.projects.subtitle.ru} data-i18n-en={uiCopy.projects.subtitle.en}>{uiCopy.projects.subtitle.en}</p>
+      </div>
+
+      {
+        visibleProjects.length === 0 ? (
+          <p class="projects-empty" data-i18n-ru={uiCopy.projects.empty.ru} data-i18n-en={uiCopy.projects.empty.en}>
+            {uiCopy.projects.empty.en}
+          </p>
+        ) : (
+          <div class="projects-list">
+            {visibleProjects.map((project) => (
+              <article class="project-card">
+                <h3 data-i18n-ru={project.title.ru} data-i18n-en={project.title.en}>{project.title.en}</h3>
+                <p data-i18n-ru={project.summary.ru} data-i18n-en={project.summary.en}>{project.summary.en}</p>
+
+                <ul
+                  class="stack-list"
+                  aria-label={uiCopy.projects.stackAria.en}
+                  data-i18n-aria-ru={uiCopy.projects.stackAria.ru}
+                  data-i18n-aria-en={uiCopy.projects.stackAria.en}
+                >
+                  {project.stack.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+
+                {(project.repoUrl || project.demoUrl) && (
+                  <p class="project-links">
+                    {project.repoUrl && (
+                      <a class="project-link" href={project.repoUrl} target="_blank" rel="noreferrer" data-i18n-ru={uiCopy.projects.repo.ru} data-i18n-en={uiCopy.projects.repo.en}>
+                        {uiCopy.projects.repo.en}
+                      </a>
+                    )}
+                    {project.demoUrl && (
+                      <a class="project-link" href={project.demoUrl} target="_blank" rel="noreferrer" data-i18n-ru={uiCopy.projects.demo.ru} data-i18n-en={uiCopy.projects.demo.en}>
+                        {uiCopy.projects.demo.en}
+                      </a>
+                    )}
+                  </p>
+                )}
+              </article>
+            ))}
+          </div>
+        )
+      }
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <script type="application/ld+json" set:html={JSON.stringify(personSchema)}></script>
+  <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)}></script>
+
+  <script type="module" src={localeScriptUrl}></script>
+  <script type="module" src={blogScriptUrl}></script>
+</Layout>

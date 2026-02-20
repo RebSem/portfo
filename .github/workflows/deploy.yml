@@ -47,5 +47,6 @@ jobs:
           git checkout main
           git pull --ff-only origin main
           docker compose up -d --build
+          curl -fsS http://127.0.0.1:4321/ >/dev/null
           curl -fsS http://127.0.0.1:4321/about >/dev/null
           EOF_REMOTE

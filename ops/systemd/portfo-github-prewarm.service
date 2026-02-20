@@ -6,3 +6,4 @@ Wants=network-online.target
 [Service]
 Type=oneshot
 ExecStart=/usr/bin/curl --fail --silent --show-error http://127.0.0.1:4321/api/github/contributions.json
+ExecStart=/usr/bin/curl --fail --silent --show-error http://127.0.0.1:4321/api/github/profile.json

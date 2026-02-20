@@ -13,6 +13,7 @@ export interface ProjectItem {
   repoUrl?: string;
   demoUrl?: string;
   featured?: boolean;
+  placeholder?: boolean;
 }
 
 export interface AboutContent {

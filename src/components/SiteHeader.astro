@@ -1,32 +1,43 @@
 ---
-import { aboutPath, blogPath, heroFallbackName, themeToggleLabel, uiCopy } from '../data/site-content';
+import { aboutPath, blogPath, heroFallbackName, homePath, themeToggleLabel, uiCopy } from '../data/site-content';
 
 interface Props {
-  active: 'about' | 'blog';
+  active: 'home' | 'about' | 'blog';
 }
 
 const { active } = Astro.props;
+const isHome = active === 'home';
 const isAbout = active === 'about';
 const isBlog = active === 'blog';
 ---
 
 <header class="site-header">
   <div class="header-inner">
-    <a class="brand" href={aboutPath}>{heroFallbackName}</a>
+    <a class="brand" href={homePath} data-home-link="true">{heroFallbackName}</a>
 
     <div
       class="header-controls"
       role="navigation"
-      aria-label={uiCopy.nav.controlsAria.ru}
+      aria-label={uiCopy.nav.controlsAria.en}
       data-i18n-aria-ru={uiCopy.nav.controlsAria.ru}
       data-i18n-aria-en={uiCopy.nav.controlsAria.en}
     >
       <nav
         class="main-nav"
-        aria-label={uiCopy.nav.primaryAria.ru}
+        aria-label={uiCopy.nav.primaryAria.en}
         data-i18n-aria-ru={uiCopy.nav.primaryAria.ru}
         data-i18n-aria-en={uiCopy.nav.primaryAria.en}
       >
+        <a
+          class:list={['main-nav-link', isHome && 'active-nav']}
+          href={homePath}
+          data-home-link="true"
+          aria-current={isHome ? 'page' : undefined}
+          data-i18n-ru={uiCopy.nav.home.ru}
+          data-i18n-en={uiCopy.nav.home.en}
+        >
+          {uiCopy.nav.home.en}
+        </a>
         <a
           class:list={['main-nav-link', isAbout && 'active-nav']}
           href={aboutPath}
@@ -34,7 +45,7 @@ const isBlog = active === 'blog';
           data-i18n-ru={uiCopy.nav.about.ru}
           data-i18n-en={uiCopy.nav.about.en}
         >
-          {uiCopy.nav.about.ru}
+          {uiCopy.nav.about.en}
         </a>
         <a
           class:list={['main-nav-link', isBlog && 'active-nav']}
@@ -43,7 +54,7 @@ const isBlog = active === 'blog';
           data-i18n-ru={uiCopy.nav.blog.ru}
           data-i18n-en={uiCopy.nav.blog.en}
         >
-          {uiCopy.nav.blog.ru}
+          {uiCopy.nav.blog.en}
         </a>
       </nav>
 
@@ -55,9 +66,9 @@ const isBlog = active === 'blog';
         data-toggle-en="RU"
         data-label-ru={uiCopy.localeToggleLabel.ru}
         data-label-en={uiCopy.localeToggleLabel.en}
-        aria-label={uiCopy.localeToggleLabel.ru}
+        aria-label={uiCopy.localeToggleLabel.en}
       >
-        EN
+        RU
       </button>
 
       <button
@@ -68,10 +79,10 @@ const isBlog = active === 'blog';
         data-theme-dark-label-en={themeToggleLabel.toDark.en}
         data-theme-light-label-ru={themeToggleLabel.toLight.ru}
         data-theme-light-label-en={themeToggleLabel.toLight.en}
-        aria-label={themeToggleLabel.toDark.ru}
+        aria-label={themeToggleLabel.toDark.en}
       >
         <span class="sr-only" data-i18n-ru={themeToggleLabel.toDark.ru} data-i18n-en={themeToggleLabel.toDark.en}>
-          {themeToggleLabel.toDark.ru}
+          {themeToggleLabel.toDark.en}
         </span>
         <svg
           class="theme-icon theme-icon-moon"

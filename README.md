@@ -1,13 +1,13 @@
 # Portfo
 
-Astro SSR portfolio with RU/EN interface, GitHub activity heatmap, and MDX blog.
+Astro SSR portfolio with RU/EN interface, smooth client-side navigation, GitHub activity heatmap, and bilingual MDX blog.
 
 ## Current structure
 
-- `/about` - main portfolio page (about + GitHub activity + projects)
+- `/` - main landing page (hero + selected projects)
+- `/about` - profile page (about + GitHub activity)
 - `/blog` - blog index
 - `/blog/:slug` - blog post page
-- `/` - `301 -> /about`
 - `/posts` - `301 -> /blog` (compat route)
 - `/api/github/profile.json` - GitHub profile endpoint
 - `/api/github/contributions.json` - GitHub contributions endpoint
@@ -16,10 +16,20 @@ Astro SSR portfolio with RU/EN interface, GitHub activity heatmap, and MDX blog.
 
 - RU/EN locale toggle with persistent preference
 - Light/dark theme toggle with persistent preference
+- Smooth page transitions via Astro client router
+- Locale-aware post switching (RU/EN pair)
 - Own GitHub heatmap rendering from internal API
 - 24h cache + 72h stale fallback for GitHub data
 - Persistent file cache (`GITHUB_CACHE_FILE`) to survive container restarts
-- MDX blog via Astro Content Collections (`lang: ru|en`, `draft`, tags, dates)
+- MDX blog via Astro Content Collections (`translationKey`, `lang: ru|en`, `draft`, tags, dates)
+
+## SEO and Crawlability
+
+- Canonical + OpenGraph + Twitter meta tags in layout
+- `robots.txt`: `/robots.txt`
+- XML sitemap: `/sitemap.xml`
+- AI crawler helper file: `/llms.txt`
+- Structured data (Person + WebSite) on the main page
 
 ## Local development
 
@@ -39,15 +49,16 @@ node dist/server/entry.mjs
 
 ## Blog workflow
 
-Create a new draft post:
+Create a new RU/EN draft pair:
 
 ```bash
-npm run new:post -- my-post-slug --lang ru --title "Post title"
+npm run new:post -- my-post-slug --title-ru "Заголовок" --title-en "Title"
 ```
 
 Generated file location:
 
 - `src/content/blog/YYYY-MM-DD-my-post-slug-ru.mdx`
+- `src/content/blog/YYYY-MM-DD-my-post-slug-en.mdx`
 
 Required frontmatter:
 
@@ -55,10 +66,24 @@ Required frontmatter:
 - `description: string`
 - `publishedAt: date`
 - `lang: 'ru' | 'en'`
+- `translationKey: string`
 - `tags: string[]`
 - `draft: boolean`
 - `updatedAt?: date`
 - `cover?: string`
+
+Detailed authoring guide:
+
+- `docs/blog-authoring.md`
+
+## GitHub activity checks
+
+Quick verification commands:
+
+```bash
+curl -fsS http://127.0.0.1:4321/api/github/profile.json
+curl -fsS http://127.0.0.1:4321/api/github/contributions.json
+```
 
 ## Environment variables
 
@@ -142,9 +167,10 @@ bash ops/server/setup-env.sh
 docker compose up -d --build
 ```
 
-Prewarm endpoint:
+Prewarm endpoints:
 
 - `http://127.0.0.1:4321/api/github/contributions.json`
+- `http://127.0.0.1:4321/api/github/profile.json`
 
 ## GitHub Actions auto-deploy
 
@@ -161,6 +187,7 @@ On push to `main`, workflow connects by SSH and runs:
 
 - `git pull --ff-only`
 - `docker compose up -d --build`
+- healthcheck `curl -f http://127.0.0.1:4321/`
 - healthcheck `curl -f http://127.0.0.1:4321/about`
 
 ## DNS for rebsem.ru (REG.RU)

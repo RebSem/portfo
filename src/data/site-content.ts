@@ -5,24 +5,29 @@ export const telegramUrl = 'https://t.me/Michael_Semenov';
 export const email = 'perk77331@gmail.com';
 export const linkedinUrl = 'https://www.linkedin.com/in/mikhail-semenovv/';
 
+export const homePath = '/';
 export const aboutPath = '/about';
 export const blogPath = '/blog';
 
 export const heroFallbackName = 'Mikhail Semenov';
+export const heroDisplayName: LocalizedText = {
+  ru: 'Михаил Семенов',
+  en: 'Mikhail Semenov',
+};
 
 export const heroSubtitle: LocalizedText = {
-  ru: 'Собираю понятные веб-продукты и довожу идеи до рабочего релиза.',
-  en: 'I build clear web products and ship ideas all the way to production.',
+  ru: 'Помогаю продуктам расти быстрее за счёт понятного UX и сильной инженерной базы.',
+  en: 'I help products grow faster through clear UX and strong engineering foundations.',
 };
 
 export const heroStatusLoading: LocalizedText = {
-  ru: 'Обновляю статус GitHub...',
-  en: 'Refreshing GitHub status...',
+  ru: 'Обновляю данные GitHub...',
+  en: 'Refreshing GitHub data...',
 };
 
 export const heroStatusReady: LocalizedText = {
-  ru: 'GitHub-активность загружена',
-  en: 'GitHub activity loaded',
+  ru: 'Профиль GitHub синхронизирован',
+  en: 'GitHub profile synced',
 };
 
 export const heroStatusError: LocalizedText = {
@@ -67,16 +72,20 @@ export const socialLabels = {
 
 export const aboutParagraphs: LocalizedText[] = [
   {
-    ru: 'Глубоко в режиме разработки: тестирую стек, собираю интерфейсы и постоянно улучшаю архитектуру.',
-    en: 'Deep in building mode: testing tooling, designing interfaces, and improving architecture continuously.',
+    ru: 'Собираю понятные цифровые продукты: от идеи и прототипа до стабильного релиза.',
+    en: 'I build understandable digital products from idea and prototype to a stable release.',
   },
   {
-    ru: 'Мне нравится делать продукты, которые быстро запускаются и остаются удобными в поддержке.',
-    en: 'I like building products that launch fast and stay maintainable over time.',
+    ru: 'Совмещаю продуктовый подход и инженерную глубину: формулирую гипотезы, проверяю их на данных и довожу до production.',
+    en: 'I combine product thinking with engineering depth: framing hypotheses, validating with data, and shipping to production.',
   },
   {
-    ru: 'Фокус сейчас: Astro, TypeScript, Node.js и аккуратный front-end с живыми данными.',
-    en: 'Current focus: Astro, TypeScript, Node.js, and clean front-end systems with live data.',
+    ru: 'Системно внедряю нейросети и AI-агентов в рабочие процессы, чтобы ускорять delivery и повышать качество решений.',
+    en: 'I integrate neural tools and AI agents into delivery workflows to increase speed and improve outcome quality.',
+  },
+  {
+    ru: 'Этот сайт — мой открытый трек прогресса: показываю эксперименты, выводы и рабочие внедрения.',
+    en: 'This site is my public progress log: experiments, learnings, and practical implementations.',
   },
   {
     ru: 'Открыт к новым задачам, коллаборациям и техническим обсуждениям.',
@@ -103,63 +112,78 @@ export const aboutContent: AboutContent = {
 
 export const uiCopy = {
   nav: {
+    home: { ru: 'Главная', en: 'Home' },
     about: { ru: 'Обо мне', en: 'About' },
     blog: blogLabel,
     controlsAria: { ru: 'Элементы управления сайта', en: 'Site controls' },
     primaryAria: { ru: 'Основная навигация', en: 'Primary navigation' },
   },
+  home: {
+    eyebrow: { ru: 'Product Manager / AI', en: 'Product Manager / AI' },
+    title: {
+      ru: 'Развиваю AI-продукты: соединяю продуктовую стратегию, инженерную глубину и практичную автоматизацию через агентов.',
+      en: 'I build AI products by combining product strategy, engineering depth, and practical automation with AI agents.',
+    },
+    lead: {
+      ru: 'Беру задачу от гипотезы до измеримого результата: discovery, UX, архитектура и запуск в production.',
+      en: 'I take work from hypothesis to measurable outcomes: discovery, UX, architecture, and production delivery.',
+    },
+    photoAlt: { ru: 'Фото Михаила Семенова', en: 'Photo of Mikhail Semenov' },
+    postsTitle: { ru: 'Свежие статьи', en: 'Recent posts' },
+    postsSubtitle: {
+      ru: 'Заметки о разработке, архитектуре и практическом использовании AI.',
+      en: 'Notes on engineering, architecture, and practical AI usage.',
+    },
+  },
   hero: {
-    badge: { ru: 'Личный сайт-визитка', en: 'Personal one-page portfolio' },
+    badge: { ru: 'Обо мне', en: 'About me' },
     cta: { ru: 'Написать в Telegram', en: 'Message me on Telegram' },
-    github: { ru: 'Мой GitHub', en: 'My GitHub' },
-    and: { ru: 'и', en: 'and' },
-    messageOnTelegram: { ru: 'написать в Telegram', en: 'message me on Telegram' },
   },
   github: {
     title: { ru: 'GitHub активность', en: 'GitHub activity' },
     subtitle: {
-      ru: 'Живые данные профиля и календарь вкладов за последний год.',
-      en: 'Live profile data and yearly contribution heatmap.',
+      ru: 'Живая статистика профиля и график активности за год.',
+      en: 'Live profile stats and yearly activity graph.',
     },
     totalLabel: {
       ru: 'вкладов за последний год',
       en: 'contributions in the last year',
     },
     hoverHint: {
-      ru: 'Наведите на кубик, чтобы увидеть дату и число вкладов.',
-      en: 'Hover a square to see the exact date and contributions.',
+      ru: 'Наведите на ячейку, чтобы увидеть дату и число вкладов.',
+      en: 'Hover a cell to see the exact date and number of contributions.',
     },
     unavailable: {
       ru: 'Не удалось загрузить данные GitHub. Попробуйте обновить страницу позже.',
       en: 'Unable to load GitHub data. Please refresh later.',
     },
     heatmapAria: {
-      ru: 'Тепловая карта вкладов GitHub',
-      en: 'GitHub contribution heatmap',
+      ru: 'График активности GitHub',
+      en: 'GitHub activity graph',
     },
   },
   about: {
     title: { ru: 'Обо мне', en: 'About me' },
     subtitle: {
-      ru: 'Кратко о фокусе и подходе к разработке.',
-      en: 'A quick snapshot of my focus and engineering approach.',
+      ru: 'Коротко о подходе к разработке и текущем фокусе.',
+      en: 'A short note on how I build and what I focus on now.',
     },
     skillsTitle: { ru: 'Ключевые навыки', en: 'Core skills' },
   },
   projects: {
     title: { ru: 'Проекты', en: 'Projects' },
     subtitle: {
-      ru: 'Подборка избранных работ. Список полностью редактируется вручную в data-файле.',
-      en: 'Selected work. The list is fully managed manually in the data file.',
+      ru: 'Выбранные кейсы и эксперименты в разработке.',
+      en: 'Selected case studies and product experiments.',
     },
     empty: {
-      ru: 'Список проектов пока пуст. Добавьте карточки в src/data/projects.ts.',
-      en: 'Project list is empty. Add cards to src/data/projects.ts.',
+      ru: 'Сейчас собираю свежие кейсы. Скоро здесь появятся подробные разборы.',
+      en: 'I am preparing fresh case studies. Detailed write-ups will appear here soon.',
     },
     repo: { ru: 'Репозиторий', en: 'Repository' },
     demo: { ru: 'Демо', en: 'Live demo' },
     stackAria: { ru: 'Технологии проекта', en: 'Project technologies' },
-    statusInProgress: { ru: 'Статус: в процессе.', en: 'Status: in progress.' },
+    statusInProgress: { ru: 'В работе', en: 'In progress' },
   },
   blog: {
     title: { ru: 'Блог', en: 'Blog' },
@@ -168,6 +192,8 @@ export const uiCopy = {
       en: 'Posts about engineering, experiments, and product building.',
     },
     readMore: { ru: 'Читать статью', en: 'Read post' },
+    readRuVersion: { ru: 'Читать на русском', en: 'Read in Russian' },
+    readEnVersion: { ru: 'Читать на английском', en: 'Read in English' },
     empty: {
       ru: 'Для этой локали пока нет опубликованных постов.',
       en: 'No published posts for this locale yet.',

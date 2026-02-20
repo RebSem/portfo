@@ -13,6 +13,7 @@ export const projects: ProjectItem[] = [
     },
     stack: ['Astro', 'TypeScript', 'TBD'],
     featured: true,
+    placeholder: true,
   },
   {
     id: 'placeholder-02',
@@ -26,6 +27,7 @@ export const projects: ProjectItem[] = [
     },
     stack: ['Frontend', 'UI', 'TBD'],
     featured: true,
+    placeholder: true,
   },
   {
     id: 'placeholder-03',
@@ -38,5 +40,6 @@ export const projects: ProjectItem[] = [
       en: 'Third placeholder for a future project. Intended for the next product case showcase.',
     },
     stack: ['Backend', 'API', 'TBD'],
+    placeholder: true,
   },
 ];
