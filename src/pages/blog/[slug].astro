@@ -3,9 +3,15 @@ import { getCollection, getEntry, render } from 'astro:content';
 import SiteFooter from '../../components/SiteFooter.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import { heroFallbackName, uiCopy } from '../../data/site-content';
-import { buildBlogTranslationIndex, getBlogSlugByLocale, getBlogTranslationPair } from '../../lib/blog';
 import Layout from '../../layouts/Layout.astro';
 import localeScriptUrl from '../../scripts/locale.js?url';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+  }));
+}
 
 const slug = Astro.params.slug ?? '';
 const post = await getEntry('blog', slug);
@@ -13,11 +19,12 @@ if (!post || post.data.draft) {
   return Astro.redirect('/blog', 302);
 }
 
-const publishedPosts = await getCollection('blog', ({ data }) => !data.draft);
-const translationIndex = buildBlogTranslationIndex(publishedPosts);
-const translationPair = getBlogTranslationPair(post, translationIndex);
-const ruSlug = getBlogSlugByLocale(translationPair, 'ru');
-const enSlug = getBlogSlugByLocale(translationPair, 'en');
+const translationPairPosts = await getCollection(
+  'blog',
+  ({ data }) => !data.draft && data.translationKey === post.data.translationKey,
+);
+const ruSlug = translationPairPosts.find((entry) => entry.data.lang === 'ru')?.slug;
+const enSlug = translationPairPosts.find((entry) => entry.data.lang === 'en')?.slug;
 
 const otherSlug = post.data.lang === 'ru' ? enSlug : ruSlug;
 const otherPostHref = otherSlug ? `/blog/${otherSlug}` : undefined;
@@ -110,5 +117,5 @@ const languageLabelEn = post.data.lang === 'ru' ? uiCopy.blog.langRu.en : uiCopy
 
   <SiteFooter noteRu={uiCopy.footer.blogNote.ru} noteEn={uiCopy.footer.blogNote.en} />
 
-  <script type="module" src={localeScriptUrl}></script>
+  <script is:inline type="module" src={localeScriptUrl}></script>
 </Layout>

@@ -9,7 +9,7 @@ const { className = 'social-links' } = Astro.props;
 const profileUrl = `https://github.com/${githubUsername}`;
 ---
 
-<div
+<nav
   class={className}
   aria-label={uiCopy.footer.socialAria.en}
   data-i18n-aria-ru={uiCopy.footer.socialAria.ru}
@@ -90,4 +90,4 @@ const profileUrl = `https://github.com/${githubUsername}`;
       {uiCopy.social.linkedin.en}
     </span>
   </a>
-</div>
+</nav>

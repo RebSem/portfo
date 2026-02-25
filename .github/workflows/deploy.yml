@@ -1,4 +1,4 @@
-name: Deploy to DigitalOcean
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -7,59 +7,47 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: deploy-production
+  group: pages
   cancel-in-progress: true
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
-    env:
-      DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-      DEPLOY_PORT: ${{ secrets.DEPLOY_PORT }}
-      DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Validate required secrets
-        run: |
-          test -n "$DEPLOY_HOST"
-          test -n "$DEPLOY_USER"
-          if [ -z "${DEPLOY_PORT:-}" ]; then
-            echo "DEPLOY_PORT=22" >> "$GITHUB_ENV"
-          fi
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Configure SSH agent
-        uses: webfactory/ssh-agent@v0.9.0
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          ssh-private-key: ${{ secrets.DEPLOY_SSH_KEY }}
+          node-version: 22
+          cache: npm
 
-      - name: Add server host key
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan -p "$DEPLOY_PORT" -H "$DEPLOY_HOST" >> ~/.ssh/known_hosts
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
 
-      - name: Deploy on server
-        run: |
-          ssh -o BatchMode=yes -o ConnectTimeout=20 -p "$DEPLOY_PORT" "$DEPLOY_USER@$DEPLOY_HOST" << 'EOF_REMOTE'
-          set -euo pipefail
-          cd /var/www/portfo/app
-          git remote set-url origin git@github.com:RebSem/portfo.git
-          git fetch origin main
-          git checkout main
-          git pull --ff-only origin main
-          docker compose up -d --build
-          for endpoint in / /about /blog /robots.txt /sitemap.xml /llms.txt; do
-            for attempt in {1..20}; do
-              if curl -fsS "http://127.0.0.1:4321${endpoint}" >/dev/null; then
-                break
-              fi
+      - name: Install dependencies
+        run: npm ci
 
-              if [ "$attempt" -eq 20 ]; then
-                echo "Healthcheck failed for ${endpoint}"
-                exit 1
-              fi
+      - name: Build site
+        run: npm run build
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
 
-              sleep 2
-            done
-          done
-          EOF_REMOTE
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

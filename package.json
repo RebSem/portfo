@@ -5,9 +5,17 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "check": "astro check",
+    "test": "vitest run",
     "preview": "astro preview",
     "astro": "astro",
     "new:post": "node scripts/new-post.mjs"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@types/node": "^22.15.30",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.13",

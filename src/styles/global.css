@@ -166,6 +166,7 @@ a:focus-visible {
 .main-nav {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.25rem;
 }
 
@@ -456,6 +457,11 @@ html[data-theme='dark'] .theme-icon-sun {
   border-radius: 2px;
   border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
   background: var(--success-0);
+}
+
+.contribution-cell:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--accent) 70%, white 10%);
+  outline-offset: 2px;
 }
 
 .contribution-cell.level-1 {
@@ -811,7 +817,24 @@ html[data-theme='dark'] .theme-icon-sun {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   .page-main > section {
     animation: none;
+  }
+
+  .skip-link,
+  .locale-toggle,
+  .theme-toggle,
+  .theme-icon,
+  .social-link {
+    transition: none;
+  }
+
+  .social-link:hover,
+  .social-link:focus-visible {
+    transform: none;
   }
 }

@@ -2,6 +2,11 @@
 
 Astro SSR portfolio with RU/EN interface, smooth client-side navigation, GitHub activity heatmap, and bilingual MDX blog.
 
+## Requirements
+
+- Node.js 20+
+- npm 10+ (tested on npm 11)
+
 ## Current structure
 
 - `/` - main landing page (hero + selected projects)
@@ -45,6 +50,26 @@ Open: `http://localhost:4321`
 ```bash
 npm run build
 node dist/server/entry.mjs
+```
+
+Preview production build locally:
+
+```bash
+npm run preview
+```
+
+## Validation
+
+Basic project validation:
+
+```bash
+npm run build
+```
+
+Astro type/content checks:
+
+```bash
+npm run check
 ```
 
 ## Blog workflow
@@ -187,8 +212,7 @@ On push to `main`, workflow connects by SSH and runs:
 
 - `git pull --ff-only`
 - `docker compose up -d --build`
-- healthcheck `curl -f http://127.0.0.1:4321/`
-- healthcheck `curl -f http://127.0.0.1:4321/about`
+- healthchecks for `/`, `/about`, `/blog`, `/robots.txt`, `/sitemap.xml`, `/llms.txt`
 
 ## DNS for rebsem.ru (REG.RU)
 

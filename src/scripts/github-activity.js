@@ -9,6 +9,11 @@ const state = window.__portfolioGithubState ?? {
 
 window.__portfolioGithubState = state;
 
+let cachedNumberFormatLocale = '';
+let cachedNumberFormat = null;
+let cachedDateFormatLocale = '';
+let cachedDateFormat = null;
+
 const withLocale = (locale, ruValue, enValue) => (locale === 'ru' ? ruValue : enValue);
 
 const syncLocaleFromDocument = () => {
@@ -28,15 +33,35 @@ const setHeroStatus = (kind) => {
   }
 };
 
-const formatMetric = (value) => new Intl.NumberFormat(state.activeLocale === 'ru' ? 'ru-RU' : 'en-US').format(value);
+const getNumberFormatter = () => {
+  const locale = state.activeLocale === 'ru' ? 'ru-RU' : 'en-US';
+  if (!cachedNumberFormat || cachedNumberFormatLocale !== locale) {
+    cachedNumberFormat = new Intl.NumberFormat(locale);
+    cachedNumberFormatLocale = locale;
+  }
+
+  return cachedNumberFormat;
+};
+
+const getDateFormatter = () => {
+  const locale = state.activeLocale === 'ru' ? 'ru-RU' : 'en-US';
+  if (!cachedDateFormat || cachedDateFormatLocale !== locale) {
+    cachedDateFormat = new Intl.DateTimeFormat(locale, {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    });
+    cachedDateFormatLocale = locale;
+  }
+
+  return cachedDateFormat;
+};
+
+const formatMetric = (value) => getNumberFormatter().format(value);
 
 const formatLocalizedDate = (isoDate) => {
   const date = new Date(`${isoDate}T00:00:00.000Z`);
-  return new Intl.DateTimeFormat(state.activeLocale === 'ru' ? 'ru-RU' : 'en-US', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  }).format(date);
+  return getDateFormatter().format(date);
 };
 
 const formatContributionLabel = (count, isoDate) =>
@@ -64,7 +89,10 @@ const updateProfile = (profile) => {
   const heroAvatar = document.getElementById('hero-avatar');
   if (heroAvatar) {
     heroAvatar.src = profile.avatarUrl;
-    heroAvatar.alt = `${profile.name || profile.login} avatar`;
+    const displayName = profile.name || profile.login;
+    heroAvatar.setAttribute('data-i18n-alt-ru', `Аватар ${displayName}`);
+    heroAvatar.setAttribute('data-i18n-alt-en', `${displayName} avatar`);
+    heroAvatar.alt = withLocale(state.activeLocale, `Аватар ${displayName}`, `${displayName} avatar`);
   }
 };
 
