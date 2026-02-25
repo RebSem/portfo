@@ -1,5 +1,9 @@
 # Portfo
 
+[![Site](https://img.shields.io/badge/site-rebsem.ru-0a7cff)](https://rebsem.ru)
+[![Deploy to GitHub Pages](https://github.com/RebSem/portfo/actions/workflows/deploy.yml/badge.svg)](https://github.com/RebSem/portfo/actions/workflows/deploy.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
+
 Personal portfolio + RU/EN blog built with Astro and deployed to GitHub Pages.
 
 Live site: [rebsem.ru](https://rebsem.ru)
@@ -100,6 +104,14 @@ If you reuse this repository, keep attribution for upstream code where applicabl
 
 ## License
 
-This repository is licensed under the MIT License.
+Code in this repository is licensed under the MIT License (`LICENSE`).
 
-Portions of the code are derived from Peter Steinberger's site code and remain subject to the MIT license notice included in `LICENSE`.
+Content (texts, images, media) is licensed separately under `LICENSE-CONTENT` unless otherwise noted.
+
+Portions of the code are derived from Peter Steinberger's site code and remain subject to the MIT license terms and attribution notice.
+
+## Content Licensing Notes
+
+- Repository code: MIT (`LICENSE`)
+- Portfolio/blog content and media authored for this site: All Rights Reserved (`LICENSE-CONTENT`)
+- Third-party content/assets (if any): keep original license/attribution requirements
