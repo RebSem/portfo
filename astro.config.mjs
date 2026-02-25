@@ -1,15 +1,11 @@
 // @ts-check
 import { fileURLToPath } from 'node:url';
 import mdx from '@astrojs/mdx';
-import node from '@astrojs/node';
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
   site: 'https://rebsem.ru',
-  output: 'server',
-  adapter: node({
-    mode: 'standalone',
-  }),
+  output: 'static',
   integrations: [mdx()],
   vite: {
     resolve: {

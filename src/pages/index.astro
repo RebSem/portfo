@@ -209,9 +209,9 @@ const websiteSchema = {
 
   <SiteFooter />
 
-  <script type="application/ld+json" set:html={JSON.stringify(personSchema)}></script>
-  <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)}></script>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(personSchema)}></script>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(websiteSchema)}></script>
 
-  <script type="module" src={localeScriptUrl}></script>
-  <script type="module" src={blogScriptUrl}></script>
+  <script is:inline type="module" src={localeScriptUrl}></script>
+  <script is:inline type="module" src={blogScriptUrl}></script>
 </Layout>

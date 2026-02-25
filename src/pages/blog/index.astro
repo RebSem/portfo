@@ -114,6 +114,6 @@ const initialDateFormat = new Intl.DateTimeFormat('en-US', {
 
   <SiteFooter noteRu={uiCopy.footer.blogNote.ru} noteEn={uiCopy.footer.blogNote.en} />
 
-  <script type="module" src={localeScriptUrl}></script>
-  <script type="module" src={blogScriptUrl}></script>
+  <script is:inline type="module" src={localeScriptUrl}></script>
+  <script is:inline type="module" src={blogScriptUrl}></script>
 </Layout>

@@ -5,19 +5,25 @@ const state = window.__portfolioBlogState ?? {
 window.__portfolioBlogState = state;
 
 let activeLocale = document.documentElement.lang === 'ru' ? 'ru' : 'en';
+let dateFormatterLocale = '';
+let dateFormatter = null;
 
 const resolveLocale = () => {
   activeLocale = document.documentElement.lang === 'ru' ? 'ru' : 'en';
 };
 
 const formatDate = (isoDate) => {
-  const formatter = new Intl.DateTimeFormat(activeLocale === 'ru' ? 'ru-RU' : 'en-US', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
+  const locale = activeLocale === 'ru' ? 'ru-RU' : 'en-US';
+  if (!dateFormatter || dateFormatterLocale !== locale) {
+    dateFormatter = new Intl.DateTimeFormat(locale, {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+    dateFormatterLocale = locale;
+  }
 
-  return formatter.format(new Date(`${isoDate}T00:00:00.000Z`));
+  return dateFormatter.format(new Date(`${isoDate}T00:00:00.000Z`));
 };
 
 const localizeDates = () => {
