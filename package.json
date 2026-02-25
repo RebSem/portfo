@@ -1,7 +1,14 @@
 {
   "name": "portfo",
+  "description": "Personal portfolio and bilingual blog built with Astro",
   "type": "module",
   "version": "0.0.1",
+  "license": "MIT",
+  "homepage": "https://rebsem.ru",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RebSem/portfo.git"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
