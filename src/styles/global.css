@@ -657,14 +657,6 @@ html[data-theme='dark'] .theme-icon-sun {
   color: color-mix(in oklab, var(--foreground) 74%, transparent);
 }
 
-.post-separator {
-  opacity: 0.7;
-}
-
-.post-translation-link {
-  font-weight: 600;
-}
-
 .prose {
   display: grid;
   gap: 1rem;
