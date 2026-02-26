@@ -192,8 +192,6 @@ export const uiCopy = {
       en: 'Posts about engineering, experiments, and product building.',
     },
     readMore: { ru: 'Читать статью', en: 'Read post' },
-    readRuVersion: { ru: 'Читать на русском', en: 'Read in Russian' },
-    readEnVersion: { ru: 'Читать на английском', en: 'Read in English' },
     empty: {
       ru: 'Для этой локали пока нет опубликованных постов.',
       en: 'No published posts for this locale yet.',
