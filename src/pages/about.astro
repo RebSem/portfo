@@ -1,0 +1,159 @@
+---
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SocialLinks from '../components/SocialLinks.astro';
+import {
+  aboutParagraphs,
+  githubUsername,
+  heroDisplayName,
+  heroFallbackName,
+  heroStatusError,
+  heroStatusLoading,
+  heroStatusReady,
+  heroSubtitle,
+  uiCopy,
+} from '../data/site-content';
+import Layout from '../layouts/Layout.astro';
+import githubScriptUrl from '../scripts/github-activity.js?url';
+import localeScriptUrl from '../scripts/locale.js?url';
+
+const avatarUrl = `https://avatars.githubusercontent.com/${githubUsername}?size=560`;
+---
+
+<Layout
+  title={`${heroFallbackName} — About`}
+  description="About page with engineering focus, AI integration work, and GitHub activity."
+>
+  <a
+    id="skip-to-content"
+    href="#main-content"
+    class="skip-link"
+    data-i18n-ru="Перейти к содержимому"
+    data-i18n-en="Skip to content"
+  >
+    Skip to content
+  </a>
+
+  <SiteHeader active="about" />
+
+  <div class="divider-wrap" aria-hidden="true">
+    <hr class="divider" />
+  </div>
+
+  <main
+    id="main-content"
+    class="page-main"
+    data-title-ru={`${heroDisplayName.ru} — Обо мне`}
+    data-title-en={`${heroDisplayName.en} — About`}
+    data-description-ru="Страница с профилем, подходом к разработке и живой GitHub-активностью."
+    data-description-en="Profile page with engineering approach and live GitHub activity."
+  >
+    <section class="about-section" aria-labelledby="about-title">
+      <p class="about-eyebrow" data-i18n-ru={uiCopy.about.title.ru} data-i18n-en={uiCopy.about.title.en}>{uiCopy.about.title.en}</p>
+
+      <h1 id="about-title">
+        <span id="hero-name" data-i18n-ru={heroDisplayName.ru} data-i18n-en={heroDisplayName.en}>{heroDisplayName.en}</span>
+      </h1>
+
+      <p class="about-intro" data-i18n-ru={uiCopy.about.subtitle.ru} data-i18n-en={uiCopy.about.subtitle.en}>{uiCopy.about.subtitle.en}</p>
+
+      <div class="about-grid">
+        <div class="about-image-wrap">
+          <img
+            id="hero-avatar"
+            src={avatarUrl}
+            loading="eager"
+            alt={`Portrait of ${heroDisplayName.en}`}
+            data-i18n-alt-ru={`Портрет ${heroDisplayName.ru}`}
+            data-i18n-alt-en={`Portrait of ${heroDisplayName.en}`}
+          />
+        </div>
+
+        <div class="about-copy">
+          <p id="hero-subtitle" data-i18n-ru={heroSubtitle.ru} data-i18n-en={heroSubtitle.en}>
+            {heroSubtitle.en}
+          </p>
+
+          {
+            aboutParagraphs.map((paragraph) => (
+              <p data-i18n-ru={paragraph.ru} data-i18n-en={paragraph.en}>
+                {paragraph.en}
+              </p>
+            ))
+          }
+
+          <SocialLinks className="social-links profile-social-links" />
+
+          <p
+            id="hero-status"
+            class="hero-status"
+            data-loading-ru={heroStatusLoading.ru}
+            data-loading-en={heroStatusLoading.en}
+            data-ready-ru={heroStatusReady.ru}
+            data-ready-en={heroStatusReady.en}
+            data-error-ru={heroStatusError.ru}
+            data-error-en={heroStatusError.en}
+          >
+            {heroStatusLoading.en}
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="github" class="section-block" aria-labelledby="github-title">
+      <div class="section-head">
+        <h2 id="github-title" data-i18n-ru={uiCopy.github.title.ru} data-i18n-en={uiCopy.github.title.en}>{uiCopy.github.title.en}</h2>
+        <p data-i18n-ru={uiCopy.github.subtitle.ru} data-i18n-en={uiCopy.github.subtitle.en}>{uiCopy.github.subtitle.en}</p>
+      </div>
+
+      <div class="github-heatmap">
+        <div class="heatmap-topline">
+          <strong id="contributions-total">0</strong>
+          <span data-i18n-ru={uiCopy.github.totalLabel.ru} data-i18n-en={uiCopy.github.totalLabel.en}>{uiCopy.github.totalLabel.en}</span>
+        </div>
+
+        <div
+          id="contribution-grid"
+          class="contribution-grid"
+          role="img"
+          aria-label={uiCopy.github.heatmapAria.en}
+          data-i18n-aria-ru={uiCopy.github.heatmapAria.ru}
+          data-i18n-aria-en={uiCopy.github.heatmapAria.en}
+        ></div>
+
+        <div class="heatmap-legend" aria-hidden="true">
+          <span>0</span>
+          <div class="legend-level level-0"></div>
+          <div class="legend-level level-1"></div>
+          <div class="legend-level level-2"></div>
+          <div class="legend-level level-3"></div>
+          <div class="legend-level level-4"></div>
+          <span>max</span>
+        </div>
+
+        <p
+          id="contribution-tooltip"
+          class="contribution-tooltip"
+          data-hint-ru={uiCopy.github.hoverHint.ru}
+          data-hint-en={uiCopy.github.hoverHint.en}
+        >
+          {uiCopy.github.hoverHint.en}
+        </p>
+
+        <p
+          id="github-error"
+          class="github-error hidden"
+          data-i18n-ru={uiCopy.github.unavailable.ru}
+          data-i18n-en={uiCopy.github.unavailable.en}
+        >
+          {uiCopy.github.unavailable.en}
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <script is:inline type="module" src={localeScriptUrl}></script>
+  <script is:inline type="module" src={githubScriptUrl}></script>
+</Layout>

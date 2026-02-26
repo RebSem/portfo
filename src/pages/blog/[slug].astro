@@ -1,0 +1,103 @@
+---
+import { getCollection, getEntry, render } from 'astro:content';
+import SiteFooter from '../../components/SiteFooter.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import { heroFallbackName, uiCopy } from '../../data/site-content';
+import Layout from '../../layouts/Layout.astro';
+import localeScriptUrl from '../../scripts/locale.js?url';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+  }));
+}
+
+const slug = Astro.params.slug ?? '';
+const post = await getEntry('blog', slug);
+if (!post || post.data.draft) {
+  return Astro.redirect('/blog', 302);
+}
+
+const translationPairPosts = await getCollection(
+  'blog',
+  ({ data }) => !data.draft && data.translationKey === post.data.translationKey,
+);
+const ruSlug = translationPairPosts.find((entry) => entry.data.lang === 'ru')?.slug;
+const enSlug = translationPairPosts.find((entry) => entry.data.lang === 'en')?.slug;
+
+const { Content } = await render(post);
+
+const isoDate = post.data.publishedAt.toISOString().slice(0, 10);
+const dateLabelRu = new Intl.DateTimeFormat('ru-RU', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+}).format(post.data.publishedAt);
+const dateLabelEn = new Intl.DateTimeFormat('en-US', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+}).format(post.data.publishedAt);
+---
+
+<Layout title={`${post.data.title} — ${heroFallbackName}`} description={post.data.description} type="article">
+  <a
+    id="skip-to-content"
+    href="#main-content"
+    class="skip-link"
+    data-i18n-ru="Перейти к содержимому"
+    data-i18n-en="Skip to content"
+  >
+    Skip to content
+  </a>
+
+  <SiteHeader active="blog" />
+
+  <div class="divider-wrap" aria-hidden="true">
+    <hr class="divider" />
+  </div>
+
+  <main
+    id="main-content"
+    class="page-main"
+    data-title-ru={`${post.data.title} — Блог`}
+    data-title-en={`${post.data.title} — Blog`}
+    data-description-ru={post.data.description}
+    data-description-en={post.data.description}
+    data-post-slug-ru={ruSlug ?? ''}
+    data-post-slug-en={enSlug ?? ''}
+  >
+    <article class="post-shell">
+      <p>
+        <a href="/blog" data-i18n-ru={uiCopy.blog.backToBlog.ru} data-i18n-en={uiCopy.blog.backToBlog.en}>
+          {uiCopy.blog.backToBlog.en}
+        </a>
+      </p>
+
+      <header class="post-head">
+        <p class="post-meta">
+          <time datetime={isoDate} data-i18n-ru={dateLabelRu} data-i18n-en={dateLabelEn}>{dateLabelEn}</time>
+        </p>
+        <h1>{post.data.title}</h1>
+        <p>{post.data.description}</p>
+      </header>
+
+      {post.data.tags.length > 0 && (
+        <ul class="stack-list" aria-label={uiCopy.blog.tagsAria.en} data-i18n-aria-ru={uiCopy.blog.tagsAria.ru} data-i18n-aria-en={uiCopy.blog.tagsAria.en}>
+          {post.data.tags.map((tag) => (
+            <li>{tag}</li>
+          ))}
+        </ul>
+      )}
+
+      <div class="prose">
+        <Content />
+      </div>
+    </article>
+  </main>
+
+  <SiteFooter noteRu={uiCopy.footer.blogNote.ru} noteEn={uiCopy.footer.blogNote.en} />
+
+  <script is:inline type="module" src={localeScriptUrl}></script>
+</Layout>

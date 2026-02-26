@@ -1,0 +1,9 @@
+This project includes adapted code derived from:
+
+- Peter Steinberger (steipete) website repository:
+  https://github.com/steipete/steipete.me
+
+Upstream code license (for code portions): MIT.
+
+This repository contains substantial modifications for content, styling,
+localization, blog structure, build/deploy setup, and domain configuration.

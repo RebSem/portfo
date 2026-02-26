@@ -1,64 +1,117 @@
 # Portfo
 
-One-page портфолио на Astro (SSR Node), стилизованное под формат `about`-страницы:
-- минималистичный header (Blog + RU/EN + light/dark toggle)
-- секции About + GitHub Activity + Projects
-- иконки-контакты внизу (GitHub, Telegram, Email, LinkedIn)
-- отдельная заглушка блога `/posts`
+[![Site](https://img.shields.io/badge/site-rebsem.ru-0a7cff)](https://rebsem.ru)
+[![Deploy to GitHub Pages](https://github.com/RebSem/portfo/actions/workflows/deploy.yml/badge.svg)](https://github.com/RebSem/portfo/actions/workflows/deploy.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 
-## Что есть сейчас
+Personal portfolio + RU/EN blog built with Astro and deployed to GitHub Pages.
 
-- RU/EN переключение интерфейса
-- переключатель темы (light/dark) с сохранением в `localStorage`
-- GitHub activity через `ghchart` + API-роуты для GitHub profile/contributions
-- список проектов из data-файла (сейчас placeholders)
-- адаптивный layout с контейнером `max-width: 48rem`
+Live site: [rebsem.ru](https://rebsem.ru)
 
-## Локальный запуск
+## Stack
+
+- Astro 5
+- MDX (`astro:content`)
+- TypeScript
+- GitHub Actions + GitHub Pages
+
+## Features
+
+- RU/EN locale toggle with persistent preference
+- Light/dark theme toggle
+- Smooth client-side navigation
+- Bilingual blog posts (translation pairs)
+- GitHub profile + contributions JSON generated at build time
+- `robots.txt`, `sitemap.xml`, `llms.txt`, meta tags, structured data
+
+## Routes
+
+- `/` - landing page
+- `/about` - profile/about page
+- `/blog` - blog index
+- `/blog/:slug` - blog post
+- `/posts` - redirect/compat route
+- `/api/github/profile.json` - generated static JSON
+- `/api/github/contributions.json` - generated static JSON
+
+## Local Development
+
+Requirements:
+
+- Node.js 20+
+- npm 10+
 
 ```bash
 npm install
 npm run dev
 ```
 
-Откройте: `http://localhost:4321`
+Open `http://localhost:4321`.
 
-## Продакшен сборка
+## Build
 
 ```bash
 npm run build
-node dist/server/entry.mjs
 ```
 
-## Docker
+Preview locally:
 
 ```bash
-docker build -t portfo .
-docker run --rm -p 4321:4321 portfo
+npm run preview
 ```
 
-## Роуты
+## Validation
 
-- `/` — главная страница (About, GitHub, Projects, footer contacts)
-- `/posts` — заглушка блога
-- `/api/github/profile.json` — профиль GitHub
-- `/api/github/contributions.json` — вклады GitHub
+```bash
+npm run check
+npm test
+```
 
-## Где редактировать контент и UI
+## Blog Workflow
 
-- Основной контент и ссылки: `src/data/site-content.ts`
-- Карточки проектов: `src/data/projects.ts`
-- Главная страница: `src/pages/index.astro`
-- Страница блога: `src/pages/posts.astro`
-- Глобальные стили и темы: `src/styles/global.css`
-- Клиентская логика RU/EN + theme: `src/scripts/locale.js`
-- GitHub API-слой:
-  - `src/pages/api/github/profile.json.ts`
-  - `src/pages/api/github/contributions.json.ts`
-  - `src/lib/github.ts`
+Create a new RU/EN draft pair:
 
-## Примечания
+```bash
+npm run new:post -- my-post-slug --title-ru "Заголовок" --title-en "Title"
+```
 
-- Текущий GitHub username берётся из `githubUsername` в `src/data/site-content.ts`.
-- Email для кнопки связи: `perk77331@gmail.com`.
-- Чтобы сменить соцссылки, обновите `telegramUrl` / `linkedinUrl` / `email` в `src/data/site-content.ts`.
+Detailed guide: `docs/blog-authoring.md`
+
+## Environment Variables
+
+See `.env.example`.
+
+- `GITHUB_TOKEN` - optional token for higher GitHub API rate limits during local build/preview
+- `GITHUB_CACHE_FILE` - local cache file path (default: `.cache/github-cache.json`)
+
+## Deploy (GitHub Pages)
+
+This repository deploys via GitHub Actions workflow:
+
+- Workflow: `.github/workflows/deploy.yml`
+- Trigger: push to `main`
+- Custom domain: `rebsem.ru` (via `public/CNAME`)
+
+## Attribution
+
+This project was originally bootstrapped from the website code of Peter Steinberger ([`steipete`](https://github.com/steipete)) and then adapted/modified for this portfolio.
+
+Reference repository:
+
+- [steipete/steipete.me](https://github.com/steipete/steipete.me)
+
+If you reuse this repository, keep attribution for upstream code where applicable.
+
+## License
+
+Code in this repository is licensed under the MIT License (`LICENSE`).
+
+Content (texts, images, media) is licensed separately under `LICENSE-CONTENT` unless otherwise noted.
+
+Portions of the code are derived from Peter Steinberger's site code and remain subject to the MIT license terms and attribution notice.
+
+## Content Licensing Notes
+
+- Repository code: MIT (`LICENSE`)
+- Portfolio/blog content and media authored for this site: All Rights Reserved (`LICENSE-CONTENT`)
+- Third-party content/assets (if any): keep original license/attribution requirements

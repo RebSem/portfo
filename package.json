@@ -1,14 +1,31 @@
 {
   "name": "portfo",
+  "description": "Personal portfolio and bilingual blog built with Astro",
   "type": "module",
   "version": "0.0.1",
+  "license": "MIT",
+  "homepage": "https://rebsem.ru",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RebSem/portfo.git"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "check": "astro check",
+    "test": "vitest run",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "new:post": "node scripts/new-post.mjs"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@types/node": "^22.15.30",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
   },
   "dependencies": {
+    "@astrojs/mdx": "^4.3.13",
     "@astrojs/node": "^9.5.3",
     "astro": "^5.17.1"
   }

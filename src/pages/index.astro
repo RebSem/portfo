@@ -1,28 +1,52 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import appScriptUrl from '../scripts/locale.js?url';
-import {
-  aboutParagraphs,
-  blogLabel,
-  blogPath,
-  email,
-  githubUsername,
-  heroFallbackName,
-  linkedinUrl,
-  socialLabels,
-  telegramUrl,
-  themeToggleLabel,
-} from '../data/site-content';
+import { getCollection } from 'astro:content';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import SocialLinks from '../components/SocialLinks.astro';
 import { projects } from '../data/projects';
+import { githubUsername, heroDisplayName, heroFallbackName, linkedinUrl, telegramUrl, uiCopy } from '../data/site-content';
+import Layout from '../layouts/Layout.astro';
+import blogScriptUrl from '../scripts/blog.js?url';
+import localeScriptUrl from '../scripts/locale.js?url';
 
-const profileUrl = `https://github.com/${githubUsername}`;
-const avatarUrl = `https://avatars.githubusercontent.com/${githubUsername}?size=560`;
-const contributionGraphUrl = `https://ghchart.rshah.org/${githubUsername}`;
+const visibleProjects = projects.filter((project) => !project.placeholder);
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
+  .slice(0, 6);
+
+const initialDateFormat = new Intl.DateTimeFormat('en-US', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: heroDisplayName.en,
+  alternateName: heroDisplayName.ru,
+  jobTitle: 'Product Manager (AI) / Product Engineer',
+  url: 'https://rebsem.ru/',
+  image: 'https://rebsem.ru/main-hero.jpg',
+  sameAs: [
+    `https://github.com/${githubUsername}`,
+    telegramUrl,
+    linkedinUrl,
+  ],
+};
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: heroDisplayName.en,
+  url: 'https://rebsem.ru/',
+  inLanguage: ['en', 'ru'],
+};
 ---
 
 <Layout
-  title={`${heroFallbackName} — About`}
-  description="Portfolio homepage with About, GitHub activity, and project placeholders."
+  title={`${heroFallbackName} — Portfolio`}
+  description="Main page with profile intro, recent writing, and selected projects."
 >
   <a
     id="skip-to-content"
@@ -31,86 +55,10 @@ const contributionGraphUrl = `https://ghchart.rshah.org/${githubUsername}`;
     data-i18n-ru="Перейти к содержимому"
     data-i18n-en="Skip to content"
   >
-    Перейти к содержимому
+    Skip to content
   </a>
 
-  <header class="site-header">
-    <div class="header-inner">
-      <a class="brand" href="/">{heroFallbackName}</a>
-
-      <div class="header-controls" role="navigation" aria-label="Site controls">
-        <a class="header-link" href={blogPath} data-i18n-ru={blogLabel.ru} data-i18n-en={blogLabel.en}>
-          {blogLabel.ru}
-        </a>
-
-        <button
-          id="locale-toggle"
-          class="locale-toggle"
-          type="button"
-          data-toggle-ru="EN"
-          data-toggle-en="RU"
-          data-label-ru="Switch to English"
-          data-label-en="Переключить на русский"
-          aria-label="Switch to English"
-        >
-          EN
-        </button>
-
-        <button
-          id="theme-btn"
-          class="theme-toggle"
-          type="button"
-          data-theme-dark-label-ru={themeToggleLabel.toDark.ru}
-          data-theme-dark-label-en={themeToggleLabel.toDark.en}
-          data-theme-light-label-ru={themeToggleLabel.toLight.ru}
-          data-theme-light-label-en={themeToggleLabel.toLight.en}
-          aria-label={themeToggleLabel.toDark.ru}
-        >
-          <span class="sr-only" data-i18n-ru={themeToggleLabel.toDark.ru} data-i18n-en={themeToggleLabel.toDark.en}>
-            {themeToggleLabel.toDark.ru}
-          </span>
-          <svg
-            class="theme-icon theme-icon-moon"
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-            <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
-          </svg>
-          <svg
-            class="theme-icon theme-icon-sun"
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            aria-hidden="true"
-          >
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-            <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
-            <path d="M3 12h1"></path>
-            <path d="M20 12h1"></path>
-            <path d="M12 3v1"></path>
-            <path d="M12 20v1"></path>
-            <path d="M5.6 5.6l.7 .7"></path>
-            <path d="M17.7 17.7l.7 .7"></path>
-            <path d="M6.3 18.3l-.7 .7"></path>
-            <path d="M18.4 6.4l-.7 .7"></path>
-          </svg>
-        </button>
-      </div>
-    </div>
-  </header>
+  <SiteHeader active="home" />
 
   <div class="divider-wrap" aria-hidden="true">
     <hr class="divider" />
@@ -119,201 +67,151 @@ const contributionGraphUrl = `https://ghchart.rshah.org/${githubUsername}`;
   <main
     id="main-content"
     class="page-main"
-    data-title-ru={`${heroFallbackName} — Обо мне`}
-    data-title-en={`${heroFallbackName} — About`}
-    data-description-ru="Главная страница-портфолио с проектами и GitHub активностью."
-    data-description-en="Portfolio homepage with projects and GitHub activity."
+    data-title-ru={`${heroDisplayName.ru} — Главная`}
+    data-title-en={`${heroDisplayName.en} — Home`}
+    data-description-ru="Главная страница с интро, свежими статьями и проектами."
+    data-description-en="Home page with intro, recent writing, and projects."
   >
-    <section id="about" class="about-section">
-      <h1 data-i18n-ru="Обо мне" data-i18n-en="About">Обо мне</h1>
+    <section class="home-intro" aria-labelledby="home-title">
+      <div class="home-intro-copy">
+        <p class="about-eyebrow" data-i18n-ru={uiCopy.home.eyebrow.ru} data-i18n-en={uiCopy.home.eyebrow.en}>
+          {uiCopy.home.eyebrow.en}
+        </p>
 
-      <div class="about-grid">
-        <div class="about-image-wrap">
-          <img
-            src={avatarUrl}
-            loading="eager"
-            alt={`Портрет ${heroFallbackName}`}
-            data-i18n-alt-ru={`Портрет ${heroFallbackName}`}
-            data-i18n-alt-en={`${heroFallbackName} portrait`}
-          />
-        </div>
+        <h1 id="home-title" data-i18n-ru={uiCopy.home.title.ru} data-i18n-en={uiCopy.home.title.en}>
+          {uiCopy.home.title.en}
+        </h1>
 
-        <div class="about-copy">
-          {
-            aboutParagraphs.map((paragraph) => (
-              <p data-i18n-ru={paragraph.ru} data-i18n-en={paragraph.en}>
-                {paragraph.ru}
-              </p>
-            ))
-          }
-          <p class="about-links">
-            <a href={profileUrl} target="_blank" rel="noreferrer" data-i18n-ru="Мой GitHub" data-i18n-en="My GitHub">
-              Мой GitHub
-            </a>
-            <span data-i18n-ru=" и " data-i18n-en=" and "> и </span>
-            <a
-              href={telegramUrl}
-              target="_blank"
-              rel="noreferrer"
-              data-i18n-ru="написать в Telegram"
-              data-i18n-en="message me on Telegram"
-            >
-              написать в Telegram
-            </a>
-            <span>.</span>
-          </p>
-        </div>
+        <p class="home-lead" data-i18n-ru={uiCopy.home.lead.ru} data-i18n-en={uiCopy.home.lead.en}>
+          {uiCopy.home.lead.en}
+        </p>
+
+        <SocialLinks className="social-links profile-social-links" />
       </div>
 
-      <h2 id="github" data-i18n-ru="GitHub активность" data-i18n-en="GitHub Activity">GitHub активность</h2>
-      <div class="github-activity">
+      <div class="home-avatar-wrap">
         <img
-          src={contributionGraphUrl}
-          loading="lazy"
-          alt="График вкладов GitHub"
-          data-i18n-alt-ru="График вкладов GitHub"
-          data-i18n-alt-en="GitHub contribution graph"
+          class="home-avatar"
+          src="/main-hero.jpg"
+          width="320"
+          height="320"
+          loading="eager"
+          alt={uiCopy.home.photoAlt.en}
+          data-i18n-alt-ru={uiCopy.home.photoAlt.ru}
+          data-i18n-alt-en={uiCopy.home.photoAlt.en}
         />
       </div>
+    </section>
+
+    <section class="section-block" aria-labelledby="recent-title">
+      <div class="section-head">
+        <h2 id="recent-title" data-i18n-ru={uiCopy.home.postsTitle.ru} data-i18n-en={uiCopy.home.postsTitle.en}>
+          {uiCopy.home.postsTitle.en}
+        </h2>
+        <p data-i18n-ru={uiCopy.home.postsSubtitle.ru} data-i18n-en={uiCopy.home.postsSubtitle.en}>{uiCopy.home.postsSubtitle.en}</p>
+      </div>
+
       <p
-        data-i18n-ru="Я регулярно публикую пет-проекты и экспериментальные инструменты в open source."
-        data-i18n-en="I regularly publish pet projects and experimental tools as open source."
+        id="blog-empty"
+        class="blog-empty"
+        hidden={posts.length > 0}
+        data-i18n-ru={uiCopy.blog.empty.ru}
+        data-i18n-en={uiCopy.blog.empty.en}
       >
-        Я регулярно публикую пет-проекты и экспериментальные инструменты в open source.
+        {uiCopy.blog.empty.en}
       </p>
 
-      <h2 id="projects" data-i18n-ru="Проекты" data-i18n-en="Projects">Проекты</h2>
+      <ul id="blog-list" class="blog-list home-blog-list">
+        {
+          posts.map((post) => {
+            const isoDate = post.data.publishedAt.toISOString().slice(0, 10);
+            const langLabelRu = post.data.lang === 'ru' ? uiCopy.blog.langRu.ru : uiCopy.blog.langEn.ru;
+            const langLabelEn = post.data.lang === 'ru' ? uiCopy.blog.langRu.en : uiCopy.blog.langEn.en;
+
+            return (
+              <li class="blog-card" data-lang={post.data.lang}>
+                <article>
+                  <header class="blog-card-head">
+                    <p class="blog-card-meta">
+                      <time class="blog-date" datetime={isoDate} data-published={isoDate}>
+                        {initialDateFormat.format(post.data.publishedAt)}
+                      </time>
+                      <span class="blog-lang" data-i18n-ru={langLabelRu} data-i18n-en={langLabelEn}>
+                        {langLabelEn}
+                      </span>
+                    </p>
+                    <h3>
+                      <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+                    </h3>
+                  </header>
+
+                  <p>{post.data.description}</p>
+                </article>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </section>
+
+    <section id="projects" class="section-block" aria-labelledby="projects-title">
+      <div class="section-head">
+        <h2 id="projects-title" data-i18n-ru={uiCopy.projects.title.ru} data-i18n-en={uiCopy.projects.title.en}>
+          {uiCopy.projects.title.en}
+        </h2>
+        <p data-i18n-ru={uiCopy.projects.subtitle.ru} data-i18n-en={uiCopy.projects.subtitle.en}>{uiCopy.projects.subtitle.en}</p>
+      </div>
+
       {
-        projects.length === 0 ? (
-            <p data-i18n-ru="Список проектов пока пуст." data-i18n-en="The project list is currently empty.">
-              Список проектов пока пуст.
-            </p>
-          ) : (
-            <div class="projects-list">
-              {projects.map((project) => (
-                <article class="project-card">
-                  <h3 data-i18n-ru={project.title.ru} data-i18n-en={project.title.en}>{project.title.ru}</h3>
-                  <p data-i18n-ru={project.summary.ru} data-i18n-en={project.summary.en}>{project.summary.ru}</p>
+        visibleProjects.length === 0 ? (
+          <p class="projects-empty" data-i18n-ru={uiCopy.projects.empty.ru} data-i18n-en={uiCopy.projects.empty.en}>
+            {uiCopy.projects.empty.en}
+          </p>
+        ) : (
+          <div class="projects-list">
+            {visibleProjects.map((project) => (
+              <article class="project-card">
+                <h3 data-i18n-ru={project.title.ru} data-i18n-en={project.title.en}>{project.title.en}</h3>
+                <p data-i18n-ru={project.summary.ru} data-i18n-en={project.summary.en}>{project.summary.en}</p>
 
                 <ul
                   class="stack-list"
-                  aria-label="Технологии проекта"
-                  data-i18n-aria-ru="Технологии проекта"
-                  data-i18n-aria-en="Project technologies"
-                  >
-                    {project.stack.map((item) => (
-                      <li>{item}</li>
-                    ))}
-                  </ul>
-                  <p class="project-status" data-i18n-ru="Статус: в процессе." data-i18n-en="Status: in progress.">
-                    Статус: в процессе.
+                  aria-label={uiCopy.projects.stackAria.en}
+                  data-i18n-aria-ru={uiCopy.projects.stackAria.ru}
+                  data-i18n-aria-en={uiCopy.projects.stackAria.en}
+                >
+                  {project.stack.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+
+                {(project.repoUrl || project.demoUrl) && (
+                  <p class="project-links">
+                    {project.repoUrl && (
+                      <a class="project-link" href={project.repoUrl} target="_blank" rel="noreferrer" data-i18n-ru={uiCopy.projects.repo.ru} data-i18n-en={uiCopy.projects.repo.en}>
+                        {uiCopy.projects.repo.en}
+                      </a>
+                    )}
+                    {project.demoUrl && (
+                      <a class="project-link" href={project.demoUrl} target="_blank" rel="noreferrer" data-i18n-ru={uiCopy.projects.demo.ru} data-i18n-en={uiCopy.projects.demo.en}>
+                        {uiCopy.projects.demo.en}
+                      </a>
+                    )}
                   </p>
-                </article>
-              ))}
-            </div>
-          )
+                )}
+              </article>
+            ))}
+          </div>
+        )
       }
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="divider-wrap" aria-hidden="true">
-      <hr class="divider" />
-    </div>
+  <SiteFooter />
 
-    <div class="footer-inner">
-      <div
-        class="social-links"
-        aria-label="Ссылки на соцсети"
-        data-i18n-aria-ru="Ссылки на соцсети"
-        data-i18n-aria-en="Social links"
-      >
-        <a
-          class="social-link"
-          href={profileUrl}
-          target="_blank"
-          rel="noreferrer"
-          aria-label={socialLabels.github.ru}
-          data-i18n-aria-ru={socialLabels.github.ru}
-          data-i18n-aria-en={socialLabels.github.en}
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-            <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3"></path>
-            <path d="M15 21v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5"></path>
-          </svg>
-          <span class="sr-only" data-i18n-ru={socialLabels.github.ru} data-i18n-en={socialLabels.github.en}>
-            {socialLabels.github.ru}
-          </span>
-        </a>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(personSchema)}></script>
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(websiteSchema)}></script>
 
-        <a
-          class="social-link"
-          href={telegramUrl}
-          target="_blank"
-          rel="noreferrer"
-          aria-label={socialLabels.telegram.ru}
-          data-i18n-aria-ru={socialLabels.telegram.ru}
-          data-i18n-aria-en={socialLabels.telegram.en}
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-            <path d="M4 11l16 -8l-4 18l-5 -4l-3 3l1 -5l8 -7"></path>
-          </svg>
-          <span class="sr-only" data-i18n-ru={socialLabels.telegram.ru} data-i18n-en={socialLabels.telegram.en}>
-            {socialLabels.telegram.ru}
-          </span>
-        </a>
-
-        <a
-          class="social-link"
-          href={`mailto:${email}`}
-          aria-label={socialLabels.email.ru}
-          data-i18n-aria-ru={socialLabels.email.ru}
-          data-i18n-aria-en={socialLabels.email.en}
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-            <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"></path>
-            <path d="M3 7l9 6l9 -6"></path>
-          </svg>
-          <span class="sr-only" data-i18n-ru={socialLabels.email.ru} data-i18n-en={socialLabels.email.en}>
-            {socialLabels.email.ru}
-          </span>
-        </a>
-
-        <a
-          class="social-link"
-          href={linkedinUrl}
-          target="_blank"
-          rel="noreferrer"
-          aria-label={socialLabels.linkedin.ru}
-          data-i18n-aria-ru={socialLabels.linkedin.ru}
-          data-i18n-aria-en={socialLabels.linkedin.en}
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-            <path d="M8 11v5"></path>
-            <path d="M8 8v.01"></path>
-            <path d="M12 16v-5"></path>
-            <path d="M16 16v-3a2 2 0 1 0 -4 0"></path>
-            <path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z"></path>
-          </svg>
-          <span class="sr-only" data-i18n-ru={socialLabels.linkedin.ru} data-i18n-en={socialLabels.linkedin.en}>
-            {socialLabels.linkedin.ru}
-          </span>
-        </a>
-      </div>
-
-      <p
-        class="footer-note"
-        data-i18n-ru="Открыт к новым проектам и коллаборациям."
-        data-i18n-en="Open to new projects and collaborations."
-      >
-        Открыт к новым проектам и коллаборациям.
-      </p>
-    </div>
-  </footer>
-
-  <script type="module" src={appScriptUrl}></script>
+  <script is:inline type="module" src={localeScriptUrl}></script>
+  <script is:inline type="module" src={blogScriptUrl}></script>
 </Layout>

@@ -1,9 +1,18 @@
 const LOCALE_STORAGE_KEY = 'portfolio-locale';
 const THEME_STORAGE_KEY = 'portfolio-theme';
+const LOCALE_EVENT_NAME = 'portfolio:locale-change';
 
-let activeLocale = 'ru';
-let activeTheme = 'light';
-let themeManuallySet = false;
+const state = window.__portfolioLocaleState ?? {
+  activeLocale: 'en',
+  activeTheme: 'light',
+  themeManuallySet: false,
+  initialized: false,
+  mediaBound: false,
+  localeSwitchInFlight: false,
+  delegatedClicksBound: false,
+};
+
+window.__portfolioLocaleState = state;
 
 const withLocale = (locale, ruValue, enValue) => (locale === 'ru' ? ruValue : enValue);
 
@@ -36,7 +45,7 @@ const readTheme = () => {
   try {
     const stored = window.localStorage.getItem(THEME_STORAGE_KEY);
     if (stored === 'light' || stored === 'dark') {
-      themeManuallySet = true;
+      state.themeManuallySet = true;
       return stored;
     }
   } catch {
@@ -122,7 +131,7 @@ const updateLocaleToggle = (locale) => {
   const ruToggle = localeToggle.dataset.toggleRu ?? 'EN';
   const enToggle = localeToggle.dataset.toggleEn ?? 'RU';
   const ruLabel = localeToggle.dataset.labelRu ?? 'Switch to English';
-  const enLabel = localeToggle.dataset.labelEn ?? 'Переключить на русский';
+  const enLabel = localeToggle.dataset.labelEn ?? 'Switch to Russian';
 
   localeToggle.textContent = withLocale(locale, ruToggle, enToggle);
   localeToggle.setAttribute('aria-label', withLocale(locale, ruLabel, enLabel));
@@ -137,11 +146,19 @@ const updateThemeToggleLabel = () => {
   const lightRu = themeToggle.dataset.themeLightLabelRu ?? 'Включить светлую тему';
   const lightEn = themeToggle.dataset.themeLightLabelEn ?? 'Switch to light theme';
 
-  const targetIsLight = activeTheme === 'dark';
+  const targetIsLight = state.activeTheme === 'dark';
   const ruLabel = targetIsLight ? lightRu : darkRu;
   const enLabel = targetIsLight ? lightEn : darkEn;
 
-  themeToggle.setAttribute('aria-label', withLocale(activeLocale, ruLabel, enLabel));
+  themeToggle.setAttribute('aria-label', withLocale(state.activeLocale, ruLabel, enLabel));
+};
+
+const emitLocaleChange = (locale) => {
+  window.dispatchEvent(
+    new CustomEvent(LOCALE_EVENT_NAME, {
+      detail: { locale },
+    }),
+  );
 };
 
 const applyTheme = (theme, options = { manual: false }) => {
@@ -150,10 +167,10 @@ const applyTheme = (theme, options = { manual: false }) => {
     document.body.style.colorScheme = theme;
   }
 
-  activeTheme = theme;
+  state.activeTheme = theme;
 
   if (options.manual) {
-    themeManuallySet = true;
+    state.themeManuallySet = true;
     writeTheme(theme);
   }
 
@@ -170,57 +187,126 @@ const applyLocale = (locale) => {
   localizeMeta(locale);
   updateLocaleToggle(locale);
 
-  activeLocale = locale;
+  state.activeLocale = locale;
   updateThemeToggleLabel();
+  emitLocaleChange(locale);
 };
 
-const initLocale = () => {
-  const initialLocale = readLocale();
-  const initialTheme = readTheme();
+const tryNavigateToTranslatedPost = (locale) => {
+  const main = document.getElementById('main-content');
+  if (!main) return false;
 
-  applyTheme(initialTheme);
-  applyLocale(initialLocale);
+  const ruSlug = (main.dataset.postSlugRu ?? '').trim();
+  const enSlug = (main.dataset.postSlugEn ?? '').trim();
+  if (!ruSlug && !enSlug) return false;
 
-  const localeToggle = document.getElementById('locale-toggle');
-  if (localeToggle) {
-    localeToggle.addEventListener('click', () => {
-      const nextLocale = activeLocale === 'ru' ? 'en' : 'ru';
-      applyLocale(nextLocale);
-      writeLocale(nextLocale);
-    });
+  const targetSlug = locale === 'ru' ? ruSlug : enSlug;
+  if (!targetSlug) return false;
+
+  const targetPath = `/blog/${targetSlug}`;
+  if (window.location.pathname === targetPath) return false;
+
+  const targetLink = document.querySelector(`a[href="${targetPath}"]`);
+  if (targetLink instanceof HTMLAnchorElement) {
+    targetLink.click();
+    return true;
   }
 
-  const themeToggle = document.getElementById('theme-btn');
-  if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-      const nextTheme = activeTheme === 'dark' ? 'light' : 'dark';
-      const setTheme = () => applyTheme(nextTheme, { manual: true });
+  window.location.assign(targetPath);
+  return true;
+};
 
-      if (typeof document.startViewTransition === 'function') {
-        document.startViewTransition(setTheme);
-      } else {
-        setTheme();
-      }
-    });
+const toggleLocale = async () => {
+  if (state.localeSwitchInFlight) return;
+  state.localeSwitchInFlight = true;
+
+  const nextLocale = state.activeLocale === 'ru' ? 'en' : 'ru';
+  state.activeLocale = nextLocale;
+  writeLocale(nextLocale);
+
+  try {
+    applyLocale(nextLocale);
+    tryNavigateToTranslatedPost(nextLocale);
+  } finally {
+    state.localeSwitchInFlight = false;
   }
+};
+
+const toggleTheme = () => {
+  const nextTheme = state.activeTheme === 'dark' ? 'light' : 'dark';
+  const setTheme = () => applyTheme(nextTheme, { manual: true });
+
+  if (typeof document.startViewTransition === 'function') {
+    document.startViewTransition(setTheme);
+  } else {
+    setTheme();
+  }
+};
+
+const bindDelegatedClicks = () => {
+  if (state.delegatedClicksBound) return;
+
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const localeToggle = target.closest('#locale-toggle');
+    if (localeToggle instanceof HTMLButtonElement) {
+      event.preventDefault();
+      void toggleLocale();
+      return;
+    }
+
+    const themeToggle = target.closest('#theme-btn');
+    if (themeToggle instanceof HTMLButtonElement) {
+      event.preventDefault();
+      toggleTheme();
+      return;
+    }
+
+  });
+
+  state.delegatedClicksBound = true;
+};
+
+const bindSystemThemeSync = () => {
+  if (state.mediaBound) return;
 
   const media = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
   if (!media) return;
 
   const syncWithSystemTheme = (event) => {
-    if (themeManuallySet) return;
+    if (state.themeManuallySet) return;
     applyTheme(event.matches ? 'dark' : 'light');
   };
 
   if (typeof media.addEventListener === 'function') {
     media.addEventListener('change', syncWithSystemTheme);
+    state.mediaBound = true;
     return;
   }
 
   if (typeof media.addListener === 'function') {
     media.addListener(syncWithSystemTheme);
+    state.mediaBound = true;
   }
 };
+
+const initLocale = () => {
+  if (!state.initialized) {
+    state.activeTheme = readTheme();
+    state.initialized = true;
+    bindSystemThemeSync();
+  }
+
+  state.activeLocale = readLocale();
+
+  applyTheme(state.activeTheme);
+  applyLocale(state.activeLocale);
+  bindDelegatedClicks();
+};
+
+document.addEventListener('astro:page-load', initLocale);
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initLocale, { once: true });
