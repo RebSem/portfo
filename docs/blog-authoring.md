@@ -1,25 +1,23 @@
 # Blog Authoring Guide
 
-This project uses paired RU/EN blog posts. Each pair shares one `translationKey`.
+The blog is published in paired RU/EN posts. Each pair must share one `translationKey`.
 
-## 1) Create a new post pair
+## 1. Create a paired draft
 
-Use one command to generate both language versions:
+Use the generator so both languages start from the same structure:
 
 ```bash
 npm run new:post -- my-topic --title-ru "Заголовок" --title-en "Title"
 ```
 
-This creates two files in `src/content/blog/`:
+Generated files:
 
-- `YYYY-MM-DD-my-topic-ru.mdx`
-- `YYYY-MM-DD-my-topic-en.mdx`
+- `src/content/blog/YYYY-MM-DD-my-topic-ru.mdx`
+- `src/content/blog/YYYY-MM-DD-my-topic-en.mdx`
 
-Both files include the same `translationKey` and a `cover` path template.
+## 2. Fill frontmatter
 
-## 2) Fill frontmatter safely
-
-Required fields for each post:
+Required fields for each language version:
 
 - `title`
 - `description`
@@ -29,13 +27,26 @@ Required fields for each post:
 - `tags`
 - `draft`
 
-When the article is ready, set:
+Optional fields:
 
-```yaml
-draft: false
-```
+- `updatedAt`
+- `cover`
 
-## 3) Add images
+Only switch to `draft: false` when both RU and EN versions are ready.
+
+## 3. Translation-pair checklist
+
+Before publish, verify all of the following:
+
+- both files share the same `translationKey`
+- both files use the same `publishedAt` date
+- RU version has `lang: ru`
+- EN version has `lang: en`
+- titles and descriptions are present in both files
+- both posts have matching intent, not different topics under one key
+- locale switch on the post page opens the paired article, not `/blog`
+
+## 4. Images and assets
 
 Recommended location:
 
@@ -43,68 +54,47 @@ Recommended location:
 
 Example:
 
-- `public/images/blog/2026-02-20-my-topic/cover.jpg`
-
-In MDX, reference images by absolute web path:
-
 ```md
-![Architecture diagram](/images/blog/2026-02-20-my-topic/cover.jpg)
+![Architecture diagram](/images/blog/welcome-2026-02-19/cover.jpg)
 ```
 
-Image recommendations:
+Recommendations:
 
-- width: `1200px` for covers
-- format: `webp` or optimized `jpg`
-- target size: under `300 KB` when possible
-- always provide meaningful alt text
+- cover width around `1200px`
+- `webp` or optimized `jpg`
+- keep cover images under `300 KB` when possible
+- always include meaningful alt text
 
-## 4) Local pre-publish checks
+## 5. Local validation
 
-Run checks before every deploy:
+Run the full local validation path before opening a PR:
+
+```bash
+npm run validate
+```
+
+If you only changed content and want a faster pass:
 
 ```bash
 npm run build
+npm run link-check
 ```
 
-Optional quick run:
-
-```bash
-npm run dev
-```
-
-Then verify in browser:
+Manual browser checks:
 
 - `/blog`
-- both article URLs (`-ru` and `-en`)
-- locale switch on article page (must jump to paired version)
+- both article URLs
+- locale switch on article page
+- metadata preview in built HTML if the post has a custom cover
 
-## 5) Safe deploy flow
+## 6. Safe GitHub + Linear flow
 
-Use a small commit with only article/image changes:
+Use the standard repo workflow from [`docs/workflow.md`](./workflow.md):
 
-```bash
-git add src/content/blog public/images/blog
-git commit -m "Add RU/EN post: my-topic"
-git push origin main
-```
+1. Create a branch from `main`
+2. Reference the Linear issue in the branch or commit
+3. Open a PR
+4. Wait for CI to pass
+5. Merge to `main`
 
-GitHub Actions deploy will:
-
-- pull latest code
-- rebuild containers
-- run healthchecks
-
-## 6) GitHub activity sanity checks
-
-If activity section looks stale, verify locally or on server:
-
-```bash
-curl -fsS http://127.0.0.1:4321/api/github/profile.json
-curl -fsS http://127.0.0.1:4321/api/github/contributions.json
-```
-
-If needed, prewarm cache manually:
-
-```bash
-systemctl start portfo-github-prewarm.service
-```
+GitHub Pages deploy runs after merge to `main`.

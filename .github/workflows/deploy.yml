@@ -43,6 +43,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
 
+      - name: Check internal links
+        run: npm run link-check
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

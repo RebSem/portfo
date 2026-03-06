@@ -122,6 +122,30 @@ const localizeMeta = (locale) => {
   if (metaDescription) {
     metaDescription.setAttribute('content', withLocale(locale, ruDescription, enDescription));
   }
+
+  const localizedTitle = withLocale(locale, ruTitle ?? document.title, enTitle ?? document.title);
+  const localizedDescription = withLocale(locale, ruDescription, enDescription);
+
+  const titleSelectors = ['meta[property="og:title"]', 'meta[name="twitter:title"]'];
+  titleSelectors.forEach((selector) => {
+    const node = document.querySelector(selector);
+    if (node) {
+      node.setAttribute('content', localizedTitle);
+    }
+  });
+
+  const descriptionSelectors = ['meta[property="og:description"]', 'meta[name="twitter:description"]'];
+  descriptionSelectors.forEach((selector) => {
+    const node = document.querySelector(selector);
+    if (node) {
+      node.setAttribute('content', localizedDescription);
+    }
+  });
+
+  const localeMeta = document.querySelector('meta[property="og:locale"]');
+  if (localeMeta) {
+    localeMeta.setAttribute('content', locale === 'ru' ? 'ru_RU' : 'en_US');
+  }
 };
 
 const updateLocaleToggle = (locale) => {
@@ -163,6 +187,7 @@ const emitLocaleChange = (locale) => {
 
 const applyTheme = (theme, options = { manual: false }) => {
   document.documentElement.setAttribute('data-theme', theme);
+  document.documentElement.style.colorScheme = theme;
   if (document.body) {
     document.body.style.colorScheme = theme;
   }
@@ -179,6 +204,7 @@ const applyTheme = (theme, options = { manual: false }) => {
 
 const applyLocale = (locale) => {
   document.documentElement.lang = locale;
+  document.documentElement.dataset.locale = locale;
   document.body.dataset.locale = locale;
 
   localizeTextNodes(locale);

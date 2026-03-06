@@ -11,6 +11,8 @@ import {
   heroStatusLoading,
   heroStatusReady,
   heroSubtitle,
+  linkedinUrl,
+  telegramUrl,
   uiCopy,
 } from '../data/site-content';
 import Layout from '../layouts/Layout.astro';
@@ -18,11 +20,32 @@ import githubScriptUrl from '../scripts/github-activity.js?url';
 import localeScriptUrl from '../scripts/locale.js?url';
 
 const avatarUrl = `https://avatars.githubusercontent.com/${githubUsername}?size=560`;
+const aboutSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  url: 'https://rebsem.ru/about',
+  name: `${heroDisplayName.en} — About`,
+  inLanguage: ['en', 'ru'],
+  mainEntity: {
+    '@type': 'Person',
+    name: heroDisplayName.en,
+    alternateName: heroDisplayName.ru,
+    jobTitle: 'Product Manager (AI) / Product Engineer',
+    image: avatarUrl,
+    sameAs: [
+      `https://github.com/${githubUsername}`,
+      telegramUrl,
+      linkedinUrl,
+    ],
+    description: heroSubtitle.en,
+  },
+};
 ---
 
 <Layout
   title={`${heroFallbackName} — About`}
   description="About page with engineering focus, AI integration work, and GitHub activity."
+  schema={aboutSchema}
 >
   <a
     id="skip-to-content"

@@ -2,7 +2,7 @@
 import { getCollection, getEntry, render } from 'astro:content';
 import SiteFooter from '../../components/SiteFooter.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
-import { heroFallbackName, uiCopy } from '../../data/site-content';
+import { githubUsername, heroDisplayName, heroFallbackName, linkedinUrl, telegramUrl, uiCopy } from '../../data/site-content';
 import Layout from '../../layouts/Layout.astro';
 import localeScriptUrl from '../../scripts/locale.js?url';
 
@@ -39,9 +39,40 @@ const dateLabelEn = new Intl.DateTimeFormat('en-US', {
   month: 'long',
   year: 'numeric',
 }).format(post.data.publishedAt);
+const pageImage = post.data.cover ?? '/main-hero.jpg';
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.publishedAt.toISOString(),
+  dateModified: (post.data.updatedAt ?? post.data.publishedAt).toISOString(),
+  inLanguage: post.data.lang,
+  image: pageImage.startsWith('http://') || pageImage.startsWith('https://')
+    ? pageImage
+    : `https://rebsem.ru${pageImage}`,
+  url: `https://rebsem.ru/blog/${post.slug}`,
+  mainEntityOfPage: `https://rebsem.ru/blog/${post.slug}`,
+  author: {
+    '@type': 'Person',
+    name: heroDisplayName.en,
+    alternateName: heroDisplayName.ru,
+    sameAs: [
+      `https://github.com/${githubUsername}`,
+      telegramUrl,
+      linkedinUrl,
+    ],
+  },
+};
 ---
 
-<Layout title={`${post.data.title} — ${heroFallbackName}`} description={post.data.description} type="article">
+<Layout
+  title={`${post.data.title} — ${heroFallbackName}`}
+  description={post.data.description}
+  image={pageImage}
+  type="article"
+  schema={articleSchema}
+>
   <a
     id="skip-to-content"
     href="#main-content"
