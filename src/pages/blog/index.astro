@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import SiteFooter from '../../components/SiteFooter.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
-import { heroFallbackName, uiCopy } from '../../data/site-content';
+import { heroDisplayName, heroFallbackName, uiCopy } from '../../data/site-content';
 import Layout from '../../layouts/Layout.astro';
 import blogScriptUrl from '../../scripts/blog.js?url';
 import localeScriptUrl from '../../scripts/locale.js?url';
@@ -16,9 +16,18 @@ const initialDateFormat = new Intl.DateTimeFormat('en-US', {
   month: 'long',
   year: 'numeric',
 });
+
+const blogSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  url: 'https://rebsem.ru/blog',
+  name: `${heroDisplayName.en} Blog`,
+  description: 'Blog with posts about engineering, product work, and practical AI.',
+  inLanguage: ['en', 'ru'],
+};
 ---
 
-<Layout title={`${heroFallbackName} — Blog`} description="Blog section with engineering posts.">
+<Layout title={`${heroFallbackName} — Blog`} description="Blog section with engineering posts." schema={blogSchema}>
   <a
     id="skip-to-content"
     href="#main-content"

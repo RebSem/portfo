@@ -65,7 +65,11 @@ npm run preview
 ```bash
 npm run check
 npm test
+npm run build
+npm run link-check
 ```
+
+Full pre-merge workflow: [`docs/workflow.md`](docs/workflow.md)
 
 ## Blog Workflow
 
@@ -76,6 +80,8 @@ npm run new:post -- my-post-slug --title-ru "Заголовок" --title-en "Tit
 ```
 
 Detailed guide: `docs/blog-authoring.md`
+
+Content plan: `docs/content-plan.md`
 
 ## Environment Variables
 
@@ -91,6 +97,8 @@ This repository deploys via GitHub Actions workflow:
 - Workflow: `.github/workflows/deploy.yml`
 - Trigger: push to `main`
 - Custom domain: `rebsem.ru` (via `public/CNAME`)
+
+CI for PRs and branch validation lives in `.github/workflows/ci.yml`.
 
 ## Attribution
 
