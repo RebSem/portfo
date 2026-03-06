@@ -1,0 +1,28 @@
+---
+import SocialLinks from './SocialLinks.astro';
+import { uiCopy } from '../data/site-content';
+
+interface Props {
+  noteRu?: string;
+  noteEn?: string;
+}
+
+const {
+  noteRu = uiCopy.footer.defaultNote.ru,
+  noteEn = uiCopy.footer.defaultNote.en,
+} = Astro.props;
+---
+
+<footer class="site-footer">
+  <div class="divider-wrap" aria-hidden="true">
+    <hr class="divider" />
+  </div>
+
+  <div class="footer-inner">
+    <SocialLinks />
+
+    <p class="footer-note" data-i18n-ru={noteRu} data-i18n-en={noteEn}>
+      {noteEn}
+    </p>
+  </div>
+</footer>

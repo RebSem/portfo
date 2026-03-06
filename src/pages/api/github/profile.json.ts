@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 import { githubUsername } from '../../../data/site-content';
 import { getGithubProfile } from '../../../lib/github';
 
-export const prerender = false;
+export const prerender = true;
 
 export const GET: APIRoute = async () => {
   try {
@@ -11,7 +11,7 @@ export const GET: APIRoute = async () => {
       status: 200,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
-        'Cache-Control': 'public, max-age=300',
+        'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',
       },
     });
   } catch (error) {

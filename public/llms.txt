@@ -1,0 +1,22 @@
+# Mikhail Semenov
+
+Personal portfolio site focused on product engineering, practical AI integration, and weekly progress updates.
+
+## Canonical site
+- https://rebsem.ru/
+
+## Main pages
+- Home: https://rebsem.ru/
+- About: https://rebsem.ru/about
+- Blog index: https://rebsem.ru/blog
+
+## Content notes
+- Blog posts are published in RU and EN.
+- Language is switchable in the UI and matched to browser preference by default.
+- Portfolio projects and engineering notes are maintained directly in this repository.
+
+## Contact
+- GitHub: https://github.com/RebSem
+- Telegram: https://t.me/Michael_Semenov
+- LinkedIn: https://www.linkedin.com/in/mikhail-semenovv/
+- Email: perk77331@gmail.com
