@@ -1,0 +1,204 @@
+---
+import SiteFooter from '../../components/SiteFooter.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import { githubUsername, heroDisplayName, heroFallbackName, linkedinUrl, projectsPath, telegramUrl, uiCopy } from '../../data/site-content';
+import { getProjectById, visibleProjects } from '../../data/projects';
+import Layout from '../../layouts/Layout.astro';
+import localeScriptUrl from '../../scripts/locale.js?url';
+
+export async function getStaticPaths() {
+  return visibleProjects.map((project) => ({
+    params: { id: project.id },
+  }));
+}
+
+const projectId = Astro.params.id ?? '';
+const project = getProjectById(projectId);
+
+if (!project) {
+  return Astro.redirect('/projects', 302);
+}
+
+const pageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  name: project.title.en,
+  description: project.summary.en,
+  url: `https://rebsem.ru/projects/${project.id}`,
+  creator: {
+    '@type': 'Person',
+    name: heroDisplayName.en,
+    alternateName: heroDisplayName.ru,
+    sameAs: [
+      `https://github.com/${githubUsername}`,
+      telegramUrl,
+      linkedinUrl,
+    ],
+  },
+};
+---
+
+<Layout
+  title={`${project.title.en} — ${heroFallbackName}`}
+  description={project.summary.en}
+  schema={pageSchema}
+>
+  <a
+    id="skip-to-content"
+    href="#main-content"
+    class="skip-link"
+    data-i18n-ru="Перейти к содержимому"
+    data-i18n-en="Skip to content"
+  >
+    Skip to content
+  </a>
+
+  <SiteHeader active="projects" />
+
+  <div class="divider-wrap" aria-hidden="true">
+    <hr class="divider" />
+  </div>
+
+  <main
+    id="main-content"
+    class="page-main"
+    data-title-ru={`${project.title.ru} — Проект`}
+    data-title-en={`${project.title.en} — Project`}
+    data-description-ru={project.summary.ru}
+    data-description-en={project.summary.en}
+  >
+    <article class="case-shell">
+      <p>
+        <a href={projectsPath} data-i18n-ru={uiCopy.projects.title.ru} data-i18n-en={uiCopy.projects.title.en}>
+          {uiCopy.projects.title.en}
+        </a>
+      </p>
+
+      <header class="case-hero">
+        <div class="case-hero-copy">
+          <p class="about-eyebrow" data-i18n-ru={project.eyebrow.ru} data-i18n-en={project.eyebrow.en}>
+            {project.eyebrow.en}
+          </p>
+          <h1 data-i18n-ru={project.title.ru} data-i18n-en={project.title.en}>{project.title.en}</h1>
+          <p class="case-highlight" data-i18n-ru={project.highlight.ru} data-i18n-en={project.highlight.en}>
+            {project.highlight.en}
+          </p>
+          <p data-i18n-ru={project.summary.ru} data-i18n-en={project.summary.en}>{project.summary.en}</p>
+        </div>
+
+        <div class="case-snapshot">
+          <h2 data-i18n-ru={uiCopy.projects.metricsLabel.ru} data-i18n-en={uiCopy.projects.metricsLabel.en}>
+            {uiCopy.projects.metricsLabel.en}
+          </h2>
+          <dl class="case-metrics">
+            {project.metrics.map((metric) => (
+              <div>
+                <dt data-i18n-ru={metric.label.ru} data-i18n-en={metric.label.en}>{metric.label.en}</dt>
+                <dd data-i18n-ru={metric.value.ru} data-i18n-en={metric.value.en}>{metric.value.en}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </header>
+
+      <section class="case-section" aria-labelledby="case-meta-title">
+        <h2 id="case-meta-title" data-i18n-ru={uiCopy.projects.scopeLabel.ru} data-i18n-en={uiCopy.projects.scopeLabel.en}>
+          {uiCopy.projects.scopeLabel.en}
+        </h2>
+        <div class="project-meta-grid">
+          <div class="project-meta-card">
+            <span data-i18n-ru={uiCopy.projects.roleLabel.ru} data-i18n-en={uiCopy.projects.roleLabel.en}>
+              {uiCopy.projects.roleLabel.en}
+            </span>
+            <strong data-i18n-ru={project.role.ru} data-i18n-en={project.role.en}>{project.role.en}</strong>
+          </div>
+          <div class="project-meta-card">
+            <span data-i18n-ru={uiCopy.projects.scopeLabel.ru} data-i18n-en={uiCopy.projects.scopeLabel.en}>
+              {uiCopy.projects.scopeLabel.en}
+            </span>
+            <strong data-i18n-ru={project.scope.ru} data-i18n-en={project.scope.en}>{project.scope.en}</strong>
+          </div>
+          <div class="project-meta-card">
+            <span data-i18n-ru={uiCopy.projects.timelineLabel.ru} data-i18n-en={uiCopy.projects.timelineLabel.en}>
+              {uiCopy.projects.timelineLabel.en}
+            </span>
+            <strong data-i18n-ru={project.timeline.ru} data-i18n-en={project.timeline.en}>{project.timeline.en}</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="case-section" aria-labelledby="case-challenge-title">
+        <h2 id="case-challenge-title" data-i18n-ru={uiCopy.projects.challengeLabel.ru} data-i18n-en={uiCopy.projects.challengeLabel.en}>
+          {uiCopy.projects.challengeLabel.en}
+        </h2>
+        <p data-i18n-ru={project.challenge.ru} data-i18n-en={project.challenge.en}>{project.challenge.en}</p>
+      </section>
+
+      <section class="case-section" aria-labelledby="case-responsibilities-title">
+        <h2 id="case-responsibilities-title" data-i18n-ru={uiCopy.projects.responsibilitiesLabel.ru} data-i18n-en={uiCopy.projects.responsibilitiesLabel.en}>
+          {uiCopy.projects.responsibilitiesLabel.en}
+        </h2>
+        <ul class="case-list">
+          {project.responsibilities.map((item) => (
+            <li data-i18n-ru={item.ru} data-i18n-en={item.en}>{item.en}</li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="case-section" aria-labelledby="case-decisions-title">
+        <h2 id="case-decisions-title" data-i18n-ru={uiCopy.projects.decisionsLabel.ru} data-i18n-en={uiCopy.projects.decisionsLabel.en}>
+          {uiCopy.projects.decisionsLabel.en}
+        </h2>
+        <ul class="case-list">
+          {project.decisions.map((item) => (
+            <li data-i18n-ru={item.ru} data-i18n-en={item.en}>{item.en}</li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="case-section" aria-labelledby="case-outcomes-title">
+        <h2 id="case-outcomes-title" data-i18n-ru={uiCopy.projects.outcomesLabel.ru} data-i18n-en={uiCopy.projects.outcomesLabel.en}>
+          {uiCopy.projects.outcomesLabel.en}
+        </h2>
+        <ul class="case-list">
+          {project.outcomes.map((item) => (
+            <li data-i18n-ru={item.ru} data-i18n-en={item.en}>{item.en}</li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="case-section" aria-labelledby="case-stack-title">
+        <h2 id="case-stack-title" data-i18n-ru={uiCopy.projects.stackAria.ru} data-i18n-en={uiCopy.projects.stackAria.en}>
+          {uiCopy.projects.stackAria.en}
+        </h2>
+        <ul
+          class="stack-list"
+          aria-label={uiCopy.projects.stackAria.en}
+          data-i18n-aria-ru={uiCopy.projects.stackAria.ru}
+          data-i18n-aria-en={uiCopy.projects.stackAria.en}
+        >
+          {project.stack.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+
+        <p class="project-links">
+          {project.demoUrl && (
+            <a class="project-link project-link-primary" href={project.demoUrl} target="_blank" rel="noreferrer" data-i18n-ru={uiCopy.projects.demo.ru} data-i18n-en={uiCopy.projects.demo.en}>
+              {uiCopy.projects.demo.en}
+            </a>
+          )}
+          {project.repoUrl && (
+            <a class="project-link" href={project.repoUrl} target="_blank" rel="noreferrer" data-i18n-ru={uiCopy.projects.repo.ru} data-i18n-en={uiCopy.projects.repo.en}>
+              {uiCopy.projects.repo.en}
+            </a>
+          )}
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <SiteFooter />
+
+  <script is:inline type="module" src={localeScriptUrl}></script>
+</Layout>

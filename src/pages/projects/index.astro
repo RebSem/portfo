@@ -1,0 +1,131 @@
+---
+import SiteFooter from '../../components/SiteFooter.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import { heroDisplayName, heroFallbackName, projectsPath, uiCopy } from '../../data/site-content';
+import { visibleProjects } from '../../data/projects';
+import Layout from '../../layouts/Layout.astro';
+import localeScriptUrl from '../../scripts/locale.js?url';
+
+const pageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: `${heroDisplayName.en} Projects`,
+  url: 'https://rebsem.ru/projects',
+  inLanguage: ['en', 'ru'],
+};
+---
+
+<Layout
+  title={`${heroFallbackName} — Projects`}
+  description="Project case studies with role, decisions, and outcomes."
+  schema={pageSchema}
+>
+  <a
+    id="skip-to-content"
+    href="#main-content"
+    class="skip-link"
+    data-i18n-ru="Перейти к содержимому"
+    data-i18n-en="Skip to content"
+  >
+    Skip to content
+  </a>
+
+  <SiteHeader active="projects" />
+
+  <div class="divider-wrap" aria-hidden="true">
+    <hr class="divider" />
+  </div>
+
+  <main
+    id="main-content"
+    class="page-main"
+    data-title-ru={`${heroFallbackName} — Проекты`}
+    data-title-en={`${heroFallbackName} — Projects`}
+    data-description-ru="Подробные кейсы с ролью, решениями и результатом."
+    data-description-en="Detailed case studies with role, decisions, and outcome."
+  >
+    <section class="projects-page" aria-labelledby="projects-page-title">
+      <div class="section-head">
+        <p class="about-eyebrow" data-i18n-ru={uiCopy.projects.title.ru} data-i18n-en={uiCopy.projects.title.en}>
+          {uiCopy.projects.title.en}
+        </p>
+        <h1 id="projects-page-title" data-i18n-ru={uiCopy.projects.title.ru} data-i18n-en={uiCopy.projects.title.en}>
+          {uiCopy.projects.title.en}
+        </h1>
+        <p data-i18n-ru={uiCopy.projects.subtitle.ru} data-i18n-en={uiCopy.projects.subtitle.en}>
+          {uiCopy.projects.subtitle.en}
+        </p>
+      </div>
+
+      <div class="projects-list projects-directory">
+        {visibleProjects.map((project) => (
+          <article class="project-card project-card-detailed">
+            <div class="project-card-topline">
+              <p class="project-card-eyebrow" data-i18n-ru={project.eyebrow.ru} data-i18n-en={project.eyebrow.en}>
+                {project.eyebrow.en}
+              </p>
+              <h2 data-i18n-ru={project.title.ru} data-i18n-en={project.title.en}>{project.title.en}</h2>
+            </div>
+
+            <p class="project-highlight" data-i18n-ru={project.highlight.ru} data-i18n-en={project.highlight.en}>
+              {project.highlight.en}
+            </p>
+
+            <div class="project-meta-grid">
+              <div class="project-meta-card">
+                <span data-i18n-ru={uiCopy.projects.roleLabel.ru} data-i18n-en={uiCopy.projects.roleLabel.en}>
+                  {uiCopy.projects.roleLabel.en}
+                </span>
+                <strong data-i18n-ru={project.role.ru} data-i18n-en={project.role.en}>{project.role.en}</strong>
+              </div>
+              <div class="project-meta-card">
+                <span data-i18n-ru={uiCopy.projects.scopeLabel.ru} data-i18n-en={uiCopy.projects.scopeLabel.en}>
+                  {uiCopy.projects.scopeLabel.en}
+                </span>
+                <strong data-i18n-ru={project.scope.ru} data-i18n-en={project.scope.en}>{project.scope.en}</strong>
+              </div>
+            </div>
+
+            <p data-i18n-ru={project.summary.ru} data-i18n-en={project.summary.en}>{project.summary.en}</p>
+
+            <ul
+              class="stack-list"
+              aria-label={uiCopy.projects.stackAria.en}
+              data-i18n-aria-ru={uiCopy.projects.stackAria.ru}
+              data-i18n-aria-en={uiCopy.projects.stackAria.en}
+            >
+              {project.stack.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+
+            <p class="project-links">
+              <a
+                class="project-link project-link-primary"
+                href={`${projectsPath}/${project.id}`}
+                data-i18n-ru={uiCopy.projects.case.ru}
+                data-i18n-en={uiCopy.projects.case.en}
+              >
+                {uiCopy.projects.case.en}
+              </a>
+              {project.demoUrl && (
+                <a class="project-link" href={project.demoUrl} target="_blank" rel="noreferrer" data-i18n-ru={uiCopy.projects.demo.ru} data-i18n-en={uiCopy.projects.demo.en}>
+                  {uiCopy.projects.demo.en}
+                </a>
+              )}
+              {project.repoUrl && (
+                <a class="project-link" href={project.repoUrl} target="_blank" rel="noreferrer" data-i18n-ru={uiCopy.projects.repo.ru} data-i18n-en={uiCopy.projects.repo.en}>
+                  {uiCopy.projects.repo.en}
+                </a>
+              )}
+            </p>
+          </article>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <script is:inline type="module" src={localeScriptUrl}></script>
+</Layout>

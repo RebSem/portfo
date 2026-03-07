@@ -1,5 +1,6 @@
 import { getCollection } from 'astro:content';
 import type { APIRoute } from 'astro';
+import { visibleProjects } from '../data/projects';
 
 const SITE_URL = 'https://rebsem.ru';
 
@@ -14,7 +15,7 @@ const escapeXml = (value: string) =>
 export const GET: APIRoute = async () => {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
 
-  const staticUrls = ['/', '/about', '/blog'];
+  const staticUrls = ['/', '/about', '/blog', '/projects'];
 
   const staticEntries = staticUrls
     .map((path) => {
@@ -31,7 +32,14 @@ export const GET: APIRoute = async () => {
     })
     .join('');
 
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${staticEntries}${postEntries}</urlset>`;
+  const projectEntries = visibleProjects
+    .map((project) => {
+      const loc = `${SITE_URL}/projects/${project.id}`;
+      return `<url><loc>${escapeXml(loc)}</loc></url>`;
+    })
+    .join('');
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${staticEntries}${postEntries}${projectEntries}</urlset>`;
 
   return new Response(xml, {
     status: 200,

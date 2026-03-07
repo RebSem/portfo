@@ -3,16 +3,16 @@ import { getCollection } from 'astro:content';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SocialLinks from '../components/SocialLinks.astro';
-import { projects } from '../data/projects';
-import { githubUsername, heroDisplayName, heroFallbackName, linkedinUrl, telegramUrl, uiCopy } from '../data/site-content';
+import { visibleProjects } from '../data/projects';
+import { githubUsername, heroDisplayName, heroFallbackName, linkedinUrl, projectsPath, telegramUrl, uiCopy } from '../data/site-content';
 import Layout from '../layouts/Layout.astro';
 import blogScriptUrl from '../scripts/blog.js?url';
 import localeScriptUrl from '../scripts/locale.js?url';
 
-const visibleProjects = projects.filter((project) => !project.placeholder);
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
   .slice(0, 6);
+const featuredProject = visibleProjects.find((project) => project.featured) ?? visibleProjects[0];
 
 const initialDateFormat = new Intl.DateTimeFormat('en-US', {
   day: 'numeric',
@@ -86,22 +86,141 @@ const websiteSchema = {
           {uiCopy.home.lead.en}
         </p>
 
+        <div class="hero-actions">
+          {featuredProject && (
+            <a
+              class="button-link button-link-primary"
+              href={`${projectsPath}/${featuredProject.id}`}
+              data-i18n-ru={uiCopy.home.primaryCta.ru}
+              data-i18n-en={uiCopy.home.primaryCta.en}
+            >
+              {uiCopy.home.primaryCta.en}
+            </a>
+          )}
+
+          <a
+            class="button-link button-link-secondary"
+            href={telegramUrl}
+            target="_blank"
+            rel="noreferrer"
+            data-i18n-ru={uiCopy.home.secondaryCta.ru}
+            data-i18n-en={uiCopy.home.secondaryCta.en}
+          >
+            {uiCopy.home.secondaryCta.en}
+          </a>
+        </div>
+
+        <div class="home-proof-block">
+          <p class="home-proof-title" data-i18n-ru={uiCopy.home.proofTitle.ru} data-i18n-en={uiCopy.home.proofTitle.en}>
+            {uiCopy.home.proofTitle.en}
+          </p>
+          <ul class="home-proof-list">
+            <li data-i18n-ru={uiCopy.home.proofOne.ru} data-i18n-en={uiCopy.home.proofOne.en}>{uiCopy.home.proofOne.en}</li>
+            <li data-i18n-ru={uiCopy.home.proofTwo.ru} data-i18n-en={uiCopy.home.proofTwo.en}>{uiCopy.home.proofTwo.en}</li>
+            <li data-i18n-ru={uiCopy.home.proofThree.ru} data-i18n-en={uiCopy.home.proofThree.en}>{uiCopy.home.proofThree.en}</li>
+          </ul>
+        </div>
+
         <SocialLinks className="social-links profile-social-links" />
       </div>
 
-      <div class="home-avatar-wrap">
-        <img
-          class="home-avatar"
-          src="/main-hero.jpg"
-          width="320"
-          height="320"
-          loading="eager"
-          alt={uiCopy.home.photoAlt.en}
-          data-i18n-alt-ru={uiCopy.home.photoAlt.ru}
-          data-i18n-alt-en={uiCopy.home.photoAlt.en}
-        />
+      <div class="home-hero-rail">
+        <div class="home-avatar-wrap">
+          <img
+            class="home-avatar"
+            src="/main-hero.jpg"
+            width="320"
+            height="320"
+            loading="eager"
+            alt={uiCopy.home.photoAlt.en}
+            data-i18n-alt-ru={uiCopy.home.photoAlt.ru}
+            data-i18n-alt-en={uiCopy.home.photoAlt.en}
+          />
+        </div>
+
+        <div class="home-availability-card">
+          <p class="home-availability-title" data-i18n-ru={uiCopy.home.availabilityTitle.ru} data-i18n-en={uiCopy.home.availabilityTitle.en}>
+            {uiCopy.home.availabilityTitle.en}
+          </p>
+          <ul class="home-availability-list">
+            <li data-i18n-ru={uiCopy.home.availabilityOne.ru} data-i18n-en={uiCopy.home.availabilityOne.en}>{uiCopy.home.availabilityOne.en}</li>
+            <li data-i18n-ru={uiCopy.home.availabilityTwo.ru} data-i18n-en={uiCopy.home.availabilityTwo.en}>{uiCopy.home.availabilityTwo.en}</li>
+            <li data-i18n-ru={uiCopy.home.availabilityThree.ru} data-i18n-en={uiCopy.home.availabilityThree.en}>{uiCopy.home.availabilityThree.en}</li>
+          </ul>
+        </div>
       </div>
     </section>
+
+    {featuredProject && (
+      <section class="featured-case section-block" aria-labelledby="featured-case-title">
+        <div class="section-head">
+          <p class="about-eyebrow" data-i18n-ru={uiCopy.home.featuredLabel.ru} data-i18n-en={uiCopy.home.featuredLabel.en}>
+            {uiCopy.home.featuredLabel.en}
+          </p>
+          <h2 id="featured-case-title" data-i18n-ru={uiCopy.home.featuredTitle.ru} data-i18n-en={uiCopy.home.featuredTitle.en}>
+            {uiCopy.home.featuredTitle.en}
+          </h2>
+          <p data-i18n-ru={uiCopy.home.featuredSubtitle.ru} data-i18n-en={uiCopy.home.featuredSubtitle.en}>
+            {uiCopy.home.featuredSubtitle.en}
+          </p>
+        </div>
+
+        <article class="featured-case-card">
+          <div class="featured-case-main">
+            <p class="project-card-eyebrow" data-i18n-ru={featuredProject.eyebrow.ru} data-i18n-en={featuredProject.eyebrow.en}>
+              {featuredProject.eyebrow.en}
+            </p>
+            <h3 data-i18n-ru={featuredProject.title.ru} data-i18n-en={featuredProject.title.en}>{featuredProject.title.en}</h3>
+            <p class="project-highlight" data-i18n-ru={featuredProject.highlight.ru} data-i18n-en={featuredProject.highlight.en}>
+              {featuredProject.highlight.en}
+            </p>
+            <p data-i18n-ru={featuredProject.summary.ru} data-i18n-en={featuredProject.summary.en}>{featuredProject.summary.en}</p>
+
+            <div class="project-meta-grid">
+              <div class="project-meta-card">
+                <span data-i18n-ru={uiCopy.projects.roleLabel.ru} data-i18n-en={uiCopy.projects.roleLabel.en}>
+                  {uiCopy.projects.roleLabel.en}
+                </span>
+                <strong data-i18n-ru={featuredProject.role.ru} data-i18n-en={featuredProject.role.en}>{featuredProject.role.en}</strong>
+              </div>
+              <div class="project-meta-card">
+                <span data-i18n-ru={uiCopy.projects.scopeLabel.ru} data-i18n-en={uiCopy.projects.scopeLabel.en}>
+                  {uiCopy.projects.scopeLabel.en}
+                </span>
+                <strong data-i18n-ru={featuredProject.scope.ru} data-i18n-en={featuredProject.scope.en}>{featuredProject.scope.en}</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="featured-case-side">
+            <dl class="case-metrics">
+              {featuredProject.metrics.map((metric) => (
+                <div>
+                  <dt data-i18n-ru={metric.label.ru} data-i18n-en={metric.label.en}>{metric.label.en}</dt>
+                  <dd data-i18n-ru={metric.value.ru} data-i18n-en={metric.value.en}>{metric.value.en}</dd>
+                </div>
+              ))}
+            </dl>
+
+            <p class="project-links">
+              <a
+                class="project-link project-link-primary"
+                href={`${projectsPath}/${featuredProject.id}`}
+                data-i18n-ru={uiCopy.projects.case.ru}
+                data-i18n-en={uiCopy.projects.case.en}
+              >
+                {uiCopy.projects.case.en}
+              </a>
+              {featuredProject.demoUrl && (
+                <a class="project-link" href={featuredProject.demoUrl} target="_blank" rel="noreferrer" data-i18n-ru={uiCopy.projects.demo.ru} data-i18n-en={uiCopy.projects.demo.en}>
+                  {uiCopy.projects.demo.en}
+                </a>
+              )}
+            </p>
+          </div>
+        </article>
+      </section>
+    )}
 
     <section class="section-block" aria-labelledby="recent-title">
       <div class="section-head">
@@ -170,9 +289,30 @@ const websiteSchema = {
         ) : (
           <div class="projects-list">
             {visibleProjects.map((project) => (
-              <article class="project-card">
-                <h3 data-i18n-ru={project.title.ru} data-i18n-en={project.title.en}>{project.title.en}</h3>
+              <article class="project-card project-card-detailed">
+                <div class="project-card-topline">
+                  <p class="project-card-eyebrow" data-i18n-ru={project.eyebrow.ru} data-i18n-en={project.eyebrow.en}>
+                    {project.eyebrow.en}
+                  </p>
+                  <h3 data-i18n-ru={project.title.ru} data-i18n-en={project.title.en}>{project.title.en}</h3>
+                </div>
+                <p class="project-highlight" data-i18n-ru={project.highlight.ru} data-i18n-en={project.highlight.en}>{project.highlight.en}</p>
                 <p data-i18n-ru={project.summary.ru} data-i18n-en={project.summary.en}>{project.summary.en}</p>
+
+                <div class="project-meta-grid">
+                  <div class="project-meta-card">
+                    <span data-i18n-ru={uiCopy.projects.roleLabel.ru} data-i18n-en={uiCopy.projects.roleLabel.en}>
+                      {uiCopy.projects.roleLabel.en}
+                    </span>
+                    <strong data-i18n-ru={project.role.ru} data-i18n-en={project.role.en}>{project.role.en}</strong>
+                  </div>
+                  <div class="project-meta-card">
+                    <span data-i18n-ru={uiCopy.projects.timelineLabel.ru} data-i18n-en={uiCopy.projects.timelineLabel.en}>
+                      {uiCopy.projects.timelineLabel.en}
+                    </span>
+                    <strong data-i18n-ru={project.timeline.ru} data-i18n-en={project.timeline.en}>{project.timeline.en}</strong>
+                  </div>
+                </div>
 
                 <ul
                   class="stack-list"
@@ -187,6 +327,14 @@ const websiteSchema = {
 
                 {(project.repoUrl || project.demoUrl) && (
                   <p class="project-links">
+                    <a
+                      class="project-link project-link-primary"
+                      href={`${projectsPath}/${project.id}`}
+                      data-i18n-ru={uiCopy.projects.case.ru}
+                      data-i18n-en={uiCopy.projects.case.en}
+                    >
+                      {uiCopy.projects.case.en}
+                    </a>
                     {project.repoUrl && (
                       <a class="project-link" href={project.repoUrl} target="_blank" rel="noreferrer" data-i18n-ru={uiCopy.projects.repo.ru} data-i18n-en={uiCopy.projects.repo.en}>
                         {uiCopy.projects.repo.en}

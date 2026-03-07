@@ -8,6 +8,7 @@ export const linkedinUrl = 'https://www.linkedin.com/in/mikhail-semenovv/';
 export const homePath = '/';
 export const aboutPath = '/about';
 export const blogPath = '/blog';
+export const projectsPath = '/projects';
 
 export const heroFallbackName = 'Mikhail Semenov';
 export const heroDisplayName: LocalizedText = {
@@ -119,20 +120,45 @@ export const uiCopy = {
     primaryAria: { ru: 'Основная навигация', en: 'Primary navigation' },
   },
   home: {
-    eyebrow: { ru: 'Product Manager / AI', en: 'Product Manager / AI' },
+    eyebrow: { ru: 'Product strategy + product engineering', en: 'Product strategy + product engineering' },
     title: {
-      ru: 'Развиваю AI-продукты: соединяю продуктовую стратегию, инженерную глубину и практичную автоматизацию через агентов.',
-      en: 'I build AI products by combining product strategy, engineering depth, and practical automation with AI agents.',
+      ru: 'Делаю продуктовые и AI-задачи end-to-end: от неясной постановки и UX до работающего релиза.',
+      en: 'I take product and AI work end-to-end, from messy problem framing and UX to a working release.',
     },
     lead: {
-      ru: 'Беру задачу от гипотезы до измеримого результата: discovery, UX, архитектура и запуск в production.',
-      en: 'I take work from hypothesis to measurable outcomes: discovery, UX, architecture, and production delivery.',
+      ru: 'Подхожу как продакт, реализую как инженер: собираю структуру решения, убираю лишнюю сложность и довожу систему до production.',
+      en: 'I approach work like a product owner and build it like an engineer: shape the solution, remove unnecessary complexity, and ship it to production.',
     },
     photoAlt: { ru: 'Фото Михаила Семенова', en: 'Photo of Mikhail Semenov' },
+    proofTitle: { ru: 'Что беру на себя', en: 'What I own' },
+    proofOne: {
+      ru: 'Формулирую задачу, собираю scope и превращаю размытый запрос в понятный план.',
+      en: 'I turn vague requests into a scoped problem statement and a plan the team can execute.',
+    },
+    proofTwo: {
+      ru: 'Проектирую UX и информационную структуру так, чтобы продукт было легко понять и использовать.',
+      en: 'I design UX and information architecture so the product is easy to understand and use.',
+    },
+    proofThree: {
+      ru: 'Сам довожу реализацию до релиза: frontend, интеграции, контентная система и delivery-процесс.',
+      en: 'I carry implementation through release myself: frontend, integrations, content systems, and delivery workflow.',
+    },
+    primaryCta: { ru: 'Посмотреть кейс portfo', en: 'See the portfo case' },
+    secondaryCta: { ru: 'Написать в Telegram', en: 'Message me on Telegram' },
+    availabilityTitle: { ru: 'Подхожу для задач', en: 'Best fit for' },
+    availabilityOne: { ru: 'AI-фичи и внутренние инструменты', en: 'AI features and internal tools' },
+    availabilityTwo: { ru: 'Product UX, IA и front-of-product layer', en: 'Product UX, IA, and front-of-product work' },
+    availabilityThree: { ru: 'Небольшие команды, где нужен сильный generalist', en: 'Small teams that need a strong generalist' },
     postsTitle: { ru: 'Свежие статьи', en: 'Recent posts' },
     postsSubtitle: {
       ru: 'Заметки о разработке, архитектуре и практическом использовании AI.',
       en: 'Notes on engineering, architecture, and practical AI usage.',
+    },
+    featuredLabel: { ru: 'Избранный кейс', en: 'Featured case' },
+    featuredTitle: { ru: 'Проект, в который уже можно провалиться', en: 'A project you can inspect in detail' },
+    featuredSubtitle: {
+      ru: 'Начал с собственного сайта: это хороший образец того, как я совмещаю positioning, UX, разработку и release discipline.',
+      en: 'I started with my own site because it is a good example of how I combine positioning, UX, implementation, and release discipline.',
     },
   },
   hero: {
@@ -173,8 +199,8 @@ export const uiCopy = {
   projects: {
     title: { ru: 'Проекты', en: 'Projects' },
     subtitle: {
-      ru: 'Выбранные кейсы и эксперименты в разработке.',
-      en: 'Selected case studies and product experiments.',
+      ru: 'Кейсы, где можно посмотреть не только результат, но и мою роль, решения и ход работы.',
+      en: 'Case studies that show not just the outcome, but also my role, decisions, and how the work was shaped.',
     },
     empty: {
       ru: 'Сейчас собираю свежие кейсы. Скоро здесь появятся подробные разборы.',
@@ -182,6 +208,15 @@ export const uiCopy = {
     },
     repo: { ru: 'Репозиторий', en: 'Repository' },
     demo: { ru: 'Демо', en: 'Live demo' },
+    case: { ru: 'Открыть кейс', en: 'Open case study' },
+    roleLabel: { ru: 'Роль', en: 'Role' },
+    scopeLabel: { ru: 'Объем', en: 'Scope' },
+    timelineLabel: { ru: 'Период', en: 'Timeline' },
+    challengeLabel: { ru: 'Контекст и задача', en: 'Context and challenge' },
+    responsibilitiesLabel: { ru: 'Что я вел сам', en: 'What I owned directly' },
+    decisionsLabel: { ru: 'Ключевые решения', en: 'Key decisions' },
+    outcomesLabel: { ru: 'Что получилось', en: 'Outcome' },
+    metricsLabel: { ru: 'Срез проекта', en: 'Project snapshot' },
     stackAria: { ru: 'Технологии проекта', en: 'Project technologies' },
     statusInProgress: { ru: 'В работе', en: 'In progress' },
   },
