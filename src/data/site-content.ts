@@ -186,7 +186,6 @@ export const uiCopy = {
     },
     typeLabel: { ru: 'Тип', en: 'Type' },
     roleLabel: { ru: 'Роль', en: 'Role' },
-    proofLabel: { ru: 'Что показывает', en: 'What it shows' },
     privateCase: { ru: 'Приватный кейс', en: 'Private case' },
     repo: { ru: 'Репозиторий', en: 'Repository' },
     demo: { ru: 'Демо', en: 'Live demo' },
