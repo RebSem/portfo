@@ -19,10 +19,6 @@ export const projects: ProjectItem[] = [
       ru: 'Архитектура продукта, UX потока отчётов и full-stack delivery.',
       en: 'Product architecture, reporting-flow UX, and full-stack delivery.',
     },
-    proof: {
-      ru: 'Показывает, что я умею собирать AI-операционный инструмент от пайплайна данных до production-контура.',
-      en: 'Shows that I can build an AI operations tool from data pipeline to production hardening.',
-    },
     stack: ['Next.js', 'TypeScript', 'Prisma', 'PostgreSQL', 'OpenAI API', 'Google Sheets API'],
     visibility: 'private',
     featured: true,
@@ -44,10 +40,6 @@ export const projects: ProjectItem[] = [
     role: {
       ru: 'Продуктовая стратегия, контентная архитектура и frontend delivery.',
       en: 'Product strategy, content architecture, and frontend delivery.',
-    },
-    proof: {
-      ru: 'Показывает, что я умею собирать продуктовую витрину вокруг смысла, контента и технической системы.',
-      en: 'Shows that I can build a clear portfolio around positioning, content, and technical structure.',
     },
     stack: ['Astro 5', 'TypeScript', 'MDX', 'GitHub Actions', 'GitHub Pages'],
     visibility: 'public',
@@ -73,10 +65,6 @@ export const projects: ProjectItem[] = [
       ru: 'Сценарий бота, логика обработки файлов и интеграция с внешним API.',
       en: 'Bot flow design, file-processing logic, and external API integration.',
     },
-    proof: {
-      ru: 'Показывает, как я упаковываю рутинную операционную задачу в понятный self-service инструмент.',
-      en: 'Shows how I turn routine operations work into a clear self-service tool.',
-    },
     stack: ['Python', 'Telegram Bot API', 'CSV/XLSX', 'p1sms API'],
     visibility: 'private',
   },
@@ -98,10 +86,6 @@ export const projects: ProjectItem[] = [
       ru: 'Продуктовая логика воронки, платёжный контур и full-stack реализация.',
       en: 'Funnel product logic, payment flow design, and full-stack implementation.',
     },
-    proof: {
-      ru: 'Показывает, что я умею собирать цифровой продукт с монетизацией, генерацией контента и delivery-инфраструктурой.',
-      en: 'Shows that I can build a monetized digital product with content generation and delivery infrastructure.',
-    },
     stack: ['Next.js', 'TypeScript', 'Prisma', 'SQLite', 'YooKassa', 'Resend'],
     visibility: 'private',
   },
@@ -122,10 +106,6 @@ export const projects: ProjectItem[] = [
     role: {
       ru: 'Продуктовый сценарий мобильного трекинга и реализация нативного UX на SwiftUI.',
       en: 'Mobile tracking product flow and native SwiftUI UX implementation.',
-    },
-    proof: {
-      ru: 'Показывает, что я могу упаковать lifestyle-продукт в нативное мобильное приложение с AI-слоем.',
-      en: 'Shows that I can package a lifestyle product into a native mobile app with an AI layer.',
     },
     stack: ['SwiftUI', 'iOS', 'Weather', 'Session History', 'AI Assistant'],
     visibility: 'private',
