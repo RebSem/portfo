@@ -177,15 +177,14 @@ export const uiCopy = {
   projects: {
     title: { ru: 'Проекты', en: 'Projects' },
     subtitle: {
-      ru: 'Пять выбранных проектов из моего GitHub в едином формате: продукт, роль, стек и зачем этот кейс важен.',
-      en: 'Five selected GitHub projects in one consistent format: product, role, stack, and why each case matters.',
+      ru: 'Пять выбранных проектов из моего GitHub в едином формате: продукт, стек и где это уже работает.',
+      en: 'Five selected GitHub projects in one consistent format: product, stack, and where it already works.',
     },
     empty: {
       ru: 'Сейчас собираю свежие кейсы. Скоро здесь появятся подробные разборы.',
       en: 'I am preparing fresh case studies. Detailed write-ups will appear here soon.',
     },
     typeLabel: { ru: 'Тип', en: 'Type' },
-    roleLabel: { ru: 'Роль', en: 'Role' },
     privateCase: { ru: 'Приватный кейс', en: 'Private case' },
     repo: { ru: 'Репозиторий', en: 'Repository' },
     demo: { ru: 'Демо', en: 'Live demo' },
