@@ -16,23 +16,23 @@ export const heroDisplayName: LocalizedText = {
 };
 
 export const heroSubtitle: LocalizedText = {
-  ru: 'Помогаю продуктам расти быстрее за счёт понятного UX и сильной инженерной базы.',
-  en: 'I help products grow faster through clear UX and strong engineering foundations.',
+  ru: 'Работаю на стыке продукта, UX и инженерии: превращаю сложные задачи в понятные решения и рабочие системы.',
+  en: 'I work across product, UX, and engineering, turning complex problems into clear decisions and working systems.',
 };
 
 export const heroStatusLoading: LocalizedText = {
-  ru: 'Обновляю данные GitHub...',
-  en: 'Refreshing GitHub data...',
+  ru: 'Загружаю GitHub-раздел...',
+  en: 'Loading GitHub section...',
 };
 
 export const heroStatusReady: LocalizedText = {
-  ru: 'Профиль GitHub синхронизирован',
-  en: 'GitHub profile synced',
+  ru: 'GitHub-данные загружены',
+  en: 'GitHub data loaded',
 };
 
 export const heroStatusError: LocalizedText = {
-  ru: 'GitHub временно недоступен',
-  en: 'GitHub is temporarily unavailable',
+  ru: 'GitHub-данные временно недоступны',
+  en: 'GitHub data is temporarily unavailable',
 };
 
 export const blogLabel: LocalizedText = {
@@ -72,24 +72,24 @@ export const socialLabels = {
 
 export const aboutParagraphs: LocalizedText[] = [
   {
-    ru: 'Собираю понятные цифровые продукты: от идеи и прототипа до стабильного релиза.',
-    en: 'I build understandable digital products from idea and prototype to a stable release.',
+    ru: 'Веду продукт end-to-end: от формулировки задачи и гипотез до интерфейса, технического решения и запуска.',
+    en: 'I work end to end, from defining the problem and shaping hypotheses to interface decisions, technical delivery, and launch.',
   },
   {
-    ru: 'Совмещаю продуктовый подход и инженерную глубину: формулирую гипотезы, проверяю их на данных и довожу до production.',
-    en: 'I combine product thinking with engineering depth: framing hypotheses, validating with data, and shipping to production.',
+    ru: 'Лучше всего работаю там, где задачу ещё нужно собрать: понять контекст, выстроить приоритеты и снять ключевые риски.',
+    en: 'I am most useful when the problem still needs structure, priorities, and a practical path through the main risks.',
   },
   {
-    ru: 'Системно внедряю нейросети и AI-агентов в рабочие процессы, чтобы ускорять delivery и повышать качество решений.',
-    en: 'I integrate neural tools and AI agents into delivery workflows to increase speed and improve outcome quality.',
+    ru: 'Сильнее всего полезен в AI- и цифровых продуктах, где нужны одновременно продуктовая логика, UX-мышление и инженерная дисциплина.',
+    en: 'My strongest fit is AI and digital product work that needs product judgment, UX clarity, and engineering discipline at the same time.',
   },
   {
-    ru: 'Этот сайт — мой открытый трек прогресса: показываю эксперименты, выводы и рабочие внедрения.',
-    en: 'This site is my public progress log: experiments, learnings, and practical implementations.',
+    ru: 'На сайте держу открытый рабочий след: проекты, тексты и GitHub-активность, по которым видно, как я думаю и принимаю решения.',
+    en: 'This site keeps a public working trail of projects, writing, and GitHub activity so people can see how I think and make decisions.',
   },
   {
-    ru: 'Открыт к новым задачам, коллаборациям и техническим обсуждениям.',
-    en: 'Open to new projects, collaborations, and technical conversations.',
+    ru: 'Открыт к новым проектам, коллаборациям и ролям, где ценятся системность, скорость и ответственность за результат.',
+    en: 'Open to new projects, collaborations, and roles where systems thinking, speed, and ownership matter.',
   },
 ];
 
@@ -119,20 +119,20 @@ export const uiCopy = {
     primaryAria: { ru: 'Основная навигация', en: 'Primary navigation' },
   },
   home: {
-    eyebrow: { ru: 'Product Manager / AI', en: 'Product Manager / AI' },
+    eyebrow: { ru: 'Product Manager / Product Engineer', en: 'Product Manager / Product Engineer' },
     title: {
-      ru: 'Развиваю AI-продукты: соединяю продуктовую стратегию, инженерную глубину и практичную автоматизацию через агентов.',
-      en: 'I build AI products by combining product strategy, engineering depth, and practical automation with AI agents.',
+      ru: 'Помогаю превращать сложные продуктовые задачи в понятные решения, рабочие интерфейсы и реальные релизы.',
+      en: 'I help turn complex product problems into clear product decisions, useful interfaces, and shipped releases.',
     },
     lead: {
-      ru: 'Беру задачу от гипотезы до измеримого результата: discovery, UX, архитектура и запуск в production.',
-      en: 'I take work from hypothesis to measurable outcomes: discovery, UX, architecture, and production delivery.',
+      ru: 'Работаю на стыке продукта, UX и инженерии: discovery, постановка решений, delivery и практическое внедрение AI.',
+      en: 'I work across product, UX, and engineering: discovery, solution framing, delivery, and practical AI adoption.',
     },
     photoAlt: { ru: 'Фото Михаила Семенова', en: 'Photo of Mikhail Semenov' },
     postsTitle: { ru: 'Свежие статьи', en: 'Recent posts' },
     postsSubtitle: {
-      ru: 'Заметки о разработке, архитектуре и практическом использовании AI.',
-      en: 'Notes on engineering, architecture, and practical AI usage.',
+      ru: 'Заметки о продуктовой логике, delivery-процессах и практическом использовании AI.',
+      en: 'Notes on product thinking, delivery systems, and practical AI usage.',
     },
   },
   hero: {
@@ -142,19 +142,23 @@ export const uiCopy = {
   github: {
     title: { ru: 'GitHub активность', en: 'GitHub activity' },
     subtitle: {
-      ru: 'Живая статистика профиля и график активности за год.',
-      en: 'Live profile stats and yearly activity graph.',
+      ru: 'GitHub-профиль и график активности за последний год.',
+      en: 'GitHub profile snapshot and activity graph from the last year.',
     },
     totalLabel: {
       ru: 'вкладов за последний год',
       en: 'contributions in the last year',
     },
+    snapshotNote: {
+      ru: 'Данные обновляются при сборке сайта.',
+      en: 'Data is refreshed during site builds.',
+    },
     hoverHint: {
-      ru: 'Наведите на ячейку, чтобы увидеть дату и число вкладов.',
-      en: 'Hover a cell to see the exact date and number of contributions.',
+      ru: 'Наведите или перейдите на ячейку, чтобы увидеть дату и число вкладов.',
+      en: 'Hover or focus a cell to see the exact date and number of contributions.',
     },
     unavailable: {
-      ru: 'Не удалось загрузить данные GitHub. Попробуйте обновить страницу позже.',
+      ru: 'Не удалось загрузить GitHub-данные. Попробуйте обновить страницу позже.',
       en: 'Unable to load GitHub data. Please refresh later.',
     },
     heatmapAria: {
@@ -165,21 +169,25 @@ export const uiCopy = {
   about: {
     title: { ru: 'Обо мне', en: 'About me' },
     subtitle: {
-      ru: 'Коротко о подходе к разработке и текущем фокусе.',
-      en: 'A short note on how I build and what I focus on now.',
+      ru: 'Как я работаю на стыке продукта, delivery, AI и инженерии.',
+      en: 'How I work across product, delivery, AI, and engineering.',
     },
     skillsTitle: { ru: 'Ключевые навыки', en: 'Core skills' },
   },
   projects: {
     title: { ru: 'Проекты', en: 'Projects' },
     subtitle: {
-      ru: 'Выбранные кейсы и эксперименты в разработке.',
-      en: 'Selected case studies and product experiments.',
+      ru: 'Пять выбранных проектов из моего GitHub в едином формате: продукт, роль, стек и зачем этот кейс важен.',
+      en: 'Five selected GitHub projects in one consistent format: product, role, stack, and why each case matters.',
     },
     empty: {
       ru: 'Сейчас собираю свежие кейсы. Скоро здесь появятся подробные разборы.',
       en: 'I am preparing fresh case studies. Detailed write-ups will appear here soon.',
     },
+    typeLabel: { ru: 'Тип', en: 'Type' },
+    roleLabel: { ru: 'Роль', en: 'Role' },
+    proofLabel: { ru: 'Что показывает', en: 'What it shows' },
+    privateCase: { ru: 'Приватный кейс', en: 'Private case' },
     repo: { ru: 'Репозиторий', en: 'Repository' },
     demo: { ru: 'Демо', en: 'Live demo' },
     stackAria: { ru: 'Технологии проекта', en: 'Project technologies' },
@@ -188,8 +196,8 @@ export const uiCopy = {
   blog: {
     title: { ru: 'Блог', en: 'Blog' },
     subtitle: {
-      ru: 'Публикации о разработке, экспериментах и процессе создания продуктов.',
-      en: 'Posts about engineering, experiments, and product building.',
+      ru: 'Публикации о продуктовой логике, системах delivery и практическом использовании AI.',
+      en: 'Posts about product thinking, delivery systems, and practical AI usage.',
     },
     readMore: { ru: 'Читать статью', en: 'Read post' },
     empty: {
