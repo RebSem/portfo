@@ -46,7 +46,7 @@ const websiteSchema = {
 
 <Layout
   title={`${heroFallbackName} — Portfolio`}
-  description="Main page with profile intro, recent writing, and selected projects."
+  description="Product manager with engineering depth. I turn ambiguous product work into shipped digital products, clear interfaces, and practical AI workflows."
 >
   <a
     id="skip-to-content"
@@ -69,8 +69,8 @@ const websiteSchema = {
     class="page-main"
     data-title-ru={`${heroDisplayName.ru} — Главная`}
     data-title-en={`${heroDisplayName.en} — Home`}
-    data-description-ru="Главная страница с интро, свежими статьями и проектами."
-    data-description-en="Home page with intro, recent writing, and projects."
+    data-description-ru="Продуктовый менеджер с инженерной глубиной: проекты, тексты и открытый GitHub-след."
+    data-description-en="Product manager with engineering depth: selected work, writing, and a public GitHub trail."
   >
     <section class="home-intro" aria-labelledby="home-title">
       <div class="home-intro-copy">
@@ -171,8 +171,37 @@ const websiteSchema = {
           <div class="projects-list">
             {visibleProjects.map((project) => (
               <article class="project-card">
-                <h3 data-i18n-ru={project.title.ru} data-i18n-en={project.title.en}>{project.title.en}</h3>
+                <div class="project-card-head">
+                  <h3 data-i18n-ru={project.title.ru} data-i18n-en={project.title.en}>{project.title.en}</h3>
+                  {project.visibility === 'private' && (
+                    <span
+                      class="project-visibility"
+                      data-i18n-ru={uiCopy.projects.privateCase.ru}
+                      data-i18n-en={uiCopy.projects.privateCase.en}
+                    >
+                      {uiCopy.projects.privateCase.en}
+                    </span>
+                  )}
+                </div>
                 <p data-i18n-ru={project.summary.ru} data-i18n-en={project.summary.en}>{project.summary.en}</p>
+                <p class="project-meta">
+                  <strong data-i18n-ru={uiCopy.projects.typeLabel.ru} data-i18n-en={uiCopy.projects.typeLabel.en}>
+                    {uiCopy.projects.typeLabel.en}
+                  </strong>
+                  <span data-i18n-ru={project.appType.ru} data-i18n-en={project.appType.en}>{project.appType.en}</span>
+                </p>
+                <p class="project-meta">
+                  <strong data-i18n-ru={uiCopy.projects.roleLabel.ru} data-i18n-en={uiCopy.projects.roleLabel.en}>
+                    {uiCopy.projects.roleLabel.en}
+                  </strong>
+                  <span data-i18n-ru={project.role.ru} data-i18n-en={project.role.en}>{project.role.en}</span>
+                </p>
+                <p class="project-meta">
+                  <strong data-i18n-ru={uiCopy.projects.proofLabel.ru} data-i18n-en={uiCopy.projects.proofLabel.en}>
+                    {uiCopy.projects.proofLabel.en}
+                  </strong>
+                  <span data-i18n-ru={project.proof.ru} data-i18n-en={project.proof.en}>{project.proof.en}</span>
+                </p>
 
                 <ul
                   class="stack-list"
@@ -185,7 +214,7 @@ const websiteSchema = {
                   ))}
                 </ul>
 
-                {(project.repoUrl || project.demoUrl) && (
+                {project.visibility === 'public' && (project.repoUrl || project.demoUrl) && (
                   <p class="project-links">
                     {project.repoUrl && (
                       <a class="project-link" href={project.repoUrl} target="_blank" rel="noreferrer" data-i18n-ru={uiCopy.projects.repo.ru} data-i18n-en={uiCopy.projects.repo.en}>

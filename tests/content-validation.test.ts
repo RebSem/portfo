@@ -24,7 +24,11 @@ describe('project catalog', () => {
   it('contains at least one visible project and no placeholders', () => {
     expect(projects.length).toBeGreaterThan(0);
     expect(projects.every((project) => project.placeholder !== true)).toBe(true);
-    expect(projects.every((project) => Boolean(project.repoUrl || project.demoUrl))).toBe(true);
+    expect(projects.every((project) => project.appType.ru.length > 0 && project.appType.en.length > 0)).toBe(true);
+    expect(projects.every((project) => project.visibility === 'public' || project.visibility === 'private')).toBe(true);
+    expect(projects.every((project) => project.visibility === 'private' || Boolean(project.repoUrl || project.demoUrl))).toBe(true);
+    expect(projects.every((project) => project.role.ru.length > 0 && project.role.en.length > 0)).toBe(true);
+    expect(projects.every((project) => project.proof.ru.length > 0 && project.proof.en.length > 0)).toBe(true);
   });
 });
 
