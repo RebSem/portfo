@@ -11,7 +11,6 @@ export interface ProjectItem {
   appType: LocalizedText;
   summary: LocalizedText;
   role: LocalizedText;
-  proof: LocalizedText;
   stack: string[];
   visibility: 'public' | 'private';
   repoUrl?: string;
