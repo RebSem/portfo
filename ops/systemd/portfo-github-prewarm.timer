@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily prewarm for portfo GitHub cache
+
+[Timer]
+OnCalendar=*-*-* 03:10:00
+Persistent=true
+RandomizedDelaySec=300
+Unit=portfo-github-prewarm.service
+
+[Install]
+WantedBy=timers.target

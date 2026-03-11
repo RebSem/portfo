@@ -1,78 +1,72 @@
-const LOCALE_STORAGE_KEY = 'portfolio-locale';
-let activeLocale = 'ru';
-let contributionPayload = null;
-let activeContributionPoint = null;
+const state = window.__portfolioGithubState ?? {
+  contributionPayload: null,
+  activeContributionPoint: null,
+  activeLocale: document.documentElement.lang === 'ru' ? 'ru' : 'en',
+  activeStatus: 'loading',
+  localeListenerBound: false,
+  viewportListenerBound: false,
+};
+
+window.__portfolioGithubState = state;
+
+let cachedNumberFormatLocale = '';
+let cachedNumberFormat = null;
+let cachedDateFormatLocale = '';
+let cachedDateFormat = null;
 
 const withLocale = (locale, ruValue, enValue) => (locale === 'ru' ? ruValue : enValue);
 
-const pickNavigatorLocale = () => {
-  const lang = navigator.language.toLowerCase();
-  return lang.startsWith('ru') ? 'ru' : 'en';
-};
-
-const readLocale = () => {
-  const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY);
-  if (stored === 'ru' || stored === 'en') {
-    return stored;
-  }
-  return pickNavigatorLocale();
-};
-
-const writeLocale = (locale) => {
-  window.localStorage.setItem(LOCALE_STORAGE_KEY, locale);
-};
-
-const applyLocaleToElements = (locale) => {
-  document.documentElement.lang = locale;
-  document.body.dataset.locale = locale;
-
-  const localizedNodes = document.querySelectorAll('[data-i18n-ru][data-i18n-en]');
-  localizedNodes.forEach((node) => {
-    const ruValue = node.dataset.i18nRu;
-    const enValue = node.dataset.i18nEn;
-    if (!ruValue || !enValue) return;
-    node.textContent = withLocale(locale, ruValue, enValue);
-  });
-
-  const localeToggle = document.getElementById('locale-toggle');
-  if (localeToggle) {
-    const ruToggle = localeToggle.dataset.toggleRu ?? 'EN';
-    const enToggle = localeToggle.dataset.toggleEn ?? 'RU';
-    const ruLabel = localeToggle.dataset.labelRu ?? 'Switch to English';
-    const enLabel = localeToggle.dataset.labelEn ?? 'Переключить на русский';
-
-    localeToggle.textContent = withLocale(locale, ruToggle, enToggle);
-    localeToggle.setAttribute('aria-label', withLocale(locale, ruLabel, enLabel));
-  }
-
-  activeLocale = locale;
+const syncLocaleFromDocument = () => {
+  state.activeLocale = document.documentElement.lang === 'ru' ? 'ru' : 'en';
 };
 
 const setHeroStatus = (kind) => {
+  state.activeStatus = kind;
+
   const statusNode = document.getElementById('hero-status');
   if (!statusNode) return;
 
   const ru = statusNode.getAttribute(`data-${kind}-ru`) ?? '';
   const en = statusNode.getAttribute(`data-${kind}-en`) ?? '';
   if (ru && en) {
-    statusNode.textContent = withLocale(activeLocale, ru, en);
+    statusNode.textContent = withLocale(state.activeLocale, ru, en);
   }
 };
 
-const formatMetric = (value) => new Intl.NumberFormat(activeLocale === 'ru' ? 'ru-RU' : 'en-US').format(value);
+const getNumberFormatter = () => {
+  const locale = state.activeLocale === 'ru' ? 'ru-RU' : 'en-US';
+  if (!cachedNumberFormat || cachedNumberFormatLocale !== locale) {
+    cachedNumberFormat = new Intl.NumberFormat(locale);
+    cachedNumberFormatLocale = locale;
+  }
+
+  return cachedNumberFormat;
+};
+
+const getDateFormatter = () => {
+  const locale = state.activeLocale === 'ru' ? 'ru-RU' : 'en-US';
+  if (!cachedDateFormat || cachedDateFormatLocale !== locale) {
+    cachedDateFormat = new Intl.DateTimeFormat(locale, {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    });
+    cachedDateFormatLocale = locale;
+  }
+
+  return cachedDateFormat;
+};
+
+const formatMetric = (value) => getNumberFormatter().format(value);
 
 const formatLocalizedDate = (isoDate) => {
   const date = new Date(`${isoDate}T00:00:00.000Z`);
-  return new Intl.DateTimeFormat(activeLocale === 'ru' ? 'ru-RU' : 'en-US', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  }).format(date);
+  return getDateFormatter().format(date);
 };
 
 const formatContributionLabel = (count, isoDate) =>
   withLocale(
-    activeLocale,
+    state.activeLocale,
     `${count} вкладов • ${formatLocalizedDate(isoDate)}`,
     `${count} contributions • ${formatLocalizedDate(isoDate)}`,
   );
@@ -81,34 +75,44 @@ const renderContributionTooltip = () => {
   const tooltip = document.getElementById('contribution-tooltip');
   if (!tooltip) return;
 
-  if (activeContributionPoint) {
-    tooltip.textContent = formatContributionLabel(activeContributionPoint.count, activeContributionPoint.date);
+  if (state.activeContributionPoint) {
+    tooltip.textContent = formatContributionLabel(state.activeContributionPoint.count, state.activeContributionPoint.date);
     return;
   }
 
   const hintRu = tooltip.dataset.hintRu ?? '';
   const hintEn = tooltip.dataset.hintEn ?? '';
-  tooltip.textContent = withLocale(activeLocale, hintRu, hintEn);
+  tooltip.textContent = withLocale(state.activeLocale, hintRu, hintEn);
 };
 
 const updateProfile = (profile) => {
-  const heroName = document.getElementById('hero-name');
-  const heroLogin = document.getElementById('hero-login');
   const heroAvatar = document.getElementById('hero-avatar');
-  const heroLink = document.getElementById('hero-github-link');
-
-  if (heroName) heroName.textContent = profile.name || profile.login;
-  if (heroLogin) heroLogin.textContent = profile.login;
   if (heroAvatar) {
     heroAvatar.src = profile.avatarUrl;
-    heroAvatar.alt = `${profile.name || profile.login} avatar`;
-  }
-  if (heroLink) {
-    heroLink.href = profile.profileUrl;
+    const displayName = profile.name || profile.login;
+    heroAvatar.setAttribute('data-i18n-alt-ru', `Аватар ${displayName}`);
+    heroAvatar.setAttribute('data-i18n-alt-en', `${displayName} avatar`);
+    heroAvatar.alt = withLocale(state.activeLocale, `Аватар ${displayName}`, `${displayName} avatar`);
   }
 };
 
 const dateToIso = (date) => date.toISOString().slice(0, 10);
+
+const alignHeatmapToLatest = () => {
+  const grid = document.getElementById('contribution-grid');
+  if (!(grid instanceof HTMLElement)) return;
+  if (!window.matchMedia('(max-width: 720px)').matches) return;
+
+  const maxScrollLeft = Math.max(0, grid.scrollWidth - grid.clientWidth);
+  grid.scrollLeft = maxScrollLeft;
+};
+
+const requestHeatmapAlignment = () => {
+  window.requestAnimationFrame(() => {
+    alignHeatmapToLatest();
+    window.setTimeout(alignHeatmapToLatest, 80);
+  });
+};
 
 const renderContributionGrid = (days) => {
   const grid = document.getElementById('contribution-grid');
@@ -165,6 +169,7 @@ const renderContributionGrid = (days) => {
   }
 
   grid.appendChild(fragment);
+  requestHeatmapAlignment();
 };
 
 const bindContributionTooltip = () => {
@@ -176,7 +181,7 @@ const bindContributionTooltip = () => {
     const countRaw = Number(cell.dataset.count ?? '0');
     if (!date) return;
 
-    activeContributionPoint = {
+    state.activeContributionPoint = {
       date,
       count: Number.isFinite(countRaw) ? countRaw : 0,
     };
@@ -200,14 +205,14 @@ const bindContributionTooltip = () => {
   });
 
   grid.addEventListener('mouseleave', () => {
-    activeContributionPoint = null;
+    state.activeContributionPoint = null;
     renderContributionTooltip();
   });
 
   grid.addEventListener('focusout', (event) => {
     const related = event.relatedTarget;
     if (!(related instanceof Node) || !grid.contains(related)) {
-      activeContributionPoint = null;
+      state.activeContributionPoint = null;
       renderContributionTooltip();
     }
   });
@@ -216,7 +221,7 @@ const bindContributionTooltip = () => {
 };
 
 const updateContributions = (payload) => {
-  contributionPayload = payload;
+  state.contributionPayload = payload;
 
   const totalNode = document.getElementById('contributions-total');
   if (totalNode) {
@@ -269,61 +274,58 @@ const hydrateGithub = async () => {
   }
 };
 
-const initLocaleHandling = () => {
-  const initialLocale = readLocale();
-  applyLocaleToElements(initialLocale);
+const onLocaleChange = () => {
+  if (!document.getElementById('contribution-grid')) return;
 
-  const localeToggle = document.getElementById('locale-toggle');
-  if (!localeToggle) return;
+  syncLocaleFromDocument();
 
-  localeToggle.addEventListener('click', () => {
-    const nextLocale = activeLocale === 'ru' ? 'en' : 'ru';
-    applyLocaleToElements(nextLocale);
-    writeLocale(nextLocale);
+  if (state.contributionPayload) {
+    updateContributions(state.contributionPayload);
+  } else {
+    renderContributionTooltip();
+  }
 
-    if (contributionPayload) {
-      updateContributions(contributionPayload);
-    } else {
-      renderContributionTooltip();
-    }
-  });
+  setHeroStatus(state.activeStatus);
 };
 
-const initRevealAnimations = () => {
-  const nodes = document.querySelectorAll('.reveal');
-  if (nodes.length === 0) return;
-
-  const observer = new IntersectionObserver(
-    (entries, currentObserver) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-        entry.target.classList.add('is-visible');
-        currentObserver.unobserve(entry.target);
-      });
-    },
-    {
-      rootMargin: '0px 0px -8% 0px',
-      threshold: 0.2,
-    },
-  );
-
-  nodes.forEach((node) => observer.observe(node));
-};
-
-const initPortfolioApp = () => {
-  if (document.body.dataset.appReady === 'true') {
+const initGithubActivity = () => {
+  if (!document.getElementById('contribution-grid')) {
     return;
   }
 
-  document.body.dataset.appReady = 'true';
-  initLocaleHandling();
-  initRevealAnimations();
+  if (!state.localeListenerBound) {
+    window.addEventListener('portfolio:locale-change', onLocaleChange);
+    state.localeListenerBound = true;
+  }
+
+  if (!state.viewportListenerBound) {
+    window.addEventListener(
+      'resize',
+      () => {
+        if (!state.contributionPayload) return;
+        requestHeatmapAlignment();
+      },
+      { passive: true },
+    );
+    state.viewportListenerBound = true;
+  }
+
+  syncLocaleFromDocument();
+
+  if (state.contributionPayload) {
+    updateContributions(state.contributionPayload);
+    hideGithubError();
+    setHeroStatus('ready');
+  }
+
   renderContributionTooltip();
   void hydrateGithub();
 };
 
+document.addEventListener('astro:page-load', initGithubActivity);
+
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initPortfolioApp, { once: true });
+  document.addEventListener('DOMContentLoaded', initGithubActivity, { once: true });
 } else {
-  initPortfolioApp();
+  initGithubActivity();
 }
