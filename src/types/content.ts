@@ -10,7 +10,6 @@ export interface ProjectItem {
   title: LocalizedText;
   appType: LocalizedText;
   summary: LocalizedText;
-  role: LocalizedText;
   stack: string[];
   visibility: 'public' | 'private';
   repoUrl?: string;
