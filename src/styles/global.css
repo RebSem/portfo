@@ -188,17 +188,21 @@ a:focus-visible {
 }
 
 .locale-toggle {
-  min-width: 3.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.8rem;
   height: 2.2rem;
   border: 1px solid var(--border);
   border-radius: 999px;
   background: transparent;
   color: var(--foreground);
-  font: inherit;
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
   line-height: 1;
   cursor: pointer;
+  text-decoration: none;
   transition:
     color 0.15s ease,
     border-color 0.15s ease,
@@ -564,6 +568,33 @@ html[data-theme='dark'] .theme-icon-sun {
   padding: 1rem 1rem 1.05rem;
   display: grid;
   gap: 0.72rem;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), 
+              box-shadow 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), 
+              border-color 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.project-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -20px rgba(17, 24, 39, 0.3);
+  border-color: color-mix(in oklab, var(--accent) 40%, var(--border));
+}
+
+.project-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.project-card:hover::before {
+  opacity: 0.6;
 }
 
 .project-card-head {
@@ -576,6 +607,67 @@ html[data-theme='dark'] .theme-icon-sun {
 .project-card h3 {
   font-size: 1rem;
   line-height: 1.2;
+  transition: color 0.2s ease;
+}
+
+.project-card h3 a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+/* Stretched link pattern */
+.project-card h3 a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.project-card h3 a:hover {
+  color: var(--accent);
+}
+
+.project-card:has(h3 a:hover) {
+  border-color: var(--accent);
+}
+
+.project-link {
+  position: relative;
+  z-index: 2; /* Ensure other links (Repo/Demo) stay clickable above the stretched link */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.6rem;
+  background: color-mix(in oklab, var(--surface) 80%, white 20%);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.project-link:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.project-link[data-details-link] {
+  background: transparent;
+  border-color: transparent;
+  padding-left: 0;
+  padding-right: 0;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.project-link[data-details-link]:hover {
+  background: transparent;
+  color: color-mix(in oklab, var(--accent) 80%, black 20%);
+  transform: translateX(4px);
 }
 
 .project-visibility {
@@ -714,6 +806,192 @@ html[data-theme='dark'] .theme-icon-sun {
   flex-wrap: wrap;
   font-size: 0.8rem;
   color: color-mix(in oklab, var(--foreground) 74%, transparent);
+}
+
+.project-quick-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: color-mix(in oklab, var(--surface) 50%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+}
+
+.fact-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.fact-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: color-mix(in oklab, var(--foreground) 60%, transparent);
+  font-weight: 600;
+}
+
+.fact-value {
+  font-size: 1rem;
+  color: var(--foreground);
+  font-weight: 500;
+}
+
+.impact-fact {
+  grid-column: 1 / -1;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.project-card-featured {
+  border-color: var(--accent);
+  background: 
+    linear-gradient(180deg, color-mix(in oklab, var(--surface) 82%, var(--accent) 5%), color-mix(in oklab, var(--surface) 96%, var(--background) 4%));
+  box-shadow: 0 20px 40px -25px color-mix(in oklab, var(--accent) 30%, transparent);
+}
+
+.launch-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.2rem 0.6rem;
+  background: color-mix(in oklab, var(--accent) 15%, transparent);
+  border: 1px solid color-mix(in oklab, var(--accent) 30%, transparent);
+  color: var(--accent);
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.pulse-dot {
+  width: 6px;
+  height: 6px;
+  background-color: var(--accent);
+  border-radius: 50%;
+  position: relative;
+}
+
+.pulse-dot::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 50%;
+  background-color: var(--accent);
+  opacity: 0.6;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+/* Launch Hero Card on Project Page */
+.launch-hero-card {
+  margin: 2rem 0 3rem;
+  padding: 2.5rem;
+  background: var(--foreground);
+  color: var(--background);
+  border-radius: 1.5rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.launch-hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.launch-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: color-mix(in oklab, var(--background) 80%, transparent);
+}
+
+.launch-hero-card h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--background);
+}
+
+.launch-timer {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.timer-segment {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timer-value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  line-height: 1;
+}
+
+.timer-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-top: 0.4rem;
+}
+
+.launch-cta-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.launch-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  background: var(--background);
+  color: var(--foreground);
+  border-radius: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 10px 20px -10px rgba(0,0,0,0.5);
+}
+
+.launch-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px -10px rgba(0,0,0,0.6);
+}
+
+/* Dark mode adjustments for launch card */
+html[data-theme='dark'] .launch-hero-card {
+  background: var(--accent);
+  color: white;
+}
+
+html[data-theme='dark'] .launch-hero-card h2,
+html[data-theme='dark'] .launch-status {
+  color: white;
+}
+
+html[data-theme='dark'] .launch-cta-btn {
+  background: white;
+  color: black;
 }
 
 .prose {

@@ -1,30 +1,30 @@
 ---
 import { getCollection } from 'astro:content';
-import SiteFooter from '../../components/SiteFooter.astro';
-import SiteHeader from '../../components/SiteHeader.astro';
-import { heroFallbackName, uiCopy } from '../../data/site-content';
-import Layout from '../../layouts/Layout.astro';
-import localeScriptUrl from '../../scripts/locale.js?url';
+import SiteFooter from '../../../components/SiteFooter.astro';
+import SiteHeader from '../../../components/SiteHeader.astro';
+import { heroDisplayName, uiCopy } from '../../../data/site-content';
+import Layout from '../../../layouts/Layout.astro';
+import localeScriptUrl from '../../../scripts/locale.js?url';
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft && data.lang === 'en'))
+const posts = (await getCollection('blog', ({ data }) => !data.draft && data.lang === 'ru'))
   .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
 
 const blogSchema = {
   '@context': 'https://schema.org',
   '@type': 'Blog',
-  url: 'https://rebsem.ru/blog',
-  name: `${heroFallbackName} Blog`,
-  description: 'Writing about product thinking, delivery systems, engineering, and practical AI.',
-  inLanguage: 'en',
+  url: 'https://rebsem.ru/ru/blog',
+  name: `${heroDisplayName.ru} Блог`,
+  description: 'Публикации о продуктовой логике, системах delivery, разработке и практическом использовании AI.',
+  inLanguage: 'ru',
 };
 ---
 
 <Layout 
-  title={`${heroFallbackName} — Blog`} 
-  description="Writing on product thinking, delivery systems, engineering, and practical AI." 
+  title={`${heroDisplayName.ru} — Блог`} 
+  description="Блог о продуктовой логике, системах delivery, разработке и практическом использовании AI." 
   schema={blogSchema}
 >
-  <a id="skip-to-content" href="#main-content" class="skip-link">Skip to content</a>
+  <a id="skip-to-content" href="#main-content" class="skip-link">Перейти к содержимому</a>
 
   <SiteHeader active="blog" />
 
@@ -38,17 +38,17 @@ const blogSchema = {
   >
     <section class="blog-index" aria-labelledby="blog-title">
       <div class="section-head">
-        <h1 id="blog-title">Blog</h1>
-        <p>Posts about product thinking, delivery systems, and practical AI usage.</p>
+        <h1 id="blog-title">Блог</h1>
+        <p>Публикации о продуктовой логике, системах delivery и практическом использовании AI.</p>
       </div>
 
       {posts.length === 0 ? (
-        <p class="blog-empty">No published posts for this locale yet.</p>
+        <p class="blog-empty">Для этой локали пока нет опубликованных постов.</p>
       ) : (
         <ul id="blog-list" class="blog-list">
           {posts.map((post) => {
             const isoDate = post.data.publishedAt.toISOString().slice(0, 10);
-            const dateLabel = new Intl.DateTimeFormat('en-US', {
+            const dateLabel = new Intl.DateTimeFormat('ru-RU', {
               day: 'numeric',
               month: 'long',
               year: 'numeric',
@@ -60,10 +60,10 @@ const blogSchema = {
                   <header class="blog-card-head">
                     <p class="blog-card-meta">
                       <time class="blog-date" datetime={isoDate}>{dateLabel}</time>
-                      <span class="blog-lang">English</span>
+                      <span class="blog-lang">Русский</span>
                     </p>
                     <h3>
-                      <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
+                      <a href={`/ru/blog/${post.slug}`}>{post.data.title}</a>
                     </h3>
                   </header>
                   <p>{post.data.description}</p>

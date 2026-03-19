@@ -1,20 +1,20 @@
 ---
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
-import SiteFooter from '../components/SiteFooter.astro';
-import SiteHeader from '../components/SiteHeader.astro';
-import SocialLinks from '../components/SocialLinks.astro';
-import { projects } from '../data/projects';
-import { githubUsername, heroDisplayName, heroFallbackName, linkedinUrl, telegramUrl, uiCopy } from '../data/site-content';
-import Layout from '../layouts/Layout.astro';
-import blogScriptUrl from '../scripts/blog.js?url';
-import localeScriptUrl from '../scripts/locale.js?url';
-import heroImage from '../assets/main-hero.jpg';
+import SiteFooter from '../../components/SiteFooter.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SocialLinks from '../../components/SocialLinks.astro';
+import { projects } from '../../data/projects';
+import { githubUsername, heroDisplayName, linkedinUrl, telegramUrl, uiCopy } from '../../data/site-content';
+import Layout from '../../layouts/Layout.astro';
+import blogScriptUrl from '../../scripts/blog.js?url';
+import localeScriptUrl from '../../scripts/locale.js?url';
+import heroImage from '../../assets/main-hero.jpg';
 
 const visibleProjects = projects.filter((project) => !project.placeholder);
-const projectEntries = await getCollection('projects', ({ data }) => !data.draft && data.lang === 'en');
+const projectEntries = await getCollection('projects', ({ data }) => !data.draft && data.lang === 'ru');
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft && data.lang === 'en'))
+const posts = (await getCollection('blog', ({ data }) => !data.draft && data.lang === 'ru'))
   .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
   .slice(0, 6);
 
@@ -24,7 +24,7 @@ const personSchema = {
   name: heroDisplayName.en,
   alternateName: heroDisplayName.ru,
   jobTitle: 'Product Manager (AI) / Product Engineer',
-  url: 'https://rebsem.ru/',
+  url: 'https://rebsem.ru/ru',
   image: 'https://rebsem.ru/main-hero.jpg',
   sameAs: [
     `https://github.com/${githubUsername}`,
@@ -35,11 +35,11 @@ const personSchema = {
 ---
 
 <Layout
-  title={`${heroFallbackName} — Portfolio`}
-  description="Product manager with engineering depth. I turn ambiguous product work into shipped digital products, clear interfaces, and practical AI workflows."
+  title={`${heroDisplayName.ru} — Портфолио`}
+  description="Продуктовый менеджер с инженерной глубиной: проекты, тексты и открытый GitHub-след."
   schema={personSchema}
 >
-  <a id="skip-to-content" href="#main-content" class="skip-link">Skip to content</a>
+  <a id="skip-to-content" href="#main-content" class="skip-link">Перейти к содержимому</a>
 
   <SiteHeader active="home" />
 
@@ -52,9 +52,9 @@ const personSchema = {
       <div class="home-intro-copy">
         <p class="about-eyebrow">Product Manager / Product Engineer</p>
 
-        <h1 id="home-title">{uiCopy.home.title.en}</h1>
+        <h1 id="home-title">{uiCopy.home.title.ru}</h1>
 
-        <p class="home-lead">{uiCopy.home.lead.en}</p>
+        <p class="home-lead">{uiCopy.home.lead.ru}</p>
 
         <SocialLinks className="social-links profile-social-links" />
       </div>
@@ -66,24 +66,24 @@ const personSchema = {
           width={320}
           height={320}
           loading="eager"
-          alt="Photo of Mikhail Semenov"
+          alt="Фото Михаила Семенова"
         />
       </div>
     </section>
 
     <section class="section-block" aria-labelledby="recent-title">
       <div class="section-head">
-        <h2 id="recent-title">Recent posts</h2>
-        <p>Notes on product thinking, delivery systems, and practical AI usage.</p>
+        <h2 id="recent-title">Свежие статьи</h2>
+        <p>Заметки о продуктовой логике, delivery-процессах и практическом использовании AI.</p>
       </div>
 
       {posts.length === 0 ? (
-        <p id="blog-empty" class="blog-empty">No published posts for this locale yet.</p>
+        <p id="blog-empty" class="blog-empty">Для этой локали пока нет опубликованных постов.</p>
       ) : (
         <ul id="blog-list" class="blog-list home-blog-list">
           {posts.map((post) => {
             const isoDate = post.data.publishedAt.toISOString().slice(0, 10);
-            const dateLabel = new Intl.DateTimeFormat('en-US', {
+            const dateLabel = new Intl.DateTimeFormat('ru-RU', {
               day: 'numeric',
               month: 'long',
               year: 'numeric',
@@ -95,10 +95,10 @@ const personSchema = {
                   <header class="blog-card-head">
                     <p class="blog-card-meta">
                       <time class="blog-date" datetime={isoDate}>{dateLabel}</time>
-                      <span class="blog-lang">English</span>
+                      <span class="blog-lang">Русский</span>
                     </p>
                     <h3>
-                      <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
+                      <a href={`/ru/blog/${post.slug}`}>{post.data.title}</a>
                     </h3>
                   </header>
                   <p>{post.data.description}</p>
@@ -112,12 +112,12 @@ const personSchema = {
 
     <section id="projects" class="section-block" aria-labelledby="projects-title">
       <div class="section-head">
-        <h2 id="projects-title">Projects</h2>
-        <p>Five selected GitHub projects in one consistent format: product, stack, and where it already works.</p>
+        <h2 id="projects-title">Проекты</h2>
+        <p>Пять выбранных проектов из моего GitHub в едином формате: продукт, стек и где это уже работает.</p>
       </div>
 
       {visibleProjects.length === 0 ? (
-        <p class="projects-empty">I am preparing fresh case studies. Detailed write-ups will appear here soon.</p>
+        <p class="projects-empty">Сейчас собираю свежие кейсы. Скоро здесь появятся подробные разборы.</p>
       ) : (
         <div class="projects-list">
           {visibleProjects.map((project) => {
@@ -126,42 +126,42 @@ const personSchema = {
               <article class:list={["project-card", project.id === 'cursivo' && "project-card-featured"]}>
                 <div class="project-card-head">
                   {entry ? (
-                    <h3><a href={`/projects/${entry.slug}/`}>{project.title.en}</a></h3>
+                    <h3><a href={`/ru/projects/${entry.slug}/`}>{project.title.ru}</a></h3>
                   ) : (
-                    <h3>{project.title.en}</h3>
+                    <h3>{project.title.ru}</h3>
                   )}
                   {project.id === 'cursivo' && (
-                    <div class="launch-badge">
+                    <div class="launch-badge launch-badge-ru">
                       <span class="pulse-dot"></span>
-                      Launching Soon
+                      Скоро запуск
                     </div>
                   )}
                   {project.visibility === 'private' && project.id !== 'cursivo' && (
-                    <span class="project-visibility">Private case</span>
+                    <span class="project-visibility">Приватный кейс</span>
                   )}
                 </div>
 
-                <p>{project.summary.en}</p>
+                <p>{project.summary.ru}</p>
                 <p class="project-meta">
-                  <strong>Type</strong>
-                  <span>{project.appType.en}</span>
+                  <strong>Тип</strong>
+                  <span>{project.appType.ru}</span>
                 </p>
-                <ul class="stack-list" aria-label="Project technologies">
+                <ul class="stack-list" aria-label="Технологии проекта">
                   {project.stack.map((item) => (<li>{item}</li>))}
                 </ul>
                 <p class="project-links">
                   {entry && (
                     <a 
                       class="project-link" 
-                      href={`/projects/${entry.slug}`}
+                      href={`/ru/projects/${entry.slug}`}
                       data-details-link
                     >
-                      Read more
+                      Подробнее
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
                     </a>
                   )}
                   {project.visibility === 'public' && project.repoUrl && (
-                    <a class="project-link" href={project.repoUrl} target="_blank" rel="noreferrer">Repository</a>
+                    <a class="project-link" href={project.repoUrl} target="_blank" rel="noreferrer">Репозиторий</a>
                   )}
                 </p>
               </article>
