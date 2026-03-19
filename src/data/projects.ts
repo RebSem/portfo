@@ -18,6 +18,7 @@ export const projects: ProjectItem[] = [
     stack: ['Next.js', 'TypeScript', 'Prisma', 'PostgreSQL', 'OpenAI', 'Linear'],
     visibility: 'private',
     featured: true,
+    demoUrl: 'https://cursivo.xyz',
   },
   {
     id: 'obrabot',

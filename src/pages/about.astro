@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SocialLinks from '../components/SocialLinks.astro';
@@ -13,19 +14,19 @@ import {
   heroSubtitle,
   linkedinUrl,
   telegramUrl,
-  uiCopy,
 } from '../data/site-content';
 import Layout from '../layouts/Layout.astro';
 import githubScriptUrl from '../scripts/github-activity.js?url';
 import localeScriptUrl from '../scripts/locale.js?url';
+import heroImage from '../assets/main-hero.jpg';
 
 const avatarUrl = `https://avatars.githubusercontent.com/${githubUsername}?size=560`;
 const aboutSchema = {
   '@context': 'https://schema.org',
   '@type': 'ProfilePage',
   url: 'https://rebsem.ru/about',
-  name: `${heroDisplayName.en} — About`,
-  inLanguage: ['en', 'ru'],
+  name: `${heroFallbackName} — About`,
+  inLanguage: 'en',
   mainEntity: {
     '@type': 'Person',
     name: heroDisplayName.en,
@@ -47,15 +48,7 @@ const aboutSchema = {
   description="About page covering product work, delivery approach, AI focus, and a public GitHub trail."
   schema={aboutSchema}
 >
-  <a
-    id="skip-to-content"
-    href="#main-content"
-    class="skip-link"
-    data-i18n-ru="Перейти к содержимому"
-    data-i18n-en="Skip to content"
-  >
-    Skip to content
-  </a>
+  <a id="skip-to-content" href="#main-content" class="skip-link">Skip to content</a>
 
   <SiteHeader active="about" />
 
@@ -66,42 +59,34 @@ const aboutSchema = {
   <main
     id="main-content"
     class="page-main"
-    data-title-ru={`${heroDisplayName.ru} — Обо мне`}
-    data-title-en={`${heroDisplayName.en} — About`}
-    data-description-ru="Страница о подходе к продукту, delivery, AI и открытом GitHub-следе."
-    data-description-en="Profile page about product work, delivery, AI, and a public GitHub trail."
   >
     <section class="about-section" aria-labelledby="about-title">
-      <p class="about-eyebrow" data-i18n-ru={uiCopy.about.title.ru} data-i18n-en={uiCopy.about.title.en}>{uiCopy.about.title.en}</p>
+      <p class="about-eyebrow">About me</p>
 
       <h1 id="about-title">
-        <span id="hero-name" data-i18n-ru={heroDisplayName.ru} data-i18n-en={heroDisplayName.en}>{heroDisplayName.en}</span>
+        <span id="hero-name">{heroDisplayName.en}</span>
       </h1>
 
-      <p class="about-intro" data-i18n-ru={uiCopy.about.subtitle.ru} data-i18n-en={uiCopy.about.subtitle.en}>{uiCopy.about.subtitle.en}</p>
+      <p class="about-intro">How I work across product, delivery, AI, and engineering.</p>
 
       <div class="about-grid">
         <div class="about-image-wrap">
-          <img
+          <Image
             id="hero-avatar"
-            src={avatarUrl}
+            src={heroImage}
+            width={560}
+            height={560}
             loading="eager"
             alt={`Portrait of ${heroDisplayName.en}`}
-            data-i18n-alt-ru={`Портрет ${heroDisplayName.ru}`}
-            data-i18n-alt-en={`Portrait of ${heroDisplayName.en}`}
           />
         </div>
 
         <div class="about-copy">
-          <p id="hero-subtitle" data-i18n-ru={heroSubtitle.ru} data-i18n-en={heroSubtitle.en}>
-            {heroSubtitle.en}
-          </p>
+          <p id="hero-subtitle">{heroSubtitle.en}</p>
 
           {
             aboutParagraphs.map((paragraph) => (
-              <p data-i18n-ru={paragraph.ru} data-i18n-en={paragraph.en}>
-                {paragraph.en}
-              </p>
+              <p>{paragraph.en}</p>
             ))
           }
 
@@ -125,14 +110,14 @@ const aboutSchema = {
 
     <section id="github" class="section-block" aria-labelledby="github-title">
       <div class="section-head">
-        <h2 id="github-title" data-i18n-ru={uiCopy.github.title.ru} data-i18n-en={uiCopy.github.title.en}>{uiCopy.github.title.en}</h2>
-        <p data-i18n-ru={uiCopy.github.subtitle.ru} data-i18n-en={uiCopy.github.subtitle.en}>{uiCopy.github.subtitle.en}</p>
+        <h2 id="github-title">GitHub activity</h2>
+        <p>GitHub profile snapshot and activity graph from the last year.</p>
       </div>
 
       <div class="github-heatmap">
         <div class="heatmap-topline">
           <strong id="contributions-total">0</strong>
-          <span data-i18n-ru={uiCopy.github.totalLabel.ru} data-i18n-en={uiCopy.github.totalLabel.en}>{uiCopy.github.totalLabel.en}</span>
+          <span>contributions in the last year</span>
         </div>
 
         <p class="github-meta">
@@ -145,18 +130,14 @@ const aboutSchema = {
           >
             github.com/{githubUsername}
           </a>
-          <span class="github-snapshot-note" data-i18n-ru={uiCopy.github.snapshotNote.ru} data-i18n-en={uiCopy.github.snapshotNote.en}>
-            {uiCopy.github.snapshotNote.en}
-          </span>
+          <span class="github-snapshot-note">Data is refreshed during site builds.</span>
         </p>
 
         <div
           id="contribution-grid"
           class="contribution-grid"
           role="img"
-          aria-label={uiCopy.github.heatmapAria.en}
-          data-i18n-aria-ru={uiCopy.github.heatmapAria.ru}
-          data-i18n-aria-en={uiCopy.github.heatmapAria.en}
+          aria-label="GitHub activity graph"
         ></div>
 
         <div class="heatmap-legend" aria-hidden="true">
@@ -172,19 +153,17 @@ const aboutSchema = {
         <p
           id="contribution-tooltip"
           class="contribution-tooltip"
-          data-hint-ru={uiCopy.github.hoverHint.ru}
-          data-hint-en={uiCopy.github.hoverHint.en}
+          data-hint-ru="Наведите или перейдите на ячейку, чтобы увидеть дату и число вкладов."
+          data-hint-en="Hover or focus a cell to see the exact date and number of contributions."
         >
-          {uiCopy.github.hoverHint.en}
+          Hover or focus a cell to see the exact date and number of contributions.
         </p>
 
         <p
           id="github-error"
           class="github-error hidden"
-          data-i18n-ru={uiCopy.github.unavailable.ru}
-          data-i18n-en={uiCopy.github.unavailable.en}
         >
-          {uiCopy.github.unavailable.en}
+          Unable to load GitHub data. Please refresh later.
         </p>
       </div>
     </section>

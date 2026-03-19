@@ -1,89 +1,78 @@
 ---
-import { aboutPath, blogPath, heroFallbackName, homePath, themeToggleLabel, uiCopy } from '../data/site-content';
+import { heroFallbackName, uiCopy } from '../data/site-content';
 
 interface Props {
   active: 'home' | 'about' | 'blog';
 }
 
 const { active } = Astro.props;
+const lang = Astro.currentLocale ?? 'en';
+const isRu = lang === 'ru';
+const prefix = isRu ? '/ru' : '';
+
 const isHome = active === 'home';
 const isAbout = active === 'about';
 const isBlog = active === 'blog';
+
+const homePath = `${prefix}/`;
+const aboutPath = `${prefix}/about`;
+const blogPath = `${prefix}/blog`;
+
+const toggleUrl = isRu ? '/' : '/ru';
 ---
 
 <header class="site-header">
   <div class="header-inner">
-    <a class="brand" href={homePath} data-home-link="true">{heroFallbackName}</a>
+    <a class="brand" href={homePath}>{heroFallbackName}</a>
 
     <div
       class="header-controls"
       role="group"
-      aria-label={uiCopy.nav.controlsAria.en}
-      data-i18n-aria-ru={uiCopy.nav.controlsAria.ru}
-      data-i18n-aria-en={uiCopy.nav.controlsAria.en}
+      aria-label={isRu ? uiCopy.nav.controlsAria.ru : uiCopy.nav.controlsAria.en}
     >
       <nav
         class="main-nav"
-        aria-label={uiCopy.nav.primaryAria.en}
-        data-i18n-aria-ru={uiCopy.nav.primaryAria.ru}
-        data-i18n-aria-en={uiCopy.nav.primaryAria.en}
+        aria-label={isRu ? uiCopy.nav.primaryAria.ru : uiCopy.nav.primaryAria.en}
       >
         <a
           class:list={['main-nav-link', isHome && 'active-nav']}
           href={homePath}
-          data-home-link="true"
           aria-current={isHome ? 'page' : undefined}
-          data-i18n-ru={uiCopy.nav.home.ru}
-          data-i18n-en={uiCopy.nav.home.en}
         >
-          {uiCopy.nav.home.en}
+          {isRu ? uiCopy.nav.home.ru : uiCopy.nav.home.en}
         </a>
         <a
           class:list={['main-nav-link', isAbout && 'active-nav']}
           href={aboutPath}
           aria-current={isAbout ? 'page' : undefined}
-          data-i18n-ru={uiCopy.nav.about.ru}
-          data-i18n-en={uiCopy.nav.about.en}
         >
-          {uiCopy.nav.about.en}
+          {isRu ? uiCopy.nav.about.ru : uiCopy.nav.about.en}
         </a>
         <a
           class:list={['main-nav-link', isBlog && 'active-nav']}
           href={blogPath}
           aria-current={isBlog ? 'page' : undefined}
-          data-i18n-ru={uiCopy.nav.blog.ru}
-          data-i18n-en={uiCopy.nav.blog.en}
         >
-          {uiCopy.nav.blog.en}
+          {isRu ? uiCopy.nav.blog.ru : uiCopy.nav.blog.en}
         </a>
       </nav>
 
-      <button
-        id="locale-toggle"
+      <a
+        id="locale-switcher"
         class="locale-toggle"
-        type="button"
-        data-toggle-ru="EN"
-        data-toggle-en="RU"
-        data-label-ru={uiCopy.localeToggleLabel.ru}
-        data-label-en={uiCopy.localeToggleLabel.en}
-        aria-label={uiCopy.localeToggleLabel.en}
+        href={toggleUrl}
+        aria-label={isRu ? uiCopy.localeToggleLabel.ru : uiCopy.localeToggleLabel.en}
       >
-        RU
-      </button>
+        {isRu ? 'EN' : 'RU'}
+      </a>
 
       <button
         id="theme-btn"
         class="theme-toggle"
         type="button"
-        data-theme-dark-label-ru={themeToggleLabel.toDark.ru}
-        data-theme-dark-label-en={themeToggleLabel.toDark.en}
-        data-theme-light-label-ru={themeToggleLabel.toLight.ru}
-        data-theme-light-label-en={themeToggleLabel.toLight.en}
-        aria-label={themeToggleLabel.toDark.en}
+        aria-label={isRu ? uiCopy.themeToggle.toDark.ru : uiCopy.themeToggle.toDark.en}
       >
-        <span class="sr-only" data-i18n-ru={themeToggleLabel.toDark.ru} data-i18n-en={themeToggleLabel.toDark.en}>
-          {themeToggleLabel.toDark.en}
-        </span>
+        <span class="sr-only">Toggle theme</span>
         <svg
           class="theme-icon theme-icon-moon"
           width="22"
@@ -126,3 +115,34 @@ const isBlog = active === 'blog';
     </div>
   </div>
 </header>
+
+<script>
+  // Script to handle smart locale switching for blog posts/projects
+  const updateSwitcher = () => {
+    const switcher = document.getElementById('locale-switcher');
+    const main = document.getElementById('main-content');
+    if (!switcher || !main) return;
+
+    const currentLang = document.documentElement.lang;
+    const isRu = currentLang === 'ru';
+    
+    const ruSlug = main.dataset.postSlugRu;
+    const enSlug = main.dataset.postSlugEn;
+
+    if (isRu && enSlug) {
+      switcher.setAttribute('href', `/blog/${enSlug}`);
+    } else if (!isRu && ruSlug) {
+      switcher.setAttribute('href', `/ru/blog/${ruSlug}`);
+    }
+    
+    // Check for projects specifically if data-attributes are different
+    const currentPath = window.location.pathname;
+    if (currentPath.includes('/projects/')) {
+       if (isRu && enSlug) switcher.setAttribute('href', `/projects/${enSlug}`);
+       if (!isRu && ruSlug) switcher.setAttribute('href', `/ru/projects/${ruSlug}`);
+    }
+  };
+
+  document.addEventListener('astro:page-load', updateSwitcher);
+  updateSwitcher();
+</script>

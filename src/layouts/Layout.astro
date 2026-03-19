@@ -20,6 +20,7 @@ const {
   schema = [],
 } = Astro.props;
 
+const lang = Astro.currentLocale ?? 'en';
 const siteUrl = Astro.site ?? new URL(Astro.url.origin);
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).toString();
 const imageUrl = image.startsWith('http://') || image.startsWith('https://') ? image : new URL(image, siteUrl).toString();
@@ -28,22 +29,11 @@ const resolvedSchemas = Array.isArray(schema) ? schema : [schema];
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={lang} data-locale={lang}>
   <head>
     <script is:inline>
       (() => {
         const root = document.documentElement;
-
-        const detectLocale = () => {
-          try {
-            const storedLocale = window.localStorage.getItem('portfolio-locale');
-            if (storedLocale === 'ru' || storedLocale === 'en') return storedLocale;
-          } catch {
-            // Ignore storage access failures.
-          }
-
-          return navigator.language.toLowerCase().startsWith('ru') ? 'ru' : 'en';
-        };
 
         const detectTheme = () => {
           try {
@@ -58,11 +48,7 @@ const resolvedSchemas = Array.isArray(schema) ? schema : [schema];
             : 'light';
         };
 
-        const locale = detectLocale();
         const theme = detectTheme();
-
-        root.lang = locale;
-        root.dataset.locale = locale;
         root.setAttribute('data-theme', theme);
         root.style.colorScheme = theme;
       })();
