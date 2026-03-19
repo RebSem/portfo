@@ -1,0 +1,47 @@
+---
+projectId: "Zodial"
+title: "Zodial — Personalized PDF Report Platform"
+description: "Automating the sale and generation of astrology charts with instant email delivery."
+role: "Fullstack Developer / Product Owner"
+timeline: "3 days"
+impact: "A fully autonomous digital content sales cycle requiring zero manual intervention."
+lang: "en"
+tags: ["Next.js", "PDF Generation", "YooKassa", "Automation"]
+draft: false
+---
+
+# Zodial: From Birth Data to Custom PDF in 60 Seconds
+
+Zodial is a classic example of micro-business automation. We built a system that transforms complex astrological calculations into a beautiful, easy-to-understand product for the end user.
+
+## 🔴 The Problem
+The astrology market often relies on manual labor:
+1. **Delays**: Customers pay and then wait hours or even days for their reports.
+2. **Errors**: Manual data entry leads to calculation mistakes.
+3. **Inconsistency**: It’s hard to maintain a consistent brand style when manually creating PDF files.
+
+## ⚡️ The Solution: A Seamless Pipeline
+We designed the user journey to make the purchase impulsive and satisfying.
+
+### 1. Interactive Form
+Accurate data collection (date, time, place of birth) with automatic coordinate lookup.
+
+### 2. Payment Processing (YooKassa)
+Webhook integration: as soon as a payment is confirmed, the system instantly triggers the generation process.
+
+### 3. Dynamic PDF Generation
+We developed a layout engine based on HTML/CSS that generates unique 20+ page PDF files for every customer.
+
+### 4. Email Delivery
+Integration with Resend for reliable automated emails with file attachments sent immediately after generation.
+
+## 🛠 Tech Stack
+- **Next.js**: For a fast frontend and API routes.
+- **Prisma + SQLite**: Lightweight and reliable order data storage.
+- **YooKassa API**: For secure payments.
+- **Puppeteer/React-pdf**: For rendering complex PDF layouts.
+- **Resend**: For transactional emails.
+
+---
+
+> **Insights:** Speed is the key to success in digital goods. Reducing the wait time from 1 hour to 1 minute significantly boosts LTV and customer satisfaction.

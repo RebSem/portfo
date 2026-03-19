@@ -1,13 +1,13 @@
 ---
 import { getCollection, getEntry, render } from 'astro:content';
-import SiteFooter from '../../components/SiteFooter.astro';
-import SiteHeader from '../../components/SiteHeader.astro';
-import { githubUsername, heroDisplayName, heroFallbackName, linkedinUrl, telegramUrl, uiCopy } from '../../data/site-content';
-import Layout from '../../layouts/Layout.astro';
-import localeScriptUrl from '../../scripts/locale.js?url';
+import SiteFooter from '../../../components/SiteFooter.astro';
+import SiteHeader from '../../../components/SiteHeader.astro';
+import { githubUsername, heroDisplayName, linkedinUrl, telegramUrl, uiCopy } from '../../../data/site-content';
+import Layout from '../../../layouts/Layout.astro';
+import localeScriptUrl from '../../../scripts/locale.js?url';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => !data.draft && data.lang === 'en');
+  const posts = await getCollection('blog', ({ data }) => !data.draft && data.lang === 'ru');
   return posts.map((post) => ({
     params: { slug: post.slug },
   }));
@@ -16,20 +16,20 @@ export async function getStaticPaths() {
 const slug = Astro.params.slug ?? '';
 const post = await getEntry('blog', slug);
 if (!post || post.data.draft) {
-  return Astro.redirect('/blog', 302);
+  return Astro.redirect('/ru/blog', 302);
 }
 
-// Find Russian version for switcher
+// Find English version for switcher
 const translationPairPosts = await getCollection(
   'blog',
   ({ data }) => !data.draft && data.translationKey === post.data.translationKey,
 );
-const ruSlug = translationPairPosts.find((entry) => entry.data.lang === 'ru')?.slug;
+const enSlug = translationPairPosts.find((entry) => entry.data.lang === 'en')?.slug;
 
 const { Content } = await render(post);
 
 const isoDate = post.data.publishedAt.toISOString().slice(0, 10);
-const dateLabel = new Intl.DateTimeFormat('en-US', {
+const dateLabel = new Intl.DateTimeFormat('ru-RU', {
   day: 'numeric',
   month: 'long',
   year: 'numeric',
@@ -43,12 +43,12 @@ const articleSchema = {
   description: post.data.description,
   datePublished: post.data.publishedAt.toISOString(),
   dateModified: (post.data.updatedAt ?? post.data.publishedAt).toISOString(),
-  inLanguage: 'en',
+  inLanguage: 'ru',
   image: pageImage.startsWith('http://') || pageImage.startsWith('https://')
     ? pageImage
     : `https://rebsem.ru${pageImage}`,
-  url: `https://rebsem.ru/blog/${post.slug}`,
-  mainEntityOfPage: `https://rebsem.ru/blog/${post.slug}`,
+  url: `https://rebsem.ru/ru/blog/${post.slug}`,
+  mainEntityOfPage: `https://rebsem.ru/ru/blog/${post.slug}`,
   author: {
     '@type': 'Person',
     name: heroDisplayName.en,
@@ -63,13 +63,13 @@ const articleSchema = {
 ---
 
 <Layout
-  title={`${post.data.title} — ${heroFallbackName}`}
+  title={`${post.data.title} — ${heroDisplayName.ru}`}
   description={post.data.description}
   image={pageImage}
   type="article"
   schema={articleSchema}
 >
-  <a id="skip-to-content" href="#main-content" class="skip-link">Skip to content</a>
+  <a id="skip-to-content" href="#main-content" class="skip-link">Перейти к содержимому</a>
 
   <SiteHeader active="blog" />
 
@@ -80,11 +80,11 @@ const articleSchema = {
   <main
     id="main-content"
     class="page-main"
-    data-post-slug-ru={ruSlug ?? ''}
+    data-post-slug-en={enSlug ?? ''}
   >
     <article class="post-shell">
       <p>
-        <a href="/blog">← Back to blog</a>
+        <a href="/ru/blog">← Вернуться в блог</a>
       </p>
 
       <header class="post-head">
@@ -96,7 +96,7 @@ const articleSchema = {
       </header>
 
       {post.data.tags.length > 0 && (
-        <ul class="stack-list" aria-label="Post tags">
+        <ul class="stack-list" aria-label="Теги статьи">
           {post.data.tags.map((tag) => (
             <li>{tag}</li>
           ))}
