@@ -94,6 +94,12 @@ const updateProfile = (profile) => {
     heroAvatar.setAttribute('data-i18n-alt-en', `${displayName} avatar`);
     heroAvatar.alt = withLocale(state.activeLocale, `Аватар ${displayName}`, `${displayName} avatar`);
   }
+
+  const profileLink = document.getElementById('github-profile-link');
+  if (profileLink instanceof HTMLAnchorElement) {
+    profileLink.href = profile.profileUrl;
+    profileLink.textContent = profile.login ? `github.com/${profile.login}` : profile.profileUrl;
+  }
 };
 
 const dateToIso = (date) => date.toISOString().slice(0, 10);
