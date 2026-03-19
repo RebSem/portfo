@@ -22,12 +22,12 @@ const blogSchema = {
   '@type': 'Blog',
   url: 'https://rebsem.ru/blog',
   name: `${heroDisplayName.en} Blog`,
-  description: 'Blog with posts about engineering, product work, and practical AI.',
+  description: 'Writing about product thinking, delivery systems, engineering, and practical AI.',
   inLanguage: ['en', 'ru'],
 };
 ---
 
-<Layout title={`${heroFallbackName} — Blog`} description="Blog section with engineering posts." schema={blogSchema}>
+<Layout title={`${heroFallbackName} — Blog`} description="Writing on product thinking, delivery systems, engineering, and practical AI." schema={blogSchema}>
   <a
     id="skip-to-content"
     href="#main-content"
@@ -49,8 +49,8 @@ const blogSchema = {
     class="page-main"
     data-title-ru={`${heroFallbackName} — Блог`}
     data-title-en={`${heroFallbackName} — Blog`}
-    data-description-ru="Блог с публикациями о разработке и продуктах."
-    data-description-en="Blog with posts about engineering and products."
+    data-description-ru="Блог о продуктовой логике, системах delivery, разработке и практическом использовании AI."
+    data-description-en="Blog with posts about product thinking, delivery systems, engineering, and practical AI."
   >
     <section class="blog-index" aria-labelledby="blog-title">
       <div class="section-head">
