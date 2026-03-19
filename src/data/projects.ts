@@ -2,6 +2,24 @@ import type { ProjectItem } from '../types/content';
 
 export const projects: ProjectItem[] = [
   {
+    id: 'cursivo',
+    title: {
+      ru: 'cursivo',
+      en: 'cursivo',
+    },
+    appType: {
+      ru: 'AI-CRM для автопроката',
+      en: 'AI-powered car rental CRM',
+    },
+    summary: {
+      ru: 'CRM-система для автоматизации автопрокатов: управление автопарком, интеграция с AI для скоринга клиентов и анализа документов.',
+      en: 'CRM system for car rental automation: fleet management, AI integration for client scoring and document analysis.',
+    },
+    stack: ['Next.js', 'TypeScript', 'Prisma', 'PostgreSQL', 'OpenAI', 'Linear'],
+    visibility: 'private',
+    featured: true,
+  },
+  {
     id: 'obrabot',
     title: {
       ru: 'obrabot',

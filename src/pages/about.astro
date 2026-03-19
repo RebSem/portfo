@@ -44,7 +44,7 @@ const aboutSchema = {
 
 <Layout
   title={`${heroFallbackName} — About`}
-  description="About page with engineering focus, AI integration work, and GitHub activity."
+  description="About page covering product work, delivery approach, AI focus, and a public GitHub trail."
   schema={aboutSchema}
 >
   <a
@@ -68,8 +68,8 @@ const aboutSchema = {
     class="page-main"
     data-title-ru={`${heroDisplayName.ru} — Обо мне`}
     data-title-en={`${heroDisplayName.en} — About`}
-    data-description-ru="Страница с профилем, подходом к разработке и живой GitHub-активностью."
-    data-description-en="Profile page with engineering approach and live GitHub activity."
+    data-description-ru="Страница о подходе к продукту, delivery, AI и открытом GitHub-следе."
+    data-description-en="Profile page about product work, delivery, AI, and a public GitHub trail."
   >
     <section class="about-section" aria-labelledby="about-title">
       <p class="about-eyebrow" data-i18n-ru={uiCopy.about.title.ru} data-i18n-en={uiCopy.about.title.en}>{uiCopy.about.title.en}</p>
@@ -134,6 +134,21 @@ const aboutSchema = {
           <strong id="contributions-total">0</strong>
           <span data-i18n-ru={uiCopy.github.totalLabel.ru} data-i18n-en={uiCopy.github.totalLabel.en}>{uiCopy.github.totalLabel.en}</span>
         </div>
+
+        <p class="github-meta">
+          <a
+            id="github-profile-link"
+            class="github-profile-link"
+            href={`https://github.com/${githubUsername}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            github.com/{githubUsername}
+          </a>
+          <span class="github-snapshot-note" data-i18n-ru={uiCopy.github.snapshotNote.ru} data-i18n-en={uiCopy.github.snapshotNote.en}>
+            {uiCopy.github.snapshotNote.en}
+          </span>
+        </p>
 
         <div
           id="contribution-grid"
