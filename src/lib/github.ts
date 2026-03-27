@@ -1,7 +1,7 @@
 import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { parseGithubContributionsHtml } from './github-contributions-parser';
-import type { GithubContributionsResponse, GithubProfileResponse } from '../types/github';
+import type { GithubContributionsResponse, GithubProfileResponse, GithubRepoResponse } from '../types/github';
 
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
 const STALE_TTL_MS = 72 * 60 * 60 * 1000;
@@ -15,10 +15,12 @@ interface CacheEntry<T> {
 
 interface PersistedCacheShape {
   profile?: Record<string, CacheEntry<GithubProfileResponse>>;
+  repos?: Record<string, CacheEntry<GithubRepoResponse[]>>;
   contributions?: Record<string, CacheEntry<GithubContributionsResponse>>;
 }
 
 const profileCache = new Map<string, CacheEntry<GithubProfileResponse>>();
+const reposCache = new Map<string, CacheEntry<GithubRepoResponse[]>>();
 const contributionsCache = new Map<string, CacheEntry<GithubContributionsResponse>>();
 
 let cacheLoaded = false;
@@ -73,6 +75,10 @@ const loadCacheFromDisk = async () => {
       profileCache.set(key, entry);
     }
 
+    for (const [key, entry] of readEntries<GithubRepoResponse[]>(parsed.repos)) {
+      reposCache.set(key, entry);
+    }
+
     for (const [key, entry] of readEntries<GithubContributionsResponse>(parsed.contributions)) {
       contributionsCache.set(key, entry);
     }
@@ -96,6 +102,7 @@ const ensureCacheLoaded = async () => {
 const persistCacheToDisk = async () => {
   const payload: PersistedCacheShape = {
     profile: Object.fromEntries(profileCache.entries()),
+    repos: Object.fromEntries(reposCache.entries()),
     contributions: Object.fromEntries(contributionsCache.entries()),
   };
 
@@ -158,7 +165,46 @@ const fetchGithubProfile = async (username: string): Promise<GithubProfileRespon
     following: Number(payload.following ?? 0),
     publicRepos: Number(payload.public_repos ?? 0),
     profileUrl: payload.html_url ?? `https://github.com/${username}`,
+    updatedAt: payload.updated_at ?? '',
   };
+};
+
+const fetchGithubRepos = async (username: string): Promise<GithubRepoResponse[]> => {
+  const response = await fetch(`https://api.github.com/users/${username}/repos?per_page=100&sort=updated`, {
+    headers: PROFILE_HEADERS,
+  });
+
+  if (!response.ok) {
+    throw new Error(`GitHub repos request failed with status ${response.status}`);
+  }
+
+  const payload = (await response.json()) as Array<Record<string, unknown>>;
+  if (!Array.isArray(payload)) return [];
+
+  return payload
+    .map((repo) => {
+      const repoName = typeof repo.name === 'string' ? repo.name : '';
+      const visibility: GithubRepoResponse['visibility'] = repo.private ? 'private' : 'public';
+
+      return {
+        name: repoName,
+        fullName: typeof repo.full_name === 'string' ? repo.full_name : `${username}/${repoName}`,
+        description: typeof repo.description === 'string' ? repo.description : '',
+        repoUrl: typeof repo.html_url === 'string' ? repo.html_url : `https://github.com/${username}/${repoName}`,
+        homepageUrl: typeof repo.homepage === 'string' ? repo.homepage : '',
+        language: typeof repo.language === 'string' ? repo.language : '',
+        stargazersCount: Number(repo.stargazers_count ?? 0),
+        forksCount: Number(repo.forks_count ?? 0),
+        openIssuesCount: Number(repo.open_issues_count ?? 0),
+        updatedAt: typeof repo.updated_at === 'string' ? repo.updated_at : '',
+        pushedAt: typeof repo.pushed_at === 'string' ? repo.pushed_at : typeof repo.updated_at === 'string' ? repo.updated_at : '',
+        visibility,
+        topics: Array.isArray(repo.topics)
+          ? repo.topics.filter((topic: unknown): topic is string => typeof topic === 'string')
+          : [],
+      };
+    })
+    .sort((left, right) => right.pushedAt.localeCompare(left.pushedAt));
 };
 
 const fetchGithubContributions = async (username: string): Promise<GithubContributionsResponse> => {
@@ -188,6 +234,22 @@ export const getGithubProfile = async (username: string): Promise<GithubProfileR
     return setCache(profileCache, username, value);
   } catch (error) {
     const stale = getStale(profileCache, username);
+    if (stale) return stale;
+    throw error;
+  }
+};
+
+export const getGithubRepos = async (username: string): Promise<GithubRepoResponse[]> => {
+  await ensureCacheLoaded();
+
+  const cached = getFresh(reposCache, username);
+  if (cached) return cached;
+
+  try {
+    const value = await fetchGithubRepos(username);
+    return setCache(reposCache, username, value);
+  } catch (error) {
+    const stale = getStale(reposCache, username);
     if (stale) return stale;
     throw error;
   }
