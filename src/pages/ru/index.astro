@@ -8,6 +8,7 @@ import { projects } from '../../data/projects';
 import { githubUsername, heroDisplayName, linkedinUrl, telegramUrl, uiCopy } from '../../data/site-content';
 import Layout from '../../layouts/Layout.astro';
 import blogScriptUrl from '../../scripts/blog.js?url';
+import githubSyncScriptUrl from '../../scripts/github-sync.js?url';
 import localeScriptUrl from '../../scripts/locale.js?url';
 import heroImage from '../../assets/main-hero.jpg';
 
@@ -35,7 +36,7 @@ const personSchema = {
 ---
 
 <Layout
-  title={`${heroDisplayName.ru} — Портфолио`}
+  title={`${heroDisplayName.ru} - Портфолио`}
   description="Продуктовый менеджер с инженерной глубиной: проекты, тексты и открытый GitHub-след."
   schema={personSchema}
 >
@@ -47,7 +48,7 @@ const personSchema = {
     <hr class="divider" />
   </div>
 
-  <main id="main-content" class="page-main">
+  <main id="main-content" class="page-main" data-github-username={githubUsername}>
     <section class="home-intro" aria-labelledby="home-title">
       <div class="home-intro-copy">
         <p class="about-eyebrow">Product Manager / Product Engineer</p>
@@ -123,7 +124,10 @@ const personSchema = {
           {visibleProjects.map((project) => {
             const entry = projectEntries.find(e => e.data.projectId === project.id);
             return (
-              <article class:list={["project-card", project.id === 'cursivo' && "project-card-featured"]}>
+              <article
+                class:list={["project-card", project.id === 'cursivo' && "project-card-featured"]}
+                data-github-repo={project.githubRepo}
+              >
                 <div class="project-card-head">
                   {entry ? (
                     <h3><a href={`/ru/projects/${entry.slug}/`}>{project.title.ru}</a></h3>
@@ -146,6 +150,22 @@ const personSchema = {
                   <strong>Тип</strong>
                   <span>{project.appType.ru}</span>
                 </p>
+                {project.githubRepo && (
+                  <div class="project-live-facts" aria-label="Актуальные данные репозитория GitHub">
+                    <p class="project-fact-chip">
+                      <span>Язык</span>
+                      <strong data-github-language>{project.stack[0]}</strong>
+                    </p>
+                    <p class="project-fact-chip">
+                      <span>Звезды</span>
+                      <strong data-github-stars>0</strong>
+                    </p>
+                    <p class="project-fact-chip">
+                      <span>Последний push</span>
+                      <strong data-github-updated>Синхронизация…</strong>
+                    </p>
+                  </div>
+                )}
                 <ul class="stack-list" aria-label="Технологии проекта">
                   {project.stack.map((item) => (<li>{item}</li>))}
                 </ul>
@@ -160,8 +180,16 @@ const personSchema = {
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
                     </a>
                   )}
-                  {project.visibility === 'public' && project.repoUrl && (
-                    <a class="project-link" href={project.repoUrl} target="_blank" rel="noreferrer">Репозиторий</a>
+                  {project.repoUrl && (
+                    <a
+                      class="project-link"
+                      href={project.repoUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      data-github-repo-link={project.githubRepo ? '' : undefined}
+                    >
+                      Репозиторий
+                    </a>
                   )}
                 </p>
               </article>
@@ -176,4 +204,5 @@ const personSchema = {
 
   <script is:inline type="module" src={localeScriptUrl}></script>
   <script is:inline type="module" src={blogScriptUrl}></script>
+  <script is:inline type="module" src={githubSyncScriptUrl}></script>
 </Layout>
