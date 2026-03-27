@@ -12,6 +12,7 @@ export interface ProjectItem {
   summary: LocalizedText;
   stack: string[];
   visibility: 'public' | 'private';
+  githubRepo?: string;
   repoUrl?: string;
   demoUrl?: string;
   featured?: boolean;

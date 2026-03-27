@@ -21,7 +21,7 @@ Live site: [rebsem.ru](https://rebsem.ru)
 - Light/dark theme toggle
 - Smooth client-side navigation
 - Bilingual blog posts (translation pairs)
-- GitHub profile + contributions JSON generated at build time
+- Live GitHub profile/public repo sync with build-time contribution snapshots
 - `robots.txt`, `sitemap.xml`, `llms.txt`, meta tags, structured data
 
 ## Routes
@@ -32,6 +32,7 @@ Live site: [rebsem.ru](https://rebsem.ru)
 - `/blog/:slug` - blog post
 - `/posts` - redirect/compat route
 - `/api/github/profile.json` - generated static JSON
+- `/api/github/repos.json` - generated static JSON
 - `/api/github/contributions.json` - generated static JSON
 
 ## Local Development
