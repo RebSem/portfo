@@ -24,7 +24,37 @@ async function fetchGithubProfile(username) {
     following: payload.following,
     publicRepos: payload.public_repos,
     profileUrl: payload.html_url,
+    updatedAt: payload.updated_at,
   };
+}
+
+async function fetchGithubRepos(username) {
+  console.log(`Fetching repos for ${username}...`);
+  const response = await fetch(`https://api.github.com/users/${username}/repos?per_page=100&sort=updated`, {
+    headers: {
+      'User-Agent': 'rebsem-portfolio-updater/1.0',
+    },
+  });
+  if (!response.ok) throw new Error(`Repos fetch failed: ${response.status}`);
+
+  const payload = await response.json();
+  if (!Array.isArray(payload)) return [];
+
+  return payload.map((repo) => ({
+    name: repo.name,
+    fullName: repo.full_name,
+    description: repo.description || '',
+    repoUrl: repo.html_url,
+    homepageUrl: repo.homepage || '',
+    language: repo.language || '',
+    stargazersCount: repo.stargazers_count || 0,
+    forksCount: repo.forks_count || 0,
+    openIssuesCount: repo.open_issues_count || 0,
+    updatedAt: repo.updated_at || '',
+    pushedAt: repo.pushed_at || repo.updated_at || '',
+    visibility: repo.private ? 'private' : 'public',
+    topics: Array.isArray(repo.topics) ? repo.topics : [],
+  }));
 }
 
 async function fetchGithubContributions(username) {
@@ -74,8 +104,9 @@ function parseContributions(html) {
 
 async function main() {
   try {
-    const [profile, contributions] = await Promise.all([
+    const [profile, repos, contributions] = await Promise.all([
       fetchGithubProfile(USERNAME),
+      fetchGithubRepos(USERNAME),
       fetchGithubContributions(USERNAME),
     ]);
     
@@ -89,6 +120,13 @@ async function main() {
       profile: {
         [USERNAME]: {
           value: profile,
+          expiresAt: now + CACHE_TTL_MS,
+          staleUntil: now + STALE_TTL_MS,
+        }
+      },
+      repos: {
+        [USERNAME]: {
+          value: repos,
           expiresAt: now + CACHE_TTL_MS,
           staleUntil: now + STALE_TTL_MS,
         }
