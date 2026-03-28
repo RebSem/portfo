@@ -359,11 +359,6 @@ html[data-theme='dark'] .theme-icon-sun {
   object-fit: cover;
 }
 
-.hero-status {
-  font-size: 0.82rem;
-  color: color-mix(in oklab, var(--foreground) 72%, transparent);
-}
-
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
@@ -431,34 +426,6 @@ html[data-theme='dark'] .theme-icon-sun {
   padding: 0.15rem 0 0;
   display: grid;
   gap: 0.85rem;
-}
-
-.github-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
-  gap: 0.55rem;
-}
-
-.github-stat {
-  margin: 0;
-  padding: 0.7rem 0.8rem;
-  display: grid;
-  gap: 0.18rem;
-  border: 1px solid var(--border);
-  border-radius: 0.95rem;
-  background: color-mix(in oklab, var(--surface) 76%, white 24%);
-}
-
-.github-stat strong {
-  font-size: 1.08rem;
-  line-height: 1.1;
-}
-
-.github-stat span {
-  font-size: 0.7rem;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: color-mix(in oklab, var(--foreground) 62%, transparent);
 }
 
 .heatmap-topline {
