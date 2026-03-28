@@ -20,21 +20,6 @@ export const heroSubtitle: LocalizedText = {
   en: 'I work across product, UX, and engineering, turning complex problems into clear decisions and working systems.',
 };
 
-export const heroStatusLoading: LocalizedText = {
-  ru: 'Загружаю GitHub-раздел...',
-  en: 'Loading GitHub section...',
-};
-
-export const heroStatusReady: LocalizedText = {
-  ru: 'GitHub-данные загружены',
-  en: 'GitHub data loaded',
-};
-
-export const heroStatusError: LocalizedText = {
-  ru: 'GitHub-данные временно недоступны',
-  en: 'GitHub data is temporarily unavailable',
-};
-
 export const blogLabel: LocalizedText = {
   ru: 'Блог',
   en: 'Blog',
