@@ -8,16 +8,12 @@ import {
   githubUsername,
   heroDisplayName,
   heroFallbackName,
-  heroStatusError,
-  heroStatusLoading,
-  heroStatusReady,
   heroSubtitle,
   linkedinUrl,
   telegramUrl,
 } from '../data/site-content';
 import Layout from '../layouts/Layout.astro';
 import githubScriptUrl from '../scripts/github-activity.js?url';
-import githubSyncScriptUrl from '../scripts/github-sync.js?url';
 import localeScriptUrl from '../scripts/locale.js?url';
 import heroImage from '../assets/main-hero.jpg';
 
@@ -60,7 +56,6 @@ const aboutSchema = {
   <main
     id="main-content"
     class="page-main"
-    data-github-username={githubUsername}
   >
     <section class="about-section" aria-labelledby="about-title">
       <p class="about-eyebrow">About me</p>
@@ -93,38 +88,6 @@ const aboutSchema = {
           }
 
           <SocialLinks className="social-links profile-social-links" />
-
-          <div class="github-stats" aria-label="GitHub profile stats">
-            <p class="github-stat">
-              <strong data-github-profile="publicRepos">0</strong>
-              <span>Public repos</span>
-            </p>
-            <p class="github-stat">
-              <strong data-github-profile="followers">0</strong>
-              <span>Followers</span>
-            </p>
-            <p class="github-stat">
-              <strong data-github-profile="following">0</strong>
-              <span>Following</span>
-            </p>
-            <p class="github-stat">
-              <strong data-github-profile="updatedAt">n/a</strong>
-              <span>GitHub updated</span>
-            </p>
-          </div>
-
-          <p
-            id="hero-status"
-            class="hero-status"
-            data-loading-ru={heroStatusLoading.ru}
-            data-loading-en={heroStatusLoading.en}
-            data-ready-ru={heroStatusReady.ru}
-            data-ready-en={heroStatusReady.en}
-            data-error-ru={heroStatusError.ru}
-            data-error-en={heroStatusError.en}
-          >
-            {heroStatusLoading.en}
-          </p>
         </div>
       </div>
     </section>
@@ -151,7 +114,7 @@ const aboutSchema = {
           >
             github.com/{githubUsername}
           </a>
-          <span class="github-snapshot-note">Profile stats and public repo metadata are live from GitHub. The contribution graph is refreshed during site builds.</span>
+          <span class="github-snapshot-note">The contribution graph is refreshed during site builds.</span>
         </p>
 
         <div
@@ -193,6 +156,5 @@ const aboutSchema = {
   <SiteFooter />
 
   <script is:inline type="module" src={localeScriptUrl}></script>
-  <script is:inline type="module" src={githubSyncScriptUrl}></script>
   <script is:inline type="module" src={githubScriptUrl}></script>
 </Layout>
