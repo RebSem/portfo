@@ -2,6 +2,7 @@ const state = window.__portfolioGithubSyncState ?? {
   activeLocale: document.documentElement.lang === 'ru' ? 'ru' : 'en',
   profile: null,
   repos: null,
+  activeSyncStatus: 'loading',
   localeListenerBound: false,
 };
 
@@ -13,6 +14,21 @@ let cachedDateFormatLocale = '';
 let cachedDateFormat = null;
 
 const withLocale = (locale, ruValue, enValue) => (locale === 'ru' ? ruValue : enValue);
+
+const updateSyncStatus = (kind) => {
+  state.activeSyncStatus = kind;
+
+  document.querySelectorAll('[data-github-sync-status]').forEach((node) => {
+    node.setAttribute('data-state', kind);
+
+    const ru = node.getAttribute(`data-${kind}-ru`) ?? '';
+    const en = node.getAttribute(`data-${kind}-en`) ?? '';
+
+    if (ru && en) {
+      node.textContent = withLocale(state.activeLocale, ru, en);
+    }
+  });
+};
 
 const syncLocaleFromDocument = () => {
   state.activeLocale = document.documentElement.lang === 'ru' ? 'ru' : 'en';
@@ -146,11 +162,11 @@ const updateProfile = (profile) => {
     }
   });
 
-  const profileLink = document.getElementById('github-profile-link');
-  if (profileLink instanceof HTMLAnchorElement) {
+  document.querySelectorAll('[data-github-profile-link]').forEach((profileLink) => {
+    if (!(profileLink instanceof HTMLAnchorElement)) return;
     profileLink.href = profile.profileUrl;
     profileLink.textContent = profile.login ? `github.com/${profile.login}` : profile.profileUrl;
-  }
+  });
 };
 
 const updateRepoCards = (repos) => {
@@ -187,6 +203,8 @@ const updateRepoCards = (repos) => {
 };
 
 const renderFromState = () => {
+  updateSyncStatus(state.activeSyncStatus);
+
   if (state.profile) {
     updateProfile(state.profile);
   }
@@ -201,6 +219,7 @@ const hydrateGithub = async () => {
   if (!username) return;
 
   try {
+    updateSyncStatus('loading');
     const [profile, repos] = await Promise.all([
       fetchGithubProfile(username),
       fetchGithubRepos(username),
@@ -208,8 +227,10 @@ const hydrateGithub = async () => {
 
     updateProfile(profile);
     updateRepoCards(repos);
+    updateSyncStatus('ready');
   } catch {
     // Keep server-rendered fallback content if GitHub is unavailable.
+    updateSyncStatus('error');
   }
 };
 
@@ -222,6 +243,7 @@ const initGithubSync = () => {
   if (!getUsername()) return;
 
   syncLocaleFromDocument();
+  updateSyncStatus(state.activeSyncStatus);
 
   if (!state.localeListenerBound) {
     window.addEventListener('portfolio:locale-change', onLocaleChange);

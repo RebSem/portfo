@@ -422,6 +422,81 @@ html[data-theme='dark'] .theme-icon-sun {
   font-size: 1.02rem;
 }
 
+.github-status-head {
+  gap: 0.65rem;
+}
+
+.github-status-card {
+  display: grid;
+  gap: 0.85rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 1.15rem;
+  background:
+    linear-gradient(145deg, color-mix(in oklab, var(--surface) 86%, white 14%), color-mix(in oklab, var(--background-alt) 92%, var(--accent-soft) 8%));
+  box-shadow: 0 14px 30px -28px rgba(17, 24, 39, 0.45);
+}
+
+.github-sync-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.86rem;
+  color: color-mix(in oklab, var(--foreground) 82%, transparent);
+}
+
+.github-sync-state::before {
+  content: '';
+  width: 0.58rem;
+  height: 0.58rem;
+  border-radius: 999px;
+  background: var(--success-2);
+  box-shadow: 0 0 0 0.28rem color-mix(in oklab, var(--success-2) 18%, transparent);
+}
+
+.github-sync-state[data-state='loading']::before {
+  background: #d7a527;
+  box-shadow: 0 0 0 0.28rem color-mix(in oklab, #d7a527 18%, transparent);
+}
+
+.github-sync-state[data-state='error']::before {
+  background: #d65252;
+  box-shadow: 0 0 0 0.28rem color-mix(in oklab, #d65252 18%, transparent);
+}
+
+.github-status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.6rem;
+}
+
+.github-status-metric {
+  margin: 0;
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.78rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  background: color-mix(in oklab, var(--surface) 88%, white 12%);
+}
+
+.github-status-metric span {
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--foreground) 62%, transparent);
+}
+
+.github-status-metric strong {
+  font-size: 0.95rem;
+  line-height: 1.2;
+}
+
+.github-status-profile {
+  font-size: 0.84rem;
+  color: color-mix(in oklab, var(--foreground) 76%, transparent);
+}
+
 .github-heatmap {
   padding: 0.15rem 0 0;
   display: grid;
