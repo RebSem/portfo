@@ -119,6 +119,28 @@ export const uiCopy = {
       ru: 'Заметки о продуктовой логике, delivery-процессах и практическом использовании AI.',
       en: 'Notes on product thinking, delivery systems, and practical AI usage.',
     },
+    githubStatusTitle: { ru: 'GitHub статус', en: 'GitHub status' },
+    githubStatusSubtitle: {
+      ru: 'Живой срез публичного профиля GitHub и текущего состояния данных на сайте.',
+      en: 'Live snapshot of the public GitHub profile and the current sync state on the site.',
+    },
+    githubStatusLoading: {
+      ru: 'Синхронизация с GitHub...',
+      en: 'Syncing with GitHub...',
+    },
+    githubStatusReady: {
+      ru: 'Данные GitHub актуальны.',
+      en: 'GitHub data is up to date.',
+    },
+    githubStatusError: {
+      ru: 'Не удалось обновить GitHub-данные прямо сейчас.',
+      en: 'Unable to refresh GitHub data right now.',
+    },
+    githubStatusRepos: { ru: 'Публичные репозитории', en: 'Public repositories' },
+    githubStatusFollowers: { ru: 'Подписчики', en: 'Followers' },
+    githubStatusFollowing: { ru: 'Подписки', en: 'Following' },
+    githubStatusUpdated: { ru: 'Обновлено GitHub', en: 'GitHub updated' },
+    githubStatusProfile: { ru: 'Открыть профиль', en: 'Open profile' },
   },
   hero: {
     badge: { ru: 'Обо мне', en: 'About me' },

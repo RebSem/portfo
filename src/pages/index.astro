@@ -72,6 +72,62 @@ const personSchema = {
       </div>
     </section>
 
+    <section class="section-block github-status-section" aria-labelledby="github-status-title">
+      <div class="section-head github-status-head">
+        <div>
+          <p class="about-eyebrow">GitHub</p>
+          <h2 id="github-status-title">{uiCopy.home.githubStatusTitle.en}</h2>
+        </div>
+        <p>{uiCopy.home.githubStatusSubtitle.en}</p>
+      </div>
+
+      <div class="github-status-card">
+        <p
+          class="github-sync-state"
+          data-github-sync-status
+          data-loading-ru={uiCopy.home.githubStatusLoading.ru}
+          data-loading-en={uiCopy.home.githubStatusLoading.en}
+          data-ready-ru={uiCopy.home.githubStatusReady.ru}
+          data-ready-en={uiCopy.home.githubStatusReady.en}
+          data-error-ru={uiCopy.home.githubStatusError.ru}
+          data-error-en={uiCopy.home.githubStatusError.en}
+        >
+          {uiCopy.home.githubStatusLoading.en}
+        </p>
+
+        <div class="github-status-grid" aria-label="GitHub profile summary">
+          <p class="github-status-metric">
+            <span>{uiCopy.home.githubStatusRepos.en}</span>
+            <strong data-github-profile="publicRepos">0</strong>
+          </p>
+          <p class="github-status-metric">
+            <span>{uiCopy.home.githubStatusFollowers.en}</span>
+            <strong data-github-profile="followers">0</strong>
+          </p>
+          <p class="github-status-metric">
+            <span>{uiCopy.home.githubStatusFollowing.en}</span>
+            <strong data-github-profile="following">0</strong>
+          </p>
+          <p class="github-status-metric">
+            <span>{uiCopy.home.githubStatusUpdated.en}</span>
+            <strong data-github-profile="updatedAt">n/a</strong>
+          </p>
+        </div>
+
+        <p class="github-status-profile">
+          <span>{uiCopy.home.githubStatusProfile.en}: </span>
+          <a
+            href={`https://github.com/${githubUsername}`}
+            target="_blank"
+            rel="noreferrer"
+            data-github-profile-link
+          >
+            github.com/{githubUsername}
+          </a>
+        </p>
+      </div>
+    </section>
+
     <section class="section-block" aria-labelledby="recent-title">
       <div class="section-head">
         <h2 id="recent-title">Recent posts</h2>
