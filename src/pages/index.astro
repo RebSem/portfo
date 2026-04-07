@@ -8,6 +8,7 @@ import { projects } from '../data/projects';
 import { githubUsername, heroDisplayName, heroFallbackName, linkedinUrl, telegramUrl, uiCopy } from '../data/site-content';
 import Layout from '../layouts/Layout.astro';
 import blogScriptUrl from '../scripts/blog.js?url';
+import githubScriptUrl from '../scripts/github-activity.js?url';
 import githubSyncScriptUrl from '../scripts/github-sync.js?url';
 import localeScriptUrl from '../scripts/locale.js?url';
 import heroImage from '../assets/main-hero.jpg';
@@ -72,59 +73,70 @@ const personSchema = {
       </div>
     </section>
 
-    <section class="section-block github-status-section" aria-labelledby="github-status-title">
-      <div class="section-head github-status-head">
+    <section class="section-block github-activity-section" aria-labelledby="github-title">
+      <div class="section-head github-activity-head">
         <div>
           <p class="about-eyebrow">GitHub</p>
-          <h2 id="github-status-title">{uiCopy.home.githubStatusTitle.en}</h2>
+          <h2 id="github-title">GitHub activity</h2>
         </div>
-        <p>{uiCopy.home.githubStatusSubtitle.en}</p>
+        <p>Public work trail from the last year.</p>
       </div>
 
-      <div class="github-status-card">
-        <p
-          class="github-sync-state"
-          data-github-sync-status
-          data-loading-ru={uiCopy.home.githubStatusLoading.ru}
-          data-loading-en={uiCopy.home.githubStatusLoading.en}
-          data-ready-ru={uiCopy.home.githubStatusReady.ru}
-          data-ready-en={uiCopy.home.githubStatusReady.en}
-          data-error-ru={uiCopy.home.githubStatusError.ru}
-          data-error-en={uiCopy.home.githubStatusError.en}
-        >
-          {uiCopy.home.githubStatusLoading.en}
-        </p>
+      <div class="github-activity-card">
+        <div class="github-heatmap">
+          <div class="heatmap-topline">
+            <strong id="contributions-total">0</strong>
+            <span>contributions in the last year</span>
+          </div>
 
-        <div class="github-status-grid" aria-label="GitHub profile summary">
-          <p class="github-status-metric">
-            <span>{uiCopy.home.githubStatusRepos.en}</span>
-            <strong data-github-profile="publicRepos">0</strong>
+          <div
+            id="contribution-grid"
+            class="contribution-grid"
+            role="img"
+            aria-label="GitHub activity graph"
+          ></div>
+
+          <div class="heatmap-legend" aria-hidden="true">
+            <span>0</span>
+            <div class="legend-level level-0"></div>
+            <div class="legend-level level-1"></div>
+            <div class="legend-level level-2"></div>
+            <div class="legend-level level-3"></div>
+            <div class="legend-level level-4"></div>
+            <span>max</span>
+          </div>
+
+          <p
+            id="contribution-tooltip"
+            class="contribution-tooltip"
+            data-hint-ru="Наведите или перейдите на ячейку, чтобы увидеть дату и число вкладов."
+            data-hint-en="Hover or focus a cell to see the exact date and number of contributions."
+          >
+            Hover or focus a cell to see the exact date and number of contributions.
           </p>
-          <p class="github-status-metric">
-            <span>{uiCopy.home.githubStatusFollowers.en}</span>
-            <strong data-github-profile="followers">0</strong>
-          </p>
-          <p class="github-status-metric">
-            <span>{uiCopy.home.githubStatusFollowing.en}</span>
-            <strong data-github-profile="following">0</strong>
-          </p>
-          <p class="github-status-metric">
-            <span>{uiCopy.home.githubStatusUpdated.en}</span>
-            <strong data-github-profile="updatedAt">n/a</strong>
+
+          <p
+            id="github-error"
+            class="github-error hidden"
+          >
+            Unable to load GitHub data. Please refresh later.
           </p>
         </div>
 
-        <p class="github-status-profile">
-          <span>{uiCopy.home.githubStatusProfile.en}: </span>
-          <a
-            href={`https://github.com/${githubUsername}`}
-            target="_blank"
-            rel="noreferrer"
-            data-github-profile-link
-          >
-            github.com/{githubUsername}
-          </a>
-        </p>
+        <div class="github-activity-copy">
+          <p>I keep a public trail of shipped work, experiments, and site iterations on GitHub.</p>
+          <p>
+            <a
+              class="github-profile-link"
+              href={`https://github.com/${githubUsername}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Follow me on GitHub
+            </a>
+            {' '}and inspect the repos behind these case studies.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -260,5 +272,6 @@ const personSchema = {
 
   <script is:inline type="module" src={localeScriptUrl}></script>
   <script is:inline type="module" src={blogScriptUrl}></script>
+  <script is:inline type="module" src={githubScriptUrl}></script>
   <script is:inline type="module" src={githubSyncScriptUrl}></script>
 </Layout>
