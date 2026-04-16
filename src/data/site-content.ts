@@ -4,28 +4,20 @@ export const githubUsername = 'RebSem';
 export const telegramUrl = 'https://t.me/Michael_Semenov';
 export const email = 'perk77331@gmail.com';
 export const linkedinUrl = 'https://www.linkedin.com/in/mikhail-semenovv/';
-export const blogPath = '/posts';
+
+export const homePath = '/';
+export const aboutPath = '/about';
+export const blogPath = '/blog';
 
 export const heroFallbackName = 'Mikhail Semenov';
+export const heroDisplayName: LocalizedText = {
+  ru: 'Михаил Семенов',
+  en: 'Mikhail Semenov',
+};
 
 export const heroSubtitle: LocalizedText = {
-  ru: 'Собираю понятные веб-продукты и довожу идеи до рабочего релиза.',
-  en: 'I build clear web products and ship ideas all the way to production.',
-};
-
-export const heroStatusLoading: LocalizedText = {
-  ru: 'Обновляю статус GitHub...',
-  en: 'Refreshing GitHub status...',
-};
-
-export const heroStatusReady: LocalizedText = {
-  ru: 'GitHub-активность загружена',
-  en: 'GitHub activity loaded',
-};
-
-export const heroStatusError: LocalizedText = {
-  ru: 'GitHub временно недоступен',
-  en: 'GitHub is temporarily unavailable',
+  ru: 'Работаю на стыке продукта, UX и инженерии: превращаю сложные задачи в понятные решения и рабочие системы.',
+  en: 'I work across product, UX, and engineering, turning complex problems into clear decisions and working systems.',
 };
 
 export const blogLabel: LocalizedText = {
@@ -65,20 +57,24 @@ export const socialLabels = {
 
 export const aboutParagraphs: LocalizedText[] = [
   {
-    ru: 'Глубоко в режиме разработки: тестирую стек, собираю интерфейсы и постоянно улучшаю архитектуру.',
-    en: 'Deep in building mode: testing tooling, designing interfaces, and improving architecture continuously.',
+    ru: 'Веду продукт end-to-end: от формулировки задачи и гипотез до интерфейса, технического решения и запуска.',
+    en: 'I work end to end, from defining the problem and shaping hypotheses to interface decisions, technical delivery, and launch.',
   },
   {
-    ru: 'Мне нравится делать продукты, которые быстро запускаются и остаются удобными в поддержке.',
-    en: 'I like building products that launch fast and stay maintainable over time.',
+    ru: 'Лучше всего работаю там, где задачу ещё нужно собрать: понять контекст, выстроить приоритеты и снять ключевые риски.',
+    en: 'I am most useful when the problem still needs structure, priorities, and a practical path through the main risks.',
   },
   {
-    ru: 'Фокус сейчас: Astro, TypeScript, Node.js и аккуратный front-end с живыми данными.',
-    en: 'Current focus: Astro, TypeScript, Node.js, and clean front-end systems with live data.',
+    ru: 'Сильнее всего полезен в AI- и цифровых продуктах, где нужны одновременно продуктовая логика, UX-мышление и инженерная дисциплина.',
+    en: 'My strongest fit is AI and digital product work that needs product judgment, UX clarity, and engineering discipline at the same time.',
   },
   {
-    ru: 'Открыт к новым задачам, коллаборациям и техническим обсуждениям.',
-    en: 'Open to new projects, collaborations, and technical conversations.',
+    ru: 'На сайте держу открытый рабочий след: проекты, тексты и GitHub-активность, по которым видно, как я думаю и принимаю решения.',
+    en: 'This site keeps a public working trail of projects, writing, and GitHub activity so people can see how I think and make decisions.',
+  },
+  {
+    ru: 'Открыт к новым проектам, коллаборациям и ролям, где ценятся системность, скорость и ответственность за результат.',
+    en: 'Open to new projects, collaborations, and roles where systems thinking, speed, and ownership matter.',
   },
 ];
 
@@ -101,67 +97,140 @@ export const aboutContent: AboutContent = {
 
 export const uiCopy = {
   nav: {
+    home: { ru: 'Главная', en: 'Home' },
     about: { ru: 'Обо мне', en: 'About' },
-    github: { ru: 'GitHub', en: 'GitHub' },
-    projects: { ru: 'Проекты', en: 'Projects' },
-    contact: { ru: 'Контакты', en: 'Contact' },
     blog: blogLabel,
+    controlsAria: { ru: 'Элементы управления сайта', en: 'Site controls' },
+    primaryAria: { ru: 'Основная навигация', en: 'Primary navigation' },
+  },
+  home: {
+    eyebrow: { ru: 'Product Manager / Product Engineer', en: 'Product Manager / Product Engineer' },
+    title: {
+      ru: 'Помогаю превращать сложные продуктовые задачи в понятные решения, рабочие интерфейсы и реальные релизы.',
+      en: 'I help turn complex product problems into clear product decisions, useful interfaces, and shipped releases.',
+    },
+    lead: {
+      ru: 'Работаю на стыке продукта, UX и инженерии: discovery, постановка решений, delivery и практическое внедрение AI.',
+      en: 'I work across product, UX, and engineering: discovery, solution framing, delivery, and practical AI adoption.',
+    },
+    photoAlt: { ru: 'Фото Михаила Семенова', en: 'Photo of Mikhail Semenov' },
+    postsTitle: { ru: 'Свежие статьи', en: 'Recent posts' },
+    postsSubtitle: {
+      ru: 'Заметки о продуктовой логике, delivery-процессах и практическом использовании AI.',
+      en: 'Notes on product thinking, delivery systems, and practical AI usage.',
+    },
+    githubStatusTitle: { ru: 'GitHub статус', en: 'GitHub status' },
+    githubStatusSubtitle: {
+      ru: 'Живой срез публичного профиля GitHub и текущего состояния данных на сайте.',
+      en: 'Live snapshot of the public GitHub profile and the current sync state on the site.',
+    },
+    githubStatusLoading: {
+      ru: 'Синхронизация с GitHub...',
+      en: 'Syncing with GitHub...',
+    },
+    githubStatusReady: {
+      ru: 'Данные GitHub актуальны.',
+      en: 'GitHub data is up to date.',
+    },
+    githubStatusError: {
+      ru: 'Не удалось обновить GitHub-данные прямо сейчас.',
+      en: 'Unable to refresh GitHub data right now.',
+    },
+    githubStatusRepos: { ru: 'Публичные репозитории', en: 'Public repositories' },
+    githubStatusFollowers: { ru: 'Подписчики', en: 'Followers' },
+    githubStatusFollowing: { ru: 'Подписки', en: 'Following' },
+    githubStatusUpdated: { ru: 'Обновлено GitHub', en: 'GitHub updated' },
+    githubStatusProfile: { ru: 'Открыть профиль', en: 'Open profile' },
   },
   hero: {
-    badge: { ru: 'Личный сайт-визитка', en: 'Personal one-page portfolio' },
+    badge: { ru: 'Обо мне', en: 'About me' },
     cta: { ru: 'Написать в Telegram', en: 'Message me on Telegram' },
   },
   github: {
     title: { ru: 'GitHub активность', en: 'GitHub activity' },
     subtitle: {
-      ru: 'Живые данные профиля и календарь вкладов за последний год.',
-      en: 'Live profile data and yearly contribution heatmap.',
+      ru: 'GitHub-профиль и график активности за последний год.',
+      en: 'GitHub profile snapshot and activity graph from the last year.',
     },
     totalLabel: {
       ru: 'вкладов за последний год',
       en: 'contributions in the last year',
     },
+    snapshotNote: {
+      ru: 'Данные обновляются при сборке сайта.',
+      en: 'Data is refreshed during site builds.',
+    },
     hoverHint: {
-      ru: 'Наведите на кубик, чтобы увидеть дату и число вкладов.',
-      en: 'Hover a square to see the exact date and contributions.',
+      ru: 'Наведите или перейдите на ячейку, чтобы увидеть дату и число вкладов.',
+      en: 'Hover or focus a cell to see the exact date and number of contributions.',
     },
     unavailable: {
-      ru: 'Не удалось загрузить данные GitHub. Попробуйте обновить страницу позже.',
+      ru: 'Не удалось загрузить GitHub-данные. Попробуйте обновить страницу позже.',
       en: 'Unable to load GitHub data. Please refresh later.',
+    },
+    heatmapAria: {
+      ru: 'График активности GitHub',
+      en: 'GitHub activity graph',
     },
   },
   about: {
     title: { ru: 'Обо мне', en: 'About me' },
     subtitle: {
-      ru: 'Кратко о фокусе и подходе к разработке.',
-      en: 'A quick snapshot of my focus and engineering approach.',
+      ru: 'Как я работаю на стыке продукта, delivery, AI и инженерии.',
+      en: 'How I work across product, delivery, AI, and engineering.',
     },
     skillsTitle: { ru: 'Ключевые навыки', en: 'Core skills' },
   },
   projects: {
     title: { ru: 'Проекты', en: 'Projects' },
     subtitle: {
-      ru: 'Подборка избранных работ. Список полностью редактируется вручную в data-файле.',
-      en: 'Selected work. The list is fully managed manually in the data file.',
+      ru: 'Пять выбранных проектов из моего GitHub в едином формате: продукт, стек и где это уже работает.',
+      en: 'Five selected GitHub projects in one consistent format: product, stack, and where it already works.',
     },
     empty: {
-      ru: 'Список проектов пока пуст. Добавьте карточки в src/data/projects.ts.',
-      en: 'Project list is empty. Add cards to src/data/projects.ts.',
+      ru: 'Сейчас собираю свежие кейсы. Скоро здесь появятся подробные разборы.',
+      en: 'I am preparing fresh case studies. Detailed write-ups will appear here soon.',
     },
+    typeLabel: { ru: 'Тип', en: 'Type' },
+    privateCase: { ru: 'Приватный кейс', en: 'Private case' },
     repo: { ru: 'Репозиторий', en: 'Repository' },
     demo: { ru: 'Демо', en: 'Live demo' },
+    stackAria: { ru: 'Технологии проекта', en: 'Project technologies' },
+    statusInProgress: { ru: 'В работе', en: 'In progress' },
   },
-  contact: {
-    title: { ru: 'Связаться со мной', en: 'Contact me' },
+  blog: {
+    title: { ru: 'Блог', en: 'Blog' },
     subtitle: {
-      ru: 'Открыт к новым задачам, партнёрствам и техническим обсуждениям.',
-      en: 'Open to new projects, partnerships, and technical discussions.',
+      ru: 'Публикации о продуктовой логике, системах delivery и практическом использовании AI.',
+      en: 'Posts about product thinking, delivery systems, and practical AI usage.',
     },
-    cta: { ru: 'Написать в Telegram', en: 'Write on Telegram' },
+    readMore: { ru: 'Читать статью', en: 'Read post' },
+    empty: {
+      ru: 'Для этой локали пока нет опубликованных постов.',
+      en: 'No published posts for this locale yet.',
+    },
+    backToBlog: { ru: 'Вернуться в блог', en: 'Back to blog' },
+    langRu: { ru: 'Русский', en: 'Russian' },
+    langEn: { ru: 'Английский', en: 'English' },
+    tagsAria: { ru: 'Теги статьи', en: 'Post tags' },
+  },
+  footer: {
+    defaultNote: {
+      ru: 'Открыт к новым проектам и коллаборациям.',
+      en: 'Open to new projects and collaborations.',
+    },
+    blogNote: {
+      ru: 'Новые публикации появляются регулярно.',
+      en: 'New posts are published regularly.',
+    },
+    socialAria: {
+      ru: 'Ссылки на соцсети',
+      en: 'Social links',
+    },
   },
   localeToggleLabel: {
     ru: 'Switch to English',
-    en: 'Переключить на русский',
+    en: 'Switch to Russian',
   },
   themeToggle: themeToggleLabel,
   social: socialLabels,

@@ -1,0 +1,82 @@
+---
+import { getCollection } from 'astro:content';
+import SiteFooter from '../../components/SiteFooter.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import { heroFallbackName, uiCopy } from '../../data/site-content';
+import Layout from '../../layouts/Layout.astro';
+import localeScriptUrl from '../../scripts/locale.js?url';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft && data.lang === 'en'))
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+
+const blogSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  url: 'https://rebsem.ru/blog',
+  name: `${heroFallbackName} Blog`,
+  description: 'Writing about product thinking, delivery systems, engineering, and practical AI.',
+  inLanguage: 'en',
+};
+---
+
+<Layout 
+  title={`${heroFallbackName} - Blog`} 
+  description="Writing on product thinking, delivery systems, engineering, and practical AI." 
+  schema={blogSchema}
+>
+  <a id="skip-to-content" href="#main-content" class="skip-link">Skip to content</a>
+
+  <SiteHeader active="blog" />
+
+  <div class="divider-wrap" aria-hidden="true">
+    <hr class="divider" />
+  </div>
+
+  <main
+    id="main-content"
+    class="page-main"
+  >
+    <section class="blog-index" aria-labelledby="blog-title">
+      <div class="section-head">
+        <h1 id="blog-title">Blog</h1>
+        <p>Posts about product thinking, delivery systems, and practical AI usage.</p>
+      </div>
+
+      {posts.length === 0 ? (
+        <p class="blog-empty">No published posts for this locale yet.</p>
+      ) : (
+        <ul id="blog-list" class="blog-list">
+          {posts.map((post) => {
+            const isoDate = post.data.publishedAt.toISOString().slice(0, 10);
+            const dateLabel = new Intl.DateTimeFormat('en-US', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            }).format(post.data.publishedAt);
+
+            return (
+              <li class="blog-card">
+                <article>
+                  <header class="blog-card-head">
+                    <p class="blog-card-meta">
+                      <time class="blog-date" datetime={isoDate}>{dateLabel}</time>
+                      <span class="blog-lang">English</span>
+                    </p>
+                    <h3>
+                      <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
+                    </h3>
+                  </header>
+                  <p>{post.data.description}</p>
+                </article>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </section>
+  </main>
+
+  <SiteFooter noteRu={uiCopy.footer.blogNote.ru} noteEn={uiCopy.footer.blogNote.en} />
+
+  <script is:inline type="module" src={localeScriptUrl}></script>
+</Layout>

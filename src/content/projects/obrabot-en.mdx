@@ -1,0 +1,47 @@
+---
+projectId: "obrabot"
+title: "Obrabot - AI-Driven Call Quality Control"
+description: "Automating call segmentation from Google Sheets for operational oversight."
+role: "Product Manager / Engineer"
+timeline: "4 days"
+impact: "Full automation of call classification, eliminating manual listening hours."
+lang: "en"
+tags: ["AI", "OpenAI", "Google Sheets API", "Automation"]
+draft: false
+---
+
+# Obrabot: Say Goodbye to Manual Call Reviews
+
+Obrabot is an internal service designed to lift the burden off Quality Assurance (QA) departments. Instead of listening to every call manually, the system does it in seconds using AI.
+
+## 🔴 The Problem
+In companies with high call volumes, QA managers face:
+1. **Overload**: It's physically impossible to review 100% of calls.
+2. **Subjectivity**: Different managers might rate the same errors differently.
+3. **Latency**: Quality reports often appear days after the actual conversation.
+
+## ⚡️ The Solution: AI Segmentation
+The system integrates directly with Google Sheets, where links to recordings or transcripts are stored.
+
+### 1. Automatic Import
+The service pulls new rows from spreadsheets, processes audio via Whisper (or takes existing text), and sends it to the analytical core.
+
+### 2. Smart Classification
+AI evaluates the call based on predefined criteria:
+- Was the call successful?
+- Were objections handled?
+- Was there any aggression or inappropriate language?
+- Was it an answering machine?
+
+### 3. Interactive Reports
+Results are returned to a user-friendly interface where managers can filter only the "problematic" calls that require human attention.
+
+## 🛠 Tech Stack
+- **Next.js**: Core interface and API.
+- **Prisma + PostgreSQL**: Storage for report history and metadata.
+- **OpenAI API**: Segmentation and Sentiment Analysis.
+- **Google Sheets API**: Two-way data synchronization.
+
+---
+
+> **Insights:** Using AI in QA allows companies to not just find errors, but to see systemic sales patterns that were previously hidden in thousands of hours of audio.

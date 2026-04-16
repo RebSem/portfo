@@ -8,11 +8,15 @@ export interface LocalizedText {
 export interface ProjectItem {
   id: string;
   title: LocalizedText;
+  appType: LocalizedText;
   summary: LocalizedText;
   stack: string[];
+  visibility: 'public' | 'private';
+  githubRepo?: string;
   repoUrl?: string;
   demoUrl?: string;
   featured?: boolean;
+  placeholder?: boolean;
 }
 
 export interface AboutContent {

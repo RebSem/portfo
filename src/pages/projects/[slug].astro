@@ -1,0 +1,120 @@
+---
+import { getCollection, render } from 'astro:content';
+import SiteFooter from '../../components/SiteFooter.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import { githubUsername, heroDisplayName, heroFallbackName, linkedinUrl, telegramUrl } from '../../data/site-content';
+import Layout from '../../layouts/Layout.astro';
+import githubScriptUrl from '../../scripts/github-activity.js?url';
+import localeScriptUrl from '../../scripts/locale.js?url';
+import launchTimerScriptUrl from '../../scripts/launch-timer.js?url';
+
+export async function getStaticPaths() {
+  const projectEntries = await getCollection('projects', ({ data }) => !data.draft && data.lang === 'en');
+  return projectEntries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+// Find Russian version for switcher
+const allProjects = await getCollection('projects', ({ data }) => !data.draft);
+const ruSlug = allProjects.find((p) => p.data.projectId === entry.data.projectId && p.data.lang === 'ru')?.slug;
+
+const pageImage = entry.data.cover ?? '/main-hero.jpg';
+const projectSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  name: entry.data.title,
+  description: entry.data.description,
+  inLanguage: 'en',
+  image: pageImage.startsWith('http://') || pageImage.startsWith('https://')
+    ? pageImage
+    : `https://rebsem.ru${pageImage}`,
+  url: `https://rebsem.ru/projects/${entry.slug}`,
+  author: {
+    '@type': 'Person',
+    name: heroDisplayName.en,
+    alternateName: heroDisplayName.ru,
+    sameAs: [
+      `https://github.com/${githubUsername}`,
+      telegramUrl,
+      linkedinUrl,
+    ],
+  },
+};
+---
+
+<Layout
+  title={`${entry.data.title} - ${heroFallbackName}`}
+  description={entry.data.description}
+  image={pageImage}
+  schema={projectSchema}
+>
+  <a id="skip-to-content" href="#main-content" class="skip-link">Skip to content</a>
+
+  <SiteHeader active="home" />
+
+  <div class="divider-wrap" aria-hidden="true">
+    <hr class="divider" />
+  </div>
+
+  <main
+    id="main-content"
+    class="page-main"
+    data-post-slug-ru={ruSlug ?? ''}
+  >
+    <article class="post-shell">
+      <p>
+        <a href="/">← Back home</a>
+      </p>
+
+      <header class="post-head">
+        <h1>{entry.data.title}</h1>
+        <p class="post-lead">{entry.data.description}</p>
+      </header>
+
+      {(entry.data.role || entry.data.timeline || entry.data.impact) && (
+        <div class="project-quick-facts">
+          {entry.data.role && (
+            <div class="fact-item">
+              <span class="fact-label">Role</span>
+              <span class="fact-value">{entry.data.role}</span>
+            </div>
+          )}
+          {entry.data.timeline && (
+            <div class="fact-item">
+              <span class="fact-label">Timeline</span>
+              <span class="fact-value">{entry.data.timeline}</span>
+            </div>
+          )}
+          {entry.data.impact && (
+            <div class="fact-item impact-fact">
+              <span class="fact-label">Key Impact</span>
+              <span class="fact-value">{entry.data.impact}</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {entry.data.tags.length > 0 && (
+        <ul class="stack-list" aria-label="Project tags">
+          {entry.data.tags.map((tag) => (
+            <li>{tag}</li>
+          ))}
+        </ul>
+      )}
+
+      <div class="prose">
+        <Content />
+      </div>
+    </article>
+  </main>
+
+  <SiteFooter />
+
+  <script is:inline type="module" src={localeScriptUrl}></script>
+  <script is:inline type="module" src={launchTimerScriptUrl}></script>
+</Layout>

@@ -1,0 +1,148 @@
+---
+import { heroFallbackName, uiCopy } from '../data/site-content';
+
+interface Props {
+  active: 'home' | 'about' | 'blog';
+}
+
+const { active } = Astro.props;
+const lang = Astro.currentLocale ?? 'en';
+const isRu = lang === 'ru';
+const prefix = isRu ? '/ru' : '';
+
+const isHome = active === 'home';
+const isAbout = active === 'about';
+const isBlog = active === 'blog';
+
+const homePath = `${prefix}/`;
+const aboutPath = `${prefix}/about`;
+const blogPath = `${prefix}/blog`;
+
+const toggleUrl = isRu ? '/' : '/ru';
+---
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href={homePath}>{heroFallbackName}</a>
+
+    <div
+      class="header-controls"
+      role="group"
+      aria-label={isRu ? uiCopy.nav.controlsAria.ru : uiCopy.nav.controlsAria.en}
+    >
+      <nav
+        class="main-nav"
+        aria-label={isRu ? uiCopy.nav.primaryAria.ru : uiCopy.nav.primaryAria.en}
+      >
+        <a
+          class:list={['main-nav-link', isHome && 'active-nav']}
+          href={homePath}
+          aria-current={isHome ? 'page' : undefined}
+        >
+          {isRu ? uiCopy.nav.home.ru : uiCopy.nav.home.en}
+        </a>
+        <a
+          class:list={['main-nav-link', isAbout && 'active-nav']}
+          href={aboutPath}
+          aria-current={isAbout ? 'page' : undefined}
+        >
+          {isRu ? uiCopy.nav.about.ru : uiCopy.nav.about.en}
+        </a>
+        <a
+          class:list={['main-nav-link', isBlog && 'active-nav']}
+          href={blogPath}
+          aria-current={isBlog ? 'page' : undefined}
+        >
+          {isRu ? uiCopy.nav.blog.ru : uiCopy.nav.blog.en}
+        </a>
+      </nav>
+
+      <a
+        id="locale-switcher"
+        class="locale-toggle"
+        href={toggleUrl}
+        aria-label={isRu ? uiCopy.localeToggleLabel.ru : uiCopy.localeToggleLabel.en}
+      >
+        {isRu ? 'EN' : 'RU'}
+      </a>
+
+      <button
+        id="theme-btn"
+        class="theme-toggle"
+        type="button"
+        aria-label={isRu ? uiCopy.themeToggle.toDark.ru : uiCopy.themeToggle.toDark.en}
+      >
+        <span class="sr-only">Toggle theme</span>
+        <svg
+          class="theme-icon theme-icon-moon"
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+          <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
+        </svg>
+        <svg
+          class="theme-icon theme-icon-sun"
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+          <path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path>
+          <path d="M3 12h1"></path>
+          <path d="M20 12h1"></path>
+          <path d="M12 3v1"></path>
+          <path d="M12 20v1"></path>
+          <path d="M5.6 5.6l.7 .7"></path>
+          <path d="M17.7 17.7l.7 .7"></path>
+          <path d="M6.3 18.3l-.7 .7"></path>
+          <path d="M18.4 6.4l-.7 .7"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Script to handle smart locale switching for blog posts/projects
+  const updateSwitcher = () => {
+    const switcher = document.getElementById('locale-switcher');
+    const main = document.getElementById('main-content');
+    if (!switcher || !main) return;
+
+    const currentLang = document.documentElement.lang;
+    const isRu = currentLang === 'ru';
+    
+    const ruSlug = main.dataset.postSlugRu;
+    const enSlug = main.dataset.postSlugEn;
+
+    if (isRu && enSlug) {
+      switcher.setAttribute('href', `/blog/${enSlug}`);
+    } else if (!isRu && ruSlug) {
+      switcher.setAttribute('href', `/ru/blog/${ruSlug}`);
+    }
+    
+    // Check for projects specifically if data-attributes are different
+    const currentPath = window.location.pathname;
+    if (currentPath.includes('/projects/')) {
+       if (isRu && enSlug) switcher.setAttribute('href', `/projects/${enSlug}`);
+       if (!isRu && ruSlug) switcher.setAttribute('href', `/ru/projects/${ruSlug}`);
+    }
+  };
+
+  document.addEventListener('astro:page-load', updateSwitcher);
+  updateSwitcher();
+</script>

@@ -1,0 +1,277 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import SiteFooter from '../../components/SiteFooter.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SocialLinks from '../../components/SocialLinks.astro';
+import { projects } from '../../data/projects';
+import { githubUsername, heroDisplayName, linkedinUrl, telegramUrl, uiCopy } from '../../data/site-content';
+import Layout from '../../layouts/Layout.astro';
+import blogScriptUrl from '../../scripts/blog.js?url';
+import githubScriptUrl from '../../scripts/github-activity.js?url';
+import githubSyncScriptUrl from '../../scripts/github-sync.js?url';
+import localeScriptUrl from '../../scripts/locale.js?url';
+import heroImage from '../../assets/main-hero.jpg';
+
+const visibleProjects = projects.filter((project) => !project.placeholder);
+const projectEntries = await getCollection('projects', ({ data }) => !data.draft && data.lang === 'ru');
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft && data.lang === 'ru'))
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
+  .slice(0, 6);
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: heroDisplayName.en,
+  alternateName: heroDisplayName.ru,
+  jobTitle: 'Product Manager (AI) / Product Engineer',
+  url: 'https://rebsem.ru/ru',
+  image: 'https://rebsem.ru/main-hero.jpg',
+  sameAs: [
+    `https://github.com/${githubUsername}`,
+    telegramUrl,
+    linkedinUrl,
+  ],
+};
+---
+
+<Layout
+  title={`${heroDisplayName.ru} - Портфолио`}
+  description="Продуктовый менеджер с инженерной глубиной: проекты, тексты и открытый GitHub-след."
+  schema={personSchema}
+>
+  <a id="skip-to-content" href="#main-content" class="skip-link">Перейти к содержимому</a>
+
+  <SiteHeader active="home" />
+
+  <div class="divider-wrap" aria-hidden="true">
+    <hr class="divider" />
+  </div>
+
+  <main id="main-content" class="page-main" data-github-username={githubUsername}>
+    <section class="home-intro" aria-labelledby="home-title">
+      <div class="home-intro-copy">
+        <p class="about-eyebrow">Product Manager / Product Engineer</p>
+
+        <h1 id="home-title">{uiCopy.home.title.ru}</h1>
+
+        <p class="home-lead">{uiCopy.home.lead.ru}</p>
+
+        <SocialLinks className="social-links profile-social-links" />
+      </div>
+
+      <div class="home-avatar-wrap">
+        <Image
+          class="home-avatar"
+          src={heroImage}
+          width={320}
+          height={320}
+          loading="eager"
+          alt="Фото Михаила Семенова"
+        />
+      </div>
+    </section>
+
+    <section class="section-block github-activity-section" aria-labelledby="github-title">
+      <div class="section-head github-activity-head">
+        <div>
+          <p class="about-eyebrow">GitHub</p>
+          <h2 id="github-title">GitHub активность</h2>
+        </div>
+        <p>Публичный рабочий след за последний год.</p>
+      </div>
+
+      <div class="github-activity-card">
+        <div class="github-heatmap">
+          <div class="heatmap-topline">
+            <strong id="contributions-total">0</strong>
+            <span>вкладов за последний год</span>
+          </div>
+
+          <div
+            id="contribution-grid"
+            class="contribution-grid"
+            role="img"
+            aria-label="График активности GitHub"
+          ></div>
+
+          <div class="heatmap-legend" aria-hidden="true">
+            <span>0</span>
+            <div class="legend-level level-0"></div>
+            <div class="legend-level level-1"></div>
+            <div class="legend-level level-2"></div>
+            <div class="legend-level level-3"></div>
+            <div class="legend-level level-4"></div>
+            <span>max</span>
+          </div>
+
+          <p
+            id="contribution-tooltip"
+            class="contribution-tooltip"
+            data-hint-ru="Наведите или перейдите на ячейку, чтобы увидеть дату и число вкладов."
+            data-hint-en="Hover or focus a cell to see the exact date and number of contributions."
+          >
+            Наведите или перейдите на ячейку, чтобы увидеть дату и число вкладов.
+          </p>
+
+          <p
+            id="github-error"
+            class="github-error hidden"
+          >
+            Не удалось загрузить GitHub-данные. Попробуйте обновить страницу позже.
+          </p>
+        </div>
+
+        <div class="github-activity-copy">
+          <p>Держу на GitHub публичный след: релизы, эксперименты и итерации по проектам с этого сайта.</p>
+          <p>
+            <a
+              class="github-profile-link"
+              href={`https://github.com/${githubUsername}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Открыть GitHub
+            </a>
+            {' '}и посмотреть репозитории за этими кейсами.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-block" aria-labelledby="recent-title">
+      <div class="section-head">
+        <h2 id="recent-title">Свежие статьи</h2>
+        <p>Заметки о продуктовой логике, delivery-процессах и практическом использовании AI.</p>
+      </div>
+
+      {posts.length === 0 ? (
+        <p id="blog-empty" class="blog-empty">Для этой локали пока нет опубликованных постов.</p>
+      ) : (
+        <ul id="blog-list" class="blog-list home-blog-list">
+          {posts.map((post) => {
+            const isoDate = post.data.publishedAt.toISOString().slice(0, 10);
+            const dateLabel = new Intl.DateTimeFormat('ru-RU', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+            }).format(post.data.publishedAt);
+
+            return (
+              <li class="blog-card">
+                <article>
+                  <header class="blog-card-head">
+                    <p class="blog-card-meta">
+                      <time class="blog-date" datetime={isoDate}>{dateLabel}</time>
+                      <span class="blog-lang">Русский</span>
+                    </p>
+                    <h3>
+                      <a href={`/ru/blog/${post.slug}`}>{post.data.title}</a>
+                    </h3>
+                  </header>
+                  <p>{post.data.description}</p>
+                </article>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </section>
+
+    <section id="projects" class="section-block" aria-labelledby="projects-title">
+      <div class="section-head">
+        <h2 id="projects-title">Проекты</h2>
+        <p>Пять выбранных проектов из моего GitHub в едином формате: продукт, стек и где это уже работает.</p>
+      </div>
+
+      {visibleProjects.length === 0 ? (
+        <p class="projects-empty">Сейчас собираю свежие кейсы. Скоро здесь появятся подробные разборы.</p>
+      ) : (
+        <div class="projects-list">
+          {visibleProjects.map((project) => {
+            const entry = projectEntries.find(e => e.data.projectId === project.id);
+            return (
+              <article
+                class:list={["project-card", project.id === 'cursivo' && "project-card-featured"]}
+                data-github-repo={project.githubRepo}
+              >
+                <div class="project-card-head">
+                  {entry ? (
+                    <h3><a href={`/ru/projects/${entry.slug}/`}>{project.title.ru}</a></h3>
+                  ) : (
+                    <h3>{project.title.ru}</h3>
+                  )}
+                  {project.id === 'cursivo' && (
+                    <div class="launch-badge launch-badge-ru">
+                      <span class="pulse-dot"></span>
+                      Скоро запуск
+                    </div>
+                  )}
+                  {project.visibility === 'private' && project.id !== 'cursivo' && (
+                    <span class="project-visibility">Приватный кейс</span>
+                  )}
+                </div>
+
+                <p>{project.summary.ru}</p>
+                <p class="project-meta">
+                  <strong>Тип</strong>
+                  <span>{project.appType.ru}</span>
+                </p>
+                {project.githubRepo && (
+                  <div class="project-live-facts" aria-label="Актуальные данные репозитория GitHub">
+                    <p class="project-fact-chip">
+                      <span>Язык</span>
+                      <strong data-github-language>{project.stack[0]}</strong>
+                    </p>
+                    <p class="project-fact-chip">
+                      <span>Звезды</span>
+                      <strong data-github-stars>0</strong>
+                    </p>
+                    <p class="project-fact-chip">
+                      <span>Последний push</span>
+                      <strong data-github-updated>Синхронизация…</strong>
+                    </p>
+                  </div>
+                )}
+                <ul class="stack-list" aria-label="Технологии проекта">
+                  {project.stack.map((item) => (<li>{item}</li>))}
+                </ul>
+                <p class="project-links">
+                  {entry && (
+                    <a 
+                      class="project-link" 
+                      href={`/ru/projects/${entry.slug}`}
+                      data-details-link
+                    >
+                      Подробнее
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+                    </a>
+                  )}
+                  {project.repoUrl && (
+                    <a
+                      class="project-link"
+                      href={project.repoUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      data-github-repo-link={project.githubRepo ? '' : undefined}
+                    >
+                      Репозиторий
+                    </a>
+                  )}
+                </p>
+              </article>
+            );
+          })}
+        </div>
+      )}
+    </section>
+  </main>
+
+  <SiteFooter />
+
+  <script is:inline type="module" src={localeScriptUrl}></script>
+  <script is:inline type="module" src={blogScriptUrl}></script>
+  <script is:inline type="module" src={githubScriptUrl}></script>
+  <script is:inline type="module" src={githubSyncScriptUrl}></script>
+</Layout>
