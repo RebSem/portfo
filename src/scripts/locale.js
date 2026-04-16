@@ -100,8 +100,10 @@ const bindSystemThemeSync = () => {
     return;
   }
 
-  if (typeof media.addListener === 'function') {
-    media.addListener(syncWithSystemTheme);
+  /** @type {{ addListener?: (listener: (event: MediaQueryListEvent) => void) => void }} */
+  const legacyMedia = media;
+  if (typeof legacyMedia.addListener === 'function') {
+    legacyMedia.addListener(syncWithSystemTheme);
     state.mediaBound = true;
   }
 };
