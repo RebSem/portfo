@@ -72,6 +72,22 @@ npm run link-check
 
 Full pre-merge workflow: [`docs/workflow.md`](docs/workflow.md)
 
+## Refresh GitHub Status
+
+To prewarm the local GitHub profile / repos / contributions cache:
+
+```bash
+npm run refresh:github
+```
+
+Optional environment variables:
+
+- `GITHUB_USERNAME` - override the default GitHub user (`RebSem`)
+- `GITHUB_TOKEN` - improve GitHub API rate limits for profile/repo requests
+- `GITHUB_CACHE_FILE` - write the generated cache to a custom path
+
+The generated cache file is local-only and ignored by git by default.
+
 ## Blog Workflow
 
 Create a new RU/EN draft pair:

@@ -35,6 +35,12 @@ npm run build
 npm run link-check
 ```
 
+If the change touches the GitHub activity/status surfaces, refresh the local cache before the final build:
+
+```bash
+npm run refresh:github
+```
+
 If the change touches UI or copy, also verify the affected routes in a browser.
 
 ## 4. Open a pull request
