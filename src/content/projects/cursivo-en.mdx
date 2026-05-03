@@ -1,88 +1,44 @@
 ---
 projectId: "cursivo"
-title: "Cursivo - Intelligent CRM for Car Rental Businesses"
-description: "A comprehensive management system: from sales funnel optimization to fleet profitability analytics."
-role: "Product Manager / AI Architect"
-timeline: "Active Development / Scaling"
-impact: "Shortened deal cycle and implemented AI profitability insights"
+title: "Cursivo — AI-CRM for car rental businesses"
+description: "I lead it as the product manager: AI client scoring, fleet economics, sales-funnel automation. Public launch in April 2026."
+role: "Product Manager / Product Engineer"
+timeline: "Public launch April 2026, actively developed"
+impact: "MVP shipped, first cohort of customers in production, ongoing iteration"
 lang: "en"
-tags: ["Product", "AI", "Yield Management", "Next.js"]
+tags: ["Product", "AI", "CRM", "Next.js"]
 draft: false
 ---
 
-# Cursivo: Professional Fleet Management Ecosystem
+# Cursivo: AI-CRM for car rental businesses
 
-<div class="launch-hero-card">
-  <div class="launch-hero-content">
-    <div class="launch-status">
-      <span class="pulse-dot"></span>
-      Upcoming Launch
-    </div>
-    <h2>Launching In</h2>
-    <div id="launch-timer" class="launch-timer" data-deadline="2026-04-30T13:00:00+04:00">
-      <div class="timer-segment">
-        <span class="timer-value" id="days">00</span>
-        <span class="timer-label">days</span>
-      </div>
-      <div class="timer-segment">
-        <span class="timer-value" id="hours">00</span>
-        <span class="timer-label">hours</span>
-      </div>
-      <div class="timer-segment">
-        <span class="timer-value" id="minutes">00</span>
-        <span class="timer-label">min</span>
-      </div>
-      <div class="timer-segment">
-        <span class="timer-value" id="seconds">00</span>
-        <span class="timer-label">sec</span>
-      </div>
-    </div>
-    <div class="launch-cta-wrap">
-      <a href="https://cursivo.xyz" target="_blank" class="launch-cta-btn">
-        Explore cursivo.xyz
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6m4-3h6v6m-11 5L21 3"/></svg>
-      </a>
-    </div>
-  </div>
-</div>
+[cursivo.xyz](https://cursivo.xyz) is my own product, which I lead from product logic to UI and release. The idea is to close a specific operational pain car rental companies have: when deals and fleet economics live in Excel and WhatsApp, and decisions are made by gut feel.
 
-Cursivo is a platform that transforms fragmented rental operations into a predictable and scalable business. We focused on making AI a practical tool for owners: from lead qualification in the funnel to tracking the ROI of every single vehicle.
+## The class of problem
 
-## 🔴 The Problem
-Without end-to-end analytics, rental businesses often run "blind":
-1. **Lead Leakage**: It's unclear at which stage customers drop off or how efficiently the team is performing.
-2. **Risk Assessment**: Reliable and fast customer screening is difficult to achieve manually.
-3. **Hidden Costs**: Tracking the real-time profitability of individual vehicles, considering all variable costs, is a significant challenge.
+Car rental is an operationally heavy business — leads, documents, client screening, maintenance, downtime, seasonality. Without an end-to-end system the owner can't see:
 
-## ⚡️ The Solution: Intelligent Yield Management
+- where leads actually drop off and which managers lose conversion;
+- which clients carry anomalous risk (documents, history, behavior);
+- which car is already running at a loss once downtime and service are factored in.
 
-### 1. Sales Funnel Analytics
-The system tracks the customer's journey from the first touchpoint to the closed deal. AI analyzes response times (Time-to-Reply) and identifies bottlenecks where the business is losing potential revenue.
+All three usually get patched manually or not at all. Cursivo wraps them into one workflow.
 
-### 2. Fleet Profitability Insights
-[Placeholder for screenshot: Profitability graph for a specific vehicle]
-We implemented real-time profitability tracking. The system shows the net income for each vehicle, accounting for seasonal trends and operational costs.
+## What's inside
 
-### 3. AI Profit Advisor
-Instead of static reports, Cursivo provides actionable business insights:
-- "This vehicle has been idle for over 3 days. Recommended price reduction: 10%."
-- "The profitability of this model is declining. Optimal time to phase it out: next month."
-- "Manager A's lead processing efficiency is 40% higher than the team average."
+- **End-to-end sales funnel.** Time-to-reply, stage conversion, bottlenecks — without a separate BI tool or spreadsheet.
+- **AI client and document scoring.** We structure incoming data and surface risk before the car leaves the lot.
+- **Fleet unit economics.** Per-car profitability accounting for downtime, seasonality, and operating costs.
+- **AI suggestions for action, not reports.** Concrete recommendations on pricing, retiring a model, or rebalancing manager workload.
 
-## ⏱ Saving Resources
-We replaced bulky Excel sheets with a unified interface. The deal cycle is shortened because all critical data - from documents to scoring results - is available instantly. The team can focus on customer service rather than manual data entry.
+## Stack
 
-## 🛠 Tech Stack
-- **Next.js** (App Router) - for a fast and responsive user experience.
-- **Prisma + PostgreSQL** - a robust architecture for data management.
-- **OpenAI API** - for lead data analysis and business insight generation.
-- **Linear** - for streamlined feature management and development.
+Next.js (App Router), TypeScript, Prisma + PostgreSQL, OpenAI API, Linear for backlog management.
 
----
+## What this case shows about me
 
-## 🚀 Current Status: Getting Ready for Launch
-The project has moved beyond the MVP stage and is preparing for a public release. You can explore the product at [cursivo.xyz](https://cursivo.xyz).
+I can build a product end-to-end: problem framing, data model, AI layer, interface, launch. This isn't a "vibe-coded" demo — it's a working system used by real customers, not portfolio decoration.
 
----
+Product screenshots are kept private for now; happy to share in a private conversation under NDA.
 
-> **Product Vision:** In the modern rental market, the winner isn't the one with the most cars, but the one who makes informed decisions the fastest. Cursivo turns data into profit by empowering those decisions.
+> **Product vision:** In rental the winner isn't the operator with the most cars — it's the one who makes the right call fastest. Cursivo turns scattered data into a management decision.

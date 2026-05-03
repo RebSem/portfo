@@ -1,47 +1,34 @@
 ---
 projectId: "Zodial"
-title: "Zodial - Personalized PDF Report Platform"
-description: "Automating the sale and generation of astrology charts with instant email delivery."
-role: "Fullstack Developer / Product Owner"
+title: "Zodial — personalized PDF report platform"
+description: "End-to-end automated loop: payment → computation → 20+ page PDF → email delivery — with no human in the loop."
+role: "Product Engineer"
 timeline: "3 days"
-impact: "A fully autonomous digital content sales cycle requiring zero manual intervention."
+impact: "Fully autonomous digital-content sales cycle"
 lang: "en"
 tags: ["Next.js", "PDF Generation", "YooKassa", "Automation"]
 draft: false
 ---
 
-# Zodial: From Birth Data to Custom PDF in 60 Seconds
+# Zodial: from birth data to a finished PDF in a minute
 
-Zodial is a classic example of micro-business automation. We built a system that transforms complex astrological calculations into a beautiful, easy-to-understand product for the end user.
+Zodial is a pet-project hypothesis test. The goal was to build a "payment → compute → personalized PDF → delivery" pipeline that runs without anyone in the loop, and to see how the funnel behaves in a real niche.
 
-## 🔴 The Problem
-The astrology market often relies on manual labor:
-1. **Delays**: Customers pay and then wait hours or even days for their reports.
-2. **Errors**: Manual data entry leads to calculation mistakes.
-3. **Inconsistency**: It’s hard to maintain a consistent brand style when manually creating PDF files.
+## The class of problem
 
-## ⚡️ The Solution: A Seamless Pipeline
-We designed the user journey to make the purchase impulsive and satisfying.
+In the niche of personal reports (astrology, numerology, fortune-telling), almost everything runs on manual labor: customers pay and wait hours or days, get inconsistent PDFs, sometimes with manual-entry errors. That kills conversion and LTV.
 
-### 1. Interactive Form
-Accurate data collection (date, time, place of birth) with automatic coordinate lookup.
+## What's inside
 
-### 2. Payment Processing (YooKassa)
-Webhook integration: as soon as a payment is confirmed, the system instantly triggers the generation process.
+- **Precise input form.** Date, time, birthplace with automatic coordinate lookup.
+- **YooKassa payment webhook.** Payment confirmed → computation starts immediately.
+- **HTML/CSS PDF layout engine.** 20+ pages of unique content per order.
+- **Transactional email via Resend.** Attachment delivered right after generation.
 
-### 3. Dynamic PDF Generation
-We developed a layout engine based on HTML/CSS that generates unique 20+ page PDF files for every customer.
+## Stack
 
-### 4. Email Delivery
-Integration with Resend for reliable automated emails with file attachments sent immediately after generation.
+Next.js, Prisma + SQLite, YooKassa API, Puppeteer/React-pdf, Resend.
 
-## 🛠 Tech Stack
-- **Next.js**: For a fast frontend and API routes.
-- **Prisma + SQLite**: Lightweight and reliable order data storage.
-- **YooKassa API**: For secure payments.
-- **Puppeteer/React-pdf**: For rendering complex PDF layouts.
-- **Resend**: For transactional emails.
+## What this case shows about me
 
----
-
-> **Insights:** Speed is the key to success in digital goods. Reducing the wait time from 1 hour to 1 minute significantly boosts LTV and customer satisfaction.
+3 days from idea to a fully autonomous pipeline with real payments and delivery. This is about speed of hypothesis testing — pet projects are how I figure out in a weekend whether a model works, before spending weeks of a team's time.

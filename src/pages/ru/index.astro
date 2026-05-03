@@ -7,7 +7,6 @@ import SocialLinks from '../../components/SocialLinks.astro';
 import { projects } from '../../data/projects';
 import { githubUsername, heroDisplayName, linkedinUrl, telegramUrl, uiCopy } from '../../data/site-content';
 import Layout from '../../layouts/Layout.astro';
-import blogScriptUrl from '../../scripts/blog.js?url';
 import githubScriptUrl from '../../scripts/github-activity.js?url';
 import githubSyncScriptUrl from '../../scripts/github-sync.js?url';
 import localeScriptUrl from '../../scripts/locale.js?url';
@@ -15,10 +14,6 @@ import heroImage from '../../assets/main-hero.jpg';
 
 const visibleProjects = projects.filter((project) => !project.placeholder);
 const projectEntries = await getCollection('projects', ({ data }) => !data.draft && data.lang === 'ru');
-
-const posts = (await getCollection('blog', ({ data }) => !data.draft && data.lang === 'ru'))
-  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
-  .slice(0, 6);
 
 const personSchema = {
   '@context': 'https://schema.org',
@@ -38,7 +33,7 @@ const personSchema = {
 
 <Layout
   title={`${heroDisplayName.ru} - Портфолио`}
-  description="Продуктовый менеджер с инженерной глубиной: проекты, тексты и открытый GitHub-след."
+  description="Product Manager в Prof-IT (zvonobot, effebot, p1sms). Веду voice AI агентов для B2B — 500K+ минут разговоров за 2026. Сам кодю пет-проекты, чтобы быстрее тестировать гипотезы."
   schema={personSchema}
 >
   <a id="skip-to-content" href="#main-content" class="skip-link">Перейти к содержимому</a>
@@ -52,7 +47,7 @@ const personSchema = {
   <main id="main-content" class="page-main" data-github-username={githubUsername}>
     <section class="home-intro" aria-labelledby="home-title">
       <div class="home-intro-copy">
-        <p class="about-eyebrow">Product Manager / Product Engineer</p>
+        <p class="about-eyebrow">{uiCopy.home.eyebrow.ru}</p>
 
         <h1 id="home-title">{uiCopy.home.title.ru}</h1>
 
@@ -71,6 +66,28 @@ const personSchema = {
           alt="Фото Михаила Семенова"
         />
       </div>
+    </section>
+
+    <section class="section-block currently-section" aria-labelledby="currently-title">
+      <div class="section-head">
+        <p class="about-eyebrow">{uiCopy.home.currentlyEyebrow.ru}</p>
+        <h2 id="currently-title">{uiCopy.home.currentlyTitle.ru}</h2>
+      </div>
+
+      <dl class="currently-grid">
+        <div class="currently-item">
+          <dt>{uiCopy.home.currentlyRoleLabel.ru}</dt>
+          <dd>{uiCopy.home.currentlyRole.ru}</dd>
+        </div>
+        <div class="currently-item">
+          <dt>{uiCopy.home.currentlyFocusLabel.ru}</dt>
+          <dd>{uiCopy.home.currentlyFocus.ru}</dd>
+        </div>
+        <div class="currently-item currently-item-metric">
+          <dt>{uiCopy.home.currentlyMetricLabel.ru}</dt>
+          <dd>{uiCopy.home.currentlyMetricValue.ru}</dd>
+        </div>
+      </dl>
     </section>
 
     <section class="section-block github-activity-section" aria-labelledby="github-title">
@@ -140,49 +157,10 @@ const personSchema = {
       </div>
     </section>
 
-    <section class="section-block" aria-labelledby="recent-title">
-      <div class="section-head">
-        <h2 id="recent-title">Свежие статьи</h2>
-        <p>Заметки о продуктовой логике, delivery-процессах и практическом использовании AI.</p>
-      </div>
-
-      {posts.length === 0 ? (
-        <p id="blog-empty" class="blog-empty">Для этой локали пока нет опубликованных постов.</p>
-      ) : (
-        <ul id="blog-list" class="blog-list home-blog-list">
-          {posts.map((post) => {
-            const isoDate = post.data.publishedAt.toISOString().slice(0, 10);
-            const dateLabel = new Intl.DateTimeFormat('ru-RU', {
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric',
-            }).format(post.data.publishedAt);
-
-            return (
-              <li class="blog-card">
-                <article>
-                  <header class="blog-card-head">
-                    <p class="blog-card-meta">
-                      <time class="blog-date" datetime={isoDate}>{dateLabel}</time>
-                      <span class="blog-lang">Русский</span>
-                    </p>
-                    <h3>
-                      <a href={`/ru/blog/${post.slug}`}>{post.data.title}</a>
-                    </h3>
-                  </header>
-                  <p>{post.data.description}</p>
-                </article>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </section>
-
     <section id="projects" class="section-block" aria-labelledby="projects-title">
       <div class="section-head">
         <h2 id="projects-title">Проекты</h2>
-        <p>Пять выбранных проектов из моего GitHub в едином формате: продукт, стек и где это уже работает.</p>
+        <p>Выбранные проекты в одном формате: продукт, стек и где это уже работает. Первые два — продукты, которые я веду: Cursivo и внутренний кабинет Prof-IT. Дальше — личные пет-проекты, каждый собран за 1–7 дней. Большинство репозиториев приватные; открытый только этот сайт.</p>
       </div>
 
       {visibleProjects.length === 0 ? (
@@ -205,10 +183,13 @@ const personSchema = {
                   {project.id === 'cursivo' && (
                     <div class="launch-badge launch-badge-ru">
                       <span class="pulse-dot"></span>
-                      Скоро запуск
+                      В работе
                     </div>
                   )}
-                  {project.visibility === 'private' && project.id !== 'cursivo' && (
+                  {project.id === 'obrabot' && (
+                    <span class="project-visibility">Внутренний продукт Prof-IT</span>
+                  )}
+                  {project.visibility === 'private' && project.id !== 'cursivo' && project.id !== 'obrabot' && (
                     <span class="project-visibility">Приватный кейс</span>
                   )}
                 </div>
@@ -271,7 +252,6 @@ const personSchema = {
   <SiteFooter />
 
   <script is:inline type="module" src={localeScriptUrl}></script>
-  <script is:inline type="module" src={blogScriptUrl}></script>
   <script is:inline type="module" src={githubScriptUrl}></script>
   <script is:inline type="module" src={githubSyncScriptUrl}></script>
 </Layout>

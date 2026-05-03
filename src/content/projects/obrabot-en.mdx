@@ -1,47 +1,45 @@
 ---
 projectId: "obrabot"
-title: "Obrabot - AI-Driven Call Quality Control"
-description: "Automating call segmentation from Google Sheets for operational oversight."
-role: "Product Manager / Engineer"
-timeline: "4 days"
-impact: "Full automation of call classification, eliminating manual listening hours."
+title: "Obrabot — internal voice AI analytics cabinet at Prof-IT"
+description: "I run it as the PM: a personal cabinet with analytics and dashboards for the group's voice AI agents."
+role: "Product Manager"
+timeline: "2026, active group product"
+impact: "Visibility into voice AI agent conversations for the team and customers"
 lang: "en"
-tags: ["AI", "OpenAI", "Google Sheets API", "Automation"]
+tags: ["Product", "Voice AI", "B2B", "Analytics"]
 draft: false
 ---
 
-# Obrabot: Say Goodbye to Manual Call Reviews
+# Obrabot: internal voice AI analytics cabinet
 
-Obrabot is an internal service designed to lift the burden off Quality Assurance (QA) departments. Instead of listening to every call manually, the system does it in seconds using AI.
+Obrabot is an internal product at the Prof-IT group. It's a personal cabinet where customers and operators see what voice AI agents actually do — what they talk about, where the script breaks, and which calls need a human in the loop.
 
-## 🔴 The Problem
-In companies with high call volumes, QA managers face:
-1. **Overload**: It's physically impossible to review 100% of calls.
-2. **Subjectivity**: Different managers might rate the same errors differently.
-3. **Latency**: Quality reports often appear days after the actual conversation.
+I run the product: shape the requirements, prioritize the backlog, align UX and data model with the team and engineers.
 
-## ⚡️ The Solution: AI Segmentation
-The system integrates directly with Google Sheets, where links to recordings or transcripts are stored.
+## The class of problem
 
-### 1. Automatic Import
-The service pulls new rows from spreadsheets, processes audio via Whisper (or takes existing text), and sends it to the analytical core.
+A voice AI agent without the right dashboard is a black box. The team can't see:
 
-### 2. Smart Classification
-AI evaluates the call based on predefined criteria:
-- Was the call successful?
-- Were objections handled?
-- Was there any aggression or inappropriate language?
-- Was it an answering machine?
+- which segments of calls go off-script;
+- where the AI agent performs worse than a human and why;
+- which specific calls a person actually needs to listen to;
+- how the conversation metric shifts from iteration to iteration.
 
-### 3. Interactive Reports
-Results are returned to a user-friendly interface where managers can filter only the "problematic" calls that require human attention.
+Without this layer the product sells worse, because the customer doesn't trust what they can't verify.
 
-## 🛠 Tech Stack
-- **Next.js**: Core interface and API.
-- **Prisma + PostgreSQL**: Storage for report history and metadata.
-- **OpenAI API**: Segmentation and Sentiment Analysis.
-- **Google Sheets API**: Two-way data synchronization.
+## What's inside
 
----
+- **AI call segmentation.** Calls are automatically tagged by outcome, refusals, tone, and unusual behavior.
+- **Dashboards by agent and script.** Prompt version comparisons, scenario A/B, daily and per-campaign trends.
+- **Drill-down to a specific call.** Transcript, tags, audio, metadata — all on one screen.
+- **Early signals.** Surfacing dialogs where a human should step in before the customer complains.
 
-> **Insights:** Using AI in QA allows companies to not just find errors, but to see systemic sales patterns that were previously hidden in thousands of hours of audio.
+## Stack
+
+Next.js, TypeScript, Prisma + PostgreSQL, OpenAI API, integrations with Prof-IT infrastructure.
+
+## What this case shows about me
+
+I'm not an "external AI consultant" talking about voice AI's potential. I run an actual product inside the Prof-IT group, where voice AI is the main product line — not a pilot. That means real operational pain, real customers, NDA on the numbers, and accountability for outcomes.
+
+UI screenshots and metrics are under NDA — happy to discuss details in a private conversation.

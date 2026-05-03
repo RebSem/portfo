@@ -7,7 +7,6 @@ import SocialLinks from '../components/SocialLinks.astro';
 import { projects } from '../data/projects';
 import { githubUsername, heroDisplayName, heroFallbackName, linkedinUrl, telegramUrl, uiCopy } from '../data/site-content';
 import Layout from '../layouts/Layout.astro';
-import blogScriptUrl from '../scripts/blog.js?url';
 import githubScriptUrl from '../scripts/github-activity.js?url';
 import githubSyncScriptUrl from '../scripts/github-sync.js?url';
 import localeScriptUrl from '../scripts/locale.js?url';
@@ -15,10 +14,6 @@ import heroImage from '../assets/main-hero.jpg';
 
 const visibleProjects = projects.filter((project) => !project.placeholder);
 const projectEntries = await getCollection('projects', ({ data }) => !data.draft && data.lang === 'en');
-
-const posts = (await getCollection('blog', ({ data }) => !data.draft && data.lang === 'en'))
-  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
-  .slice(0, 6);
 
 const personSchema = {
   '@context': 'https://schema.org',
@@ -38,7 +33,7 @@ const personSchema = {
 
 <Layout
   title={`${heroFallbackName} - Portfolio`}
-  description="Product manager with engineering depth. I turn ambiguous product work into shipped digital products, clear interfaces, and practical AI workflows."
+  description="Product Manager at Prof-IT (zvonobot, effebot, p1sms). Leading voice AI agents for B2B — 500K+ conversation minutes in 2026. Codes pet projects to validate hypotheses fast."
   schema={personSchema}
 >
   <a id="skip-to-content" href="#main-content" class="skip-link">Skip to content</a>
@@ -52,7 +47,7 @@ const personSchema = {
   <main id="main-content" class="page-main" data-github-username={githubUsername}>
     <section class="home-intro" aria-labelledby="home-title">
       <div class="home-intro-copy">
-        <p class="about-eyebrow">Product Manager / Product Engineer</p>
+        <p class="about-eyebrow">{uiCopy.home.eyebrow.en}</p>
 
         <h1 id="home-title">{uiCopy.home.title.en}</h1>
 
@@ -71,6 +66,28 @@ const personSchema = {
           alt="Photo of Mikhail Semenov"
         />
       </div>
+    </section>
+
+    <section class="section-block currently-section" aria-labelledby="currently-title">
+      <div class="section-head">
+        <p class="about-eyebrow">{uiCopy.home.currentlyEyebrow.en}</p>
+        <h2 id="currently-title">{uiCopy.home.currentlyTitle.en}</h2>
+      </div>
+
+      <dl class="currently-grid">
+        <div class="currently-item">
+          <dt>{uiCopy.home.currentlyRoleLabel.en}</dt>
+          <dd>{uiCopy.home.currentlyRole.en}</dd>
+        </div>
+        <div class="currently-item">
+          <dt>{uiCopy.home.currentlyFocusLabel.en}</dt>
+          <dd>{uiCopy.home.currentlyFocus.en}</dd>
+        </div>
+        <div class="currently-item currently-item-metric">
+          <dt>{uiCopy.home.currentlyMetricLabel.en}</dt>
+          <dd>{uiCopy.home.currentlyMetricValue.en}</dd>
+        </div>
+      </dl>
     </section>
 
     <section class="section-block github-activity-section" aria-labelledby="github-title">
@@ -140,49 +157,10 @@ const personSchema = {
       </div>
     </section>
 
-    <section class="section-block" aria-labelledby="recent-title">
-      <div class="section-head">
-        <h2 id="recent-title">Recent posts</h2>
-        <p>Notes on product thinking, delivery systems, and practical AI usage.</p>
-      </div>
-
-      {posts.length === 0 ? (
-        <p id="blog-empty" class="blog-empty">No published posts for this locale yet.</p>
-      ) : (
-        <ul id="blog-list" class="blog-list home-blog-list">
-          {posts.map((post) => {
-            const isoDate = post.data.publishedAt.toISOString().slice(0, 10);
-            const dateLabel = new Intl.DateTimeFormat('en-US', {
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric',
-            }).format(post.data.publishedAt);
-
-            return (
-              <li class="blog-card">
-                <article>
-                  <header class="blog-card-head">
-                    <p class="blog-card-meta">
-                      <time class="blog-date" datetime={isoDate}>{dateLabel}</time>
-                      <span class="blog-lang">English</span>
-                    </p>
-                    <h3>
-                      <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
-                    </h3>
-                  </header>
-                  <p>{post.data.description}</p>
-                </article>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </section>
-
     <section id="projects" class="section-block" aria-labelledby="projects-title">
       <div class="section-head">
         <h2 id="projects-title">Projects</h2>
-        <p>Five selected GitHub projects in one consistent format: product, stack, and where it already works.</p>
+        <p>Selected work in one consistent format: product, stack, and where it already runs. The first two are products I lead — Cursivo and the internal Prof-IT cabinet. The rest are personal pet projects shipped in 1–7 days each. Most repos are private; the only open one is this site.</p>
       </div>
 
       {visibleProjects.length === 0 ? (
@@ -205,10 +183,13 @@ const personSchema = {
                   {project.id === 'cursivo' && (
                     <div class="launch-badge">
                       <span class="pulse-dot"></span>
-                      Launching Soon
+                      Live
                     </div>
                   )}
-                  {project.visibility === 'private' && project.id !== 'cursivo' && (
+                  {project.id === 'obrabot' && (
+                    <span class="project-visibility">Internal Prof-IT product</span>
+                  )}
+                  {project.visibility === 'private' && project.id !== 'cursivo' && project.id !== 'obrabot' && (
                     <span class="project-visibility">Private case</span>
                   )}
                 </div>
@@ -271,7 +252,6 @@ const personSchema = {
   <SiteFooter />
 
   <script is:inline type="module" src={localeScriptUrl}></script>
-  <script is:inline type="module" src={blogScriptUrl}></script>
   <script is:inline type="module" src={githubScriptUrl}></script>
   <script is:inline type="module" src={githubSyncScriptUrl}></script>
 </Layout>
