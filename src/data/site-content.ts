@@ -16,8 +16,18 @@ export const heroDisplayName: LocalizedText = {
 };
 
 export const heroSubtitle: LocalizedText = {
-  ru: 'Работаю на стыке продукта, UX и инженерии: превращаю сложные задачи в понятные решения и рабочие системы.',
-  en: 'I work across product, UX, and engineering, turning complex problems into clear decisions and working systems.',
+  ru: 'Веду продуктовое развитие voice AI в группе компаний Prof-IT. Параллельно делаю пет-проекты — собираю продукт от идеи до релиза, тестирую гипотезы кратно быстрее, чем через долгую разработку.',
+  en: 'I lead product development for voice AI at Prof-IT group. Alongside that I ship side projects end-to-end, validating hypotheses far faster than through long-form development cycles.',
+};
+
+export const currentRole: LocalizedText = {
+  ru: 'Product Manager · Prof-IT (zvonobot, effebot, p1sms) · с начала 2022',
+  en: 'Product Manager · Prof-IT (zvonobot, effebot, p1sms) · since early 2022',
+};
+
+export const currentFocus: LocalizedText = {
+  ru: 'Сейчас: запустил и развиваю новый продукт — голосовых AI-агентов для B2B. За 2026 год через них прошло более 500 000 минут разговоров от новых клиентов.',
+  en: 'Now: launched and scaling a new product — voice AI agents for B2B. In 2026 the new product has handled over 500,000 minutes of conversations from new customers.',
 };
 
 export const blogLabel: LocalizedText = {
@@ -57,24 +67,24 @@ export const socialLabels = {
 
 export const aboutParagraphs: LocalizedText[] = [
   {
-    ru: 'Веду продукт end-to-end: от формулировки задачи и гипотез до интерфейса, технического решения и запуска.',
-    en: 'I work end to end, from defining the problem and shaping hypotheses to interface decisions, technical delivery, and launch.',
+    ru: 'С начала 2022 года — Product Manager в Prof-IT. Работал над голосовыми роботами в zvonobot и effebot, а в 2026-м запустил и развиваю новый продукт группы — голосовых AI-агентов для B2B. За 2026 год через них прошло более 500 000 минут разговоров от новых клиентов.',
+    en: 'Product Manager at Prof-IT since early 2022. Worked on voice automation at zvonobot and effebot, and in 2026 launched and have been scaling the group’s new product — voice AI agents for B2B. The new product has handled over 500,000 minutes of new-customer conversations in 2026.',
   },
   {
-    ru: 'Лучше всего работаю там, где задачу ещё нужно собрать: понять контекст, выстроить приоритеты и снять ключевые риски.',
-    en: 'I am most useful when the problem still needs structure, priorities, and a practical path through the main risks.',
+    ru: 'Где полезен сильнее всего: продукты, где AI встроен в реальный workflow, а не работает как демо. Особенно — голосовые и conversational AI-сценарии, B2B-телефония, customer engagement, операционные системы для отделов продаж и поддержки.',
+    en: 'Where I add the most value: products where AI is embedded into a real workflow rather than living as a demo. Especially voice and conversational AI, B2B telephony, customer engagement, and operational tools for sales and support teams.',
   },
   {
-    ru: 'Сильнее всего полезен в AI- и цифровых продуктах, где нужны одновременно продуктовая логика, UX-мышление и инженерная дисциплина.',
-    en: 'My strongest fit is AI and digital product work that needs product judgment, UX clarity, and engineering discipline at the same time.',
+    ru: 'Как работаю: сам кодю и собираю прототипы. Это позволяет проверять гипотезы за дни, а не за спринты, и говорить с инженерами на одном языке. Пет-проекты на сайте — иллюстрация скорости: каждый собран за 1–7 дней от идеи до работающего релиза.',
+    en: 'How I work: I code and build prototypes myself. That lets me validate hypotheses in days rather than sprints, and stay on the same page with engineers. The pet projects on this site illustrate that speed — each shipped in 1–7 days from idea to working release.',
   },
   {
-    ru: 'На сайте держу открытый рабочий след: проекты, тексты и GitHub-активность, по которым видно, как я думаю и принимаю решения.',
-    en: 'This site keeps a public working trail of projects, writing, and GitHub activity so people can see how I think and make decisions.',
+    ru: 'Что важно для роли: автономность и ownership на ambiguous-задачах, короткий цикл от идеи до проверки, продуктовая логика поверх AI, а не AI ради AI. Сильнее всего полезен в командах, где можно вести задачу end-to-end, а не быть звеном в длинной цепочке согласований.',
+    en: 'What matters in a role: autonomy and ownership on ambiguous problems, a short loop from idea to validation, product logic on top of AI rather than AI for its own sake. I am at my best in teams where I can carry a problem end-to-end instead of being one step in a long approval chain.',
   },
   {
-    ru: 'Открыт к новым проектам, коллаборациям и ролям, где ценятся системность, скорость и ответственность за результат.',
-    en: 'Open to new projects, collaborations, and roles where systems thinking, speed, and ownership matter.',
+    ru: 'Открыт к ролям и коллаборациям в стартапах и tech-командах — особенно в русскоязычных международных продуктах и в нишах voice AI, conversational AI, B2B-инфраструктуре. Английский — рабочий B1+, готов подтянуть до зрелого B2 под нужды роли.',
+    en: 'Open to roles and collaborations in startups and tech teams — especially Russian-speaking international products and the voice AI, conversational AI, and B2B infrastructure space. English at working B1+, willing to grow into mature B2 as the role demands.',
   },
 ];
 
@@ -104,16 +114,33 @@ export const uiCopy = {
     primaryAria: { ru: 'Основная навигация', en: 'Primary navigation' },
   },
   home: {
-    eyebrow: { ru: 'Product Manager / Product Engineer', en: 'Product Manager / Product Engineer' },
+    eyebrow: { ru: 'Product Manager · Voice AI · Pet projects', en: 'Product Manager · Voice AI · Pet projects' },
     title: {
-      ru: 'Помогаю превращать сложные продуктовые задачи в понятные решения, рабочие интерфейсы и реальные релизы.',
-      en: 'I help turn complex product problems into clear product decisions, useful interfaces, and shipped releases.',
+      ru: 'Веду продуктовое развитие voice AI в Prof-IT и параллельно собираю пет-проекты от идеи до релиза.',
+      en: 'I lead voice AI product work at Prof-IT and ship side projects end-to-end on the side.',
     },
     lead: {
-      ru: 'Работаю на стыке продукта, UX и инженерии: discovery, постановка решений, delivery и практическое внедрение AI.',
-      en: 'I work across product, UX, and engineering: discovery, solution framing, delivery, and practical AI adoption.',
+      ru: 'С 2022 года продакт в Prof-IT (zvonobot, effebot, p1sms). Сейчас фокус — голосовые AI-агенты для B2B: за 2026 год через них прошло более 500 000 минут разговоров от новых клиентов. Параллельно сам кодю и проверяю гипотезы пет-проектами быстрее, чем через долгую разработку.',
+      en: 'Product manager at Prof-IT since 2022 (zvonobot, effebot, p1sms). Currently focused on voice AI agents for B2B — in 2026 the new product has handled over 500,000 minutes of conversations from new customers. Alongside that I code my own pet projects, testing hypotheses far faster than through long-form development.',
     },
     photoAlt: { ru: 'Фото Михаила Семенова', en: 'Photo of Mikhail Semenov' },
+    currentlyEyebrow: { ru: 'Сейчас', en: 'Currently' },
+    currentlyTitle: { ru: 'Что я делаю сейчас', en: 'What I do now' },
+    currentlyRoleLabel: { ru: 'Роль', en: 'Role' },
+    currentlyFocusLabel: { ru: 'Фокус', en: 'Focus' },
+    currentlyMetricLabel: { ru: 'Сигнал 2026', en: '2026 signal' },
+    currentlyMetricValue: {
+      ru: '500 000+ минут разговоров от новых клиентов через голосовых AI-агентов',
+      en: '500,000+ minutes of new-customer conversations via voice AI agents',
+    },
+    currentlyRole: {
+      ru: 'Product Manager в Prof-IT (zvonobot, effebot, p1sms), с начала 2022',
+      en: 'Product Manager at Prof-IT (zvonobot, effebot, p1sms), since early 2022',
+    },
+    currentlyFocus: {
+      ru: 'Веду продуктовое развитие нового продукта — голосовых AI-агентов для B2B',
+      en: 'Leading product development for the new product — voice AI agents for B2B',
+    },
     postsTitle: { ru: 'Свежие статьи', en: 'Recent posts' },
     postsSubtitle: {
       ru: 'Заметки о продуктовой логике, delivery-процессах и практическом использовании AI.',

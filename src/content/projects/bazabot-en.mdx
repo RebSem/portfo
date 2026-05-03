@@ -1,43 +1,33 @@
 ---
 projectId: "bazabot"
-title: "BazaBot - Intelligent Database Cleaning"
-description: "Telegram bot for number normalization, operator filtering, and deduplication in CSV/XLSX files."
-role: "Fullstack Developer / Architect"
+title: "BazaBot — Telegram bot for cleaning client bases"
+description: "Number normalization, carrier filtering, and deduplication for CSV/XLSX, all inside Telegram."
+role: "Product Engineer"
 timeline: "1 day"
-impact: "Reduced mailing costs by 30% by eliminating invalid and non-mobile numbers."
+impact: "Cut campaign spend by filtering out invalid and off-target numbers"
 lang: "en"
 tags: ["Python", "Telegram Bot API", "Data Cleaning", "p1sms API"]
 draft: false
 ---
 
-# BazaBot: Streamlining Client Databases via Telegram
+# BazaBot: prepping client bases inside Telegram
 
-BazaBot is a specialized tool for marketers and sales managers who need to quickly prepare "dirty" contact lists for SMS campaigns or cold calls.
+BazaBot is an internal tool for marketers and sales managers who need to quickly turn a messy contact list into something usable for SMS or calling campaigns. I moved the heavy lifting out of spreadsheets into Telegram so it can be done from a phone in under a minute.
 
-## 🔴 The Problem
-Managing databases in Excel often becomes a bottleneck:
-1. **Inconsistent Formats**: Numbers starting with different prefixes (8, 7, +7) or missing country codes.
-2. **Junk Data**: Duplicates, landline numbers mixed with mobile ones, and invalid entries.
-3. **Inefficiency**: Wasting budget on messages sent to non-existent numbers or wrong carriers.
+## The class of problem
 
-## ⚡️ The Solution: A Mobile Data Processor
-We moved complex spreadsheet processing logic into the familiar Telegram interface.
+Contact bases in Excel are almost always dirty: mixed prefixes (8, 7, +7, none), duplicates, landlines mixed with mobile, invalid rows. Without normalization, budget is spent reaching nobody — and manual cleanup eats hours.
 
-### 1. On-the-Fly File Processing
-The user simply sends a `.csv` or `.xlsx` file to the bot. It reads the data, identifies phone columns, and offers cleaning options.
+## What's inside
 
-### 2. Deep Normalization
-The system standardizes all numbers to international formats, removes duplicates, and fixes common typing errors.
+- **In-chat file processing.** User drops a `.csv` or `.xlsx`, the bot detects the phone column and offers cleanup options.
+- **Normalization to international format.** Dedup, common-typo fixes.
+- **HLR check via p1sms.** Bot identifies the actual carrier and flags numbers that cannot receive SMS.
 
-### 3. p1sms API Integration
-The bot verifies numbers via API: it identifies the current carrier (HLR lookups) and marks numbers that cannot receive SMS.
+## Stack
 
-## 🛠 Tech Stack
-- **Python**: Core development language.
-- **Aiogram**: Modern framework for Telegram bots.
-- **Pandas/Openpyxl**: Robust tools for spreadsheet manipulation.
-- **p1sms API**: External service for number status verification.
+Python, Aiogram, Pandas/Openpyxl, p1sms API.
 
----
+## What this case shows about me
 
-> **Insights:** For B2B products, a Telegram interface is often more efficient than a web dashboard, allowing data processing in "two clicks" directly from a mobile device.
+Sometimes the right interface isn't a web dashboard — it's Telegram. I pick the surface based on the audience and scenario, not on portfolio aesthetics. Built and shipped in a day.
