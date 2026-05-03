@@ -5,7 +5,6 @@ import SiteHeader from '../../components/SiteHeader.astro';
 import { githubUsername, heroDisplayName, heroFallbackName, linkedinUrl, telegramUrl } from '../../data/site-content';
 import Layout from '../../layouts/Layout.astro';
 import localeScriptUrl from '../../scripts/locale.js?url';
-import launchTimerScriptUrl from '../../scripts/launch-timer.js?url';
 
 export async function getStaticPaths() {
   const projectEntries = await getCollection('projects', ({ data }) => !data.draft && data.lang === 'en');
@@ -115,5 +114,4 @@ const projectSchema = {
   <SiteFooter />
 
   <script is:inline type="module" src={localeScriptUrl}></script>
-  <script is:inline type="module" src={launchTimerScriptUrl}></script>
 </Layout>
