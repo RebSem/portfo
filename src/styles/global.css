@@ -422,6 +422,45 @@ html[data-theme='dark'] .theme-icon-sun {
   font-size: 1.02rem;
 }
 
+.currently-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.85rem;
+  margin: 0;
+}
+
+.currently-item {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.95rem;
+  background: color-mix(in oklab, var(--surface) 92%, transparent);
+}
+
+.currently-item dt {
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--foreground) 65%, transparent);
+}
+
+.currently-item dd {
+  margin: 0;
+  font-size: 0.96rem;
+  line-height: 1.5;
+  color: var(--foreground);
+}
+
+.currently-item-metric {
+  background: color-mix(in oklab, var(--accent-soft) 65%, var(--surface));
+  border-color: color-mix(in oklab, var(--accent) 35%, var(--border));
+}
+
+.currently-item-metric dd {
+  font-weight: 600;
+}
+
 .github-activity-head {
   gap: 0.65rem;
 }

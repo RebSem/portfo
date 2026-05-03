@@ -12,8 +12,8 @@ export const projects: ProjectItem[] = [
       en: 'AI-powered car rental CRM',
     },
     summary: {
-      ru: 'CRM-система для автоматизации автопрокатов: управление автопарком, интеграция с AI для скоринга клиентов и анализа документов.',
-      en: 'CRM system for car rental automation: fleet management, AI integration for client scoring and document analysis.',
+      ru: 'CRM для автопрокатов: управление автопарком, скоринг клиентов и анализ документов через AI. Личный продукт, который веду от продуктовой логики до релиза.',
+      en: 'CRM for car rental businesses: fleet management, AI client scoring, and document analysis. A personal product I lead from product logic to release.',
     },
     stack: ['Next.js', 'TypeScript', 'Prisma', 'PostgreSQL', 'OpenAI', 'Linear'],
     visibility: 'private',
@@ -29,36 +29,15 @@ export const projects: ProjectItem[] = [
       en: 'obrabot',
     },
     appType: {
-      ru: 'Веб-сервис контроля качества звонков',
-      en: 'Call quality control web service',
+      ru: 'Внутренний кабинет аналитики voice AI в Prof-IT',
+      en: 'Internal voice AI analytics dashboard at Prof-IT',
     },
     summary: {
-      ru: 'Сервис забирает звонки из Google Sheets, сегментирует их с помощью AI и сохраняет историю отчётов для операционного контроля.',
-      en: 'Service that pulls calls from Google Sheets, segments them with AI, and keeps report history for operational QA.',
+      ru: 'Внутренний продукт Prof-IT: личный кабинет с аналитикой и дашбордами по работе голосовых AI-агентов. AI сегментирует звонки и подсвечивает то, что требует внимания. Я веду продукт.',
+      en: 'Internal Prof-IT product: a personal cabinet with analytics and dashboards for voice AI agents. AI segments calls and surfaces what needs human attention. I run the product.',
     },
     stack: ['Next.js', 'TypeScript', 'Prisma', 'PostgreSQL', 'OpenAI API', 'Google Sheets API'],
     visibility: 'private',
-    featured: true,
-  },
-  {
-    id: 'portfo',
-    title: {
-      ru: 'portfo',
-      en: 'portfo',
-    },
-    appType: {
-      ru: 'Персональный сайт и двуязычный блог',
-      en: 'Personal site and bilingual blog',
-    },
-    summary: {
-      ru: 'Личный сайт-витрина с кейсами, блогом, SEO и GitHub-сигналами для hiring-контекста.',
-      en: 'Portfolio site with case studies, a blog, SEO, and GitHub trust signals for a hiring-facing audience.',
-    },
-    stack: ['Astro 5', 'TypeScript', 'MDX', 'GitHub Actions', 'GitHub Pages'],
-    visibility: 'public',
-    githubRepo: 'portfo',
-    repoUrl: 'https://github.com/RebSem/portfo',
-    demoUrl: 'https://rebsem.ru',
     featured: true,
   },
   {
@@ -72,8 +51,8 @@ export const projects: ProjectItem[] = [
       en: 'Telegram bot for cleaning client bases',
     },
     summary: {
-      ru: 'Бот принимает CSV/XLSX, нормализует номера, фильтрует операторов и возвращает готовую базу без дублей.',
-      en: 'Bot that accepts CSV/XLSX files, normalizes numbers, filters operators, and returns a deduplicated clean base.',
+      ru: 'Бот принимает CSV/XLSX, нормализует номера, фильтрует операторов и возвращает готовую базу без дублей. Внутренний инструмент, ускоряющий подготовку данных для обзвонов.',
+      en: 'Bot that accepts CSV/XLSX files, normalizes numbers, filters operators, and returns a deduplicated clean base. Internal tool that speeds up call-list preparation.',
     },
     stack: ['Python', 'Telegram Bot API', 'CSV/XLSX', 'p1sms API'],
     visibility: 'private',
@@ -89,8 +68,8 @@ export const projects: ProjectItem[] = [
       en: 'Personalized PDF report platform',
     },
     summary: {
-      ru: 'Next.js приложение для генерации персонализированных астрологических PDF-отчётов с оплатой, email-доставкой и аналитикой.',
-      en: 'Next.js application for generating personalized astrology PDF reports with payments, email delivery, and analytics.',
+      ru: 'Next.js приложение для генерации персональных PDF-отчётов с оплатой, email-доставкой и аналитикой. Собрано за 3 дня — пример быстрой проверки гипотезы.',
+      en: 'Next.js app for generating personalized PDF reports with payments, email delivery, and analytics. Built in 3 days — example of a fast hypothesis test.',
     },
     stack: ['Next.js', 'TypeScript', 'Prisma', 'SQLite', 'YooKassa', 'Resend'],
     visibility: 'private',
@@ -106,10 +85,31 @@ export const projects: ProjectItem[] = [
       en: 'iOS app for ski and snowboard sessions',
     },
     summary: {
-      ru: 'iOS-приложение для трекинга катаний, погоды, истории сессий и AI-помощника для зимних видов спорта.',
-      en: 'iOS application for tracking rides, weather, session history, and an AI assistant for winter sports.',
+      ru: 'iOS-приложение для трекинга катаний, погоды и AI-помощника по зимним видам спорта. Личный пет-проект на SwiftUI — собран за неделю от идеи до working build.',
+      en: 'iOS app for tracking rides, weather, and an AI assistant for winter sports. Personal SwiftUI project — went from idea to a working build in a week.',
     },
     stack: ['SwiftUI', 'iOS', 'Weather', 'Session History', 'AI Assistant'],
     visibility: 'private',
+  },
+  {
+    id: 'portfo',
+    title: {
+      ru: 'portfo',
+      en: 'portfo',
+    },
+    appType: {
+      ru: 'Этот сайт',
+      en: 'This site',
+    },
+    summary: {
+      ru: 'Сам собрал hiring-сайт на Astro: RU/EN на физических роутах, GitHub-heatmap из API, structured data для индексации. Открытый код — единственный публичный репозиторий из показанных.',
+      en: 'Hiring-facing site I built end-to-end on Astro: RU/EN on physical routes, GitHub heatmap from the API, structured data for indexing. Open source — the only public repo among the projects shown.',
+    },
+    stack: ['Astro 5', 'TypeScript', 'MDX', 'GitHub Actions', 'GitHub Pages'],
+    visibility: 'public',
+    githubRepo: 'portfo',
+    repoUrl: 'https://github.com/RebSem/portfo',
+    demoUrl: 'https://rebsem.ru',
+    featured: true,
   },
 ];

@@ -1,48 +1,34 @@
 ---
 projectId: "Slopiq"
-title: "Slopiq - Intelligent Tracker for Skiers"
-description: "iOS application for run monitoring, weather analysis, and personal AI-assisted coaching."
-role: "iOS Developer / Product Designer"
+title: "Slopiq — iOS app for ski and snowboard sessions"
+description: "Run tracking, weather, session history, AI assistant. Personal SwiftUI project, shipped in a week."
+role: "Product Engineer / iOS"
 timeline: "1 week"
-impact: "A unified ecosystem for riders integrating AI-driven weather and technique analytics."
+impact: "Idea → working build on device in 7 days"
 lang: "en"
 tags: ["SwiftUI", "iOS", "AI Assistant", "Weather API"]
 draft: false
 ---
 
-# Slopiq: Your Digital Companion on the Slope
+# Slopiq: a digital companion on the slope
 
-Slopiq is more than just a GPS tracker. it's an app that understands the context of your riding and helps make it safer and more engaging.
+Slopiq is a pet project I built for myself to play with SwiftUI and ship a native iOS app for winter sports. The goal — go from idea to a running build I can launch on my own iPhone on the slope in one week.
 
-## 🔴 The Problem
-Existing apps are often:
-1. **Overloaded**: Difficult to navigate with gloves on in freezing temperatures.
-2. **Uninformative**: Simple speed metrics say little about actual progress.
-3. **Disconnected**: They don't account for sudden weather shifts or real-time snow conditions.
+## The class of problem
 
-## ⚡️ The Solution: Native Experience and AI Power
+Existing trackers are either UI-heavy (gloves + frost don't mix with small buttons), or limited to raw speed numbers, or ignore the weather at a specific altitude.
 
-### 1. High-Performance Interface
-We designed the UI using SwiftUI, focusing on large controls and high contrast so information can be easily read while on a ski lift.
+## What's inside
 
-### 2. Smart Session Tracking
-The system automatically distinguishes between runs and lifts, analyzing vertical drop and top speeds without needing manual mode switching.
+- **UI built for gloves and cold.** Large controls, high contrast, minimal gestures.
+- **Automatic run/lift split.** No manual mode switching.
+- **AI assistant.** Wax recommendation for current weather, daily summary, safety notes.
+- **Hyperlocal weather.** Open-Meteo by coordinates and altitude.
 
-### 3. Rider’s AI Assistant
-Slopiq features an integrated AI that:
-- Analyzes weather forecasts and suggests appropriate ski/board wax.
-- Provides safety tips based on current mountain conditions.
-- Generates daily summaries: "You rode 5km today, which is 20% above your average."
+## Stack
 
-### 4. Weather Integration
-Using Open-Meteo to fetch hyper-local data on temperature, visibility, and wind speed at various altitudes.
+SwiftUI, CoreLocation, Open-Meteo API, OpenAI / YandexGPT.
 
-## 🛠 Tech Stack
-- **SwiftUI**: For a modern and fast UI.
-- **CoreLocation**: Deep integration with GPS and background tracking.
-- **Open-Meteo API**: A free and accurate weather engine.
-- **OpenAI/YandexGPT**: The brains behind the AI assistant.
+## What this case shows about me
 
----
-
-> **Insights:** For sports-focused mobile apps, autonomy is key. The system must work in the background, allowing the user to focus entirely on the ride.
+I'm not tied to a single stack. Native iOS — SwiftUI. Web — Next.js. Automation — Python. I pick the stack for the problem, not for personal comfort.
