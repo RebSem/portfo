@@ -15,6 +15,7 @@
     "check": "astro check",
     "test": "vitest run",
     "link-check": "node scripts/link-check.mjs",
+    "refresh:github": "node scripts/update-github-stats.mjs",
     "validate": "npm run check && npm test && npm run build && npm run link-check",
     "preview": "astro preview",
     "astro": "astro",
