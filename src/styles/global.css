@@ -417,15 +417,22 @@ html[data-theme='dark'] .theme-icon-sun {
 
 .about-grid {
   display: grid;
-  grid-template-columns: minmax(0, 360px) minmax(0, 1fr);
-  gap: 2.6rem;
+  grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+  gap: 3rem;
   align-items: start;
   margin-top: 1.5rem;
+}
+
+.about-image-wrap {
+  position: sticky;
+  top: 2rem;
+  align-self: start;
 }
 
 .about-copy {
   display: grid;
   gap: 2rem;
+  min-width: 0;
 }
 
 .about-intro {
@@ -532,11 +539,11 @@ html[data-theme='dark'] .theme-icon-sun {
 
 .about-image-wrap {
   border-radius: 1.5rem;
-  overflow: hidden;
   border: 1px solid var(--border);
   box-shadow:
     0 24px 50px -28px color-mix(in oklab, var(--foreground) 35%, transparent),
     inset 0 1px 0 color-mix(in oklab, white 18%, transparent);
+  overflow: hidden;
 }
 
 .about-image-wrap img {
@@ -545,6 +552,7 @@ html[data-theme='dark'] .theme-icon-sun {
   height: auto;
   aspect-ratio: 4 / 5;
   object-fit: cover;
+  border-radius: inherit;
 }
 
 .hero-actions {
@@ -788,30 +796,6 @@ html[data-theme='dark'] .theme-icon-sun {
   margin-right: 1rem;
   color: color-mix(in oklab, var(--foreground) 30%, transparent);
   margin-left: -1rem;
-}
-
-.home-avatar-wrap {
-  position: relative;
-  width: clamp(220px, 32vw, 340px);
-  aspect-ratio: 4 / 5;
-  border-radius: 1.5rem;
-  border: 1px solid color-mix(in oklab, var(--foreground) 12%, var(--border));
-  overflow: hidden;
-  box-shadow:
-    0 24px 50px -28px color-mix(in oklab, var(--foreground) 35%, transparent),
-    inset 0 1px 0 color-mix(in oklab, white 18%, transparent);
-}
-
-.home-avatar {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.home-blog-list .blog-card h3 {
-  margin: 0;
-  font-size: 1.02rem;
 }
 
 .currently-grid {
@@ -1758,6 +1742,7 @@ html[data-theme='dark'] .theme-icon-sun {
   }
 
   .about-image-wrap {
+    position: static;
     max-width: 320px;
     margin-inline: auto;
   }
@@ -1793,10 +1778,6 @@ html[data-theme='dark'] .theme-icon-sun {
 
   .page-main {
     padding-top: 1.1rem;
-  }
-
-  .home-avatar-wrap {
-    width: min(220px, 62vw);
   }
 
   .skip-link {

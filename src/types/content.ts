@@ -23,7 +23,3 @@ export interface ProjectItem {
   shipTime?: LocalizedText;
 }
 
-export interface AboutContent {
-  intro: LocalizedText;
-  skills: string[];
-}
