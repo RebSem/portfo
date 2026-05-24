@@ -580,8 +580,14 @@ html[data-theme='dark'] .theme-icon-sun {
   grid-template-columns: repeat(var(--weeks), minmax(9px, 1fr));
   grid-template-rows: repeat(7, 9px);
   gap: 3px;
+  /* overflow-x auto for narrow viewports, but Y must stay visible —
+     otherwise the cell border and the hover scale on the top row get
+     clipped by the scroll container. */
   overflow-x: auto;
-  padding-bottom: 0.2rem;
+  overflow-y: visible;
+  /* Breathing room above the top row (and below) so hover scale(1.4)
+     and outlines never get eaten by the container edge. */
+  padding: 6px 0 0.4rem;
 
   /* Reveal-on-view: starts clipped from the right, animates open
      left → right when JS toggles data-revealed="true". Wave reads
