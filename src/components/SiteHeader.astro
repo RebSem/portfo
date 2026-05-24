@@ -18,7 +18,15 @@ const homePath = `${prefix}/`;
 const aboutPath = `${prefix}/about`;
 const blogPath = `${prefix}/blog`;
 
-const toggleUrl = isRu ? '/' : '/ru';
+// Locale toggle keeps the visitor on a matching page when the page exists in
+// both locales (home, about, blog index). Deep pages (single blog post, single
+// project) still need the per-slug logic in the inline script below.
+const localeToggleByActive: Record<typeof active, string> = {
+  home: isRu ? '/' : '/ru',
+  about: isRu ? '/about' : '/ru/about',
+  blog: isRu ? '/blog' : '/ru/blog',
+};
+const toggleUrl = localeToggleByActive[active];
 ---
 
 <header class="site-header">

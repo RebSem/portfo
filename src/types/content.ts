@@ -5,6 +5,8 @@ export interface LocalizedText {
   en: string;
 }
 
+export type ProjectTier = 'work-led' | 'pet';
+
 export interface ProjectItem {
   id: string;
   title: LocalizedText;
@@ -17,9 +19,7 @@ export interface ProjectItem {
   demoUrl?: string;
   featured?: boolean;
   placeholder?: boolean;
+  tier?: ProjectTier;
+  shipTime?: LocalizedText;
 }
 
-export interface AboutContent {
-  intro: LocalizedText;
-  skills: string[];
-}

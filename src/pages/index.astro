@@ -1,18 +1,25 @@
 ---
 import { getCollection } from 'astro:content';
-import { Image } from 'astro:assets';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SocialLinks from '../components/SocialLinks.astro';
 import { projects } from '../data/projects';
-import { githubUsername, heroDisplayName, heroFallbackName, linkedinUrl, telegramUrl, uiCopy } from '../data/site-content';
+import {
+  githubUsername,
+  heroDisplayName,
+  heroFallbackName,
+  linkedinUrl,
+  telegramUrl,
+  uiCopy,
+} from '../data/site-content';
 import Layout from '../layouts/Layout.astro';
 import githubScriptUrl from '../scripts/github-activity.js?url';
 import githubSyncScriptUrl from '../scripts/github-sync.js?url';
 import localeScriptUrl from '../scripts/locale.js?url';
-import heroImage from '../assets/main-hero.jpg';
 
 const visibleProjects = projects.filter((project) => !project.placeholder);
+const workLedProjects = visibleProjects.filter((p) => p.tier === 'work-led');
+const petProjects = visibleProjects.filter((p) => p.tier === 'pet');
 const projectEntries = await getCollection('projects', ({ data }) => !data.draft && data.lang === 'en');
 
 const personSchema = {
@@ -32,40 +39,57 @@ const personSchema = {
 ---
 
 <Layout
-  title={`${heroFallbackName} - Portfolio`}
-  description="Product Manager at Prof-IT (zvonobot, effebot, p1sms). Leading voice AI agents for B2B — 500K+ conversation minutes in 2026. Codes pet projects to validate hypotheses fast."
+  title={`${heroFallbackName} - Voice AI Product Manager`}
+  description="Voice AI Product Manager at Prof-IT (zvonobot, effebot, p1sms). 500,000+ minutes of B2B AI agent conversations in 2026. Codes pet projects to validate hypotheses in days."
   schema={personSchema}
 >
   <a id="skip-to-content" href="#main-content" class="skip-link">Skip to content</a>
 
   <SiteHeader active="home" />
 
-  <div class="divider-wrap" aria-hidden="true">
-    <hr class="divider" />
-  </div>
-
   <main id="main-content" class="page-main" data-github-username={githubUsername}>
     <section class="home-intro" aria-labelledby="home-title">
       <div class="home-intro-copy">
+        <span class="hero-status">
+          <span class="pulse-dot"></span>
+          {uiCopy.home.heroStatus.en}
+        </span>
+
         <p class="about-eyebrow">{uiCopy.home.eyebrow.en}</p>
 
-        <h1 id="home-title">{uiCopy.home.title.en}</h1>
+        <h1 id="home-title">
+          Voice AI <span class="hero-accent">Product&nbsp;Manager.</span>
+        </h1>
 
-        <p class="home-lead">{uiCopy.home.lead.en}</p>
+        <p class="home-lead">
+          {uiCopy.home.lead.en}
+          <br />
+          <span class="home-lead-strong">{uiCopy.home.leadStrong.en}</span>
+        </p>
+
+        <div class="hero-cta-row">
+          <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 11l16 -8l-4 18l-5 -4l-3 3l1 -5l8 -7"/>
+            </svg>
+            {uiCopy.home.heroCtaPrimary.en}
+          </a>
+        </div>
 
         <SocialLinks className="social-links profile-social-links" />
       </div>
 
-      <div class="home-avatar-wrap">
-        <Image
-          class="home-avatar"
-          src={heroImage}
-          width={320}
-          height={320}
-          loading="eager"
-          alt="Photo of Mikhail Semenov"
-        />
-      </div>
+      <aside class="hero-metric-card" aria-label="Key metric">
+        <p class="hero-metric-label">{uiCopy.home.metricLabel.en}</p>
+        <p class="hero-metric-value">
+          {uiCopy.home.metricNumber}<span class="unit">{uiCopy.home.metricUnit.en}</span>
+        </p>
+        <p class="hero-metric-caption">{uiCopy.home.metricCaption.en}</p>
+        <p class="hero-metric-footnote">
+          <span>{uiCopy.home.metricFootnoteOne.en}</span>
+          <span>{uiCopy.home.metricFootnoteTwo.en}</span>
+        </p>
+      </aside>
     </section>
 
     <section class="section-block currently-section" aria-labelledby="currently-title">
@@ -88,24 +112,23 @@ const personSchema = {
           <dd>{uiCopy.home.currentlyMetricValue.en}</dd>
         </div>
       </dl>
-    </section>
 
-    <section class="section-block github-activity-section" aria-labelledby="github-title">
-      <div class="section-head github-activity-head">
-        <div>
-          <p class="about-eyebrow">GitHub</p>
-          <h2 id="github-title">GitHub activity</h2>
+      <div class="github-inline" aria-labelledby="github-title">
+        <div class="github-inline-meta">
+          <span class="label">GitHub · last year</span>
+          <strong id="contributions-total">0</strong>
+          <span class="label" id="github-title">contributions</span>
+          <a
+            class="github-profile-link link"
+            href={`https://github.com/${githubUsername}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            github.com/{githubUsername}
+          </a>
         </div>
-        <p>Public work trail from the last year.</p>
-      </div>
 
-      <div class="github-activity-card">
         <div class="github-heatmap">
-          <div class="heatmap-topline">
-            <strong id="contributions-total">0</strong>
-            <span>contributions in the last year</span>
-          </div>
-
           <div
             id="contribution-grid"
             class="contribution-grid"
@@ -139,35 +162,25 @@ const personSchema = {
             Unable to load GitHub data. Please refresh later.
           </p>
         </div>
-
-        <div class="github-activity-copy">
-          <p>I keep a public trail of shipped work, experiments, and site iterations on GitHub.</p>
-          <p>
-            <a
-              class="github-profile-link"
-              href={`https://github.com/${githubUsername}`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Follow me on GitHub
-            </a>
-            {' '}and inspect the repos behind these case studies.
-          </p>
-        </div>
       </div>
     </section>
 
     <section id="projects" class="section-block" aria-labelledby="projects-title">
       <div class="section-head">
-        <h2 id="projects-title">Projects</h2>
-        <p>Selected work in one consistent format: product, stack, and where it already runs. The first two are products I lead — Cursivo and the internal Prof-IT cabinet. The rest are personal pet projects shipped in 1–7 days each. Most repos are private; the only open one is this site.</p>
+        <p class="about-eyebrow">{uiCopy.projects.title.en}</p>
+        <h2 id="projects-title">Selected work</h2>
+        <p>{uiCopy.projects.subtitle.en}</p>
       </div>
 
-      {visibleProjects.length === 0 ? (
-        <p class="projects-empty">I am preparing fresh case studies. Detailed write-ups will appear here soon.</p>
-      ) : (
-        <div class="projects-list">
-          {visibleProjects.map((project) => {
+      <div class="projects-tier">
+        <div class="projects-tier-head">
+          <span class="tier-eyebrow">{uiCopy.projects.workLedEyebrow.en}</span>
+          <h3>{uiCopy.projects.workLedTitle.en}</h3>
+          <p>{uiCopy.projects.workLedNote.en}</p>
+        </div>
+
+        <div class="projects-led-grid">
+          {workLedProjects.map((project) => {
             const entry = projectEntries.find(e => e.data.projectId === project.id);
             return (
               <article
@@ -188,9 +201,6 @@ const personSchema = {
                   )}
                   {project.id === 'obrabot' && (
                     <span class="project-visibility">Internal Prof-IT product</span>
-                  )}
-                  {project.visibility === 'private' && project.id !== 'cursivo' && project.id !== 'obrabot' && (
-                    <span class="project-visibility">Private case</span>
                   )}
                 </div>
 
@@ -220,13 +230,18 @@ const personSchema = {
                 </ul>
                 <p class="project-links">
                   {entry && (
-                    <a 
-                      class="project-link" 
+                    <a
+                      class="project-link"
                       href={`/projects/${entry.slug}`}
                       data-details-link
                     >
-                      Read more
+                      Read case
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
+                    </a>
+                  )}
+                  {project.demoUrl && (
+                    <a class="project-link" href={project.demoUrl} target="_blank" rel="noreferrer">
+                      Live
                     </a>
                   )}
                   {project.repoUrl && (
@@ -237,7 +252,7 @@ const personSchema = {
                       rel="noreferrer"
                       data-github-repo-link={project.githubRepo ? '' : undefined}
                     >
-                      Repository
+                      Repo
                     </a>
                   )}
                 </p>
@@ -245,7 +260,46 @@ const personSchema = {
             );
           })}
         </div>
-      )}
+      </div>
+
+      <div class="projects-tier">
+        <div class="projects-tier-head">
+          <span class="tier-eyebrow">{uiCopy.projects.petEyebrow.en}</span>
+          <h3>{uiCopy.projects.petTitle.en}</h3>
+          <p>{uiCopy.projects.petNote.en}</p>
+        </div>
+
+        <div class="projects-pet-grid">
+          {petProjects.map((project) => {
+            const entry = projectEntries.find(e => e.data.projectId === project.id);
+            return (
+              <article
+                class="project-card-pet"
+                data-github-repo={project.githubRepo}
+              >
+                {project.shipTime && (
+                  <span class="pet-ship-time">
+                    <span class="pulse-dot"></span>
+                    {project.shipTime.en}
+                  </span>
+                )}
+                {entry ? (
+                  <h4><a href={`/projects/${entry.slug}/`}>{project.title.en}</a></h4>
+                ) : (
+                  <h4>{project.title.en}</h4>
+                )}
+                <p class="pet-type">{project.appType.en}</p>
+                <p class="pet-stack">{project.stack.join(' · ')}</p>
+                {project.repoUrl && (
+                  <a class="pet-repo-link" href={project.repoUrl} target="_blank" rel="noreferrer">
+                    github →
+                  </a>
+                )}
+              </article>
+            );
+          })}
+        </div>
+      </div>
     </section>
   </main>
 
