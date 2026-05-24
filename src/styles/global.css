@@ -16,6 +16,15 @@ html[data-theme='light'] {
   --success-2: #40c463;
   --success-3: #30a14e;
   --success-4: #216e39;
+
+  /* Motion tokens — Emil-style strong easings + a small duration scale.
+     Use these instead of dropping raw bezier curves into transitions. */
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
+  --dur-press: 120ms;
+  --dur-fast: 160ms;
+  --dur-base: 220ms;
+  --dur-reveal: 700ms;
 }
 
 html[data-theme='dark'] {
@@ -153,6 +162,11 @@ a:focus-visible {
   text-decoration: none;
   letter-spacing: 0.015em;
   white-space: nowrap;
+  transition: transform var(--dur-press) var(--ease-out-strong);
+}
+
+.brand:active {
+  transform: scale(0.97);
 }
 
 .header-controls {
@@ -178,6 +192,11 @@ a:focus-visible {
   padding: 0.25rem 0.55rem;
   text-decoration: none;
   font-weight: 500;
+  transition: transform var(--dur-press) var(--ease-out-strong);
+}
+
+.main-nav-link:active {
+  transform: scale(0.96);
 }
 
 .main-nav-link.active-nav {
@@ -204,9 +223,10 @@ a:focus-visible {
   cursor: pointer;
   text-decoration: none;
   transition:
-    color 0.15s ease,
-    border-color 0.15s ease,
-    background-color 0.15s ease;
+    color var(--dur-fast) var(--ease-out-strong),
+    border-color var(--dur-fast) var(--ease-out-strong),
+    background-color var(--dur-fast) var(--ease-out-strong),
+    transform var(--dur-press) var(--ease-out-strong);
 }
 
 .locale-toggle:hover,
@@ -214,6 +234,10 @@ a:focus-visible {
   background: color-mix(in oklab, var(--surface) 92%, var(--accent) 8%);
   border-color: color-mix(in oklab, var(--accent) 35%, var(--border));
   color: var(--accent);
+}
+
+.locale-toggle:active {
+  transform: scale(0.94);
 }
 
 .theme-toggle {
@@ -229,9 +253,10 @@ a:focus-visible {
   align-items: center;
   justify-content: center;
   transition:
-    color 0.15s ease,
-    border-color 0.15s ease,
-    background-color 0.15s ease;
+    color var(--dur-fast) var(--ease-out-strong),
+    border-color var(--dur-fast) var(--ease-out-strong),
+    background-color var(--dur-fast) var(--ease-out-strong),
+    transform var(--dur-press) var(--ease-out-strong);
 }
 
 .theme-toggle:hover,
@@ -241,30 +266,41 @@ a:focus-visible {
   background: color-mix(in oklab, var(--surface) 92%, var(--accent) 8%);
 }
 
+.theme-toggle:active {
+  transform: scale(0.94);
+}
+
 .theme-icon {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(1) rotate(0deg);
   transform-origin: center;
+  filter: blur(0);
   transition:
-    transform 0.22s ease,
-    opacity 0.22s ease;
+    transform var(--dur-base) var(--ease-out-strong),
+    opacity var(--dur-base) var(--ease-out-strong),
+    filter var(--dur-base) var(--ease-out-strong);
 }
 
+/* Inactive icon: small (not scale(0) — nothing pops from nothing),
+   slightly rotated, blurred to bridge the crossfade between the two glyphs. */
 .theme-icon-sun {
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0) rotate(90deg);
+  transform: translate(-50%, -50%) scale(0.6) rotate(90deg);
+  filter: blur(2px);
 }
 
 html[data-theme='dark'] .theme-icon-moon {
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0) rotate(-90deg);
+  transform: translate(-50%, -50%) scale(0.6) rotate(-90deg);
+  filter: blur(2px);
 }
 
 html[data-theme='dark'] .theme-icon-sun {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  filter: blur(0);
 }
 
 .divider {
@@ -278,13 +314,25 @@ html[data-theme='dark'] .theme-icon-sun {
   padding-bottom: 3.25rem;
 }
 
+/* Interruptible enter: transitions retarget cleanly if the user
+   navigates mid-animation (keyframes restart from zero, which feels janky).
+   Stagger applied consistently to the first 4 sections, ~45ms apart. */
 .page-main > section {
-  animation: section-appear 0.42s ease both;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 280ms var(--ease-out-strong),
+    transform 280ms var(--ease-out-strong);
+
+  @starting-style {
+    opacity: 0;
+    transform: translateY(6px);
+  }
 }
 
-.page-main > section:nth-of-type(2) {
-  animation-delay: 0.06s;
-}
+.page-main > section:nth-of-type(2) { transition-delay: 45ms; }
+.page-main > section:nth-of-type(3) { transition-delay: 90ms; }
+.page-main > section:nth-of-type(4) { transition-delay: 135ms; }
 
 .about-section,
 .section-block,
@@ -532,8 +580,24 @@ html[data-theme='dark'] .theme-icon-sun {
   grid-template-columns: repeat(var(--weeks), minmax(9px, 1fr));
   grid-template-rows: repeat(7, 9px);
   gap: 3px;
+  /* overflow-x auto for narrow viewports, but Y must stay visible —
+     otherwise the cell border and the hover scale on the top row get
+     clipped by the scroll container. */
   overflow-x: auto;
-  padding-bottom: 0.2rem;
+  overflow-y: visible;
+  /* Breathing room above the top row (and below) so hover scale(1.4)
+     and outlines never get eaten by the container edge. */
+  padding: 6px 0 0.4rem;
+
+  /* Reveal-on-view: starts clipped from the right, animates open
+     left → right when JS toggles data-revealed="true". Wave reads
+     as "activity accumulating over the year". */
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path var(--dur-reveal) var(--ease-in-out-strong);
+}
+
+.contribution-grid[data-revealed='true'] {
+  clip-path: inset(0 0 0 0);
 }
 
 .contribution-cell {
@@ -542,6 +606,20 @@ html[data-theme='dark'] .theme-icon-sun {
   border-radius: 2px;
   border: 1px solid color-mix(in oklab, var(--border) 80%, transparent);
   background: var(--success-0);
+  transition:
+    outline-color 80ms var(--ease-out-strong),
+    transform 100ms var(--ease-out-strong);
+}
+
+/* Make the heatmap feel touchable when exploring tooltips. */
+@media (hover: hover) and (pointer: fine) {
+  .contribution-cell:hover {
+    outline: 1px solid var(--accent);
+    outline-offset: 1px;
+    transform: scale(1.4);
+    z-index: 1;
+    position: relative;
+  }
 }
 
 .contribution-cell:focus-visible {
@@ -633,19 +711,23 @@ html[data-theme='dark'] .theme-icon-sun {
   padding: 1rem 1rem 1.05rem;
   display: grid;
   gap: 0.72rem;
-  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), 
-              box-shadow 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), 
-              border-color 0.25s ease;
+  transition:
+    box-shadow var(--dur-base) var(--ease-out-strong),
+    border-color var(--dur-base) var(--ease-out-strong);
   position: relative;
   overflow: hidden;
 }
 
-.project-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 40px -20px rgba(17, 24, 39, 0.3);
-  border-color: color-mix(in oklab, var(--accent) 40%, var(--border));
+/* Hover is opt-in by device — touch devices fire :hover on tap and the
+   state would "stick" after the user lifts their finger. */
+@media (hover: hover) and (pointer: fine) {
+  .project-card:hover {
+    border-color: color-mix(in oklab, var(--accent) 55%, var(--border));
+    box-shadow: 0 18px 36px -24px color-mix(in oklab, var(--accent) 30%, rgba(17, 24, 39, 0.35));
+  }
 }
 
+/* Accent top-line kept as the single hover signal (no translateY, no shadow stacking) */
 .project-card::before {
   content: '';
   position: absolute;
@@ -655,11 +737,13 @@ html[data-theme='dark'] .theme-icon-sun {
   height: 2px;
   background: linear-gradient(90deg, transparent, var(--accent), transparent);
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity var(--dur-base) var(--ease-out-strong);
 }
 
-.project-card:hover::before {
-  opacity: 0.6;
+@media (hover: hover) and (pointer: fine) {
+  .project-card:hover::before {
+    opacity: 0.6;
+  }
 }
 
 .project-card-head {
@@ -711,13 +795,23 @@ html[data-theme='dark'] .theme-icon-sun {
   font-size: 0.82rem;
   font-weight: 500;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition:
+    background-color var(--dur-fast) var(--ease-out-strong),
+    border-color var(--dur-fast) var(--ease-out-strong),
+    color var(--dur-fast) var(--ease-out-strong),
+    transform var(--dur-press) var(--ease-out-strong);
 }
 
-.project-link:hover {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: white;
+@media (hover: hover) and (pointer: fine) {
+  .project-link:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+}
+
+.project-link:active {
+  transform: scale(0.96);
 }
 
 .project-link[data-details-link] {
@@ -729,10 +823,12 @@ html[data-theme='dark'] .theme-icon-sun {
   color: var(--accent);
 }
 
-.project-link[data-details-link]:hover {
-  background: transparent;
-  color: color-mix(in oklab, var(--accent) 80%, black 20%);
-  transform: translateX(4px);
+@media (hover: hover) and (pointer: fine) {
+  .project-link[data-details-link]:hover {
+    background: transparent;
+    color: color-mix(in oklab, var(--accent) 80%, black 20%);
+    transform: translateX(4px);
+  }
 }
 
 .project-visibility {
@@ -938,11 +1034,21 @@ html[data-theme='dark'] .theme-icon-sun {
   border-top: 1px solid var(--border);
 }
 
+/* Featured cards need to read as featured at first glance:
+   accent left rail + a deeper accent-tinted shadow do the work the
+   subtle gradient alone couldn't. */
 .project-card-featured {
-  border-color: var(--accent);
-  background: 
-    linear-gradient(180deg, color-mix(in oklab, var(--surface) 82%, var(--accent) 5%), color-mix(in oklab, var(--surface) 96%, var(--background) 4%));
-  box-shadow: 0 20px 40px -25px color-mix(in oklab, var(--accent) 30%, transparent);
+  border-color: color-mix(in oklab, var(--accent) 40%, var(--border));
+  border-left: 3px solid var(--accent);
+  background:
+    linear-gradient(180deg, color-mix(in oklab, var(--surface) 78%, var(--accent) 9%), color-mix(in oklab, var(--surface) 96%, var(--background) 4%));
+  box-shadow: 0 24px 50px -22px color-mix(in oklab, var(--accent) 45%, transparent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .project-card-featured:hover {
+    box-shadow: 0 28px 56px -20px color-mix(in oklab, var(--accent) 55%, transparent);
+  }
 }
 
 .launch-badge {
@@ -968,6 +1074,8 @@ html[data-theme='dark'] .theme-icon-sun {
   position: relative;
 }
 
+/* Pulse intentionally slow + sparse — the dot still reads as "alive"
+   without stealing attention 60 times a minute. */
 .pulse-dot::after {
   content: '';
   position: absolute;
@@ -978,12 +1086,12 @@ html[data-theme='dark'] .theme-icon-sun {
   border-radius: 50%;
   background-color: var(--accent);
   opacity: 0.6;
-  animation: pulse 1.5s infinite;
+  animation: pulse 6s var(--ease-out-strong) infinite;
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); opacity: 0.6; }
-  100% { transform: scale(2.5); opacity: 0; }
+  0% { transform: scale(1); opacity: 0.55; }
+  60%, 100% { transform: scale(2.2); opacity: 0; }
 }
 
 .prose {
@@ -1041,14 +1149,26 @@ html[data-theme='dark'] .theme-icon-sun {
   text-decoration: none;
   border-radius: 999px;
   transition:
-    color 0.15s ease,
-    transform 0.15s ease;
+    color var(--dur-fast) var(--ease-out-strong),
+    transform var(--dur-press) var(--ease-out-strong);
 }
 
-.social-link:hover,
+/* Hover only on real pointer devices — and a subtle lift instead of rotate.
+   Rotation is decoration without function and these live in the header/footer
+   on every page; it shouldn't shout. */
+@media (hover: hover) and (pointer: fine) {
+  .social-link:hover {
+    color: var(--accent);
+    transform: scale(1.08);
+  }
+}
+
 .social-link:focus-visible {
   color: var(--accent);
-  transform: rotate(6deg);
+}
+
+.social-link:active {
+  transform: scale(0.94);
 }
 
 .footer-note {
@@ -1153,20 +1273,54 @@ html[data-theme='dark'] .theme-icon-sun {
     scroll-behavior: auto;
   }
 
-  .page-main > section {
-    animation: none;
+  /* Drop the @starting-style entrance, hover lifts and press scales,
+     pulse, and the theme-icon blur — keep colour/opacity transitions
+     since they aid comprehension. */
+  .page-main > section,
+  .page-main > section:nth-of-type(n) {
+    transition: none;
+    opacity: 1;
+    transform: none;
   }
 
   .skip-link,
   .locale-toggle,
   .theme-toggle,
   .theme-icon,
-  .social-link {
+  .social-link,
+  .project-card,
+  .project-card::before,
+  .project-link,
+  .brand,
+  .main-nav-link {
     transition: none;
   }
 
+  .locale-toggle:active,
+  .theme-toggle:active,
+  .social-link:active,
+  .project-link:active,
+  .brand:active,
+  .main-nav-link:active,
   .social-link:hover,
   .social-link:focus-visible {
     transform: none;
+  }
+
+  .theme-icon,
+  .theme-icon-sun,
+  .theme-icon-moon,
+  html[data-theme='dark'] .theme-icon-sun,
+  html[data-theme='dark'] .theme-icon-moon {
+    filter: none;
+  }
+
+  .pulse-dot::after {
+    animation: none;
+    opacity: 0;
+  }
+
+  .contribution-grid {
+    clip-path: none;
   }
 }
