@@ -1036,10 +1036,13 @@ html[data-theme='dark'] .theme-icon-sun {
 
 /* Featured cards need to read as featured at first glance:
    accent left rail + a deeper accent-tinted shadow do the work the
-   subtle gradient alone couldn't. */
+   subtle gradient alone couldn't.
+   padding-left compensates the 3px (vs 1px on regular cards) so inner
+   content stays aligned across featured and non-featured cards. */
 .project-card-featured {
   border-color: color-mix(in oklab, var(--accent) 40%, var(--border));
   border-left: 3px solid var(--accent);
+  padding-left: calc(1rem - 2px);
   background:
     linear-gradient(180deg, color-mix(in oklab, var(--surface) 78%, var(--accent) 9%), color-mix(in oklab, var(--surface) 96%, var(--background) 4%));
   box-shadow: 0 24px 50px -22px color-mix(in oklab, var(--accent) 45%, transparent);
@@ -1090,7 +1093,8 @@ html[data-theme='dark'] .theme-icon-sun {
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); opacity: 0.55; }
+  0% { transform: scale(1); opacity: 0; }
+  10% { transform: scale(1.05); opacity: 0.55; }
   60%, 100% { transform: scale(2.2); opacity: 0; }
 }
 
@@ -1322,5 +1326,13 @@ html[data-theme='dark'] .theme-icon-sun {
 
   .contribution-grid {
     clip-path: none;
+  }
+
+  .contribution-cell {
+    transition: outline-color 80ms linear;
+  }
+
+  .contribution-cell:hover {
+    transform: none;
   }
 }

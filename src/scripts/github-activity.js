@@ -158,6 +158,10 @@ const renderContributionGrid = (days) => {
   }
 
   grid.appendChild(fragment);
+  // Force the browser to commit the initial clipped state (clip-path: inset(0 100% 0 0))
+  // before we flip the data-revealed flag. Without this layout read, fast reloads
+  // can paint straight at the revealed state and skip the transition entirely.
+  void grid.getBoundingClientRect();
   requestHeatmapAlignment();
   scheduleHeatmapReveal(grid);
 };
