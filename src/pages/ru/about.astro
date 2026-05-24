@@ -4,12 +4,14 @@ import SiteFooter from '../../components/SiteFooter.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import SocialLinks from '../../components/SocialLinks.astro';
 import {
-  aboutParagraphs,
+  aboutBlocks,
+  cvUrl,
   githubUsername,
   heroDisplayName,
   heroSubtitle,
   linkedinUrl,
   telegramUrl,
+  uiCopy,
 } from '../../data/site-content';
 import Layout from '../../layouts/Layout.astro';
 import githubScriptUrl from '../../scripts/github-activity.js?url';
@@ -41,16 +43,12 @@ const aboutSchema = {
 
 <Layout
   title={`${heroDisplayName.ru} - Обо мне`}
-  description="Product Manager в Prof-IT (zvonobot, effebot, p1sms), веду голосовых AI-агентов для B2B. Как я работаю, где приношу пользу и в какие роли открыт."
+  description="Voice AI Product Manager в Prof-IT. Как я работаю, где приношу больше всего пользы и в какие роли открыт."
   schema={aboutSchema}
 >
   <a id="skip-to-content" href="#main-content" class="skip-link">Перейти к содержимому</a>
 
   <SiteHeader active="about" />
-
-  <div class="divider-wrap" aria-hidden="true">
-    <hr class="divider" />
-  </div>
 
   <main
     id="main-content"
@@ -63,7 +61,7 @@ const aboutSchema = {
         <span id="hero-name">{heroDisplayName.ru}</span>
       </h1>
 
-      <p class="about-intro">Product Manager voice AI в Prof-IT. Как я работаю, где приношу больше всего пользы и в какие роли открыт.</p>
+      <p class="about-intro">{heroSubtitle.ru}</p>
 
       <div class="about-grid">
         <div class="about-image-wrap">
@@ -71,83 +69,51 @@ const aboutSchema = {
             id="hero-avatar"
             src={heroImage}
             width={560}
-            height={560}
+            height={700}
             loading="eager"
             alt={`Портрет ${heroDisplayName.ru}`}
           />
         </div>
 
         <div class="about-copy">
-          <p id="hero-subtitle">{heroSubtitle.ru}</p>
+          <div class="about-blocks">
+            {aboutBlocks.map((block) => (
+              <article class="about-block">
+                <p class="about-block-eyebrow">{block.eyebrow.ru}</p>
+                <h2 class="about-block-title">{block.title.ru}</h2>
+                {block.body.map((para) => (<p>{para.ru}</p>))}
+                {block.bullets && (
+                  <ul class="about-bullets">
+                    {block.bullets.map((item) => (<li>{item.ru}</li>))}
+                  </ul>
+                )}
+              </article>
+            ))}
+          </div>
 
-          {
-            aboutParagraphs.map((paragraph) => (
-              <p>{paragraph.ru}</p>
-            ))
-          }
-
-          <SocialLinks className="social-links profile-social-links" />
+          <div class="about-cta-card">
+            <p class="about-cta-eyebrow">Связаться</p>
+            <p class="about-cta-headline">Сейчас открыт к ролям в voice AI / B2B продуктах.</p>
+            <div class="hero-cta-row">
+              <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 11l16 -8l-4 18l-5 -4l-3 3l1 -5l8 -7"/>
+                </svg>
+                {uiCopy.home.heroCtaPrimary.ru}
+              </a>
+              <a class="cta-button cta-secondary" href={cvUrl} target="_blank" rel="noreferrer" download>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M14 3v4a1 1 0 0 0 1 1h4"/>
+                  <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"/>
+                  <path d="M12 11v6"/>
+                  <path d="M9.5 14.5l2.5 2.5l2.5 -2.5"/>
+                </svg>
+                {uiCopy.home.heroCtaSecondary.ru}
+              </a>
+            </div>
+            <SocialLinks className="social-links profile-social-links" />
+          </div>
         </div>
-      </div>
-    </section>
-
-    <section id="github" class="section-block" aria-labelledby="github-title">
-      <div class="section-head">
-        <h2 id="github-title">GitHub активность</h2>
-        <p>GitHub-профиль и график активности за последний год.</p>
-      </div>
-
-      <div class="github-heatmap">
-        <div class="heatmap-topline">
-          <strong id="contributions-total">0</strong>
-          <span>вкладов за последний год</span>
-        </div>
-
-        <p class="github-meta">
-          <a
-            id="github-profile-link"
-            class="github-profile-link"
-            href={`https://github.com/${githubUsername}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            github.com/{githubUsername}
-          </a>
-          <span class="github-snapshot-note">График вкладов обновляется во время сборки сайта.</span>
-        </p>
-
-        <div
-          id="contribution-grid"
-          class="contribution-grid"
-          role="img"
-          aria-label="График активности GitHub"
-        ></div>
-
-        <div class="heatmap-legend" aria-hidden="true">
-          <span>0</span>
-          <div class="legend-level level-0"></div>
-          <div class="legend-level level-1"></div>
-          <div class="legend-level level-2"></div>
-          <div class="legend-level level-3"></div>
-          <div class="legend-level level-4"></div>
-          <span>max</span>
-        </div>
-
-        <p
-          id="contribution-tooltip"
-          class="contribution-tooltip"
-          data-hint-ru="Наведите или перейдите на ячейку, чтобы увидеть дату и число вкладов."
-          data-hint-en="Hover or focus a cell to see the exact date and number of contributions."
-        >
-          Наведите или перейдите на ячейку, чтобы увидеть дату и число вкладов.
-        </p>
-
-        <p
-          id="github-error"
-          class="github-error hidden"
-        >
-          Не удалось загрузить GitHub-данные. Попробуйте обновить страницу позже.
-        </p>
       </div>
     </section>
   </main>

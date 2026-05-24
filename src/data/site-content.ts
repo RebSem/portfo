@@ -4,6 +4,7 @@ export const githubUsername = 'RebSem';
 export const telegramUrl = 'https://t.me/Michael_Semenov';
 export const email = 'perk77331@gmail.com';
 export const linkedinUrl = 'https://www.linkedin.com/in/mikhail-semenovv/';
+export const cvUrl = '/mikhail-semenov-cv.pdf';
 
 export const homePath = '/';
 export const aboutPath = '/about';
@@ -65,6 +66,72 @@ export const socialLabels = {
   },
 } as const;
 
+export interface AboutBlock {
+  eyebrow: LocalizedText;
+  title: LocalizedText;
+  body: LocalizedText[];
+  bullets?: LocalizedText[];
+}
+
+export const aboutBlocks: AboutBlock[] = [
+  {
+    eyebrow: { ru: '01 · Сейчас', en: '01 · Now' },
+    title: { ru: 'Voice AI агенты для B2B', en: 'Voice AI agents for B2B' },
+    body: [
+      {
+        ru: 'Product Manager в Prof-IT с начала 2022. Работал над голосовыми роботами в zvonobot и effebot, а в 2026-м запустил и развиваю новый продукт группы — голосовых AI-агентов для B2B. За 2026 год через них прошло более 500 000 минут разговоров от новых клиентов.',
+        en: 'Product Manager at Prof-IT since early 2022. Worked on voice automation at zvonobot and effebot, and in 2026 launched and have been scaling the group’s new product — voice AI agents for B2B. The new product has handled over 500,000 minutes of new-customer conversations in 2026.',
+      },
+    ],
+  },
+  {
+    eyebrow: { ru: '02 · Где полезен сильнее всего', en: '02 · Where I add the most value' },
+    title: { ru: 'AI, встроенный в реальный workflow', en: 'AI embedded into real workflows' },
+    body: [
+      {
+        ru: 'Продукты, где AI работает на бизнес-задачу, а не существует как демо. Точки максимальной пользы:',
+        en: 'Products where AI does the actual business job, not just lives as a demo. Sweet spots:',
+      },
+    ],
+    bullets: [
+      { ru: 'Голосовые и conversational AI-сценарии', en: 'Voice and conversational AI scenarios' },
+      { ru: 'B2B-телефония и customer engagement', en: 'B2B telephony and customer engagement' },
+      { ru: 'Операционные инструменты для отделов продаж и поддержки', en: 'Operational tools for sales and support teams' },
+    ],
+  },
+  {
+    eyebrow: { ru: '03 · Как работаю', en: '03 · How I work' },
+    title: { ru: 'Сам кодю и собираю прототипы', en: 'I code and ship prototypes myself' },
+    body: [
+      {
+        ru: 'Это позволяет проверять гипотезы за дни, а не за спринты, и говорить с инженерами на одном языке. Пет-проекты на сайте — иллюстрация скорости: каждый собран за 1–7 дней от идеи до working release.',
+        en: 'That lets me validate hypotheses in days rather than sprints, and stay on the same page with engineers. The pet projects on this site illustrate that speed — each shipped in 1–7 days from idea to a working release.',
+      },
+    ],
+  },
+  {
+    eyebrow: { ru: '04 · Что важно для роли', en: '04 · What matters in a role' },
+    title: { ru: 'Ownership и короткий цикл идея → проверка', en: 'Ownership and a short idea-to-validation loop' },
+    body: [],
+    bullets: [
+      { ru: 'Автономность и ownership на ambiguous-задачах', en: 'Autonomy and ownership on ambiguous problems' },
+      { ru: 'Короткий цикл от идеи до проверки', en: 'A short loop from idea to validation' },
+      { ru: 'Продуктовая логика поверх AI, а не AI ради AI', en: 'Product logic on top of AI, not AI for its own sake' },
+      { ru: 'Команды, где можно вести задачу end-to-end, а не быть звеном в длинной цепочке согласований', en: 'Teams where I can carry a problem end-to-end, not be one step in a long approval chain' },
+    ],
+  },
+  {
+    eyebrow: { ru: '05 · Open to', en: '05 · Open to' },
+    title: { ru: 'Voice AI · conversational AI · B2B-инфраструктура', en: 'Voice AI · conversational AI · B2B infrastructure' },
+    body: [
+      {
+        ru: 'Открыт к ролям и коллаборациям в стартапах и tech-командах — особенно в русскоязычных международных продуктах. Английский — рабочий B1+, готов подтянуть до зрелого B2 под нужды роли.',
+        en: 'Open to roles and collaborations in startups and tech teams — especially Russian-speaking international products. English at working B1+, willing to grow into mature B2 as the role demands.',
+      },
+    ],
+  },
+];
+
 export const aboutParagraphs: LocalizedText[] = [
   {
     ru: 'С начала 2022 года — Product Manager в Prof-IT. Работал над голосовыми роботами в zvonobot и effebot, а в 2026-м запустил и развиваю новый продукт группы — голосовых AI-агентов для B2B. За 2026 год через них прошло более 500 000 минут разговоров от новых клиентов.',
@@ -114,14 +181,55 @@ export const uiCopy = {
     primaryAria: { ru: 'Основная навигация', en: 'Primary navigation' },
   },
   home: {
-    eyebrow: { ru: 'Product Manager · Voice AI · Pet projects', en: 'Product Manager · Voice AI · Pet projects' },
+    eyebrow: { ru: 'Product Manager · Voice AI · Prof-IT', en: 'Product Manager · Voice AI · Prof-IT' },
     title: {
-      ru: 'Веду продуктовое развитие voice AI в Prof-IT и параллельно собираю пет-проекты от идеи до релиза.',
-      en: 'I lead voice AI product work at Prof-IT and ship side projects end-to-end on the side.',
+      ru: 'Product Manager. Voice AI.',
+      en: 'Voice AI Product Manager.',
+    },
+    titleAccent: {
+      ru: 'Voice AI.',
+      en: 'Voice AI.',
     },
     lead: {
-      ru: 'С 2022 года продакт в Prof-IT (zvonobot, effebot, p1sms). Сейчас фокус — голосовые AI-агенты для B2B: за 2026 год через них прошло более 500 000 минут разговоров от новых клиентов. Параллельно сам кодю и проверяю гипотезы пет-проектами быстрее, чем через долгую разработку.',
-      en: 'Product manager at Prof-IT since 2022 (zvonobot, effebot, p1sms). Currently focused on voice AI agents for B2B — in 2026 the new product has handled over 500,000 minutes of conversations from new customers. Alongside that I code my own pet projects, testing hypotheses far faster than through long-form development.',
+      ru: 'С 2022 года веду продукт в Prof-IT (zvonobot, effebot, p1sms). С 2026 фокус — голосовые AI-агенты для B2B. Параллельно сам кодю пет-проекты и проверяю гипотезы за дни, а не за спринты.',
+      en: 'Product manager at Prof-IT (zvonobot, effebot, p1sms) since 2022. Since 2026 fully focused on voice AI agents for B2B. I also code my own pet projects, validating hypotheses in days rather than sprints.',
+    },
+    leadStrong: {
+      ru: 'Сейчас открыт к ролям и коллаборациям в voice / conversational AI и B2B-инфраструктуре.',
+      en: 'Currently open to roles and collaborations in voice / conversational AI and B2B infrastructure.',
+    },
+    heroStatus: {
+      ru: 'Открыт к новым ролям',
+      en: 'Open to new roles',
+    },
+    heroCtaPrimary: {
+      ru: 'Написать в Telegram',
+      en: 'Message me on Telegram',
+    },
+    heroCtaSecondary: {
+      ru: 'Скачать CV (PDF)',
+      en: 'Download CV (PDF)',
+    },
+    metricLabel: {
+      ru: 'Сигнал 2026 · голосовые AI-агенты Prof-IT',
+      en: '2026 signal · Prof-IT voice AI agents',
+    },
+    metricNumber: '500,000+',
+    metricUnit: {
+      ru: 'минут',
+      en: 'minutes',
+    },
+    metricCaption: {
+      ru: 'разговоров от новых клиентов прошло через продукт, который я веду — за 2026 год.',
+      en: 'of new-customer conversations handled by the product I lead — in 2026.',
+    },
+    metricFootnoteOne: {
+      ru: 'Prof-IT · с начала 2022',
+      en: 'Prof-IT · since early 2022',
+    },
+    metricFootnoteTwo: {
+      ru: 'B2B · voice + AI',
+      en: 'B2B · voice + AI',
     },
     photoAlt: { ru: 'Фото Михаила Семенова', en: 'Photo of Mikhail Semenov' },
     currentlyEyebrow: { ru: 'Сейчас', en: 'Currently' },
@@ -211,8 +319,20 @@ export const uiCopy = {
   projects: {
     title: { ru: 'Проекты', en: 'Projects' },
     subtitle: {
-      ru: 'Пять выбранных проектов из моего GitHub в едином формате: продукт, стек и где это уже работает.',
-      en: 'Five selected GitHub projects in one consistent format: product, stack, and where it already works.',
+      ru: 'Два уровня: продукты, которые я веду в Prof-IT, и личные пет-проекты, собранные за дни — иллюстрация скорости shipping.',
+      en: 'Two tiers: products I lead at Prof-IT, and personal pet projects shipped in days — proof of shipping speed.',
+    },
+    workLedTitle: { ru: 'Продукты, которые я веду', en: 'Products I lead' },
+    workLedEyebrow: { ru: '01 · Day job', en: '01 · Day job' },
+    workLedNote: {
+      ru: 'Здесь я отвечаю за продуктовую логику, метрики и delivery end-to-end.',
+      en: 'Here I own product logic, metrics, and end-to-end delivery.',
+    },
+    petTitle: { ru: 'Пет-проекты', en: 'Pet projects' },
+    petEyebrow: { ru: '02 · Built in days, not sprints', en: '02 · Built in days, not sprints' },
+    petNote: {
+      ru: 'Каждый собран лично за 1–7 дней от идеи до working release. Способ быстро валидировать гипотезы и оставаться на одном языке с инженерами.',
+      en: 'Each one personally built in 1–7 days from idea to a working release. How I validate hypotheses fast and stay on the same page with engineers.',
     },
     empty: {
       ru: 'Сейчас собираю свежие кейсы. Скоро здесь появятся подробные разборы.',
