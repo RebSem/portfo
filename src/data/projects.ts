@@ -92,6 +92,25 @@ export const projects: ProjectItem[] = [
     visibility: 'private',
   },
   {
+    id: 'tubedrop',
+    title: {
+      ru: 'tubedrop',
+      en: 'tubedrop',
+    },
+    appType: {
+      ru: 'macOS-обёртка над YouTube-конвертером',
+      en: 'macOS wrapper over a YouTube converter',
+    },
+    summary: {
+      ru: 'Двухкликовая локальная веб-обёртка над kaifcodec/ytconverter: drop ссылки — получи файл. Личный пет-проект, чтобы перестать мучиться со сайтами-конвертерами. Собран на коленке за вечер с Claude Code.',
+      en: 'Two-click local web wrapper around kaifcodec/ytconverter: drop a link, get the file. Personal pet project to stop fighting sketchy converter sites. Hacked together in an evening with Claude Code.',
+    },
+    stack: ['Python', 'yt-dlp', 'ffmpeg', 'macOS', 'Claude Code'],
+    visibility: 'public',
+    githubRepo: 'tubedrop',
+    repoUrl: 'https://github.com/RebSem/tubedrop',
+  },
+  {
     id: 'portfo',
     title: {
       ru: 'portfo',
