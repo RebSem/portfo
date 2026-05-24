@@ -158,7 +158,54 @@ const renderContributionGrid = (days) => {
   }
 
   grid.appendChild(fragment);
+  // Force the browser to commit the initial clipped state (clip-path: inset(0 100% 0 0))
+  // before we flip the data-revealed flag. Without this layout read, fast reloads
+  // can paint straight at the revealed state and skip the transition entirely.
+  void grid.getBoundingClientRect();
   requestHeatmapAlignment();
+  scheduleHeatmapReveal(grid);
+};
+
+// Reveal the heatmap left → right on first viewport entry.
+// One-shot per grid instance; respects prefers-reduced-motion.
+const scheduleHeatmapReveal = (grid) => {
+  if (grid.dataset.revealScheduled === 'true') return;
+  grid.dataset.revealScheduled = 'true';
+
+  const reduceMotion =
+    typeof window !== 'undefined' &&
+    window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (reduceMotion || typeof IntersectionObserver === 'undefined') {
+    grid.dataset.revealed = 'true';
+    return;
+  }
+
+  const reveal = () => {
+    // Double rAF lets the browser settle layout before flipping the clip-path,
+    // so the transition actually runs instead of being snapped past.
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        grid.dataset.revealed = 'true';
+      });
+    });
+  };
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          reveal();
+          observer.disconnect();
+          break;
+        }
+      }
+    },
+    { threshold: 0.15 },
+  );
+
+  observer.observe(grid);
 };
 
 const bindContributionTooltip = () => {
