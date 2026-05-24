@@ -5,7 +5,6 @@ import SiteHeader from '../../components/SiteHeader.astro';
 import SocialLinks from '../../components/SocialLinks.astro';
 import {
   aboutBlocks,
-  cvUrl,
   githubUsername,
   heroDisplayName,
   heroSubtitle,
@@ -93,22 +92,13 @@ const aboutSchema = {
 
           <div class="about-cta-card">
             <p class="about-cta-eyebrow">Связаться</p>
-            <p class="about-cta-headline">Сейчас открыт к ролям в voice AI / B2B продуктах.</p>
+            <p class="about-cta-headline">Открыт к новым проектам в voice AI и B2B-инфраструктуре.</p>
             <div class="hero-cta-row">
               <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M4 11l16 -8l-4 18l-5 -4l-3 3l1 -5l8 -7"/>
                 </svg>
                 {uiCopy.home.heroCtaPrimary.ru}
-              </a>
-              <a class="cta-button cta-secondary" href={cvUrl} target="_blank" rel="noreferrer" download>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M14 3v4a1 1 0 0 0 1 1h4"/>
-                  <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"/>
-                  <path d="M12 11v6"/>
-                  <path d="M9.5 14.5l2.5 2.5l2.5 -2.5"/>
-                </svg>
-                {uiCopy.home.heroCtaSecondary.ru}
               </a>
             </div>
             <SocialLinks className="social-links profile-social-links" />

@@ -1,10 +1,9 @@
-import type { AboutContent, LocalizedText } from '../types/content';
+import type { LocalizedText } from '../types/content';
 
 export const githubUsername = 'RebSem';
 export const telegramUrl = 'https://t.me/Michael_Semenov';
 export const email = 'perk77331@gmail.com';
 export const linkedinUrl = 'https://www.linkedin.com/in/mikhail-semenovv/';
-export const cvUrl = '/mikhail-semenov-cv.pdf';
 
 export const homePath = '/';
 export const aboutPath = '/about';
@@ -17,8 +16,8 @@ export const heroDisplayName: LocalizedText = {
 };
 
 export const heroSubtitle: LocalizedText = {
-  ru: 'Веду продуктовое развитие voice AI в группе компаний Prof-IT. Параллельно делаю пет-проекты — собираю продукт от идеи до релиза, тестирую гипотезы кратно быстрее, чем через долгую разработку.',
-  en: 'I lead product development for voice AI at Prof-IT group. Alongside that I ship side projects end-to-end, validating hypotheses far faster than through long-form development cycles.',
+  ru: 'Веду продуктовое развитие voice AI в группе компаний Prof-IT. Параллельно собираю пет-проекты от идеи до релиза — пишу код с AI-агентами (Claude Code, Codex) и проверяю гипотезы за дни, а не за спринты.',
+  en: 'I lead product development for voice AI at Prof-IT group. Alongside that I ship side projects end-to-end — code with AI agents (Claude Code, Codex) and validate hypotheses in days, not sprints.',
 };
 
 export const currentRole: LocalizedText = {
@@ -101,11 +100,11 @@ export const aboutBlocks: AboutBlock[] = [
   },
   {
     eyebrow: { ru: '03 · Как работаю', en: '03 · How I work' },
-    title: { ru: 'Сам кодю и собираю прототипы', en: 'I code and ship prototypes myself' },
+    title: { ru: 'Пишу код в паре с AI-агентами', en: 'I ship code paired with AI agents' },
     body: [
       {
-        ru: 'Это позволяет проверять гипотезы за дни, а не за спринты, и говорить с инженерами на одном языке. Пет-проекты на сайте — иллюстрация скорости: каждый собран за 1–7 дней от идеи до working release.',
-        en: 'That lets me validate hypotheses in days rather than sprints, and stay on the same page with engineers. The pet projects on this site illustrate that speed — each shipped in 1–7 days from idea to a working release.',
+        ru: 'Весь код пет-проектов пишу с AI-агентами — Claude Code и Codex. Это позволяет проверять гипотезы за дни, а не за спринты, и говорить с инженерами на одном языке. Каждый пет-проект на сайте — от идеи до working release за 1–7 дней.',
+        en: 'I build my pet projects with AI coding agents — Claude Code and Codex. That lets me validate hypotheses in days rather than sprints, and stay on the same page with engineers. Each pet project on this site went from idea to a working release in 1–7 days.',
       },
     ],
   },
@@ -142,35 +141,18 @@ export const aboutParagraphs: LocalizedText[] = [
     en: 'Where I add the most value: products where AI is embedded into a real workflow rather than living as a demo. Especially voice and conversational AI, B2B telephony, customer engagement, and operational tools for sales and support teams.',
   },
   {
-    ru: 'Как работаю: сам кодю и собираю прототипы. Это позволяет проверять гипотезы за дни, а не за спринты, и говорить с инженерами на одном языке. Пет-проекты на сайте — иллюстрация скорости: каждый собран за 1–7 дней от идеи до работающего релиза.',
-    en: 'How I work: I code and build prototypes myself. That lets me validate hypotheses in days rather than sprints, and stay on the same page with engineers. The pet projects on this site illustrate that speed — each shipped in 1–7 days from idea to working release.',
+    ru: 'Как работаю: пишу код пет-проектов с AI-агентами — Claude Code и Codex. Это позволяет проверять гипотезы за дни, а не за спринты, и говорить с инженерами на одном языке. Каждый пет-проект на сайте — от идеи до working release за 1–7 дней.',
+    en: 'How I work: I build my pet projects with AI coding agents — Claude Code and Codex. That lets me validate hypotheses in days rather than sprints, and stay on the same page with engineers. Each pet project on this site went from idea to a working release in 1–7 days.',
   },
   {
     ru: 'Что важно для роли: автономность и ownership на ambiguous-задачах, короткий цикл от идеи до проверки, продуктовая логика поверх AI, а не AI ради AI. Сильнее всего полезен в командах, где можно вести задачу end-to-end, а не быть звеном в длинной цепочке согласований.',
     en: 'What matters in a role: autonomy and ownership on ambiguous problems, a short loop from idea to validation, product logic on top of AI rather than AI for its own sake. I am at my best in teams where I can carry a problem end-to-end instead of being one step in a long approval chain.',
   },
   {
-    ru: 'Открыт к ролям и коллаборациям в стартапах и tech-командах — особенно в русскоязычных международных продуктах и в нишах voice AI, conversational AI, B2B-инфраструктуре. Английский — рабочий B1+, готов подтянуть до зрелого B2 под нужды роли.',
-    en: 'Open to roles and collaborations in startups and tech teams — especially Russian-speaking international products and the voice AI, conversational AI, and B2B infrastructure space. English at working B1+, willing to grow into mature B2 as the role demands.',
+    ru: 'Открыт к новым проектам и коллаборациям в стартапах и tech-командах — особенно в русскоязычных международных продуктах и в нишах voice AI, conversational AI, B2B-инфраструктуре. Английский — рабочий B1+, готов подтянуть до зрелого B2 под нужды проекта.',
+    en: 'Open to new projects and collaborations in startups and tech teams — especially Russian-speaking international products and the voice AI, conversational AI, and B2B infrastructure space. English at working B1+, willing to grow into mature B2 as the role demands.',
   },
 ];
-
-export const aboutContent: AboutContent = {
-  intro: {
-    ru: aboutParagraphs[0].ru,
-    en: aboutParagraphs[0].en,
-  },
-  skills: [
-    'JavaScript / TypeScript',
-    'React',
-    'Astro',
-    'Node.js',
-    'REST API',
-    'Docker',
-    'PostgreSQL',
-    'GitHub Actions',
-  ],
-};
 
 export const uiCopy = {
   nav: {
@@ -191,24 +173,20 @@ export const uiCopy = {
       en: 'Voice AI.',
     },
     lead: {
-      ru: 'С 2022 года веду продукт в Prof-IT (zvonobot, effebot, p1sms). С 2026 фокус — голосовые AI-агенты для B2B. Параллельно сам кодю пет-проекты и проверяю гипотезы за дни, а не за спринты.',
-      en: 'Product manager at Prof-IT (zvonobot, effebot, p1sms) since 2022. Since 2026 fully focused on voice AI agents for B2B. I also code my own pet projects, validating hypotheses in days rather than sprints.',
+      ru: 'С 2022 года веду продукт в Prof-IT (zvonobot, effebot, p1sms). С 2026 фокус — голосовые AI-агенты для B2B. Параллельно собираю пет-проекты с AI-агентами (Claude Code, Codex) и проверяю гипотезы за дни, а не за спринты.',
+      en: 'Product manager at Prof-IT (zvonobot, effebot, p1sms) since 2022. Since 2026 fully focused on voice AI agents for B2B. I also ship pet projects with AI agents (Claude Code, Codex), validating hypotheses in days rather than sprints.',
     },
     leadStrong: {
-      ru: 'Сейчас открыт к ролям и коллаборациям в voice / conversational AI и B2B-инфраструктуре.',
-      en: 'Currently open to roles and collaborations in voice / conversational AI and B2B infrastructure.',
+      ru: 'Сейчас открыт к новым проектам и коллаборациям в voice / conversational AI и B2B-инфраструктуре.',
+      en: 'Currently open to new projects and collaborations in voice / conversational AI and B2B infrastructure.',
     },
     heroStatus: {
-      ru: 'Открыт к новым ролям',
-      en: 'Open to new roles',
+      ru: 'Открыт к новым проектам',
+      en: 'Open to new projects',
     },
     heroCtaPrimary: {
       ru: 'Написать в Telegram',
       en: 'Message me on Telegram',
-    },
-    heroCtaSecondary: {
-      ru: 'Скачать CV (PDF)',
-      en: 'Download CV (PDF)',
     },
     metricLabel: {
       ru: 'Сигнал 2026 · голосовые AI-агенты Prof-IT',
@@ -331,8 +309,8 @@ export const uiCopy = {
     petTitle: { ru: 'Пет-проекты', en: 'Pet projects' },
     petEyebrow: { ru: '02 · Built in days, not sprints', en: '02 · Built in days, not sprints' },
     petNote: {
-      ru: 'Каждый собран лично за 1–7 дней от идеи до working release. Способ быстро валидировать гипотезы и оставаться на одном языке с инженерами.',
-      en: 'Each one personally built in 1–7 days from idea to a working release. How I validate hypotheses fast and stay on the same page with engineers.',
+      ru: 'Каждый собран лично с AI-агентами (Claude Code, Codex) за 1–7 дней от идеи до working release. Способ быстро валидировать гипотезы и оставаться на одном языке с инженерами.',
+      en: 'Each one personally built with AI coding agents (Claude Code, Codex) in 1–7 days from idea to a working release. How I validate hypotheses fast and stay on the same page with engineers.',
     },
     empty: {
       ru: 'Сейчас собираю свежие кейсы. Скоро здесь появятся подробные разборы.',
