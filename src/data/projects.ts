@@ -2,6 +2,25 @@ import type { ProjectItem } from '../types/content';
 
 export const projects: ProjectItem[] = [
   {
+    id: 'zvonobot-ai',
+    title: {
+      ru: 'Zvonobot AI',
+      en: 'Zvonobot AI',
+    },
+    appType: {
+      ru: 'Платформа voice AI-агентов для B2B (Prof-IT)',
+      en: 'Voice AI-agent platform for B2B (Prof-IT)',
+    },
+    summary: {
+      ru: 'Новый продукт группы Prof-IT, который я запустил в 2026-м и веду end-to-end: продукт, UX и инженерию. Multi-tenant SaaS-кабинет поверх telephony-инфраструктуры, в котором клиенты собирают и публикуют голосовых AI-агентов для исходящих звонков — продажи, онбординг, реактивация, опросы.',
+      en: 'A new Prof-IT product I launched in 2026 and run end-to-end — product, UX, and engineering. A multi-tenant SaaS console built on top of telephony infrastructure: clients assemble and publish voice AI agents for outbound use cases — sales, onboarding, reactivation, surveys.',
+    },
+    stack: ['React 19', 'TypeScript', 'Vite', 'Flask', 'PostgreSQL', 'Redis', 'LLM orchestration'],
+    visibility: 'private',
+    featured: true,
+    tier: 'work-led',
+  },
+  {
     id: 'cursivo',
     title: {
       ru: 'cursivo',
