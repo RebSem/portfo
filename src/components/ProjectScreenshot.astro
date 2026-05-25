@@ -1,0 +1,40 @@
+---
+interface Props {
+  lightSrc: string;
+  darkSrc: string;
+  alt: string;
+  caption?: string;
+}
+
+const { lightSrc, darkSrc, alt, caption } = Astro.props;
+---
+
+<figure class="project-shot">
+  <div class="project-shot-frame">
+    <div class="project-shot-bar" aria-hidden="true">
+      <span class="project-shot-dot"></span>
+      <span class="project-shot-dot"></span>
+      <span class="project-shot-dot"></span>
+    </div>
+    <img
+      src={lightSrc}
+      alt={alt}
+      class="project-shot-img project-shot-img-light"
+      loading="lazy"
+      decoding="async"
+      width="1440"
+      height="920"
+    />
+    <img
+      src={darkSrc}
+      alt=""
+      aria-hidden="true"
+      class="project-shot-img project-shot-img-dark"
+      loading="lazy"
+      decoding="async"
+      width="1440"
+      height="920"
+    />
+  </div>
+  {caption && <figcaption class="project-shot-caption">{caption}</figcaption>}
+</figure>

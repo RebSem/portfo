@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import FeaturedCase from '../components/FeaturedCase.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import SocialLinks from '../components/SocialLinks.astro';
@@ -18,7 +19,8 @@ import githubSyncScriptUrl from '../scripts/github-sync.js?url';
 import localeScriptUrl from '../scripts/locale.js?url';
 
 const visibleProjects = projects.filter((project) => !project.placeholder);
-const workLedProjects = visibleProjects.filter((p) => p.tier === 'work-led');
+const featuredCaseProject = visibleProjects.find((p) => p.id === 'zvonobot-ai');
+const workLedProjects = visibleProjects.filter((p) => p.tier === 'work-led' && p.id !== 'zvonobot-ai');
 const petProjects = visibleProjects.filter((p) => p.tier === 'pet');
 const projectEntries = await getCollection('projects', ({ data }) => !data.draft && data.lang === 'en');
 
@@ -178,6 +180,19 @@ const personSchema = {
           <h3>{uiCopy.projects.workLedTitle.en}</h3>
           <p>{uiCopy.projects.workLedNote.en}</p>
         </div>
+
+        {featuredCaseProject && (() => {
+          const fEntry = projectEntries.find((e) => e.data.projectId === featuredCaseProject.id);
+          return (
+            <FeaturedCase
+              project={featuredCaseProject}
+              locale="en"
+              screenshotLight="/projects/zvonobot-dashboard-en-light.png"
+              screenshotDark="/projects/zvonobot-dashboard-en-dark.png"
+              caseHref={fEntry ? `/projects/${fEntry.slug}/` : undefined}
+            />
+          );
+        })()}
 
         <div class="projects-led-grid">
           {workLedProjects.map((project) => {

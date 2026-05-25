@@ -1,0 +1,90 @@
+---
+projectId: "zvonobot-ai"
+title: "Zvonobot AI — voice AI-agent platform for B2B"
+description: "Multi-tenant SaaS console for outbound voice AI agents. Launched in 2026 inside Prof-IT and run end-to-end: product, UX, engineering."
+role: "Product lead · product engineer"
+timeline: "Launched 2026, actively shipping"
+impact: "500,000+ minutes of new-customer conversations in 2026"
+lang: "en"
+tags: ["React 19", "TypeScript", "Vite", "Flask", "PostgreSQL", "Redis", "LLM orchestration", "VoIP", "Multi-tenant SaaS"]
+cover: "/projects/zvonobot-dashboard-en-light.png"
+draft: false
+---
+
+import ProjectScreenshot from '../../components/ProjectScreenshot.astro';
+
+# Zvonobot AI: a voice AI-agent platform we ship every week
+
+Zvonobot AI is a new product I launched inside the Prof-IT group in 2026 and run end-to-end — product, UX, and engineering. It is a multi-tenant SaaS console on top of telephony infrastructure: clients assemble voice AI agents, give them a prompt and a base of contacts, and run outbound campaigns — sales, onboarding, reactivation, surveys.
+
+In 2026 the product has already handled **500,000+ minutes of new-customer conversations**.
+
+<ProjectScreenshot
+  lightSrc="/projects/zvonobot-dashboard-en-light.png"
+  darkSrc="/projects/zvonobot-dashboard-en-dark.png"
+  alt="Zvonobot AI client dashboard with KPIs and a daily call timeline (demo data)"
+  caption="Client dashboard · demo data · real client interfaces under NDA"
+/>
+
+## The pain we solve
+
+Mid-market and enterprise B2B teams have a recurring outbound problem they can't fix cleanly with a CRM and a call center:
+
+- **Headcount doesn't scale linearly.** Hiring, training, and retaining a 30–60-seat outbound team to chase warm leads or run lifecycle calls is brutal, especially in Russian-speaking markets where good telesales are scarce and burn out fast.
+- **Speed-to-call kills the funnel.** A lead that gets a call within minutes converts dramatically better than one called the next day. Humans can't be on every shift, every weekend, every channel — but inbound leads don't wait.
+- **Quality is uneven.** Two operators reading the same script produce two different conversations. There is no easy way to audit "what actually happened on the call," and managers spend more time listening to recordings than running the team.
+- **Lifecycle calls are economically unviable for humans.** Onboarding nudges, reactivation flows, NPS surveys, payment reminders — each call individually is cheap value, but together they're huge volume that a human team can't justify.
+
+A voice AI agent that picks up the script, runs the dialog, handles common objections, and hands the qualified lead back to a human collapses all four of those problems into a configurable workflow.
+
+## What I built — and keep in production
+
+The Zvonobot AI cabinet is the surface clients live in. It bundles agent assembly, dialing, billing, and analytics into a single role-aware console.
+
+- **Agent builder.** Clients pick a voice, model, and language, drop in a structured prompt, attach a base of contacts and a phone number — and have a working outbound agent in minutes.
+- **Campaigns & dialing.** A campaign is "this agent calls this contact base from this number." Operators can pause, resume, retry, and switch carriers without leaving the page.
+- **Call history with masked numbers.** Every call lands here with status, outcome, duration, cost, and a recording. Phone numbers are masked in the UI so the cabinet is safe to demo and audit.
+- **Real-time client dashboard.** KPIs split by calls / contacts / answers / leads / conversion / spent — plus a per-day chart and per-agent rollup, all priced in RUB against the org's plan.
+- **Billing with balance hold.** A campaign reserves estimated cost up front, so a client can't drift into negative wallet mid-dial. Reconciliation happens after every call.
+- **Multi-tenant roles.** Super-admin, manager, client owner, accountant — four roles with different scopes and views, all on one codebase.
+
+<ProjectScreenshot
+  lightSrc="/projects/zvonobot-calls-light.png"
+  darkSrc="/projects/zvonobot-calls-dark.png"
+  alt="Call history table with masked phone numbers, outcomes, and per-call cost (demo data)"
+  caption="Call history — masked numbers, statuses, and per-call cost · demo data"
+/>
+
+## Architecture deep-dive
+
+The stack is intentionally boring at the edges so the interesting work can happen in the middle.
+
+- **Frontend:** React 19 + TypeScript + Vite. Vanilla CSS with strict design tokens (no Tailwind), `data-theme="dark"` swap, role-aware sidebar.
+- **Backend:** Flask modular monolith, SQLAlchemy + Alembic, PostgreSQL for state, Redis for jobs/broker.
+- **Voice + LLM:** dialog orchestration on top of a voice provider's execution layer — agent voice, ASR, TTS, and the LLM behind the conversation are all configurable per agent.
+- **Telephony:** integration with our SIP-trunk for Russian numbers, with operator detection via P1SMS HLR lookup so we know whether a number can actually be reached before we dial.
+
+### Three engineering decisions worth describing
+
+**1. A call-status poller, not just webhooks.**
+Voice providers send webhooks for call lifecycle events, but webhooks get lost — dropped TLS handshakes, queue backpressure, the provider's own incidents. We wrote a background poller that wakes up every 60 seconds and reconciles every non-terminal call against the provider's source of truth. If a webhook never arrived, the poller updates the call, settles the wallet, and surfaces it to analytics. Result: zero "stuck in queued" calls in production, every minute is billed.
+
+**2. Balance hold on campaign start, real settle on call end.**
+Naive billing waits for the webhook and charges after the call. That breaks for two reasons: charges can race the wallet update on concurrent campaigns, and clients can blow through their balance and we eat the cost. So we hold an estimated cost when the campaign starts, settle the real cost on call end, and release the hold if the campaign stops early. All of it goes through a row-locked update (`SELECT ... FOR UPDATE`) on Postgres so two concurrent calls can't both spend the last 10 rubles in the wallet.
+
+**3. Contact ingest that doesn't choke on real CSVs.**
+Real client bases are messy: `+7 (982)…`, `8982…`, `9822…`, numbers with extension noise, mobile numbers in the landline column. The ingest pipeline normalises every row to canonical `+7XXXXXXXXXX`, deduplicates, and looks up the operator via P1SMS. We default to dropping flaky carrier routes (Russia's МТС, in our SIP trunk's case) and let operators flip that picker per base. This is the same flow `bazabot` started as — promoted into the product when it became obvious every campaign was running this preprocessing manually.
+
+## How I work on it
+
+I'm the only person on the product day-to-day — from product logic and UX through to backend code and infra. I ship with AI coding agents (Claude Code, Codex) paired with my own judgment for product calls, billing edges, and SIP-level decisions. The team around me is the broader Prof-IT group — telephony, ops, support — but the cabinet, the API, the dialing flow, the billing math, and the UI all live with me end-to-end.
+
+What this case shows about how I work:
+
+- I run the loop **product → UX → code → ship → measure** myself, in days, not sprints.
+- I treat boring infrastructure as a feature: pollers, holds, idempotency, masked PII — the things that decide whether a SaaS feels stable or fragile.
+- I pick the smallest stable surface and grow it. The cabinet started with one role and one report; today it carries four roles, a billing system, an agent builder, and a real call pipeline.
+
+## What I can't share publicly
+
+A few things stay behind NDA: client names, exact prompts that drive paid agents, the voice provider we run on top of, and absolute revenue / minute counts. Everything described above is real, but specifics are summarised. Happy to walk through any of this on a call.
