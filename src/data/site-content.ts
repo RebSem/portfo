@@ -300,6 +300,58 @@ export const uiCopy = {
       ru: 'Два уровня: продукты, которые я веду в Prof-IT, и личные пет-проекты, собранные за дни — иллюстрация скорости shipping.',
       en: 'Two tiers: products I lead at Prof-IT, and personal pet projects shipped in days — proof of shipping speed.',
     },
+    featuredEyebrow: {
+      ru: 'Флагман · 2026',
+      en: 'Flagship · 2026',
+    },
+    featuredLiveBadge: {
+      ru: 'В проде',
+      en: 'Live in production',
+    },
+    featuredRole: {
+      ru: 'Веду end-to-end · продукт, UX, инженерия',
+      en: 'I run it end-to-end · product, UX, engineering',
+    },
+    featuredKpis: [
+      {
+        ru: 'Multi-tenant SaaS',
+        en: 'Multi-tenant SaaS',
+      },
+      {
+        ru: 'Voice + LLM-оркестрация',
+        en: 'Voice + LLM orchestration',
+      },
+      {
+        ru: 'B2B-телефония',
+        en: 'B2B telephony',
+      },
+    ],
+    featuredHighlightsTitle: {
+      ru: 'Что я собрал и держу в проде',
+      en: 'What I built and keep in production',
+    },
+    featuredHighlights: [
+      {
+        ru: 'Кабинет для клиентов: создание агентов, промпт-сценарии, кампании, история звонков, биллинг — всё под одной ролью.',
+        en: 'Client console: agent builder, prompt flows, campaigns, call history, and billing — all under one role.',
+      },
+      {
+        ru: 'Биллинг с резервом баланса на старте кампании — клиент не уходит в минус, расходы предсказуемы.',
+        en: 'Billing with a balance hold on campaign start — clients never go negative, spend stays predictable.',
+      },
+      {
+        ru: 'Надёжный поток звонков: фоновый поллер сверяет статусы каждые 60 секунд, чтобы ни один звонок не "застрял" и был корректно списан.',
+        en: 'Reliable call pipeline: a background poller reconciles statuses every 60 seconds so no call gets stuck and every minute is billed.',
+      },
+    ],
+    featuredScreenshotAlt: {
+      ru: 'Скриншот клиентского дашборда Zvonobot AI с моковыми демо-данными',
+      en: 'Zvonobot AI client dashboard screenshot with mock demo data',
+    },
+    featuredNda: {
+      ru: 'Демо-данные · реальные интерфейсы клиентов под NDA',
+      en: 'Demo data · real client interfaces under NDA',
+    },
     workLedTitle: { ru: 'Продукты, которые я веду', en: 'Products I lead' },
     workLedEyebrow: { ru: '01 · Day job', en: '01 · Day job' },
     workLedNote: {
