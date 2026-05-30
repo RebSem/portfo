@@ -532,30 +532,26 @@ html[data-theme='dark'] .theme-icon-sun {
 
 .about-cta-headline {
   font-family: var(--font-sans);
-  font-size: 1.2rem;
+  font-size: 1.35rem;
   font-weight: 600;
   letter-spacing: -0.015em;
-  line-height: 1.25;
-  max-width: 38ch;
+  line-height: 1.22;
+  max-width: 30ch;
+}
+
+.about-cta-sub {
+  font-size: 0.98rem;
+  line-height: 1.55;
+  max-width: 52ch;
+  color: color-mix(in oklab, var(--foreground) 72%, transparent);
 }
 
 .about-cta-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
   gap: 1rem;
-  margin-top: 0.3rem;
-}
-
-.about-cta-row .profile-social-links {
-  margin-top: 0;
-  gap: 0.1rem;
-}
-
-.about-cta-row .profile-social-links .social-link {
-  width: 2.2rem;
-  height: 2.2rem;
+  margin-top: 0.4rem;
 }
 
 .about-image-wrap {

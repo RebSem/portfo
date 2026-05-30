@@ -16,8 +16,8 @@ export const heroDisplayName: LocalizedText = {
 };
 
 export const heroSubtitle: LocalizedText = {
-  ru: 'Веду продуктовое развитие voice AI в группе компаний Prof-IT. Параллельно собираю пет-проекты от идеи до релиза — пишу код с AI-агентами (Claude Code, Codex) и проверяю гипотезы за дни, а не за спринты.',
-  en: 'I lead product development for voice AI at Prof-IT group. Alongside that I ship side projects end-to-end — code with AI agents (Claude Code, Codex) and validate hypotheses in days, not sprints.',
+  ru: 'AI Product Manager: веду продукт и двигаю его за счёт продуманного внедрения AI. Сейчас фокус — голосовые AI-агенты для B2B в Prof-IT. Параллельно собираю пет-проекты от идеи до релиза с AI-агентами (Claude Code, Codex) и проверяю гипотезы за дни, а не за спринты.',
+  en: 'AI Product Manager: I own the product and move it through thoughtful AI adoption. Right now my focus is voice AI agents for B2B at Prof-IT. Alongside that I ship side projects end-to-end with AI agents (Claude Code, Codex), validating hypotheses in days, not sprints.',
 };
 
 export const currentRole: LocalizedText = {
@@ -149,8 +149,8 @@ export const aboutParagraphs: LocalizedText[] = [
     en: 'What matters in a role: autonomy and ownership on ambiguous problems, a short loop from idea to validation, product logic on top of AI rather than AI for its own sake. I am at my best in teams where I can carry a problem end-to-end instead of being one step in a long approval chain.',
   },
   {
-    ru: 'Открыт к новым проектам и коллаборациям в стартапах и tech-командах — особенно в русскоязычных международных продуктах и в нишах voice AI, conversational AI, B2B-инфраструктуре. Английский — рабочий B1+, готов подтянуть до зрелого B2 под нужды проекта.',
-    en: 'Open to new projects and collaborations in startups and tech teams — especially Russian-speaking international products and the voice AI, conversational AI, and B2B infrastructure space. English at working B1+, willing to grow into mature B2 as the role demands.',
+    ru: 'Открыт к ролям AI Product Manager — где я веду продукт и двигаю его за счёт продуманного, нужного внедрения AI. Голос — лишь один из доменов, где я это делал; интересны любые продукты, где AI закрывает реальную бизнес-задачу. Английский — рабочий B1+, готов подтянуть до зрелого B2 под нужды роли.',
+    en: 'Open to AI Product Manager roles — where I own the product and move it through thoughtful, purposeful AI adoption. Voice is just one domain where I have done this; I am interested in any product where AI solves a real business job. English at working B1+, willing to grow into mature B2 as the role demands.',
   },
 ];
 
@@ -297,8 +297,8 @@ export const uiCopy = {
   projects: {
     title: { ru: 'Проекты', en: 'Projects' },
     subtitle: {
-      ru: 'Два уровня: продукты, которые я веду в Prof-IT, и личные пет-проекты, собранные за дни — иллюстрация скорости shipping.',
-      en: 'Two tiers: products I lead at Prof-IT, and personal pet projects shipped in days — proof of shipping speed.',
+      ru: 'Два уровня: продукты, которые я веду в Prof-IT, и личные пет-проекты, собранные за дни — показывают скорость, с которой довожу идею до релиза.',
+      en: 'Two tiers: products I lead at Prof-IT, and personal pet projects built in days — they show the speed I take an idea to release.',
     },
     featuredEyebrow: {
       ru: 'Флагман · 2026',
