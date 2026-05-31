@@ -41,8 +41,8 @@ const personSchema = {
 ---
 
 <Layout
-  title={`${heroFallbackName} - Voice AI Product Manager`}
-  description="Voice AI Product Manager at Prof-IT (zvonobot, effebot, p1sms). 500,000+ minutes of B2B AI agent conversations in 2026. Codes pet projects to validate hypotheses in days."
+  title={`${heroFallbackName} - AI Product Manager`}
+  description="AI Product Manager at Prof-IT (zvonobot, effebot, p1sms) who drives the product through thoughtful AI adoption. 500,000+ minutes of B2B AI agent conversations in 2026. Ships pet projects with AI agents in days, not sprints."
   schema={personSchema}
 >
   <a id="skip-to-content" href="#main-content" class="skip-link">Skip to content</a>
@@ -60,7 +60,7 @@ const personSchema = {
         <p class="about-eyebrow">{uiCopy.home.eyebrow.en}</p>
 
         <h1 id="home-title">
-          Voice AI <span class="hero-accent">Product&nbsp;Manager.</span>
+          <span class="hero-accent">AI</span> Product&nbsp;Manager.
         </h1>
 
         <p class="home-lead">
@@ -254,7 +254,13 @@ const personSchema = {
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
                     </a>
                   )}
-                  {project.demoUrl && (
+                  {project.demoUrl && project.id === 'cursivo' && (
+                    <a class="project-link project-link-primary" href={project.demoUrl} target="_blank" rel="noreferrer">
+                      Open cursivo.xyz
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+                    </a>
+                  )}
+                  {project.demoUrl && project.id !== 'cursivo' && (
                     <a class="project-link" href={project.demoUrl} target="_blank" rel="noreferrer">
                       Live
                     </a>
