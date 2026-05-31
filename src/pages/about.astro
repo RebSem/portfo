@@ -2,7 +2,6 @@
 import { Image } from 'astro:assets';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
-import SocialLinks from '../components/SocialLinks.astro';
 import {
   aboutBlocks,
   githubUsername,
@@ -43,7 +42,7 @@ const aboutSchema = {
 
 <Layout
   title={`${heroFallbackName} - About`}
-  description="Voice AI Product Manager at Prof-IT. How I work, where I add the most value, and what kind of role I am open to."
+  description="AI Product Manager at Prof-IT who drives the product through thoughtful AI adoption. How I work, where I add the most value, and what kind of role I am open to."
   schema={aboutSchema}
 >
   <a id="skip-to-content" href="#main-content" class="skip-link">Skip to content</a>
@@ -93,7 +92,8 @@ const aboutSchema = {
 
           <div class="about-cta-card">
             <p class="about-cta-eyebrow">Get in touch</p>
-            <p class="about-cta-headline">Open to new projects in voice AI and B2B infrastructure.</p>
+            <p class="about-cta-headline">Open to AI Product Manager roles where the product moves through smart AI adoption.</p>
+            <p class="about-cta-sub">Tell me about the product and the problem — I'll tell you where AI actually moves the needle, and where it doesn't.</p>
             <div class="about-cta-row">
               <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -101,7 +101,6 @@ const aboutSchema = {
                 </svg>
                 {uiCopy.home.heroCtaPrimary.en}
               </a>
-              <SocialLinks className="social-links profile-social-links" />
             </div>
           </div>
         </div>

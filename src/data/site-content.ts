@@ -16,8 +16,8 @@ export const heroDisplayName: LocalizedText = {
 };
 
 export const heroSubtitle: LocalizedText = {
-  ru: 'Веду продуктовое развитие voice AI в группе компаний Prof-IT. Параллельно собираю пет-проекты от идеи до релиза — пишу код с AI-агентами (Claude Code, Codex) и проверяю гипотезы за дни, а не за спринты.',
-  en: 'I lead product development for voice AI at Prof-IT group. Alongside that I ship side projects end-to-end — code with AI agents (Claude Code, Codex) and validate hypotheses in days, not sprints.',
+  ru: 'AI Product Manager: веду продукт и двигаю его за счёт продуманного внедрения AI. Сейчас фокус — голосовые AI-агенты для B2B в Prof-IT. Параллельно собираю пет-проекты от идеи до релиза с AI-агентами (Claude Code, Codex) и проверяю гипотезы за дни, а не за спринты.',
+  en: 'AI Product Manager: I own the product and move it through thoughtful AI adoption. Right now my focus is voice AI agents for B2B at Prof-IT. Alongside that I ship side projects end-to-end with AI agents (Claude Code, Codex), validating hypotheses in days, not sprints.',
 };
 
 export const currentRole: LocalizedText = {
@@ -93,9 +93,9 @@ export const aboutBlocks: AboutBlock[] = [
       },
     ],
     bullets: [
-      { ru: 'Голосовые и conversational AI-сценарии', en: 'Voice and conversational AI scenarios' },
-      { ru: 'B2B-телефония и customer engagement', en: 'B2B telephony and customer engagement' },
-      { ru: 'Операционные инструменты для отделов продаж и поддержки', en: 'Operational tools for sales and support teams' },
+      { ru: 'AI, который закрывает реальную бизнес-задачу, а не живёт как демо', en: 'AI that solves a real business job, not AI that lives as a demo' },
+      { ru: 'Продукты, где AI убирает рутину и ускоряет работу команд', en: 'Products where AI removes busywork and speeds teams up' },
+      { ru: 'Голосовые и conversational AI-сценарии (один из доменов)', en: 'Voice and conversational AI scenarios (one of the domains)' },
     ],
   },
   {
@@ -121,11 +121,11 @@ export const aboutBlocks: AboutBlock[] = [
   },
   {
     eyebrow: { ru: '05 · Open to', en: '05 · Open to' },
-    title: { ru: 'Voice AI · conversational AI · B2B-инфраструктура', en: 'Voice AI · conversational AI · B2B infrastructure' },
+    title: { ru: 'AI Product Manager, кто драйвит продукт через AI', en: 'AI Product Manager who drives the product through AI' },
     body: [
       {
-        ru: 'Открыт к ролям и коллаборациям в стартапах и tech-командах — особенно в русскоязычных международных продуктах. Английский — рабочий B1+, готов подтянуть до зрелого B2 под нужды роли.',
-        en: 'Open to roles and collaborations in startups and tech teams — especially Russian-speaking international products. English at working B1+, willing to grow into mature B2 as the role demands.',
+        ru: 'Открыт к ролям AI Product Manager — где я отвечаю за продукт и двигаю его за счёт продуманного, нужного внедрения AI, а не AI ради AI. Голос — лишь один из доменов, где я это уже делал; интересны любые продукты, где AI закрывает реальную бизнес-задачу. Английский — рабочий B1+, готов подтянуть до зрелого B2 под нужды роли.',
+        en: 'Open to AI Product Manager roles — where I own the product and move it through thoughtful, purposeful AI adoption, not AI for its own sake. Voice is just one domain where I’ve already done this; I’m interested in any product where AI solves a real business job. English at working B1+, willing to grow into mature B2 as the role demands.',
       },
     ],
   },
@@ -149,8 +149,8 @@ export const aboutParagraphs: LocalizedText[] = [
     en: 'What matters in a role: autonomy and ownership on ambiguous problems, a short loop from idea to validation, product logic on top of AI rather than AI for its own sake. I am at my best in teams where I can carry a problem end-to-end instead of being one step in a long approval chain.',
   },
   {
-    ru: 'Открыт к новым проектам и коллаборациям в стартапах и tech-командах — особенно в русскоязычных международных продуктах и в нишах voice AI, conversational AI, B2B-инфраструктуре. Английский — рабочий B1+, готов подтянуть до зрелого B2 под нужды проекта.',
-    en: 'Open to new projects and collaborations in startups and tech teams — especially Russian-speaking international products and the voice AI, conversational AI, and B2B infrastructure space. English at working B1+, willing to grow into mature B2 as the role demands.',
+    ru: 'Открыт к ролям AI Product Manager — где я веду продукт и двигаю его за счёт продуманного, нужного внедрения AI. Голос — лишь один из доменов, где я это делал; интересны любые продукты, где AI закрывает реальную бизнес-задачу. Английский — рабочий B1+, готов подтянуть до зрелого B2 под нужды роли.',
+    en: 'Open to AI Product Manager roles — where I own the product and move it through thoughtful, purposeful AI adoption. Voice is just one domain where I have done this; I am interested in any product where AI solves a real business job. English at working B1+, willing to grow into mature B2 as the role demands.',
   },
 ];
 
@@ -163,22 +163,22 @@ export const uiCopy = {
     primaryAria: { ru: 'Основная навигация', en: 'Primary navigation' },
   },
   home: {
-    eyebrow: { ru: 'Product Manager · Voice AI · Prof-IT', en: 'Product Manager · Voice AI · Prof-IT' },
+    eyebrow: { ru: 'Драйвлю продукт через продуманное внедрение AI · Prof-IT', en: 'Driving product through thoughtful AI adoption · Prof-IT' },
     title: {
-      ru: 'Product Manager. Voice AI.',
-      en: 'Voice AI Product Manager.',
+      ru: 'AI Product Manager.',
+      en: 'AI Product Manager.',
     },
     titleAccent: {
-      ru: 'Voice AI.',
-      en: 'Voice AI.',
+      ru: 'AI',
+      en: 'AI',
     },
     lead: {
       ru: 'С 2022 года веду продукт в Prof-IT (zvonobot, effebot, p1sms). С 2026 фокус — голосовые AI-агенты для B2B. Параллельно собираю пет-проекты с AI-агентами (Claude Code, Codex) и проверяю гипотезы за дни, а не за спринты.',
       en: 'Product manager at Prof-IT (zvonobot, effebot, p1sms) since 2022. Since 2026 fully focused on voice AI agents for B2B. I also ship pet projects with AI agents (Claude Code, Codex), validating hypotheses in days rather than sprints.',
     },
     leadStrong: {
-      ru: 'Сейчас открыт к новым проектам и коллаборациям в voice / conversational AI и B2B-инфраструктуре.',
-      en: 'Currently open to new projects and collaborations in voice / conversational AI and B2B infrastructure.',
+      ru: 'Открыт к ролям AI Product Manager — где продукт двигается за счёт продуманного, нужного внедрения AI.',
+      en: 'Open to AI Product Manager roles — where the product moves through thoughtful, purposeful AI adoption.',
     },
     heroStatus: {
       ru: 'Открыт к новым проектам',
@@ -297,8 +297,8 @@ export const uiCopy = {
   projects: {
     title: { ru: 'Проекты', en: 'Projects' },
     subtitle: {
-      ru: 'Два уровня: продукты, которые я веду в Prof-IT, и личные пет-проекты, собранные за дни — иллюстрация скорости shipping.',
-      en: 'Two tiers: products I lead at Prof-IT, and personal pet projects shipped in days — proof of shipping speed.',
+      ru: 'Два уровня: продукты, которые я веду в Prof-IT, и личные пет-проекты, собранные за дни — показывают скорость, с которой довожу идею до релиза.',
+      en: 'Two tiers: products I lead at Prof-IT, and personal pet projects built in days — they show the speed I take an idea to release.',
     },
     featuredEyebrow: {
       ru: 'Флагман · 2026',
