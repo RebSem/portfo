@@ -735,6 +735,12 @@ html[data-theme='dark'] .theme-icon-sun {
 }
 
 .hero-metric-card {
+  /* Cursor position for the spotlight layer, set by metric-spotlight.js.
+     Defaults to the top-right so the card looks intentional before JS runs
+     (and stays put for no-JS / reduced-motion visitors). */
+  --mx: 100%;
+  --my: 0%;
+  --spot: 0;
   position: relative;
   display: grid;
   gap: 0.6rem;
@@ -758,6 +764,34 @@ html[data-theme='dark'] .theme-icon-sun {
   inset: 0;
   background: radial-gradient(60% 80% at 100% 0%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 60%);
   pointer-events: none;
+}
+
+/* Cursor-following spotlight — a soft green wash that tracks the pointer.
+   Fades in on hover (opacity only, so it stays GPU-cheap) and follows the
+   pointer via --mx/--my. Sits above the ambient ::before glow but below the
+   text (text layers use position: relative for their own stacking context). */
+.hero-metric-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    18rem 18rem at var(--mx) var(--my),
+    color-mix(in oklab, var(--accent-strong) 40%, transparent),
+    color-mix(in oklab, var(--accent) 14%, transparent) 35%,
+    transparent 68%
+  );
+  opacity: var(--spot);
+  transition: opacity var(--dur-base) var(--ease-out-strong);
+  pointer-events: none;
+  will-change: opacity;
+}
+
+/* Motion-safe + pointer-capable only: keyboard/touch and reduced-motion users
+   keep the calm static card and never trigger the JS-driven glow. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-metric-card::after {
+    display: none;
+  }
 }
 
 .hero-metric-label {
