@@ -173,12 +173,12 @@ export const uiCopy = {
       en: 'AI',
     },
     lead: {
-      ru: 'С 2022 года веду продукт в Prof-IT (zvonobot, effebot, p1sms). С 2026 фокус — голосовые AI-агенты для B2B. Параллельно собираю пет-проекты с AI-агентами (Claude Code, Codex) и проверяю гипотезы за дни, а не за спринты.',
-      en: 'Product manager at Prof-IT (zvonobot, effebot, p1sms) since 2022. Since 2026 fully focused on voice AI agents for B2B. I also ship pet projects with AI agents (Claude Code, Codex), validating hypotheses in days rather than sprints.',
+      ru: 'Веду B2B-продукты в Prof-IT с 2022 — сейчас голосовые AI-агенты. Параллельно собираю пет-проекты с AI-агентами и проверяю гипотезы за дни, а не за спринты.',
+      en: 'I lead B2B products at Prof-IT since 2022 — now voice AI agents. Alongside that I ship pet projects with AI agents, validating hypotheses in days, not sprints.',
     },
     leadStrong: {
-      ru: 'Открыт к ролям AI Product Manager — где продукт двигается за счёт продуманного, нужного внедрения AI.',
-      en: 'Open to AI Product Manager roles — where the product moves through thoughtful, purposeful AI adoption.',
+      ru: 'Открыт к ролям AI Product Manager — где продукт растёт за счёт продуманного внедрения AI.',
+      en: 'Open to AI Product Manager roles — where the product grows through thoughtful AI adoption.',
     },
     heroStatus: {
       ru: 'Открыт к новым проектам',
