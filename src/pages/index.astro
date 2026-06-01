@@ -17,6 +17,7 @@ import Layout from '../layouts/Layout.astro';
 import githubScriptUrl from '../scripts/github-activity.js?url';
 import githubSyncScriptUrl from '../scripts/github-sync.js?url';
 import localeScriptUrl from '../scripts/locale.js?url';
+import metricSpotlightScriptUrl from '../scripts/metric-spotlight.js?url';
 
 const visibleProjects = projects.filter((project) => !project.placeholder);
 const featuredCaseProject = visibleProjects.find((p) => p.id === 'zvonobot-ai');
@@ -329,4 +330,5 @@ const personSchema = {
   <script is:inline type="module" src={localeScriptUrl}></script>
   <script is:inline type="module" src={githubScriptUrl}></script>
   <script is:inline type="module" src={githubSyncScriptUrl}></script>
+  <script is:inline type="module" src={metricSpotlightScriptUrl}></script>
 </Layout>
