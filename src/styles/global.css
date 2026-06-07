@@ -2521,6 +2521,157 @@ html[data-theme='dark'] .theme-icon-sun {
   text-align: center;
 }
 
+/* ============================================================
+   App-window screenshot (used inside MDX case pages).
+   For self-contained desktop apps that already have their own
+   window chrome — so we DON'T add a redundant traffic-light bar.
+   Just a soft bezel + shadow on the app's own gradient.
+   Light/dark swap via [data-theme="dark"] on <html>.
+   ============================================================ */
+.app-shot {
+  margin: 1.8rem 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+/* A single portrait app window reads best as a contained "floating app",
+   not a full-column wall of screenshot. Cap and center it. */
+.app-shot:not(.app-shot-duo) {
+  max-width: 460px;
+  margin-inline: auto;
+}
+
+.app-shot-duo {
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  gap: 1.4rem;
+}
+
+@media (max-width: 640px) {
+  .app-shot-duo {
+    grid-template-columns: 1fr;
+  }
+}
+
+.app-shot-pane {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+}
+
+.app-shot-frame {
+  border-radius: 1.1rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  overflow: hidden;
+  box-shadow:
+    0 28px 60px -28px color-mix(in oklab, var(--foreground) 32%, transparent),
+    0 8px 20px -14px color-mix(in oklab, var(--foreground) 24%, transparent);
+}
+
+[data-theme='dark'] .app-shot-frame {
+  box-shadow:
+    0 30px 64px -26px rgba(0, 0, 0, 0.7),
+    0 8px 20px -14px rgba(0, 0, 0, 0.5);
+}
+
+.app-shot-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--surface);
+}
+
+.app-shot-img-dark {
+  display: none;
+}
+
+[data-theme='dark'] .app-shot-img-light {
+  display: none;
+}
+
+[data-theme='dark'] .app-shot-img-dark {
+  display: block;
+}
+
+.app-shot-caption {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: color-mix(in oklab, var(--foreground) 55%, transparent);
+  text-align: center;
+}
+
+/* Prominent repo CTA button — GitHub link that should be impossible to miss. */
+.repo-cta-wrap {
+  margin: 1.6rem 0 0.4rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.repo-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  height: 2.6rem;
+  padding: 0 1.1rem;
+  border-radius: 0.7rem;
+  border: 1px solid color-mix(in oklab, var(--accent) 45%, var(--border));
+  background: color-mix(in oklab, var(--accent) 14%, var(--surface));
+  color: color-mix(in oklab, var(--accent) 88%, var(--foreground));
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.repo-cta svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  flex: none;
+}
+
+.repo-cta .repo-cta-meta {
+  color: color-mix(in oklab, var(--foreground) 55%, transparent);
+  font-weight: 500;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .repo-cta:hover {
+    background: color-mix(in oklab, var(--accent) 22%, var(--surface));
+    border-color: color-mix(in oklab, var(--accent) 60%, var(--border));
+    transform: translateY(-1px);
+  }
+}
+
+.repo-cta-secondary {
+  border-color: var(--border);
+  background: color-mix(in oklab, var(--surface) 70%, transparent);
+  color: color-mix(in oklab, var(--foreground) 82%, transparent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .repo-cta-secondary:hover {
+    background: var(--surface);
+    border-color: color-mix(in oklab, var(--foreground) 25%, var(--border));
+    transform: translateY(-1px);
+  }
+}
+
+/* Clickable repo value inside quick-facts. */
+.fact-value a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in oklab, var(--accent) 35%, transparent);
+}
+
+.fact-value a:hover {
+  border-bottom-color: var(--accent);
+}
+
 /* Prose polish for case pages — bigger H2/H3 + accent rail before H2.
    Scoped to .prose so blog posts remain untouched. */
 .prose h2 {

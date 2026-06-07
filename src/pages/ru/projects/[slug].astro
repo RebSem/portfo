@@ -74,7 +74,7 @@ const projectSchema = {
         <p class="post-lead">{entry.data.description}</p>
       </header>
 
-      {(entry.data.role || entry.data.timeline || entry.data.impact) && (
+      {(entry.data.role || entry.data.timeline || entry.data.impact || entry.data.repoUrl) && (
         <div class="project-quick-facts">
           {entry.data.role && (
             <div class="fact-item">
@@ -86,6 +86,16 @@ const projectSchema = {
             <div class="fact-item">
               <span class="fact-label">Сроки</span>
               <span class="fact-value">{entry.data.timeline}</span>
+            </div>
+          )}
+          {entry.data.repoUrl && (
+            <div class="fact-item">
+              <span class="fact-label">Репозиторий</span>
+              <span class="fact-value">
+                <a href={entry.data.repoUrl} target="_blank" rel="noopener noreferrer">
+                  {entry.data.repoUrl.replace('https://github.com/', '')}
+                </a>
+              </span>
             </div>
           )}
           {entry.data.impact && (
