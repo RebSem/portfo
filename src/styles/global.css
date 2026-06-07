@@ -2602,46 +2602,61 @@ html[data-theme='dark'] .theme-icon-sun {
   text-align: center;
 }
 
-/* Prominent repo CTA button — GitHub link that should be impossible to miss. */
+/* Repo CTA — a compact accent pill, sized to its content.
+   NOTE: .prose is a grid, so direct children stretch full-width by
+   default. justify-self/width:max-content keep the button button-sized. */
 .repo-cta-wrap {
-  margin: 1.6rem 0 0.4rem;
+  margin: 1.4rem 0 0.2rem;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
+  gap: 0.5rem;
+  width: max-content;
+  max-width: 100%;
+  justify-self: start;
 }
 
 .repo-cta {
   display: inline-flex;
   align-items: center;
-  gap: 0.55rem;
-  height: 2.6rem;
-  padding: 0 1.1rem;
-  border-radius: 0.7rem;
+  gap: 0.5rem;
+  width: max-content;
+  max-width: 100%;
+  justify-self: start;
+  height: 2.25rem;
+  padding: 0 0.95rem;
+  border-radius: 999px;
   border: 1px solid color-mix(in oklab, var(--accent) 45%, var(--border));
-  background: color-mix(in oklab, var(--accent) 14%, var(--surface));
-  color: color-mix(in oklab, var(--accent) 88%, var(--foreground));
+  background: color-mix(in oklab, var(--accent) 12%, var(--surface));
+  color: color-mix(in oklab, var(--accent) 90%, var(--foreground));
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.01em;
+  white-space: nowrap;
   text-decoration: none;
+  box-shadow: 0 1px 2px color-mix(in oklab, var(--foreground) 8%, transparent);
   transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
 }
 
+/* When two CTAs sit in a wrap, they manage their own width — let them be. */
+.repo-cta-wrap .repo-cta {
+  justify-self: auto;
+}
+
 .repo-cta svg {
-  width: 1.05rem;
-  height: 1.05rem;
+  width: 0.95rem;
+  height: 0.95rem;
   flex: none;
 }
 
 .repo-cta .repo-cta-meta {
-  color: color-mix(in oklab, var(--foreground) 55%, transparent);
+  color: color-mix(in oklab, var(--foreground) 50%, transparent);
   font-weight: 500;
 }
 
 @media (hover: hover) and (pointer: fine) {
   .repo-cta:hover {
-    background: color-mix(in oklab, var(--accent) 22%, var(--surface));
+    background: color-mix(in oklab, var(--accent) 20%, var(--surface));
     border-color: color-mix(in oklab, var(--accent) 60%, var(--border));
     transform: translateY(-1px);
   }
