@@ -1,0 +1,60 @@
+---
+// App-window screenshot for self-contained desktop apps that already carry
+// their own window chrome. Unlike ProjectScreenshot, it does NOT draw a
+// traffic-light bar (the app already has a header), so we avoid a
+// window-in-a-window look. Light/dark images swap via [data-theme].
+//
+// Use one shot, or pass `shots` (2 items) for a responsive side-by-side duo.
+interface Shot {
+  lightSrc: string;
+  darkSrc: string;
+  alt: string;
+  caption?: string;
+}
+
+interface Props {
+  lightSrc?: string;
+  darkSrc?: string;
+  alt?: string;
+  caption?: string;
+  shots?: Shot[];
+  width?: number;
+  height?: number;
+}
+
+const { lightSrc, darkSrc, alt, caption, shots, width = 1240, height = 1956 } = Astro.props;
+
+const panes: Shot[] = shots ?? [
+  { lightSrc: lightSrc!, darkSrc: darkSrc!, alt: alt!, caption },
+];
+const isDuo = panes.length > 1;
+---
+
+<figure class:list={["app-shot", { "app-shot-duo": isDuo }]}>
+  {panes.map((p) => (
+    <figure class="app-shot-pane">
+      <div class="app-shot-frame">
+        <img
+          src={p.lightSrc}
+          alt={p.alt}
+          class="app-shot-img app-shot-img-light"
+          loading="lazy"
+          decoding="async"
+          width={width}
+          height={height}
+        />
+        <img
+          src={p.darkSrc}
+          alt=""
+          aria-hidden="true"
+          class="app-shot-img app-shot-img-dark"
+          loading="lazy"
+          decoding="async"
+          width={width}
+          height={height}
+        />
+      </div>
+      {p.caption && <figcaption class="app-shot-caption">{p.caption}</figcaption>}
+    </figure>
+  ))}
+</figure>

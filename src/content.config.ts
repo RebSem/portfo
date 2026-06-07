@@ -25,6 +25,8 @@ const projects = defineCollection({
     role: z.string().optional(),
     timeline: z.string().optional(),
     impact: z.string().optional(),
+    repoUrl: z.string().url().optional(),
+    demoUrl: z.string().url().optional(),
     draft: z.boolean().default(false),
     cover: z.string().optional(),
     tags: z.array(z.string()).default([]),
