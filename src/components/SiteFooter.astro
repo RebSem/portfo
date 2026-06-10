@@ -1,6 +1,6 @@
 ---
 import SocialLinks from './SocialLinks.astro';
-import { uiCopy } from '../data/site-content';
+import { email, telegramUrl, uiCopy } from '../data/site-content';
 
 interface Props {
   noteRu?: string;
@@ -11,6 +11,9 @@ const {
   noteRu = uiCopy.footer.defaultNote.ru,
   noteEn = uiCopy.footer.defaultNote.en,
 } = Astro.props;
+
+const locale = Astro.currentLocale === 'ru' ? 'ru' : 'en';
+const note = locale === 'ru' ? noteRu : noteEn;
 ---
 
 <footer class="site-footer">
@@ -19,10 +22,23 @@ const {
   </div>
 
   <div class="footer-inner">
-    <SocialLinks />
+    <div class="footer-contact">
+      <p class="footer-eyebrow">{uiCopy.footer.eyebrow[locale]}</p>
+      <p class="footer-pitch">{uiCopy.footer.pitch[locale]}</p>
+      <div class="footer-actions">
+        <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 11l16 -8l-4 18l-5 -4l-3 3l1 -5l8 -7"/>
+          </svg>
+          {uiCopy.home.heroCtaPrimary[locale]}
+        </a>
+        <a class="footer-mail" href={`mailto:${email}`}>{email}</a>
+      </div>
+    </div>
 
-    <p class="footer-note" data-i18n-ru={noteRu} data-i18n-en={noteEn}>
-      {noteEn}
-    </p>
+    <div class="footer-side">
+      <SocialLinks />
+      <p class="footer-note">{note}</p>
+    </div>
   </div>
 </footer>
