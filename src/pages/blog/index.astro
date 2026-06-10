@@ -23,6 +23,7 @@ const blogSchema = {
   title={`${heroFallbackName} - Blog`} 
   description="Writing on product thinking, delivery systems, engineering, and practical AI." 
   schema={blogSchema}
+  alternate="/ru/blog"
 >
   <a id="skip-to-content" href="#main-content" class="skip-link">Skip to content</a>
 
@@ -62,9 +63,9 @@ const blogSchema = {
                       <time class="blog-date" datetime={isoDate}>{dateLabel}</time>
                       <span class="blog-lang">English</span>
                     </p>
-                    <h3>
+                    <h2>
                       <a href={`/blog/${post.slug}/`}>{post.data.title}</a>
-                    </h3>
+                    </h2>
                   </header>
                   <p>{post.data.description}</p>
                 </article>

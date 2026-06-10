@@ -23,6 +23,7 @@ const blogSchema = {
   title={`${heroDisplayName.ru} - Блог`} 
   description="Блог о продуктовой логике, системах delivery, разработке и практическом использовании AI." 
   schema={blogSchema}
+  alternate="/blog"
 >
   <a id="skip-to-content" href="#main-content" class="skip-link">Перейти к содержимому</a>
 
@@ -62,9 +63,9 @@ const blogSchema = {
                       <time class="blog-date" datetime={isoDate}>{dateLabel}</time>
                       <span class="blog-lang">Русский</span>
                     </p>
-                    <h3>
-                      <a href={`/ru/blog/${post.slug}`}>{post.data.title}</a>
-                    </h3>
+                    <h2>
+                      <a href={`/ru/blog/${post.slug}/`}>{post.data.title}</a>
+                    </h2>
                   </header>
                   <p>{post.data.description}</p>
                 </article>

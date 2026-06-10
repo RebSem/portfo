@@ -1,6 +1,6 @@
 ---
 import SocialLinks from './SocialLinks.astro';
-import { uiCopy } from '../data/site-content';
+import { email, telegramUrl, uiCopy } from '../data/site-content';
 
 interface Props {
   noteRu?: string;
@@ -11,6 +11,9 @@ const {
   noteRu = uiCopy.footer.defaultNote.ru,
   noteEn = uiCopy.footer.defaultNote.en,
 } = Astro.props;
+
+const locale = Astro.currentLocale === 'ru' ? 'ru' : 'en';
+const note = locale === 'ru' ? noteRu : noteEn;
 ---
 
 <footer class="site-footer">
@@ -19,10 +22,21 @@ const {
   </div>
 
   <div class="footer-inner">
-    <SocialLinks />
+    <div class="footer-contact">
+      <p class="footer-eyebrow">{uiCopy.footer.eyebrow[locale]}</p>
+      <p class="footer-pitch">{uiCopy.footer.pitch[locale]}</p>
+      <div class="footer-actions">
+        <a class="footer-link" href={telegramUrl} target="_blank" rel="noreferrer">
+          {telegramUrl.replace('https://', '')}
+        </a>
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <a class="footer-link" href={`mailto:${email}`}>{email}</a>
+      </div>
+    </div>
 
-    <p class="footer-note" data-i18n-ru={noteRu} data-i18n-en={noteEn}>
-      {noteEn}
-    </p>
+    <div class="footer-side">
+      <SocialLinks />
+      <p class="footer-note">{note}</p>
+    </div>
   </div>
 </footer>
