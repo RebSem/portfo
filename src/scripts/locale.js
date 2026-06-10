@@ -39,6 +39,24 @@ const writeTheme = (theme) => {
   }
 };
 
+const syncThemeButton = (theme) => {
+  const button = document.getElementById('theme-btn');
+  if (!button) return;
+
+  const label = theme === 'dark' ? button.dataset.labelToLight : button.dataset.labelToDark;
+  if (label) button.setAttribute('aria-label', label);
+  button.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+};
+
+const syncThemeColorMeta = (theme) => {
+  // Manual toggles can disagree with prefers-color-scheme, so the static
+  // media-keyed metas stop matching — pin both to the active theme color.
+  const color = theme === 'dark' ? '#0c0d0e' : '#f4f4f1';
+  document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
+    meta.setAttribute('content', color);
+  });
+};
+
 const applyTheme = (theme, options = { manual: false }) => {
   document.documentElement.setAttribute('data-theme', theme);
   document.documentElement.style.colorScheme = theme;
@@ -47,10 +65,12 @@ const applyTheme = (theme, options = { manual: false }) => {
   }
 
   state.activeTheme = theme;
+  syncThemeButton(theme);
 
   if (options.manual) {
     state.themeManuallySet = true;
     writeTheme(theme);
+    syncThemeColorMeta(theme);
   }
 };
 

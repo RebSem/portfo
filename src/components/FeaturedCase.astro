@@ -75,22 +75,18 @@ const readCaseLabel = locale === 'ru' ? 'Открыть полный кейс' :
         <span class="featured-case-frame-dot"></span>
         <span class="featured-case-frame-url">zvonobot-ai · client console</span>
       </div>
-      <picture class="featured-case-frame-image">
-        <source media="(prefers-color-scheme: dark)" srcset={screenshotDark} />
-        <img
-          src={screenshotLight}
-          alt={c.featuredScreenshotAlt[locale]}
-          loading="lazy"
-          decoding="async"
-          width="1440"
-          height="920"
-          class="featured-case-shot featured-case-shot-light"
-        />
-      </picture>
+      <img
+        src={screenshotLight}
+        alt={c.featuredScreenshotAlt[locale]}
+        loading="lazy"
+        decoding="async"
+        width="1440"
+        height="920"
+        class="featured-case-shot featured-case-shot-light"
+      />
       <img
         src={screenshotDark}
-        alt=""
-        aria-hidden="true"
+        alt={c.featuredScreenshotAlt[locale]}
         loading="lazy"
         decoding="async"
         width="1440"
