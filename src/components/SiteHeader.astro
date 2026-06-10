@@ -3,9 +3,11 @@ import { heroFallbackName, uiCopy } from '../data/site-content';
 
 interface Props {
   active: 'home' | 'about' | 'blog';
+  /** Server-rendered locale-toggle target for deep pages (project/blog slugs). */
+  localeToggleUrl?: string;
 }
 
-const { active } = Astro.props;
+const { active, localeToggleUrl } = Astro.props;
 const lang = Astro.currentLocale ?? 'en';
 const isRu = lang === 'ru';
 const prefix = isRu ? '/ru' : '';
@@ -26,7 +28,7 @@ const localeToggleByActive: Record<typeof active, string> = {
   about: isRu ? '/about' : '/ru/about',
   blog: isRu ? '/blog' : '/ru/blog',
 };
-const toggleUrl = localeToggleByActive[active];
+const toggleUrl = localeToggleUrl ?? localeToggleByActive[active];
 ---
 
 <header class="site-header">
@@ -79,6 +81,8 @@ const toggleUrl = localeToggleByActive[active];
         class="theme-toggle"
         type="button"
         aria-label={isRu ? uiCopy.themeToggle.toDark.ru : uiCopy.themeToggle.toDark.en}
+        data-label-to-dark={isRu ? uiCopy.themeToggle.toDark.ru : uiCopy.themeToggle.toDark.en}
+        data-label-to-light={isRu ? uiCopy.themeToggle.toLight.ru : uiCopy.themeToggle.toLight.en}
       >
         <span class="sr-only">Toggle theme</span>
         <svg
@@ -137,17 +141,13 @@ const toggleUrl = localeToggleByActive[active];
     const ruSlug = main.dataset.postSlugRu;
     const enSlug = main.dataset.postSlugEn;
 
+    const isProject = window.location.pathname.includes('/projects/');
+    const section = isProject ? 'projects' : 'blog';
+
     if (isRu && enSlug) {
-      switcher.setAttribute('href', `/blog/${enSlug}`);
+      switcher.setAttribute('href', `/${section}/${enSlug}/`);
     } else if (!isRu && ruSlug) {
-      switcher.setAttribute('href', `/ru/blog/${ruSlug}`);
-    }
-    
-    // Check for projects specifically if data-attributes are different
-    const currentPath = window.location.pathname;
-    if (currentPath.includes('/projects/')) {
-       if (isRu && enSlug) switcher.setAttribute('href', `/projects/${enSlug}`);
-       if (!isRu && ruSlug) switcher.setAttribute('href', `/ru/projects/${ruSlug}`);
+      switcher.setAttribute('href', `/ru/${section}/${ruSlug}/`);
     }
   };
 

@@ -154,6 +154,50 @@ export const aboutParagraphs: LocalizedText[] = [
   },
 ];
 
+export interface AgentOpsStep {
+  k: string;
+  title: LocalizedText;
+  body: LocalizedText;
+}
+
+export const agentOps = {
+  eyebrow: { ru: 'Как я делаю продукты · Claude Code & Codex', en: 'How I ship · Claude Code & Codex' },
+  title: { ru: 'Моя команда — AI-агенты.', en: 'I run a team of AI agents.' },
+  lead: {
+    ru: 'Постановка, ограничения и ревью — мои. Реализацию делают Claude Code и Codex. Так пет-проект проходит путь от идеи до релиза за дни, а этот сайт поддерживает сам себя: каждое изменение — PR, написанный агентом и проверенный мной.',
+    en: 'Spec, constraints, and review stay with me. Implementation goes to Claude Code and Codex. That is how a side project gets from idea to release in days — and how this site maintains itself: every change is an agent-written PR that I review.',
+  },
+  steps: [
+    {
+      k: '01',
+      title: { ru: 'Постановка', en: 'Spec' },
+      body: { ru: 'Формулирую задачу, ограничения и критерий «готово».', en: 'I frame the problem, the constraints, and what “done” means.' },
+    },
+    {
+      k: '02',
+      title: { ru: 'Агенты строят', en: 'Agents build' },
+      body: { ru: 'Claude Code и Codex пишут код, гоняют проверки и открывают pull request.', en: 'Claude Code and Codex write the code, run the checks, and open a pull request.' },
+    },
+    {
+      k: '03',
+      title: { ru: 'Ревью', en: 'Review' },
+      body: { ru: 'Каждый дифф читаю сам. Мерджу только то, что готов защищать.', en: 'I read every diff myself and merge only what I can defend.' },
+    },
+    {
+      k: '04',
+      title: { ru: 'Прод', en: 'Production' },
+      body: { ru: 'Смердженный PR автоматически уезжает в прод.', en: 'A merged PR deploys straight to production.' },
+    },
+  ] satisfies AgentOpsStep[],
+  terminalAria: { ru: 'Живые данные о PR этого репозитория', en: 'Live pull-request stats for this repository' },
+  receiptPrs: {
+    ru: 'PR смерджено в этом репозитории — написаны агентами, проверены мной',
+    en: 'merged PRs on this repo — agent-written, reviewed by me',
+  },
+  receiptPrsLink: { ru: 'смотреть PR на GitHub', en: 'see the PRs on GitHub' },
+  receiptDeployNote: { ru: 'этот самый деплой — собран из PR, написанного агентом', en: 'this very deploy — shipped from an agent-written PR' },
+} as const;
+
 export const uiCopy = {
   nav: {
     home: { ru: 'Главная', en: 'Home' },
@@ -403,6 +447,11 @@ export const uiCopy = {
     socialAria: {
       ru: 'Ссылки на соцсети',
       en: 'Social links',
+    },
+    eyebrow: { ru: 'Контакт', en: 'Contact' },
+    pitch: {
+      ru: 'Пишите, если ищете AI-продакта.',
+      en: 'Write me if you are hiring an AI product lead.',
     },
   },
   localeToggleLabel: {

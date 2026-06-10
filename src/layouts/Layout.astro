@@ -9,6 +9,8 @@ interface Props {
   type?: 'website' | 'article';
   noIndex?: boolean;
   schema?: Record<string, unknown> | Array<Record<string, unknown>>;
+  /** Path of this page in the other locale, e.g. '/ru/about' — emits hreflang alternates. */
+  alternate?: string;
 }
 
 const {
@@ -18,6 +20,7 @@ const {
   type = 'website',
   noIndex = false,
   schema = [],
+  alternate,
 } = Astro.props;
 
 const lang = Astro.currentLocale ?? 'en';
@@ -26,6 +29,11 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).toString();
 const imageUrl = image.startsWith('http://') || image.startsWith('https://') ? image : new URL(image, siteUrl).toString();
 const robotsContent = noIndex ? 'noindex,nofollow' : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1';
 const resolvedSchemas = Array.isArray(schema) ? schema : [schema];
+const ogLocale = lang === 'ru' ? 'ru_RU' : 'en_US';
+const ogLocaleAlternate = lang === 'ru' ? 'en_US' : 'ru_RU';
+const alternateUrl = alternate ? new URL(alternate, siteUrl).toString() : undefined;
+const hreflangEn = lang === 'ru' ? alternateUrl : canonicalUrl;
+const hreflangRu = lang === 'ru' ? canonicalUrl : alternateUrl;
 ---
 
 <!doctype html>
@@ -58,12 +66,16 @@ const resolvedSchemas = Array.isArray(schema) ? schema : [schema];
     <meta name="description" content={description} />
     <meta name="robots" content={robotsContent} />
     <meta name="author" content="Mikhail Semenov" />
-    <meta name="theme-color" content="#f4f6fb" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4f4f1" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0c0d0e" />
     <link rel="canonical" href={canonicalUrl} />
+    {alternateUrl && hreflangEn && <link rel="alternate" hreflang="en" href={hreflangEn} />}
+    {alternateUrl && hreflangRu && <link rel="alternate" hreflang="ru" href={hreflangRu} />}
+    {alternateUrl && hreflangEn && <link rel="alternate" hreflang="x-default" href={hreflangEn} />}
     <meta property="og:site_name" content="Mikhail Semenov" />
     <meta property="og:type" content={type} />
-    <meta property="og:locale" content="en_US" />
-    <meta property="og:locale:alternate" content="ru_RU" />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:locale:alternate" content={ogLocaleAlternate} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />

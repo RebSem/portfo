@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import AgentOps from '../../components/AgentOps.astro';
 import FeaturedCase from '../../components/FeaturedCase.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
@@ -16,6 +17,7 @@ import Layout from '../../layouts/Layout.astro';
 import githubScriptUrl from '../../scripts/github-activity.js?url';
 import githubSyncScriptUrl from '../../scripts/github-sync.js?url';
 import localeScriptUrl from '../../scripts/locale.js?url';
+import metricSpotlightScriptUrl from '../../scripts/metric-spotlight.js?url';
 
 const visibleProjects = projects.filter((project) => !project.placeholder);
 const featuredCaseProject = visibleProjects.find((p) => p.id === 'zvonobot-ai');
@@ -43,6 +45,7 @@ const personSchema = {
   title={`${heroDisplayName.ru} - AI Product Manager`}
   description="AI Product Manager в Prof-IT (zvonobot, effebot, p1sms), который драйвит продукт через продуманное внедрение AI. 500 000+ минут B2B-разговоров через AI-агентов за 2026. Пет-проекты собираю за дни, а не за спринты."
   schema={personSchema}
+  alternate="/"
 >
   <a id="skip-to-content" href="#main-content" class="skip-link">Перейти к содержимому</a>
 
@@ -59,7 +62,7 @@ const personSchema = {
         <p class="about-eyebrow">{uiCopy.home.eyebrow.ru}</p>
 
         <h1 id="home-title">
-          <span class="hero-accent">AI</span> Product&nbsp;Manager.
+          <span class="hero-accent">AI</span> <span class="hero-serif">Product</span>&nbsp;Manager.
         </h1>
 
         <p class="home-lead">
@@ -133,7 +136,7 @@ const personSchema = {
           <div
             id="contribution-grid"
             class="contribution-grid"
-            role="img"
+            role="group"
             aria-label="График активности GitHub"
           ></div>
 
@@ -150,10 +153,10 @@ const personSchema = {
           <p
             id="contribution-tooltip"
             class="contribution-tooltip"
-            data-hint-ru="Наведите или перейдите на ячейку, чтобы увидеть дату и число вкладов."
-            data-hint-en="Hover or focus a cell to see the exact date and number of contributions."
+            data-hint-ru="Наведите на ячейку, чтобы увидеть дату и число вкладов."
+            data-hint-en="Hover a cell to see the exact date and number of contributions."
           >
-            Наведите или перейдите на ячейку, чтобы увидеть дату и число вкладов.
+            Наведите на ячейку, чтобы увидеть дату и число вкладов.
           </p>
 
           <p
@@ -165,6 +168,8 @@ const personSchema = {
         </div>
       </div>
     </section>
+
+    <AgentOps locale="ru" />
 
     <section id="projects" class="section-block" aria-labelledby="projects-title">
       <div class="section-head">
@@ -328,4 +333,5 @@ const personSchema = {
   <script is:inline type="module" src={localeScriptUrl}></script>
   <script is:inline type="module" src={githubScriptUrl}></script>
   <script is:inline type="module" src={githubSyncScriptUrl}></script>
+  <script is:inline type="module" src={metricSpotlightScriptUrl}></script>
 </Layout>

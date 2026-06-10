@@ -2,8 +2,6 @@ const state = window.__portfolioGithubSyncState ?? {
   activeLocale: document.documentElement.lang === 'ru' ? 'ru' : 'en',
   profile: null,
   repos: null,
-  activeSyncStatus: 'loading',
-  localeListenerBound: false,
 };
 
 window.__portfolioGithubSyncState = state;
@@ -14,21 +12,6 @@ let cachedDateFormatLocale = '';
 let cachedDateFormat = null;
 
 const withLocale = (locale, ruValue, enValue) => (locale === 'ru' ? ruValue : enValue);
-
-const updateSyncStatus = (kind) => {
-  state.activeSyncStatus = kind;
-
-  document.querySelectorAll('[data-github-sync-status]').forEach((node) => {
-    node.setAttribute('data-state', kind);
-
-    const ru = node.getAttribute(`data-${kind}-ru`) ?? '';
-    const en = node.getAttribute(`data-${kind}-en`) ?? '';
-
-    if (ru && en) {
-      node.textContent = withLocale(state.activeLocale, ru, en);
-    }
-  });
-};
 
 const syncLocaleFromDocument = () => {
   state.activeLocale = document.documentElement.lang === 'ru' ? 'ru' : 'en';
@@ -99,6 +82,11 @@ const mapRepo = (payload, username) => ({
   pushedAt: payload.pushed_at ?? payload.pushedAt ?? payload.updated_at ?? payload.updatedAt ?? '',
 });
 
+// The static fallback endpoints can ship an `{error}` body that GitHub Pages
+// serves as HTTP 200 — validate shapes so error bodies never render as data.
+const isProfilePayload = (payload) =>
+  Boolean(payload) && (typeof payload.login === 'string' || typeof payload.html_url === 'string');
+
 const fetchGithubProfile = async (username) => {
   try {
     const payload = await fetchJson(`https://api.github.com/users/${username}`, {
@@ -106,6 +94,7 @@ const fetchGithubProfile = async (username) => {
         Accept: 'application/vnd.github+json',
       },
     });
+    if (!isProfilePayload(payload)) throw new Error('Malformed profile payload');
     return mapProfile(payload, username);
   } catch {
     const payload = await fetchJson('/api/github/profile.json', {
@@ -113,6 +102,7 @@ const fetchGithubProfile = async (username) => {
         Accept: 'application/json',
       },
     });
+    if (!isProfilePayload(payload)) throw new Error('Malformed profile payload');
     return mapProfile(payload, username);
   }
 };
@@ -124,14 +114,16 @@ const fetchGithubRepos = async (username) => {
         Accept: 'application/vnd.github+json',
       },
     });
-    return Array.isArray(payload) ? payload.map((repo) => mapRepo(repo, username)) : [];
+    if (!Array.isArray(payload)) throw new Error('Malformed repos payload');
+    return payload.map((repo) => mapRepo(repo, username));
   } catch {
     const payload = await fetchJson('/api/github/repos.json', {
       headers: {
         Accept: 'application/json',
       },
     });
-    return Array.isArray(payload) ? payload.map((repo) => mapRepo(repo, username)) : [];
+    if (!Array.isArray(payload)) throw new Error('Malformed repos payload');
+    return payload.map((repo) => mapRepo(repo, username));
   }
 };
 
@@ -178,7 +170,16 @@ const updateRepoCards = (repos) => {
     if (!repoName) return;
 
     const repo = repoMap.get(repoName);
-    if (!repo) return;
+    if (!repo) {
+      // Repo missing from the fetched list (renamed, private, beyond the page
+      // cap) — replace the "Syncing…" placeholder instead of leaving it forever.
+      const notAvailable = withLocale(state.activeLocale, 'нет данных', 'n/a');
+      const updatedPlaceholder = card.querySelector('[data-github-updated]');
+      if (updatedPlaceholder) {
+        updatedPlaceholder.textContent = notAvailable;
+      }
+      return;
+    }
 
     const repoLink = card.querySelector('[data-github-repo-link]');
     if (repoLink instanceof HTMLAnchorElement) {
@@ -203,8 +204,6 @@ const updateRepoCards = (repos) => {
 };
 
 const renderFromState = () => {
-  updateSyncStatus(state.activeSyncStatus);
-
   if (state.profile) {
     updateProfile(state.profile);
   }
@@ -219,7 +218,6 @@ const hydrateGithub = async () => {
   if (!username) return;
 
   try {
-    updateSyncStatus('loading');
     const [profile, repos] = await Promise.all([
       fetchGithubProfile(username),
       fetchGithubRepos(username),
@@ -227,29 +225,15 @@ const hydrateGithub = async () => {
 
     updateProfile(profile);
     updateRepoCards(repos);
-    updateSyncStatus('ready');
   } catch {
     // Keep server-rendered fallback content if GitHub is unavailable.
-    updateSyncStatus('error');
   }
-};
-
-const onLocaleChange = () => {
-  syncLocaleFromDocument();
-  renderFromState();
 };
 
 const initGithubSync = () => {
   if (!getUsername()) return;
 
   syncLocaleFromDocument();
-  updateSyncStatus(state.activeSyncStatus);
-
-  if (!state.localeListenerBound) {
-    window.addEventListener('portfolio:locale-change', onLocaleChange);
-    state.localeListenerBound = true;
-  }
-
   renderFromState();
   void hydrateGithub();
 };
