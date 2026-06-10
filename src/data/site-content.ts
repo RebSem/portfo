@@ -450,8 +450,8 @@ export const uiCopy = {
     },
     eyebrow: { ru: 'Контакт', en: 'Contact' },
     pitch: {
-      ru: 'Пишите, если ищете AI-продакта — или хотите голосовых агентов, которые реально доезжают до прода. Быстрее всего отвечу в Telegram.',
-      en: 'Write me if you are hiring an AI product lead — or want voice agents that actually reach production. Fastest reply on Telegram.',
+      ru: 'Пишите, если ищете AI-продакта.',
+      en: 'Write me if you are hiring an AI product lead.',
     },
   },
   localeToggleLabel: {
