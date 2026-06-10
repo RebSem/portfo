@@ -68,10 +68,11 @@ const articleSchema = {
   image={pageImage}
   type="article"
   schema={articleSchema}
+  alternate={ruSlug ? `/ru/blog/${ruSlug}/` : undefined}
 >
   <a id="skip-to-content" href="#main-content" class="skip-link">Skip to content</a>
 
-  <SiteHeader active="blog" />
+  <SiteHeader active="blog" localeToggleUrl={ruSlug ? `/ru/blog/${ruSlug}/` : undefined} />
 
   <div class="divider-wrap" aria-hidden="true">
     <hr class="divider" />

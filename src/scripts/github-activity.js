@@ -2,8 +2,6 @@ const state = window.__portfolioGithubState ?? {
   contributionPayload: null,
   activeContributionPoint: null,
   activeLocale: document.documentElement.lang === 'ru' ? 'ru' : 'en',
-  activeStatus: 'loading',
-  localeListenerBound: false,
   viewportListenerBound: false,
 };
 
@@ -18,19 +16,6 @@ const withLocale = (locale, ruValue, enValue) => (locale === 'ru' ? ruValue : en
 
 const syncLocaleFromDocument = () => {
   state.activeLocale = document.documentElement.lang === 'ru' ? 'ru' : 'en';
-};
-
-const setHeroStatus = (kind) => {
-  state.activeStatus = kind;
-
-  const statusNode = document.getElementById('hero-status');
-  if (!statusNode) return;
-
-  const ru = statusNode.getAttribute(`data-${kind}-ru`) ?? '';
-  const en = statusNode.getAttribute(`data-${kind}-en`) ?? '';
-  if (ru && en) {
-    statusNode.textContent = withLocale(state.activeLocale, ru, en);
-  }
 };
 
 const getNumberFormatter = () => {
@@ -143,14 +128,13 @@ const renderContributionGrid = (days) => {
       const count = current?.count ?? 0;
       const label = formatContributionLabel(count, isoDate);
 
+      // Plain presentational cells: the total is announced in the section copy,
+      // so cells stay out of the tab order (370 tab stops is keyboard hostile).
       cell.className = `contribution-cell level-${level}`;
       cell.style.gridColumn = String(week + 1);
       cell.style.gridRow = String(dayOfWeek + 1);
       cell.dataset.date = isoDate;
       cell.dataset.count = String(count);
-      cell.tabIndex = 0;
-      cell.setAttribute('role', 'button');
-      cell.setAttribute('aria-label', label);
       cell.title = label;
 
       fragment.appendChild(cell);
@@ -205,7 +189,10 @@ const scheduleHeatmapReveal = (grid) => {
     { threshold: 0.15 },
   );
 
-  observer.observe(grid);
+  // Observe the un-clipped wrapper, not the grid: Chromium intersects the
+  // target's own clip-path, so the initial inset(0 100% 0 0) reports a 0x0
+  // intersection forever and the reveal would never fire.
+  observer.observe(grid.closest('.github-heatmap') ?? grid);
 };
 
 const bindContributionTooltip = () => {
@@ -232,25 +219,9 @@ const bindContributionTooltip = () => {
     activate(cell);
   });
 
-  grid.addEventListener('focusin', (event) => {
-    const target = event.target;
-    if (!(target instanceof HTMLElement)) return;
-    const cell = target.closest('.contribution-cell');
-    if (!(cell instanceof HTMLElement)) return;
-    activate(cell);
-  });
-
   grid.addEventListener('mouseleave', () => {
     state.activeContributionPoint = null;
     renderContributionTooltip();
-  });
-
-  grid.addEventListener('focusout', (event) => {
-    const related = event.relatedTarget;
-    if (!(related instanceof Node) || !grid.contains(related)) {
-      state.activeContributionPoint = null;
-      renderContributionTooltip();
-    }
   });
 
   grid.dataset.tooltipBound = 'true';
@@ -291,42 +262,27 @@ const fetchJson = async (url) => {
   return response.json();
 };
 
-const hydrateGithub = async () => {
-  setHeroStatus('loading');
+// The static fallback endpoints can ship an `{error}` body that GitHub Pages
+// serves as HTTP 200 — validate the shape so we never render NaN totals.
+const isValidContributionsPayload = (payload) =>
+  Boolean(payload) && typeof payload.totalLastYear === 'number' && Array.isArray(payload.days);
 
+const hydrateGithub = async () => {
   try {
     const contributions = await fetchJson('/api/github/contributions.json');
+    if (!isValidContributionsPayload(contributions)) {
+      throw new Error('Malformed contributions payload');
+    }
     updateContributions(contributions);
     hideGithubError();
-    setHeroStatus('ready');
   } catch {
     showGithubError();
-    setHeroStatus('error');
   }
-};
-
-const onLocaleChange = () => {
-  if (!document.getElementById('contribution-grid')) return;
-
-  syncLocaleFromDocument();
-
-  if (state.contributionPayload) {
-    updateContributions(state.contributionPayload);
-  } else {
-    renderContributionTooltip();
-  }
-
-  setHeroStatus(state.activeStatus);
 };
 
 const initGithubActivity = () => {
   if (!document.getElementById('contribution-grid')) {
     return;
-  }
-
-  if (!state.localeListenerBound) {
-    window.addEventListener('portfolio:locale-change', onLocaleChange);
-    state.localeListenerBound = true;
   }
 
   if (!state.viewportListenerBound) {
@@ -346,7 +302,6 @@ const initGithubActivity = () => {
   if (state.contributionPayload) {
     updateContributions(state.contributionPayload);
     hideGithubError();
-    setHeroStatus('ready');
   }
 
   renderContributionTooltip();
