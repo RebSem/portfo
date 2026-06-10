@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import AgentOps from '../components/AgentOps.astro';
 import FeaturedCase from '../components/FeaturedCase.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
@@ -45,6 +46,7 @@ const personSchema = {
   title={`${heroFallbackName} - AI Product Manager`}
   description="AI Product Manager at Prof-IT (zvonobot, effebot, p1sms) who drives the product through thoughtful AI adoption. 500,000+ minutes of B2B AI agent conversations in 2026. Ships pet projects with AI agents in days, not sprints."
   schema={personSchema}
+  alternate="/ru/"
 >
   <a id="skip-to-content" href="#main-content" class="skip-link">Skip to content</a>
 
@@ -61,7 +63,7 @@ const personSchema = {
         <p class="about-eyebrow">{uiCopy.home.eyebrow.en}</p>
 
         <h1 id="home-title">
-          <span class="hero-accent">AI</span> Product&nbsp;Manager.
+          <span class="hero-accent">AI</span> <span class="hero-serif">Product</span>&nbsp;Manager.
         </h1>
 
         <p class="home-lead">
@@ -135,7 +137,7 @@ const personSchema = {
           <div
             id="contribution-grid"
             class="contribution-grid"
-            role="img"
+            role="group"
             aria-label="GitHub activity graph"
           ></div>
 
@@ -152,10 +154,10 @@ const personSchema = {
           <p
             id="contribution-tooltip"
             class="contribution-tooltip"
-            data-hint-ru="Наведите или перейдите на ячейку, чтобы увидеть дату и число вкладов."
-            data-hint-en="Hover or focus a cell to see the exact date and number of contributions."
+            data-hint-ru="Наведите на ячейку, чтобы увидеть дату и число вкладов."
+            data-hint-en="Hover a cell to see the exact date and number of contributions."
           >
-            Hover or focus a cell to see the exact date and number of contributions.
+            Hover a cell to see the exact date and number of contributions.
           </p>
 
           <p
@@ -167,6 +169,8 @@ const personSchema = {
         </div>
       </div>
     </section>
+
+    <AgentOps locale="en" />
 
     <section id="projects" class="section-block" aria-labelledby="projects-title">
       <div class="section-head">
