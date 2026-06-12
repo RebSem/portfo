@@ -1,17 +1,18 @@
 ---
 projectId: "zvonobot-ai"
 title: "Zvonobot AI — voice AI-agent platform for B2B"
-description: "Multi-tenant SaaS console for outbound voice AI agents. Launched in 2026 inside Prof-IT and run end-to-end: product, UX, engineering."
+description: "Multi-tenant SaaS console for outbound voice AI agents. Launched in 2026 inside Prof-IT and run end-to-end: product, UX, engineering. It's live — you can open it and register."
 role: "Product lead · product engineer"
 timeline: "Launched 2026, actively shipping"
 impact: "500,000+ minutes of new-customer conversations in 2026"
-lang: "en"
-tags: ["React 19", "TypeScript", "Vite", "Flask", "PostgreSQL", "Redis", "LLM orchestration", "VoIP", "Multi-tenant SaaS"]
 cover: "/projects/zvonobot-dashboard-en-light.png"
 draft: false
+lang: "en"
+tags: ["React 19", "TypeScript", "Vite", "Flask", "PostgreSQL", "Redis", "LLM orchestration", "VoIP", "Multi-tenant SaaS"]
 ---
 
 import ProjectScreenshot from '../../components/ProjectScreenshot.astro';
+import LiveCabinetButton from '../../components/LiveCabinetButton.astro';
 
 ## Zvonobot AI: a voice AI-agent platform we ship every week
 
@@ -19,11 +20,20 @@ Zvonobot AI is a new product I launched inside the Prof-IT group in 2026 and run
 
 In 2026 the product has already handled **500,000+ minutes of new-customer conversations**.
 
+<LiveCabinetButton
+  href="https://lk2.ai-zvonki.ru"
+  eyebrow="Live in production"
+  title="The cabinet is live — open it and try it yourself"
+  body="This isn't a prototype. Open the client cabinet, register in a minute, and assemble your own voice agent — the same product paying customers run every day."
+  cta="Open the cabinet"
+  urlLabel="lk2.ai-zvonki.ru"
+/>
+
 <ProjectScreenshot
   lightSrc="/projects/zvonobot-dashboard-en-light.png"
   darkSrc="/projects/zvonobot-dashboard-en-dark.png"
-  alt="Zvonobot AI client dashboard with KPIs and a daily call timeline (demo data)"
-  caption="Client dashboard · demo data · real client interfaces under NDA"
+  alt="Zvonobot AI client dashboard: KPIs for leads, conversion and cost per lead, a lead funnel, and a daily call timeline (demo data)"
+  caption="Client dashboard · demo account · real client cabinets under NDA"
 />
 
 ## The pain we solve
@@ -41,25 +51,52 @@ A voice AI agent that picks up the script, runs the dialog, handles common objec
 
 The Zvonobot AI cabinet is the surface clients live in. It bundles agent assembly, dialing, billing, and analytics into a single role-aware console.
 
+- **Frictionless signup.** Email, password, phone — and the client is straight in. The phone is verified inside the cabinet before the first call, not as a gate on the door, and there's a one-tap Yandex ID login too.
 - **Agent builder.** Clients pick a voice, model, and language, drop in a structured prompt, attach a base of contacts and a phone number — and have a working outbound agent in minutes.
 - **Campaigns & dialing.** A campaign is "this agent calls this contact base from this number." Operators can pause, resume, retry, and switch carriers without leaving the page.
 - **Call history with masked numbers.** Every call lands here with status, outcome, duration, cost, and a recording. Phone numbers are masked in the UI so the cabinet is safe to demo and audit.
-- **Real-time client dashboard.** KPIs split by calls / contacts / answers / leads / conversion / spent — plus a per-day chart and per-agent rollup, all priced in RUB against the org's plan.
-- **Billing with balance hold.** A campaign reserves estimated cost up front, so a client can't drift into negative wallet mid-dial. Reconciliation happens after every call.
+- **Real-time client dashboard.** KPIs split by leads / conversion / cost per lead / calls / answers / spent — plus a funnel, a per-day chart, and a per-agent rollup, all priced in RUB against the org's plan.
+- **Plans & billing with balance hold.** A campaign reserves estimated cost up front, so a client can't drift into negative wallet mid-dial. Reconciliation happens after every call; plans and top-ups live in the cabinet itself.
 - **Multi-tenant roles.** Super-admin, manager, client owner, accountant — four roles with different scopes and views, all on one codebase.
 
 <ProjectScreenshot
-  lightSrc="/projects/zvonobot-calls-light.png"
-  darkSrc="/projects/zvonobot-calls-dark.png"
-  alt="Call history table with masked phone numbers, outcomes, and per-call cost (demo data)"
+  lightSrc="/projects/zvonobot-calls-en-light.png"
+  darkSrc="/projects/zvonobot-calls-en-dark.png"
+  alt="Zvonobot AI call history table with masked phone numbers, statuses, outcomes, and per-call cost (demo data)"
   caption="Call history — masked numbers, statuses, and per-call cost · demo data"
+/>
+
+## The analytics leaders actually look at
+
+Voice is only half the product. The other half is turning thousands of conversations into numbers people decide on. After every call an LLM breaks the conversation down into an outcome, a sentiment, and custom post-call parameters, and all of it rolls up into the cabinet's analytics.
+
+- **Call outcomes** — the top outcome labels: what people actually said, ranked by frequency.
+- **Sentiment** — the positive / negative / neutral / mixed split across the whole pool of conversations.
+- **Hourly activity** — when answers land best, so a client dials in the right window.
+
+<ProjectScreenshot
+  lightSrc="/projects/zvonobot-analytics-en-light.png"
+  darkSrc="/projects/zvonobot-analytics-en-dark.png"
+  alt="Zvonobot AI analytics page: call-outcomes bar chart, sentiment pie chart, and hourly activity (demo data)"
+  caption="Analytics — outcomes, sentiment, and hourly activity, all from post-call analysis · demo data"
+/>
+
+## The agent builder: from prompt to a live call
+
+The agent is the product's central object. A client sets a voice, model, and language, writes a structured prompt with the conversation script, configures the opening line (so the LLM doesn't "think" into silence and drop the call), custom post-call parameters, and success labels. Once published and moderated, the agent is ready to dial — and you can fire a test call to your own number right from here.
+
+<ProjectScreenshot
+  lightSrc="/projects/zvonobot-agent-en-light.png"
+  darkSrc="/projects/zvonobot-agent-en-dark.png"
+  alt="Zvonobot AI agent page: name, 'approved' status, voice/model/language pickers, the prompt script, the opening line, and a post-call parameters panel (demo data)"
+  caption="Agent builder — voice, model, prompt, opening line, and post-call parameters · demo agent"
 />
 
 ## Architecture deep-dive
 
 The stack is intentionally boring at the edges so the interesting work can happen in the middle.
 
-- **Frontend:** React 19 + TypeScript + Vite. Vanilla CSS with strict design tokens (no Tailwind), `data-theme="dark"` swap, role-aware sidebar.
+- **Frontend:** React 19 + TypeScript + Vite. Vanilla CSS with strict design tokens (no Tailwind), `data-theme="dark"` swap, role-aware sidebar, bilingual UI (ru/en).
 - **Backend:** Flask modular monolith, SQLAlchemy + Alembic, PostgreSQL for state, Redis for jobs/broker.
 - **Voice + LLM:** dialog orchestration on top of a voice provider's execution layer — agent voice, ASR, TTS, and the LLM behind the conversation are all configurable per agent.
 - **Telephony:** integration with our SIP-trunk for Russian numbers, with operator detection via P1SMS HLR lookup so we know whether a number can actually be reached before we dial.
@@ -83,8 +120,10 @@ In practice:
 
 - I run the loop **product → UX → code → ship → measure** myself, in days, not sprints.
 - I treat boring infrastructure as a feature: pollers, holds, idempotency, masked PII — the things that decide whether a SaaS feels stable or fragile.
-- I pick the smallest stable surface and grow it. The cabinet started with one role and one report; today it carries four roles, a billing system, an agent builder, and a real call pipeline.
+- I pick the smallest stable surface and grow it. The cabinet started with one role and one report; today it carries four roles, a billing system, an agent builder, analytics, and a real call pipeline.
 
-## What I can't share publicly
+## What you can touch, and what's under NDA
 
-A few things stay behind NDA: client names, exact prompts that drive paid agents, the voice provider we run on top of, and absolute revenue / minute counts. Everything described above is real, but specifics are summarised. Happy to walk through any of this on a call.
+The cabinet is **open** — you can [register yourself](https://lk2.ai-zvonki.ru) and assemble an agent. The screenshots above come from the live product, but on a demo account: the organization, the agent, and ~2,500 calls are generated and anonymised, which is what makes them safe to show.
+
+What stays behind NDA is the specifics: real client names, their prompts and contact bases, the voice provider we run on top of, and absolute revenue / minute counts. Everything described above is real, but those details are summarised. Happy to walk through any of it on a call.
