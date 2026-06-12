@@ -17,6 +17,7 @@ export const projects: ProjectItem[] = [
     },
     stack: ['React 19', 'TypeScript', 'Vite', 'Flask', 'PostgreSQL', 'Redis', 'LLM orchestration'],
     visibility: 'private',
+    demoUrl: 'https://lk2.ai-zvonki.ru',
     featured: true,
     tier: 'work-led',
   },
