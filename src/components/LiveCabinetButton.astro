@@ -1,0 +1,178 @@
+---
+// Prominent "try the live product" CTA for the Zvonobot AI case study.
+// A card-style block with a headline, a sub-line, and a strong button that
+// opens the live client cabinet, where a visitor can register themselves.
+// Styles are scoped to the component; colours reuse the global accent tokens.
+interface Props {
+  href: string;
+  eyebrow: string; // small label above the title, e.g. "Live product"
+  title: string; // headline, e.g. "The cabinet is live — try it yourself"
+  body: string; // one-line description under the title
+  cta: string; // button label, e.g. "Open the cabinet"
+  urlLabel?: string; // the human-readable URL shown next to the button
+}
+
+const { href, eyebrow, title, body, cta, urlLabel } = Astro.props;
+---
+
+<aside class="live-cabinet">
+  <div class="live-cabinet__glow" aria-hidden="true"></div>
+  <div class="live-cabinet__body">
+    <span class="live-cabinet__eyebrow">
+      <span class="live-cabinet__dot" aria-hidden="true"></span>
+      {eyebrow}
+    </span>
+    <h3 class="live-cabinet__title">{title}</h3>
+    <p class="live-cabinet__text">{body}</p>
+  </div>
+  <div class="live-cabinet__action">
+    <a class="live-cabinet__btn" href={href} target="_blank" rel="noopener noreferrer">
+      <span>{cta}</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M5 12h14M13 6l6 6-6 6" />
+      </svg>
+    </a>
+    {urlLabel && <span class="live-cabinet__url">{urlLabel}</span>}
+  </div>
+</aside>
+
+<style>
+  .live-cabinet {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem 2rem;
+    margin: 2.2rem 0;
+    padding: 1.5rem 1.65rem;
+    border: 1px solid color-mix(in oklab, var(--accent) 38%, var(--border));
+    border-radius: 1.1rem;
+    background:
+      linear-gradient(
+        135deg,
+        color-mix(in oklab, var(--accent) 10%, var(--surface)) 0%,
+        var(--surface) 60%
+      );
+    box-shadow: 0 1px 2px color-mix(in oklab, var(--foreground) 7%, transparent);
+  }
+
+  .live-cabinet__glow {
+    position: absolute;
+    inset: -40% 50% 40% -10%;
+    background: radial-gradient(
+      60% 70% at 0% 0%,
+      color-mix(in oklab, var(--accent) 22%, transparent) 0%,
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+
+  .live-cabinet__body {
+    position: relative;
+    min-width: min(100%, 18rem);
+    flex: 1 1 22rem;
+  }
+
+  .live-cabinet__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in oklab, var(--accent) 85%, var(--foreground));
+  }
+
+  .live-cabinet__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent) 55%, transparent);
+    animation: live-cabinet-pulse 2.4s ease-out infinite;
+  }
+
+  @keyframes live-cabinet-pulse {
+    0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent) 55%, transparent); }
+    70% { box-shadow: 0 0 0 7px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .live-cabinet__dot { animation: none; }
+  }
+
+  .live-cabinet__title {
+    margin: 0.55rem 0 0;
+    font-size: clamp(1.1rem, 2.6vw, 1.3rem);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+
+  .live-cabinet__text {
+    margin: 0.4rem 0 0;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: color-mix(in oklab, var(--foreground) 72%, transparent);
+  }
+
+  .live-cabinet__action {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .live-cabinet__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 2.6rem;
+    padding: 0 1.25rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in oklab, var(--accent) 65%, transparent);
+    background: var(--accent);
+    /* The accent is a bright, saturated green; near-black text stays legible
+       on both the light (#00b87a) and dark (#2dd692) variants. */
+    color: #06281c;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    text-decoration: none;
+    box-shadow: 0 2px 10px color-mix(in oklab, var(--accent) 30%, transparent);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+  }
+
+  .live-cabinet__btn svg {
+    width: 1rem;
+    height: 1rem;
+    flex: none;
+    transition: transform 0.18s ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .live-cabinet__btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.04);
+      box-shadow: 0 4px 16px color-mix(in oklab, var(--accent) 38%, transparent);
+    }
+    .live-cabinet__btn:hover svg {
+      transform: translateX(2px);
+    }
+  }
+
+  .live-cabinet__url {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.01em;
+    color: color-mix(in oklab, var(--foreground) 52%, transparent);
+  }
+</style>
