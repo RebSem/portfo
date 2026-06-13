@@ -12,8 +12,8 @@ export const projects: ProjectItem[] = [
       en: 'Voice AI-agent platform for B2B (Prof-IT)',
     },
     summary: {
-      ru: 'Новый продукт группы Prof-IT, который я запустил в 2026-м и веду end-to-end: продукт, UX и инженерию. Multi-tenant SaaS-кабинет поверх telephony-инфраструктуры, в котором клиенты собирают и публикуют голосовых AI-агентов для исходящих звонков — продажи, онбординг, реактивация, опросы.',
-      en: 'A new Prof-IT product I launched in 2026 and run end-to-end — product, UX, and engineering. A multi-tenant SaaS console built on top of telephony infrastructure: clients assemble and publish voice AI agents for outbound use cases — sales, onboarding, reactivation, surveys.',
+      ru: 'Новый продукт группы Prof-IT, который я запустил в 2026-м и веду end-to-end: продукт, UX и инженерию. Multi-tenant SaaS-кабинет поверх telephony-инфраструктуры, в котором клиенты собирают и публикуют голосовых AI-агентов для исходящих звонков: продажи, онбординг, реактивация, опросы.',
+      en: 'A new Prof-IT product I launched in 2026 and run end-to-end: product, UX, and engineering. A multi-tenant SaaS console built on top of telephony infrastructure: clients assemble and publish voice AI agents for outbound use cases like sales, onboarding, reactivation, and surveys.',
     },
     stack: ['React 19', 'TypeScript', 'Vite', 'Flask', 'PostgreSQL', 'Redis', 'LLM orchestration'],
     visibility: 'private',
@@ -32,8 +32,8 @@ export const projects: ProjectItem[] = [
       en: 'AI-powered car rental CRM',
     },
     summary: {
-      ru: 'Личный продукт, который веду от продуктовой логики до релиза. CRM для автопрокатов закрывает весь цикл: автопарк и его загрузка, бронирования и договоры, клиентская база. AI берёт на себя рутину — распознаёт и проверяет документы клиента, считает скоринг и риск по сделке, подсказывает менеджеру следующий шаг. Цель — чтобы небольшой прокат работал как сеть, без раздувания штата.',
-      en: 'A personal product I lead from product logic to release. A CRM for car rental businesses covering the full cycle: fleet and utilization, bookings and contracts, customer base. AI handles the busywork — it reads and verifies client documents, scores deal risk, and suggests the next step to the manager. The goal: let a small rental operate like a chain, without growing headcount.',
+      ru: 'Личный продукт, который веду от продуктовой логики до релиза. CRM для автопрокатов закрывает весь цикл: автопарк и его загрузка, бронирования и договоры, клиентская база. AI берёт на себя рутину: распознаёт и проверяет документы клиента, считает скоринг и риск по сделке, подсказывает менеджеру следующий шаг. Цель в том, чтобы небольшой прокат работал как сеть, без раздувания штата.',
+      en: 'A personal product I lead from product logic to release. A CRM for car rental businesses covering the full cycle: fleet and utilization, bookings and contracts, customer base. AI handles the busywork: it reads and verifies client documents, scores deal risk, and suggests the next step to the manager. The goal: let a small rental operate like a chain, without growing headcount.',
     },
     stack: ['Next.js', 'TypeScript', 'Prisma', 'PostgreSQL', 'OpenAI', 'Linear'],
     visibility: 'private',
@@ -90,8 +90,8 @@ export const projects: ProjectItem[] = [
       en: 'Personalized PDF report platform',
     },
     summary: {
-      ru: 'Next.js приложение для генерации персональных PDF-отчётов с оплатой, email-доставкой и аналитикой. Собрано за 3 дня — пример быстрой проверки гипотезы.',
-      en: 'Next.js app for generating personalized PDF reports with payments, email delivery, and analytics. Built in 3 days — example of a fast hypothesis test.',
+      ru: 'Next.js приложение для генерации персональных PDF-отчётов с оплатой, email-доставкой и аналитикой. Собрано за 3 дня, пример быстрой проверки гипотезы.',
+      en: 'Next.js app for generating personalized PDF reports with payments, email delivery, and analytics. Built in 3 days as a fast hypothesis test.',
     },
     stack: ['Next.js', 'TypeScript', 'Prisma', 'SQLite', 'YooKassa', 'Resend'],
     visibility: 'private',
@@ -109,8 +109,8 @@ export const projects: ProjectItem[] = [
       en: 'iOS app for ski and snowboard sessions',
     },
     summary: {
-      ru: 'iOS-приложение для трекинга катаний, погоды и AI-помощника по зимним видам спорта. Личный пет-проект на SwiftUI — собран за неделю от идеи до working build.',
-      en: 'iOS app for tracking rides, weather, and an AI assistant for winter sports. Personal SwiftUI project — went from idea to a working build in a week.',
+      ru: 'iOS-приложение для трекинга катаний, погоды и AI-помощника по зимним видам спорта. Личный пет-проект на SwiftUI, собран за неделю от идеи до working build.',
+      en: 'iOS app for tracking rides, weather, and an AI assistant for winter sports. Personal SwiftUI project that went from idea to a working build in a week.',
     },
     stack: ['SwiftUI', 'iOS', 'Weather', 'AI Assistant'],
     visibility: 'private',
@@ -128,7 +128,7 @@ export const projects: ProjectItem[] = [
       en: 'macOS wrapper over a YouTube converter',
     },
     summary: {
-      ru: 'Двухкликовая локальная веб-обёртка над kaifcodec/ytconverter: drop ссылки — получи файл. Личный пет-проект, чтобы перестать мучиться со сайтами-конвертерами. Собран на коленке за вечер с Claude Code.',
+      ru: 'Двухкликовая локальная веб-обёртка над kaifcodec/ytconverter: вставил ссылку, получил файл. Личный пет-проект, чтобы перестать мучиться со сайтами-конвертерами. Собран на коленке за вечер с Claude Code.',
       en: 'Two-click local web wrapper around kaifcodec/ytconverter: drop a link, get the file. Personal pet project to stop fighting sketchy converter sites. Hacked together in an evening with Claude Code.',
     },
     stack: ['Python', 'yt-dlp', 'ffmpeg', 'macOS'],
@@ -149,8 +149,8 @@ export const projects: ProjectItem[] = [
       en: 'This site',
     },
     summary: {
-      ru: 'Сам собрал hiring-сайт на Astro: RU/EN на физических роутах, GitHub-heatmap из API, structured data для индексации. Открытый код — единственный публичный репозиторий из показанных.',
-      en: 'Hiring-facing site I built end-to-end on Astro: RU/EN on physical routes, GitHub heatmap from the API, structured data for indexing. Open source — the only public repo among the projects shown.',
+      ru: 'Сам собрал hiring-сайт на Astro: RU/EN на физических роутах, GitHub-heatmap из API, structured data для индексации. Открытый код, единственный публичный репозиторий из показанных.',
+      en: 'Hiring-facing site I built end-to-end on Astro: RU/EN on physical routes, GitHub heatmap from the API, structured data for indexing. Open source, the only public repo among the projects shown.',
     },
     stack: ['Astro 5', 'TypeScript', 'MDX', 'GitHub Actions'],
     visibility: 'public',

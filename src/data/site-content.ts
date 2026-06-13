@@ -16,7 +16,7 @@ export const heroDisplayName: LocalizedText = {
 };
 
 export const heroSubtitle: LocalizedText = {
-  ru: 'AI Product Manager: веду продукт и двигаю его за счёт продуманного внедрения AI. Сейчас фокус — голосовые AI-агенты для B2B в Prof-IT. Параллельно собираю пет-проекты от идеи до релиза с AI-агентами (Claude Code, Codex) и проверяю гипотезы за дни, а не за спринты.',
+  ru: 'AI Product Manager: веду продукт и двигаю его за счёт продуманного внедрения AI. Сейчас фокус на голосовых AI-агентах для B2B в Prof-IT. Параллельно собираю пет-проекты от идеи до релиза с AI-агентами (Claude Code, Codex) и проверяю гипотезы за дни, а не за спринты.',
   en: 'AI Product Manager: I own the product and move it through thoughtful AI adoption. Right now my focus is voice AI agents for B2B at Prof-IT. Alongside that I ship side projects end-to-end with AI agents (Claude Code, Codex), validating hypotheses in days, not sprints.',
 };
 
@@ -26,8 +26,8 @@ export const currentRole: LocalizedText = {
 };
 
 export const currentFocus: LocalizedText = {
-  ru: 'Сейчас: запустил и развиваю новый продукт — голосовых AI-агентов для B2B. За 2026 год через них прошло более 500 000 минут разговоров от новых клиентов.',
-  en: 'Now: launched and scaling a new product — voice AI agents for B2B. In 2026 the new product has handled over 500,000 minutes of conversations from new customers.',
+  ru: 'Сейчас запустил и развиваю новый продукт группы: голосовых AI-агентов для B2B. За 2026 год через них прошло более 500 000 минут разговоров от новых клиентов.',
+  en: 'Now: launched and scaling a new product, voice AI agents for B2B. In 2026 the new product has handled over 500,000 minutes of conversations from new customers.',
 };
 
 export const blogLabel: LocalizedText = {
@@ -78,8 +78,8 @@ export const aboutBlocks: AboutBlock[] = [
     title: { ru: 'Voice AI агенты для B2B', en: 'Voice AI agents for B2B' },
     body: [
       {
-        ru: 'Product Manager в Prof-IT с начала 2022. Работал над голосовыми роботами в zvonobot и effebot, а в 2026-м запустил и развиваю новый продукт группы — голосовых AI-агентов для B2B. За 2026 год через них прошло более 500 000 минут разговоров от новых клиентов.',
-        en: 'Product Manager at Prof-IT since early 2022. Worked on voice automation at zvonobot and effebot, and in 2026 launched and have been scaling the group’s new product — voice AI agents for B2B. The new product has handled over 500,000 minutes of new-customer conversations in 2026.',
+        ru: 'Product Manager в Prof-IT с начала 2022. Работал над голосовыми роботами в zvonobot и effebot, а в 2026-м запустил и развиваю новый продукт группы: голосовых AI-агентов для B2B. За 2026 год через них прошло более 500 000 минут разговоров от новых клиентов.',
+        en: 'Product Manager at Prof-IT since early 2022. Worked on voice automation at zvonobot and effebot, and in 2026 launched and have been scaling the group’s new product: voice AI agents for B2B. The new product has handled over 500,000 minutes of new-customer conversations in 2026.',
       },
     ],
   },
@@ -103,8 +103,8 @@ export const aboutBlocks: AboutBlock[] = [
     title: { ru: 'Пишу код в паре с AI-агентами', en: 'I ship code paired with AI agents' },
     body: [
       {
-        ru: 'Весь код пет-проектов пишу с AI-агентами — Claude Code и Codex. Это позволяет проверять гипотезы за дни, а не за спринты, и говорить с инженерами на одном языке. Каждый пет-проект на сайте — от идеи до working release за 1–7 дней.',
-        en: 'I build my pet projects with AI coding agents — Claude Code and Codex. That lets me validate hypotheses in days rather than sprints, and stay on the same page with engineers. Each pet project on this site went from idea to a working release in 1–7 days.',
+        ru: 'Весь код пет-проектов пишу с AI-агентами Claude Code и Codex. Это позволяет проверять гипотезы за дни, а не за спринты, и говорить с инженерами на одном языке. Каждый пет-проект на сайте прошёл путь от идеи до working release за 1–7 дней.',
+        en: 'I build my pet projects with AI coding agents (Claude Code and Codex). That lets me validate hypotheses in days rather than sprints, and stay on the same page with engineers. Each pet project on this site went from idea to a working release in 1–7 days.',
       },
     ],
   },
@@ -116,7 +116,7 @@ export const aboutBlocks: AboutBlock[] = [
       { ru: 'Автономность и ownership на ambiguous-задачах', en: 'Autonomy and ownership on ambiguous problems' },
       { ru: 'Короткий цикл от идеи до проверки', en: 'A short loop from idea to validation' },
       { ru: 'Продуктовая логика поверх AI, а не AI ради AI', en: 'Product logic on top of AI, not AI for its own sake' },
-      { ru: 'Команды, где можно вести задачу end-to-end, а не быть звеном в длинной цепочке согласований', en: 'Teams where I can carry a problem end-to-end, not be one step in a long approval chain' },
+      { ru: 'Команды, где можно вести задачу end-to-end, а не быть звеном в длинной цепочке согласований', en: 'Teams where I can carry a problem end-to-end, not one step in a long approval chain' },
     ],
   },
   {
@@ -124,8 +124,8 @@ export const aboutBlocks: AboutBlock[] = [
     title: { ru: 'AI Product Manager, кто драйвит продукт через AI', en: 'AI Product Manager who drives the product through AI' },
     body: [
       {
-        ru: 'Открыт к ролям AI Product Manager — где я отвечаю за продукт и двигаю его за счёт продуманного, нужного внедрения AI, а не AI ради AI. Голос — лишь один из доменов, где я это уже делал; интересны любые продукты, где AI закрывает реальную бизнес-задачу. Английский — рабочий B1+, готов подтянуть до зрелого B2 под нужды роли.',
-        en: 'Open to AI Product Manager roles — where I own the product and move it through thoughtful, purposeful AI adoption, not AI for its own sake. Voice is just one domain where I’ve already done this; I’m interested in any product where AI solves a real business job. English at working B1+, willing to grow into mature B2 as the role demands.',
+        ru: 'Открыт к ролям AI Product Manager, где я отвечаю за продукт и двигаю его за счёт продуманного, нужного внедрения AI, а не AI ради AI. Голос лишь один из доменов, где я это уже делал; интересны любые продукты, где AI закрывает реальную бизнес-задачу. Английский рабочий, B1+, готов подтянуть до зрелого B2 под нужды роли.',
+        en: 'Open to AI Product Manager roles where I own the product and move it through thoughtful, purposeful AI adoption, not AI for its own sake. Voice is just one domain where I’ve already done this; I’m interested in any product where AI solves a real business job. English at working B1+, willing to grow into mature B2 as the role demands.',
       },
     ],
   },
@@ -133,24 +133,24 @@ export const aboutBlocks: AboutBlock[] = [
 
 export const aboutParagraphs: LocalizedText[] = [
   {
-    ru: 'С начала 2022 года — Product Manager в Prof-IT. Работал над голосовыми роботами в zvonobot и effebot, а в 2026-м запустил и развиваю новый продукт группы — голосовых AI-агентов для B2B. За 2026 год через них прошло более 500 000 минут разговоров от новых клиентов.',
-    en: 'Product Manager at Prof-IT since early 2022. Worked on voice automation at zvonobot and effebot, and in 2026 launched and have been scaling the group’s new product — voice AI agents for B2B. The new product has handled over 500,000 minutes of new-customer conversations in 2026.',
+    ru: 'С начала 2022 года работаю Product Manager в Prof-IT. Занимался голосовыми роботами в zvonobot и effebot, а в 2026-м запустил и развиваю новый продукт группы: голосовых AI-агентов для B2B. За 2026 год через них прошло более 500 000 минут разговоров от новых клиентов.',
+    en: 'Product Manager at Prof-IT since early 2022. Worked on voice automation at zvonobot and effebot, and in 2026 launched and have been scaling the group’s new product: voice AI agents for B2B. The new product has handled over 500,000 minutes of new-customer conversations in 2026.',
   },
   {
-    ru: 'Где полезен сильнее всего: продукты, где AI встроен в реальный workflow, а не работает как демо. Особенно — голосовые и conversational AI-сценарии, B2B-телефония, customer engagement, операционные системы для отделов продаж и поддержки.',
+    ru: 'Где полезен сильнее всего: продукты, где AI встроен в реальный workflow, а не работает как демо. Особенно голосовые и conversational AI-сценарии, B2B-телефония, customer engagement, операционные системы для отделов продаж и поддержки.',
     en: 'Where I add the most value: products where AI is embedded into a real workflow rather than living as a demo. Especially voice and conversational AI, B2B telephony, customer engagement, and operational tools for sales and support teams.',
   },
   {
-    ru: 'Как работаю: пишу код пет-проектов с AI-агентами — Claude Code и Codex. Это позволяет проверять гипотезы за дни, а не за спринты, и говорить с инженерами на одном языке. Каждый пет-проект на сайте — от идеи до working release за 1–7 дней.',
-    en: 'How I work: I build my pet projects with AI coding agents — Claude Code and Codex. That lets me validate hypotheses in days rather than sprints, and stay on the same page with engineers. Each pet project on this site went from idea to a working release in 1–7 days.',
+    ru: 'Как работаю: пишу код пет-проектов с AI-агентами Claude Code и Codex. Это позволяет проверять гипотезы за дни, а не за спринты, и говорить с инженерами на одном языке. Каждый пет-проект на сайте прошёл путь от идеи до working release за 1–7 дней.',
+    en: 'How I work: I build my pet projects with AI coding agents (Claude Code and Codex). That lets me validate hypotheses in days rather than sprints, and stay on the same page with engineers. Each pet project on this site went from idea to a working release in 1–7 days.',
   },
   {
     ru: 'Что важно для роли: автономность и ownership на ambiguous-задачах, короткий цикл от идеи до проверки, продуктовая логика поверх AI, а не AI ради AI. Сильнее всего полезен в командах, где можно вести задачу end-to-end, а не быть звеном в длинной цепочке согласований.',
     en: 'What matters in a role: autonomy and ownership on ambiguous problems, a short loop from idea to validation, product logic on top of AI rather than AI for its own sake. I am at my best in teams where I can carry a problem end-to-end instead of being one step in a long approval chain.',
   },
   {
-    ru: 'Открыт к ролям AI Product Manager — где я веду продукт и двигаю его за счёт продуманного, нужного внедрения AI. Голос — лишь один из доменов, где я это делал; интересны любые продукты, где AI закрывает реальную бизнес-задачу. Английский — рабочий B1+, готов подтянуть до зрелого B2 под нужды роли.',
-    en: 'Open to AI Product Manager roles — where I own the product and move it through thoughtful, purposeful AI adoption. Voice is just one domain where I have done this; I am interested in any product where AI solves a real business job. English at working B1+, willing to grow into mature B2 as the role demands.',
+    ru: 'Открыт к ролям AI Product Manager, где я веду продукт и двигаю его за счёт продуманного, нужного внедрения AI. Голос лишь один из доменов, где я это делал; интересны любые продукты, где AI закрывает реальную бизнес-задачу. Английский рабочий, B1+, готов подтянуть до зрелого B2 под нужды роли.',
+    en: 'Open to AI Product Manager roles where I own the product and move it through thoughtful, purposeful AI adoption. Voice is just one domain where I have done this; I am interested in any product where AI solves a real business job. English at working B1+, willing to grow into mature B2 as the role demands.',
   },
 ];
 
@@ -164,8 +164,8 @@ export const agentOps = {
   eyebrow: { ru: 'Как я делаю продукты · Claude Code & Codex', en: 'How I ship · Claude Code & Codex' },
   title: { ru: 'Моя команда — AI-агенты.', en: 'I run a team of AI agents.' },
   lead: {
-    ru: 'Постановка, ограничения и ревью — мои. Реализацию делают Claude Code и Codex. Так пет-проект проходит путь от идеи до релиза за дни, а этот сайт поддерживает сам себя: каждое изменение — PR, написанный агентом и проверенный мной.',
-    en: 'Spec, constraints, and review stay with me. Implementation goes to Claude Code and Codex. That is how a side project gets from idea to release in days — and how this site maintains itself: every change is an agent-written PR that I review.',
+    ru: 'Постановка, ограничения и ревью остаются за мной. Реализацию делают Claude Code и Codex. Так пет-проект проходит путь от идеи до релиза за дни, а этот сайт поддерживает сам себя: каждое изменение — это PR, написанный агентом и проверенный мной.',
+    en: 'Spec, constraints, and review stay with me. Implementation goes to Claude Code and Codex. That is how a side project gets from idea to release in days, and how this site maintains itself: every change is an agent-written PR that I review.',
   },
   steps: [
     {
@@ -191,11 +191,11 @@ export const agentOps = {
   ] satisfies AgentOpsStep[],
   terminalAria: { ru: 'Живые данные о PR этого репозитория', en: 'Live pull-request stats for this repository' },
   receiptPrs: {
-    ru: 'PR смерджено в этом репозитории — написаны агентами, проверены мной',
-    en: 'merged PRs on this repo — agent-written, reviewed by me',
+    ru: 'PR смерджено в этом репозитории, написаны агентами и проверены мной',
+    en: 'merged PRs on this repo, agent-written and reviewed by me',
   },
   receiptPrsLink: { ru: 'смотреть PR на GitHub', en: 'see the PRs on GitHub' },
-  receiptDeployNote: { ru: 'этот самый деплой — собран из PR, написанного агентом', en: 'this very deploy — shipped from an agent-written PR' },
+  receiptDeployNote: { ru: 'этот самый деплой собран из PR, написанного агентом', en: 'this very deploy shipped from an agent-written PR' },
 } as const;
 
 export const uiCopy = {
@@ -217,12 +217,12 @@ export const uiCopy = {
       en: 'AI',
     },
     lead: {
-      ru: 'Веду B2B-продукты в Prof-IT с 2022 — сейчас голосовые AI-агенты. Параллельно собираю пет-проекты с AI-агентами и проверяю гипотезы за дни, а не за спринты.',
-      en: 'I lead B2B products at Prof-IT since 2022 — now voice AI agents. Alongside that I ship pet projects with AI agents, validating hypotheses in days, not sprints.',
+      ru: 'Веду B2B-продукты в Prof-IT с 2022, сейчас это голосовые AI-агенты. Параллельно собираю пет-проекты с AI-агентами и проверяю гипотезы за дни, а не за спринты.',
+      en: 'I lead B2B products at Prof-IT since 2022, now voice AI agents. Alongside that I ship pet projects with AI agents, validating hypotheses in days, not sprints.',
     },
     leadStrong: {
-      ru: 'Открыт к ролям AI Product Manager — где продукт растёт за счёт продуманного внедрения AI.',
-      en: 'Open to AI Product Manager roles — where the product grows through thoughtful AI adoption.',
+      ru: 'Открыт к ролям AI Product Manager, где продукт растёт за счёт продуманного внедрения AI.',
+      en: 'Open to AI Product Manager roles where the product grows through thoughtful AI adoption.',
     },
     heroStatus: {
       ru: 'Открыт к новым проектам',
@@ -242,8 +242,8 @@ export const uiCopy = {
       en: 'minutes',
     },
     metricCaption: {
-      ru: 'разговоров от новых клиентов прошло через продукт, который я веду — за 2026 год.',
-      en: 'of new-customer conversations handled by the product I lead — in 2026.',
+      ru: 'разговоров от новых клиентов прошло за 2026 год через продукт, который я веду.',
+      en: 'of new-customer conversations handled by the product I lead in 2026.',
     },
     metricFootnoteOne: {
       ru: 'Prof-IT · с начала 2022',
@@ -268,8 +268,8 @@ export const uiCopy = {
       en: 'Product Manager at Prof-IT (zvonobot, effebot, p1sms), since early 2022',
     },
     currentlyFocus: {
-      ru: 'Веду продуктовое развитие нового продукта — голосовых AI-агентов для B2B',
-      en: 'Leading product development for the new product — voice AI agents for B2B',
+      ru: 'Веду продуктовое развитие нового продукта группы: голосовых AI-агентов для B2B',
+      en: 'Leading product development for the new product: voice AI agents for B2B',
     },
     postsTitle: { ru: 'Свежие статьи', en: 'Recent posts' },
     postsSubtitle: {
@@ -341,8 +341,8 @@ export const uiCopy = {
   projects: {
     title: { ru: 'Проекты', en: 'Projects' },
     subtitle: {
-      ru: 'Два уровня: продукты, которые я веду в Prof-IT, и личные пет-проекты, собранные за дни — показывают скорость, с которой довожу идею до релиза.',
-      en: 'Two tiers: products I lead at Prof-IT, and personal pet projects built in days — they show the speed I take an idea to release.',
+      ru: 'Два уровня: продукты, которые я веду в Prof-IT, и личные пет-проекты, собранные за дни. Они показывают скорость, с которой довожу идею до релиза.',
+      en: 'Two tiers: products I lead at Prof-IT, and personal pet projects built in days. They show the speed I take an idea to release.',
     },
     featuredEyebrow: {
       ru: 'Флагман · 2026',
@@ -376,12 +376,12 @@ export const uiCopy = {
     },
     featuredHighlights: [
       {
-        ru: 'Кабинет для клиентов: создание агентов, промпт-сценарии, кампании, история звонков, биллинг — всё под одной ролью.',
-        en: 'Client console: agent builder, prompt flows, campaigns, call history, and billing — all under one role.',
+        ru: 'Кабинет для клиентов: создание агентов, промпт-сценарии, кампании, история звонков и биллинг — всё под одной ролью.',
+        en: 'Client console: agent builder, prompt flows, campaigns, call history, and billing, all under one role.',
       },
       {
-        ru: 'Биллинг с резервом баланса на старте кампании — клиент не уходит в минус, расходы предсказуемы.',
-        en: 'Billing with a balance hold on campaign start — clients never go negative, spend stays predictable.',
+        ru: 'Биллинг с резервом баланса на старте кампании: клиент не уходит в минус, расходы предсказуемы.',
+        en: 'Billing with a balance hold on campaign start, so clients never go negative and spend stays predictable.',
       },
       {
         ru: 'Надёжный поток звонков: фоновый поллер сверяет статусы каждые 60 секунд, чтобы ни один звонок не "застрял" и был корректно списан.',
@@ -405,8 +405,8 @@ export const uiCopy = {
     petTitle: { ru: 'Пет-проекты', en: 'Pet projects' },
     petEyebrow: { ru: '02 · Built in days, not sprints', en: '02 · Built in days, not sprints' },
     petNote: {
-      ru: 'Каждый собран лично с AI-агентами (Claude Code, Codex) за 1–7 дней от идеи до working release. Способ быстро валидировать гипотезы и оставаться на одном языке с инженерами.',
-      en: 'Each one personally built with AI coding agents (Claude Code, Codex) in 1–7 days from idea to a working release. How I validate hypotheses fast and stay on the same page with engineers.',
+      ru: 'Каждый собран лично с AI-агентами (Claude Code, Codex) за 1–7 дней от идеи до working release. Так я быстро валидирую гипотезы и остаюсь на одном языке с инженерами.',
+      en: 'Each one personally built with AI coding agents (Claude Code, Codex) in 1–7 days from idea to a working release. This is how I validate hypotheses fast and stay on the same page with engineers.',
     },
     empty: {
       ru: 'Сейчас собираю свежие кейсы. Скоро здесь появятся подробные разборы.',
