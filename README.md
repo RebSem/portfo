@@ -87,7 +87,6 @@ Detailed guide: `docs/blog-authoring.md`
 - Workflow: `docs/workflow.md`
 - Blog authoring: `docs/blog-authoring.md`
 - Content plan: `docs/content-plan.md`
-- Deep positioning audit (RU): `docs/rebsem-audit-2026-04.md`
 
 ## Environment Variables
 
