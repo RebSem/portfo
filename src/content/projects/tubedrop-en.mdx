@@ -4,7 +4,7 @@ title: "tubedrop — drop a link, get the file"
 description: "A two-click macOS app that turns a YouTube link into a clean download. Local web UI over yt-dlp, privacy-first HD unlock, no sketchy converter sites. Open source, MIT."
 role: "UI, packaging, vibe-coding with Claude Code"
 timeline: "Built in an evening"
-impact: "Stopped opening sketchy converter sites — for me and for non-techies I share it with"
+impact: "Stopped opening sketchy converter sites, for me and for non-techies I share it with"
 repoUrl: "https://github.com/RebSem/tubedrop"
 lang: "en"
 tags: ["Python", "yt-dlp", "ffmpeg", "macOS", "Claude Code", "Open Source"]
@@ -17,7 +17,7 @@ import RepoButton from '../../components/RepoButton.astro';
 
 ## tubedrop: a personal itch, scratched in an evening
 
-I just wanted to save a video from YouTube. Every converter site was the same wall: popups, redirects, fake "Download" buttons, a hard 360p cap — and half the time you walk away with nothing.
+I just wanted to save a video from YouTube. Every converter site was the same wall: popups, redirects, fake "Download" buttons, a hard 360p cap, and half the time you walk away with nothing.
 
 So I built a tiny macOS app for myself. **Paste a link, pick a quality, hit download.** The file lands on your Mac. No site, no account, no ads.
 
@@ -27,7 +27,7 @@ So I built a tiny macOS app for myself. **Paste a link, pick a quality, hit down
   lightSrc="/projects/tubedrop-app-light.png"
   darkSrc="/projects/tubedrop-app-dark.png"
   alt="tubedrop main window: a YouTube link pasted in, a video preview, a quality ladder from 144p to 4K with 1080p selected, and a download button"
-  caption="The whole app is one window — link in, file out"
+  caption="The whole app is one window: link in, file out"
 />
 
 ## The problem
@@ -36,25 +36,25 @@ Downloading a YouTube video should be trivial. In practice, the open web makes i
 
 - **Converter sites are adware traps.** Every "free YouTube downloader" is a maze of fake buttons and redirects designed to get a click on anything *except* the actual file.
 - **They cap quality.** Anonymous web tools routinely top out at 360p, because YouTube serves better formats only to logged-in clients.
-- **The good tools are terminal-only.** [`yt-dlp`](https://github.com/yt-dlp/yt-dlp) + [`ffmpeg`](https://ffmpeg.org/) is the gold standard and it's free — but it's a command line with flags. You can't hand that to a friend who just wants a video.
+- **The good tools are terminal-only.** [`yt-dlp`](https://github.com/yt-dlp/yt-dlp) + [`ffmpeg`](https://ffmpeg.org/) is the gold standard and it's free, but it's a command line with flags. You can't hand that to a friend who just wants a video.
 
-[**kaifcodec/ytconverter**](https://github.com/kaifcodec/ytconverter) had already done the hard part: it glues `yt-dlp` and `ffmpeg` together cleanly. But it's still a CLI with prompts. tubedrop is the missing layer on top — a UI so it's two clicks instead of ten keystrokes, and something I'm not embarrassed to send to a non-programmer.
+[**kaifcodec/ytconverter**](https://github.com/kaifcodec/ytconverter) had already done the hard part: it glues `yt-dlp` and `ffmpeg` together cleanly. But it's still a CLI with prompts. tubedrop is the missing layer on top: a UI so it's two clicks instead of ten keystrokes, and something I'm not embarrassed to send to a non-programmer.
 
 ## What it does
 
-The whole product is a single local window — no dashboard, no settings maze. Open it and the flow is obvious:
+The whole product is a single local window: no dashboard, no settings maze. Open it and the flow is obvious:
 
 - **Drop a link, get a preview.** Paste a YouTube URL (or drag it anywhere onto the window) and tubedrop fetches the title, channel, duration, and thumbnail so you know you grabbed the right thing.
-- **Pick exactly the quality you want.** A real format ladder — `best` down through 4K / 1440p / 1080p / 720p — with a live size estimate next to each, so you're not guessing what a download will cost you in disk.
-- **Video or audio.** One toggle switches from an MP4 video to an MP3 rip — handy for podcasts and music.
-- **Choose where it saves.** Quick-pick chips for `Downloads`, `Desktop`, `Movies`, `Music`, or a dedicated `tubedrop` folder — plus a native folder picker.
+- **Pick exactly the quality you want.** A real format ladder, from `best` down through 4K / 1440p / 1080p / 720p, with a live size estimate next to each, so you're not guessing what a download will cost you in disk.
+- **Video or audio.** One toggle switches from an MP4 video to an MP3 rip, handy for podcasts and music.
+- **Choose where it saves.** Quick-pick chips for `Downloads`, `Desktop`, `Movies`, `Music`, or a dedicated `tubedrop` folder, plus a native folder picker.
 - **Subtitles in one tap.** Optional `.srt` in every available language.
 
 It runs as a local server on your own machine. **Files never leave your Mac**, and there's no third party in the middle.
 
 ## Privacy-first HD unlock
 
-The one genuinely tricky part of downloading from YouTube: sometimes it hides everything above 360p from anonymous tools. The honest fix is to read the YouTube cookies from a browser you're already logged into — that lifts the cap to 720p / 1080p / 4K.
+The one genuinely tricky part of downloading from YouTube: sometimes it hides everything above 360p from anonymous tools. The honest fix is to read the YouTube cookies from a browser you're already logged into, which lifts the cap to 720p / 1080p / 4K.
 
 The catch is that "let an app read your browser cookies" is exactly the kind of sentence that should make you suspicious. So tubedrop is loud about what it does and doesn't do:
 
@@ -62,7 +62,7 @@ The catch is that "let an app read your browser cookies" is exactly the kind of 
   lightSrc="/projects/tubedrop-hd-light.png"
   darkSrc="/projects/tubedrop-hd-dark.png"
   alt="tubedrop HD-unlock modal explaining that cookies are read locally by yt-dlp, never leave the Mac, and that it only talks to youtube.com, with a browser picker"
-  caption="The HD-unlock modal — it explains the trade-off before asking for anything"
+  caption="The HD-unlock modal explains the trade-off before asking for anything"
   width={1040}
   height={1312}
 />
@@ -87,16 +87,16 @@ In about 30 seconds the installer:
 - installs `yt-dlp` into a local virtual environment;
 - puts a `Tubedrop` shortcut on your Desktop.
 
-Everything stays inside the folder. Uninstalling is `rm -rf` — delete the folder and it's gone, no leftovers. A `Quit` button in the window's corner shuts the local server down cleanly, so there are no zombie processes squatting on a port.
+Everything stays inside the folder. Uninstalling is `rm -rf`: delete the folder and it's gone, no leftovers. A `Quit` button in the window's corner shuts the local server down cleanly, so there are no zombie processes squatting on a port.
 
 ## How I built it
 
-This was vibe-coding with **Claude Code**: I described what I wanted, then iterated on the UI, the installer, and the cookie flow. The code isn't an engineering showcase — it's a *usefulness* showcase. The interesting work was product judgment: where to be opinionated (one window, obvious flow), where to be loud (the HD-unlock trade-off), and how to make the install boring enough that anyone can run it.
+This was vibe-coding with **Claude Code**: I described what I wanted, then iterated on the UI, the installer, and the cookie flow. The code isn't an engineering showcase; it's a *usefulness* showcase. The interesting work was product judgment: where to be opinionated (one window, obvious flow), where to be loud (the HD-unlock trade-off), and how to make the install boring enough that anyone can run it.
 
 Two principles I held to:
 
-- **I credit the core.** `yt-dlp`, `ffmpeg`, and especially [kaifcodec/ytconverter](https://github.com/kaifcodec/ytconverter) do the heavy lifting; the README says so plainly. I wrap good tools in better UX — I don't relabel someone else's work as mine.
-- **I close my own pain points fast, in public.** When I hit a solid CLI with no UX wrapper, I'll wrap it so it's not just *me* who can use it — and open-source the result.
+- **I credit the core.** `yt-dlp`, `ffmpeg`, and especially [kaifcodec/ytconverter](https://github.com/kaifcodec/ytconverter) do the heavy lifting; the README says so plainly. I wrap good tools in better UX; I don't relabel someone else's work as mine.
+- **I close my own pain points fast, in public.** When I hit a solid CLI with no UX wrapper, I'll wrap it so it's not just *me* who can use it, then open-source the result.
 
 It's MIT-licensed and the full source is on GitHub. Take it, fork it, send a PR.
 
