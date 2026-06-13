@@ -4,10 +4,13 @@ import SiteFooter from '../../components/SiteFooter.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import {
   aboutBlocks,
+  buildPersonSchema,
+  cvPath,
+  email,
   githubUsername,
   heroDisplayName,
   heroSubtitle,
-  linkedinUrl,
+  skillGroups,
   telegramUrl,
   uiCopy,
 } from '../../data/site-content';
@@ -17,31 +20,21 @@ import localeScriptUrl from '../../scripts/locale.js?url';
 import heroImage from '../../assets/main-hero.jpg';
 
 const avatarUrl = `https://avatars.githubusercontent.com/${githubUsername}?size=560`;
+const personEntity = buildPersonSchema('https://rebsem.ru/ru/about');
+personEntity.image = avatarUrl;
 const aboutSchema = {
   '@context': 'https://schema.org',
   '@type': 'ProfilePage',
   url: 'https://rebsem.ru/ru/about',
   name: `${heroDisplayName.ru} - Обо мне`,
   inLanguage: 'ru',
-  mainEntity: {
-    '@type': 'Person',
-    name: heroDisplayName.en,
-    alternateName: heroDisplayName.ru,
-    jobTitle: 'Product Manager (AI) / Product Engineer',
-    image: avatarUrl,
-    sameAs: [
-      `https://github.com/${githubUsername}`,
-      telegramUrl,
-      linkedinUrl,
-    ],
-    description: heroSubtitle.ru,
-  },
+  mainEntity: personEntity,
 };
 ---
 
 <Layout
   title={`${heroDisplayName.ru} - Обо мне`}
-  description="AI Product Manager в Prof-IT, который драйвит продукт через продуманное внедрение AI. Как я работаю, где приношу больше всего пользы и в какие роли открыт."
+  description="AI Product Manager в Prof-IT, который драйвит продукт через продуманное внедрение AI. Как я работаю, где приношу больше всего пользы, ключевые навыки и в какие роли открыт. Remote, GMT+5, открыт к релокации."
   schema={aboutSchema}
   alternate="/about"
 >
@@ -90,6 +83,22 @@ const aboutSchema = {
             ))}
           </div>
 
+          <section class="about-skills" aria-labelledby="about-skills-title">
+            <p class="about-block-eyebrow">{uiCopy.about.skillsEyebrow.ru}</p>
+            <h2 id="about-skills-title" class="about-block-title">{uiCopy.about.skillsTitle.ru}</h2>
+            <p class="about-skills-note">{uiCopy.about.skillsNote.ru}</p>
+            <div class="skill-groups">
+              {skillGroups.map((group) => (
+                <div class="skill-group">
+                  <p class="skill-group-label">{group.label.ru}</p>
+                  <ul class="skill-chips" aria-label={group.label.ru}>
+                    {group.items.map((item) => (<li class="skill-chip">{item}</li>))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </section>
+
           <div class="about-cta-card">
             <p class="about-cta-eyebrow">Связаться</p>
             <p class="about-cta-headline">Открыт к ролям AI Product Manager, где продукт двигается за счёт продуманного внедрения AI.</p>
@@ -100,6 +109,21 @@ const aboutSchema = {
                   <path d="M4 11l16 -8l-4 18l-5 -4l-3 3l1 -5l8 -7"/>
                 </svg>
                 {uiCopy.home.heroCtaPrimary.ru}
+              </a>
+              <a class="cta-button cta-secondary" href={`mailto:${email}`}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"/>
+                  <path d="M3 7l9 6l9 -6"/>
+                </svg>
+                {uiCopy.home.heroCtaEmail.ru}
+              </a>
+              <a class="cta-button cta-ghost" href={cvPath} target="_blank" rel="noreferrer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M14 3v4a1 1 0 0 0 1 1h4"/>
+                  <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"/>
+                  <path d="M12 11v6"/><path d="M9.5 14.5l2.5 2.5l2.5 -2.5"/>
+                </svg>
+                {uiCopy.footer.cv.ru}
               </a>
             </div>
           </div>

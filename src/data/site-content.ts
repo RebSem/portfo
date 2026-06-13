@@ -4,10 +4,23 @@ export const githubUsername = 'RebSem';
 export const telegramUrl = 'https://t.me/Michael_Semenov';
 export const email = 'perk77331@gmail.com';
 export const linkedinUrl = 'https://www.linkedin.com/in/mikhail-semenovv/';
+export const cvPath = '/cv.pdf';
 
 export const homePath = '/';
 export const aboutPath = '/about';
 export const blogPath = '/blog';
+
+/** Work format and availability signal — recruiter filters and LLMs key on this first. */
+export const workFormat: LocalizedText = {
+  ru: 'Remote · GMT+5 · открыт к релокации · RU native, EN working',
+  en: 'Remote · GMT+5 · open to relocation · RU native, EN working',
+};
+
+/** Compact timezone/format chip shown next to the hero status. */
+export const locationSignal: LocalizedText = {
+  ru: 'Remote · GMT+5 · релокация',
+  en: 'Remote · GMT+5 · relocation',
+};
 
 export const heroFallbackName = 'Mikhail Semenov';
 export const heroDisplayName: LocalizedText = {
@@ -16,8 +29,8 @@ export const heroDisplayName: LocalizedText = {
 };
 
 export const heroSubtitle: LocalizedText = {
-  ru: 'AI Product Manager: веду продукт и двигаю его за счёт продуманного внедрения AI. Сейчас фокус на голосовых AI-агентах для B2B в Prof-IT. Параллельно собираю пет-проекты от идеи до релиза с AI-агентами (Claude Code, Codex) и проверяю гипотезы за дни, а не за спринты.',
-  en: 'AI Product Manager: I own the product and move it through thoughtful AI adoption. Right now my focus is voice AI agents for B2B at Prof-IT. Alongside that I ship side projects end-to-end with AI agents (Claude Code, Codex), validating hypotheses in days, not sprints.',
+  ru: 'AI Product Manager: веду продукт и двигаю его за счёт продуманного внедрения AI. Сейчас фокус на голосовых AI-агентах для B2B в Prof-IT. Параллельно собираю пет-проекты от идеи до релиза с AI-агентами (Claude Code, Codex) и проверяю гипотезы за дни, а не за спринты. Remote, GMT+5, открыт к релокации.',
+  en: 'AI Product Manager: I own the product and move it through thoughtful AI adoption. Right now my focus is voice AI agents for B2B at Prof-IT. Alongside that I ship side projects end-to-end with AI agents (Claude Code, Codex), validating hypotheses in days, not sprints. Remote, GMT+5, open to relocation.',
 };
 
 export const currentRole: LocalizedText = {
@@ -124,35 +137,137 @@ export const aboutBlocks: AboutBlock[] = [
     title: { ru: 'AI Product Manager, кто драйвит продукт через AI', en: 'AI Product Manager who drives the product through AI' },
     body: [
       {
-        ru: 'Открыт к ролям AI Product Manager, где я отвечаю за продукт и двигаю его за счёт продуманного, нужного внедрения AI, а не AI ради AI. Голос лишь один из доменов, где я это уже делал; интересны любые продукты, где AI закрывает реальную бизнес-задачу. Английский рабочий, B1+, готов подтянуть до зрелого B2 под нужды роли.',
-        en: 'Open to AI Product Manager roles where I own the product and move it through thoughtful, purposeful AI adoption, not AI for its own sake. Voice is just one domain where I’ve already done this; I’m interested in any product where AI solves a real business job. English at working B1+, willing to grow into mature B2 as the role demands.',
+        ru: 'Открыт к ролям AI Product Manager, где я отвечаю за продукт и двигаю его за счёт продуманного, нужного внедрения AI, а не AI ради AI. Голос лишь один из доменов, где я это уже делал; интересны любые продукты, где AI закрывает реальную бизнес-задачу. Формат: remote (живу в зоне GMT+5), открыт к релокации. Русский родной, английский рабочий, уверенно в письменном и async-общении.',
+        en: 'Open to AI Product Manager roles where I own the product and move it through thoughtful, purposeful AI adoption, not AI for its own sake. Voice is just one domain where I’ve already done this; I’m interested in any product where AI solves a real business job. Format: remote (I’m in the GMT+5 zone), open to relocation. Russian native, English at working proficiency, comfortable in written and async communication.',
       },
+    ],
+  },
+  {
+    eyebrow: { ru: '06 · Где буду полезен меньше', en: '06 · Where I’m a weaker fit' },
+    title: { ru: 'Честно про anti-fit', en: 'An honest anti-fit' },
+    body: [
+      {
+        ru: 'Чтобы не тратить ваше и своё время, вот где я не лучший выбор:',
+        en: 'So we don’t waste each other’s time, here is where I’m not the best pick:',
+      },
+    ],
+    bullets: [
+      { ru: 'Чисто исследовательский ML/data science без продуктового слоя поверх', en: 'Pure research ML / data science with no product layer on top' },
+      { ru: 'Роль звена в длинной цепочке согласований без ownership на задаче', en: 'A single step in a long approval chain with no ownership over the problem' },
+      { ru: 'Продукт, где AI добавляют «для галочки», а не под реальную бизнес-задачу', en: 'Products that add AI as a checkbox rather than for a real business job' },
+      { ru: 'Роли, где английский нужен на уровне ведущего публичных переговоров на C-уровне (письменно и async комфортно)', en: 'Roles needing C-level live negotiation in English (written and async are comfortable)' },
     ],
   },
 ];
 
-export const aboutParagraphs: LocalizedText[] = [
+/** Grouped skills — rendered on About and mirrored into JSON-LD knowsAbout. */
+export interface SkillGroup {
+  label: LocalizedText;
+  items: string[];
+}
+
+export const skillGroups: SkillGroup[] = [
   {
-    ru: 'С начала 2022 года работаю Product Manager в Prof-IT. Занимался голосовыми роботами в zvonobot и effebot, а в 2026-м запустил и развиваю новый продукт группы: голосовых AI-агентов для B2B. За 2026 год через них прошло более 500 000 минут разговоров от новых клиентов.',
-    en: 'Product Manager at Prof-IT since early 2022. Worked on voice automation at zvonobot and effebot, and in 2026 launched and have been scaling the group’s new product: voice AI agents for B2B. The new product has handled over 500,000 minutes of new-customer conversations in 2026.',
+    label: { ru: 'Продукт', en: 'Product' },
+    items: [
+      'Product discovery',
+      'Product strategy',
+      'Roadmap',
+      'Метрики · unit-экономика',
+      'CustDev',
+      'B2B SaaS',
+      'Go-to-market',
+    ],
   },
   {
-    ru: 'Где полезен сильнее всего: продукты, где AI встроен в реальный workflow, а не работает как демо. Особенно голосовые и conversational AI-сценарии, B2B-телефония, customer engagement, операционные системы для отделов продаж и поддержки.',
-    en: 'Where I add the most value: products where AI is embedded into a real workflow rather than living as a demo. Especially voice and conversational AI, B2B telephony, customer engagement, and operational tools for sales and support teams.',
+    label: { ru: 'AI / LLM', en: 'AI / LLM' },
+    items: [
+      'Voice AI agents',
+      'Conversational AI',
+      'LLM orchestration',
+      'Prompt engineering',
+      'RAG',
+      'AI-в-workflow (не demo)',
+    ],
   },
   {
-    ru: 'Как работаю: пишу код пет-проектов с AI-агентами Claude Code и Codex. Это позволяет проверять гипотезы за дни, а не за спринты, и говорить с инженерами на одном языке. Каждый пет-проект на сайте прошёл путь от идеи до working release за 1–7 дней.',
-    en: 'How I work: I build my pet projects with AI coding agents (Claude Code and Codex). That lets me validate hypotheses in days rather than sprints, and stay on the same page with engineers. Each pet project on this site went from idea to a working release in 1–7 days.',
+    label: { ru: 'Delivery', en: 'Delivery' },
+    items: [
+      'Spec → review → ship',
+      'Agent-native (Claude Code, Codex)',
+      'Lean Startup · 0→1',
+      'Быстрая валидация гипотез',
+    ],
   },
   {
-    ru: 'Что важно для роли: автономность и ownership на ambiguous-задачах, короткий цикл от идеи до проверки, продуктовая логика поверх AI, а не AI ради AI. Сильнее всего полезен в командах, где можно вести задачу end-to-end, а не быть звеном в длинной цепочке согласований.',
-    en: 'What matters in a role: autonomy and ownership on ambiguous problems, a short loop from idea to validation, product logic on top of AI rather than AI for its own sake. I am at my best in teams where I can carry a problem end-to-end instead of being one step in a long approval chain.',
-  },
-  {
-    ru: 'Открыт к ролям AI Product Manager, где я веду продукт и двигаю его за счёт продуманного, нужного внедрения AI. Голос лишь один из доменов, где я это делал; интересны любые продукты, где AI закрывает реальную бизнес-задачу. Английский рабочий, B1+, готов подтянуть до зрелого B2 под нужды роли.',
-    en: 'Open to AI Product Manager roles where I own the product and move it through thoughtful, purposeful AI adoption. Voice is just one domain where I have done this; I am interested in any product where AI solves a real business job. English at working B1+, willing to grow into mature B2 as the role demands.',
+    label: { ru: 'Tech (общий язык с инженерами)', en: 'Tech (shared language with engineers)' },
+    items: [
+      'React / Next.js',
+      'TypeScript',
+      'Python / Flask',
+      'PostgreSQL / Redis',
+      'REST · интеграции',
+      'Телефония',
+    ],
   },
 ];
+
+/** Flat domains/skills for Person.knowsAbout in structured data. */
+export const knowsAbout: string[] = [
+  'AI Product Management',
+  'Voice AI agents',
+  'Conversational AI',
+  'LLM orchestration',
+  'Prompt engineering',
+  'RAG',
+  'B2B SaaS',
+  'Product discovery',
+  'Product strategy',
+  'Unit economics',
+  'AI-assisted delivery',
+  'B2B telephony',
+];
+
+/**
+ * Single source of truth for the Person entity in JSON-LD.
+ * Used by every page so structured data never drifts between routes.
+ * `url` is page-specific and passed in by the caller.
+ */
+export function buildPersonSchema(url: string): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: heroDisplayName.en,
+    alternateName: heroDisplayName.ru,
+    jobTitle: 'AI Product Manager',
+    description:
+      'AI Product Manager at Prof-IT leading voice AI agents for B2B. Ships products with AI coding agents (Claude Code, Codex), validating hypotheses in days. Remote, GMT+5, open to relocation.',
+    url,
+    image: 'https://rebsem.ru/main-hero.jpg',
+    email: `mailto:${email}`,
+    knowsLanguage: ['ru', 'en'],
+    knowsAbout,
+    worksFor: {
+      '@type': 'Organization',
+      name: 'Prof-IT',
+    },
+    hasOccupation: {
+      '@type': 'Occupation',
+      name: 'AI Product Manager',
+      skills:
+        'Product management, voice AI agents, LLM orchestration, B2B SaaS, AI-assisted delivery',
+    },
+    seeks: {
+      '@type': 'Demand',
+      name: 'AI Product Manager roles where the product grows through thoughtful AI adoption',
+    },
+    sameAs: [
+      `https://github.com/${githubUsername}`,
+      telegramUrl,
+      linkedinUrl,
+    ],
+  };
+}
 
 export interface AgentOpsStep {
   k: string;
@@ -231,6 +346,18 @@ export const uiCopy = {
     heroCtaPrimary: {
       ru: 'Написать в Telegram',
       en: 'Message me on Telegram',
+    },
+    heroCtaEmail: {
+      ru: 'Написать на почту',
+      en: 'Email me',
+    },
+    heroCtaLinkedin: {
+      ru: 'Написать в LinkedIn',
+      en: 'Connect on LinkedIn',
+    },
+    heroCtaCv: {
+      ru: 'Скачать CV',
+      en: 'Download CV',
     },
     metricLabel: {
       ru: 'Сигнал 2026 · голосовые AI-агенты Prof-IT',
@@ -336,7 +463,12 @@ export const uiCopy = {
       ru: 'Как я работаю на стыке продукта, delivery, AI и инженерии.',
       en: 'How I work across product, delivery, AI, and engineering.',
     },
+    skillsEyebrow: { ru: 'Навыки', en: 'Skills' },
     skillsTitle: { ru: 'Ключевые навыки', en: 'Core skills' },
+    skillsNote: {
+      ru: 'Сгруппировано под то, что важно для роли AI Product Manager: продукт, AI/LLM, delivery и общий язык с инженерами.',
+      en: 'Grouped around what matters for an AI Product Manager role: product, AI/LLM, delivery, and a shared language with engineers.',
+    },
   },
   projects: {
     title: { ru: 'Проекты', en: 'Projects' },
@@ -402,11 +534,11 @@ export const uiCopy = {
       ru: 'Здесь я отвечаю за продуктовую логику, метрики и delivery end-to-end.',
       en: 'Here I own product logic, metrics, and end-to-end delivery.',
     },
-    petTitle: { ru: 'Пет-проекты', en: 'Pet projects' },
-    petEyebrow: { ru: '02 · Built in days, not sprints', en: '02 · Built in days, not sprints' },
+    petTitle: { ru: 'Довожу любую идею до релиза за дни', en: 'I take any idea to release in days' },
+    petEyebrow: { ru: '02 · Скорость и общий язык с инженерами', en: '02 · Speed and a shared language with engineers' },
     petNote: {
-      ru: 'Каждый собран лично с AI-агентами (Claude Code, Codex) за 1–7 дней от идеи до working release. Так я быстро валидирую гипотезы и остаюсь на одном языке с инженерами.',
-      en: 'Each one personally built with AI coding agents (Claude Code, Codex) in 1–7 days from idea to a working release. This is how I validate hypotheses fast and stay on the same page with engineers.',
+      ru: 'Не хобби, а доказательство: каждый проект собран лично с AI-агентами (Claude Code, Codex) за 1–7 дней от идеи до working release. Так я быстро валидирую гипотезы и говорю с инженерами на одном языке. Под каждым указано, что именно он доказывает.',
+      en: 'Not hobbies but proof: each project was personally built with AI coding agents (Claude Code, Codex) in 1–7 days from idea to a working release. That is how I validate hypotheses fast and speak the same language as engineers. Each one notes what it proves.',
     },
     empty: {
       ru: 'Сейчас собираю свежие кейсы. Скоро здесь появятся подробные разборы.',
@@ -453,6 +585,11 @@ export const uiCopy = {
       ru: 'Пишите, если ищете AI-продакта.',
       en: 'Write me if you are hiring an AI product lead.',
     },
+    frame: {
+      ru: 'Открыт к ролям AI Product Manager и к продуктам, где AI закрывает реальную бизнес-задачу. Проще всего написать напрямую: выбирайте удобный канал.',
+      en: 'Open to AI Product Manager roles and to products where AI solves a real business job. The easiest way to reach me is directly: pick whichever channel suits you.',
+    },
+    cv: { ru: 'Скачать CV (PDF)', en: 'Download CV (PDF)' },
   },
   localeToggleLabel: {
     ru: 'Switch to English',
