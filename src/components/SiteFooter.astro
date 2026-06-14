@@ -1,6 +1,6 @@
 ---
 import SocialLinks from './SocialLinks.astro';
-import { email, linkedinUrl, telegramUrl, uiCopy } from '../data/site-content';
+import { uiCopy } from '../data/site-content';
 
 interface Props {
   noteRu?: string;
@@ -22,24 +22,9 @@ const note = locale === 'ru' ? noteRu : noteEn;
   </div>
 
   <div class="footer-inner">
-    <div class="footer-contact">
-      <p class="footer-eyebrow">{uiCopy.footer.eyebrow[locale]}</p>
-      <p class="footer-pitch">{uiCopy.footer.pitch[locale]}</p>
-      <p class="footer-frame">{uiCopy.footer.frame[locale]}</p>
-      <div class="footer-actions">
-        <a class="footer-link" href={telegramUrl} target="_blank" rel="noreferrer">
-          {telegramUrl.replace('https://', '')}
-        </a>
-        <span class="footer-sep" aria-hidden="true">·</span>
-        <a class="footer-link" href={`mailto:${email}`}>{email}</a>
-        <span class="footer-sep" aria-hidden="true">·</span>
-        <a class="footer-link" href={linkedinUrl} target="_blank" rel="noreferrer">LinkedIn</a>
-      </div>
-    </div>
-
-    <div class="footer-side">
-      <SocialLinks />
-      <p class="footer-note">{note}</p>
-    </div>
+    <p class="footer-eyebrow">{uiCopy.footer.eyebrow[locale]}</p>
+    <p class="footer-pitch">{uiCopy.footer.pitch[locale]}</p>
+    <SocialLinks />
+    <p class="footer-note">{note}</p>
   </div>
 </footer>

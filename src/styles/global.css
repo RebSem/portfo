@@ -1970,19 +1970,14 @@ html[data-theme='dark'] .theme-icon-sun {
   padding-bottom: 2.4rem;
 }
 
-/* Composed footer: contact framing on the left (audit 7.10 — "when is it
-   appropriate to write"), social + note on the right. Deliberately asymmetric. */
+/* Composed footer: a single centered column — eyebrow, pitch, social icons,
+   note. Contact details live in the icons; no duplicate text links. */
 .footer-inner {
   display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
-  align-items: start;
-  gap: 1.25rem 3rem;
+  justify-items: center;
+  text-align: center;
+  gap: 0.7rem;
   padding-top: 2rem;
-}
-
-.footer-contact {
-  display: grid;
-  gap: 0.55rem;
 }
 
 .footer-eyebrow {
@@ -2000,54 +1995,9 @@ html[data-theme='dark'] .theme-icon-sun {
   color: color-mix(in oklab, var(--foreground) 82%, transparent);
 }
 
-.footer-frame {
-  max-width: 52ch;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: color-mix(in oklab, var(--foreground) 64%, transparent);
-}
-
-.footer-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.6rem;
-  margin-top: 0.15rem;
-}
-
-.footer-link {
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
-  color: color-mix(in oklab, var(--foreground) 70%, transparent);
-  text-decoration-color: color-mix(in oklab, var(--foreground) 30%, transparent);
-}
-
-.footer-sep {
-  color: color-mix(in oklab, var(--foreground) 35%, transparent);
-}
-
-.footer-side {
-  display: grid;
-  justify-items: end;
-  gap: 0.5rem;
-}
-
-.footer-side .social-links {
-  justify-content: flex-end;
-}
-
-@media (max-width: 720px) {
-  .footer-inner {
-    grid-template-columns: 1fr;
-  }
-
-  .footer-side {
-    justify-items: start;
-  }
-
-  .footer-side .social-links {
-    justify-content: flex-start;
-  }
+.footer-inner .social-links {
+  justify-content: center;
+  margin-top: 0.2rem;
 }
 
 .social-links {
@@ -2092,15 +2042,9 @@ html[data-theme='dark'] .theme-icon-sun {
 
 .footer-note {
   margin: 0;
-  text-align: right;
+  text-align: center;
   font-size: 0.82rem;
   color: color-mix(in oklab, var(--foreground) 76%, transparent);
-}
-
-@media (max-width: 720px) {
-  .footer-note {
-    text-align: left;
-  }
 }
 
 @media (max-width: 980px) {

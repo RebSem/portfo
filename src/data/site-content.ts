@@ -572,10 +572,6 @@ export const uiCopy = {
       ru: 'Пишите, если ищете AI-продакта.',
       en: 'Write me if you are hiring an AI product lead.',
     },
-    frame: {
-      ru: 'Открыт к ролям AI Product Manager и к продуктам, где AI закрывает реальную бизнес-задачу. Проще всего написать напрямую: выбирайте удобный канал.',
-      en: 'Open to AI Product Manager roles and to products where AI solves a real business job. The easiest way to reach me is directly: pick whichever channel suits you.',
-    },
   },
   localeToggleLabel: {
     ru: 'Switch to English',
