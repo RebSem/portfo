@@ -572,6 +572,80 @@ html[data-theme='dark'] .theme-icon-sun {
   border-radius: 1px;
 }
 
+/* Core skills — visible for human scan, source for JSON-LD knowsAbout. */
+.about-skills {
+  display: grid;
+  gap: 0.55rem;
+  padding: 1.6rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.about-skills-note {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  max-width: 60ch;
+  color: color-mix(in oklab, var(--foreground) 72%, transparent);
+}
+
+.skill-groups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem 1.6rem;
+  margin-top: 0.7rem;
+}
+
+@media (max-width: 560px) {
+  .skill-groups {
+    grid-template-columns: 1fr;
+  }
+}
+
+.skill-group {
+  display: grid;
+  gap: 0.55rem;
+  align-content: start;
+}
+
+.skill-group-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--foreground) 60%, transparent);
+}
+
+.skill-chips {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.skill-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.65rem;
+  border-radius: 0.55rem;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--surface) 70%, transparent);
+  font-size: 0.82rem;
+  line-height: 1.2;
+  color: color-mix(in oklab, var(--foreground) 86%, transparent);
+  transition:
+    border-color var(--dur-fast) var(--ease-out-strong),
+    background-color var(--dur-fast) var(--ease-out-strong);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .skill-chip:hover {
+    border-color: color-mix(in oklab, var(--accent) 45%, var(--border));
+    background: color-mix(in oklab, var(--surface) 85%, var(--accent) 5%);
+  }
+}
+
 .about-cta-card {
   display: grid;
   gap: 1.1rem;
@@ -773,6 +847,22 @@ html[data-theme='dark'] .theme-icon-sun {
 
 .cta-secondary:active {
   transform: scale(0.98);
+}
+
+/* Status + location signal row in the hero. */
+.hero-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 0.75rem;
+}
+
+.hero-location {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--foreground) 62%, transparent);
 }
 
 .profile-social-links {
@@ -1348,6 +1438,25 @@ html[data-theme='dark'] .theme-icon-sun {
   margin-top: 0.15rem;
 }
 
+/* "What this proves" line — turns a pet project into a signal, not a hobby. */
+.project-card-pet .pet-proof {
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: color-mix(in oklab, var(--foreground) 80%, transparent);
+  padding-top: 0.5rem;
+  border-top: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+}
+
+.project-card-pet .pet-proof-label {
+  display: inline-block;
+  margin-right: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in oklab, var(--accent) 90%, var(--foreground));
+}
+
 .project-card-pet .pet-ship-time {
   display: inline-flex;
   align-items: center;
@@ -1861,19 +1970,14 @@ html[data-theme='dark'] .theme-icon-sun {
   padding-bottom: 2.4rem;
 }
 
-/* Composed footer: contact framing on the left (audit 7.10 — "when is it
-   appropriate to write"), social + note on the right. Deliberately asymmetric. */
+/* Composed footer: a single centered column — eyebrow, pitch, social icons,
+   note. Contact details live in the icons; no duplicate text links. */
 .footer-inner {
   display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
-  align-items: start;
-  gap: 1.25rem 3rem;
+  justify-items: center;
+  text-align: center;
+  gap: 0.7rem;
   padding-top: 2rem;
-}
-
-.footer-contact {
-  display: grid;
-  gap: 0.55rem;
 }
 
 .footer-eyebrow {
@@ -1891,47 +1995,9 @@ html[data-theme='dark'] .theme-icon-sun {
   color: color-mix(in oklab, var(--foreground) 82%, transparent);
 }
 
-.footer-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.6rem;
-  margin-top: 0.15rem;
-}
-
-.footer-link {
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
-  color: color-mix(in oklab, var(--foreground) 70%, transparent);
-  text-decoration-color: color-mix(in oklab, var(--foreground) 30%, transparent);
-}
-
-.footer-sep {
-  color: color-mix(in oklab, var(--foreground) 35%, transparent);
-}
-
-.footer-side {
-  display: grid;
-  justify-items: end;
-  gap: 0.5rem;
-}
-
-.footer-side .social-links {
-  justify-content: flex-end;
-}
-
-@media (max-width: 720px) {
-  .footer-inner {
-    grid-template-columns: 1fr;
-  }
-
-  .footer-side {
-    justify-items: start;
-  }
-
-  .footer-side .social-links {
-    justify-content: flex-start;
-  }
+.footer-inner .social-links {
+  justify-content: center;
+  margin-top: 0.2rem;
 }
 
 .social-links {
@@ -1976,15 +2042,9 @@ html[data-theme='dark'] .theme-icon-sun {
 
 .footer-note {
   margin: 0;
-  text-align: right;
+  text-align: center;
   font-size: 0.82rem;
   color: color-mix(in oklab, var(--foreground) 76%, transparent);
-}
-
-@media (max-width: 720px) {
-  .footer-note {
-    text-align: left;
-  }
 }
 
 @media (max-width: 980px) {

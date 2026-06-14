@@ -1,6 +1,17 @@
-# Mikhail Semenov
+# Mikhail Semenov — AI Product Manager
 
-Personal portfolio site focused on product engineering, practical AI integration, and weekly progress updates.
+AI Product Manager at Prof-IT. I lead voice AI agents for B2B (zvonobot, effebot, p1sms)
+and ship products end-to-end with AI coding agents (Claude Code, Codex), validating
+hypotheses in days, not sprints. In 2026 the voice AI product I lead has handled
+500,000+ minutes of new-customer conversations.
+
+## Role and focus
+- Title: AI Product Manager
+- Company: Prof-IT (since early 2022)
+- Current focus: voice AI agents for B2B; AI embedded into real workflows
+- Open to: AI Product Manager roles where the product grows through thoughtful AI adoption
+- Languages: Russian (native), English (working proficiency, comfortable in written and async)
+- Work format: remote, GMT+5, open to relocation
 
 ## Canonical site
 - https://rebsem.ru/
@@ -8,15 +19,26 @@ Personal portfolio site focused on product engineering, practical AI integration
 ## Main pages
 - Home: https://rebsem.ru/
 - About: https://rebsem.ru/about
-- Blog index: https://rebsem.ru/blog
+- Blog: https://rebsem.ru/blog
+
+## Selected work
+- Zvonobot AI: voice AI-agent platform for B2B (Prof-IT), launched in 2026 and run end-to-end (product, UX, engineering). Multi-tenant SaaS console over telephony infrastructure. Case: https://rebsem.ru/projects/zvonobot-ai-en/
+- cursivo: AI-powered CRM for car rental, led from product logic to release. https://cursivo.xyz
+- obrabot: internal voice AI analytics dashboard (Prof-IT)
+- Pet projects shipped in 1–7 days with AI agents (bazabot, Zodial, Slopiq, tubedrop, portfo)
+
+## Skills
+Product: product discovery, product strategy, roadmap, metrics and unit economics, CustDev, B2B SaaS, go-to-market.
+AI / LLM: voice AI agents, conversational AI, LLM orchestration, prompt engineering, RAG, AI in real workflows.
+Delivery: spec to review to ship, agent-native development (Claude Code, Codex), Lean Startup, 0 to 1, fast hypothesis validation.
+Tech (shared language with engineers): React/Next.js, TypeScript, Python/Flask, PostgreSQL/Redis, REST and integrations, telephony.
 
 ## Content notes
-- Blog posts are published in RU and EN.
-- Language is switchable in the UI and matched to browser preference by default.
-- Portfolio projects and engineering notes are maintained directly in this repository.
+- Blog and project cases are published in RU and EN.
+- This site is open source (Astro): https://github.com/RebSem/portfo
 
 ## Contact
-- GitHub: https://github.com/RebSem
 - Telegram: https://t.me/Michael_Semenov
-- LinkedIn: https://www.linkedin.com/in/mikhail-semenovv/
 - Email: perk77331@gmail.com
+- LinkedIn: https://www.linkedin.com/in/mikhail-semenovv/
+- GitHub: https://github.com/RebSem

@@ -1,0 +1,24 @@
+{
+  "name": "Mikhail Semenov — AI Product Manager",
+  "short_name": "M. Semenov",
+  "description": "AI Product Manager at Prof-IT leading voice AI agents for B2B. Ships products with AI coding agents, validating hypotheses in days.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "browser",
+  "lang": "en",
+  "theme_color": "#0c0d0e",
+  "background_color": "#f4f4f1",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon-32.png",
+      "type": "image/png",
+      "sizes": "32x32"
+    }
+  ]
+}

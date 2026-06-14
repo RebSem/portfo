@@ -3,9 +3,11 @@ import { email, githubUsername, linkedinUrl, telegramUrl, uiCopy } from '../data
 
 interface Props {
   className?: string;
+  /** Drop the Telegram icon (used where a dedicated Telegram CTA button is already shown). */
+  hideTelegram?: boolean;
 }
 
-const { className = 'social-links' } = Astro.props;
+const { className = 'social-links', hideTelegram = false } = Astro.props;
 const profileUrl = `https://github.com/${githubUsername}`;
 const locale = Astro.currentLocale === 'ru' ? 'ru' : 'en';
 ---
@@ -25,18 +27,20 @@ const locale = Astro.currentLocale === 'ru' ? 'ru' : 'en';
     </svg>
   </a>
 
-  <a
-    class="social-link"
-    href={telegramUrl}
-    target="_blank"
-    rel="noreferrer"
-    aria-label={uiCopy.social.telegram[locale]}
-  >
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-      <path d="M4 11l16 -8l-4 18l-5 -4l-3 3l1 -5l8 -7"></path>
-    </svg>
-  </a>
+  {!hideTelegram && (
+    <a
+      class="social-link"
+      href={telegramUrl}
+      target="_blank"
+      rel="noreferrer"
+      aria-label={uiCopy.social.telegram[locale]}
+    >
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+        <path d="M4 11l16 -8l-4 18l-5 -4l-3 3l1 -5l8 -7"></path>
+      </svg>
+    </a>
+  )}
 
   <a
     class="social-link"

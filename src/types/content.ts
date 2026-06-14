@@ -21,5 +21,9 @@ export interface ProjectItem {
   placeholder?: boolean;
   tier?: ProjectTier;
   shipTime?: LocalizedText;
+  /** One line on what shipping this project proves (product taste, speed, AI-in-workflow). */
+  proof?: LocalizedText;
+  /** Lower sorts first within the pet tier; AI/product-relevant projects lead. */
+  petOrder?: number;
 }
 

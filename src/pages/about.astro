@@ -4,11 +4,12 @@ import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import {
   aboutBlocks,
+  buildPersonSchema,
   githubUsername,
   heroDisplayName,
   heroFallbackName,
   heroSubtitle,
-  linkedinUrl,
+  skillGroups,
   telegramUrl,
   uiCopy,
 } from '../data/site-content';
@@ -18,31 +19,21 @@ import localeScriptUrl from '../scripts/locale.js?url';
 import heroImage from '../assets/main-hero.jpg';
 
 const avatarUrl = `https://avatars.githubusercontent.com/${githubUsername}?size=560`;
+const personEntity = buildPersonSchema('https://rebsem.ru/about');
+personEntity.image = avatarUrl;
 const aboutSchema = {
   '@context': 'https://schema.org',
   '@type': 'ProfilePage',
   url: 'https://rebsem.ru/about',
   name: `${heroFallbackName} - About`,
   inLanguage: 'en',
-  mainEntity: {
-    '@type': 'Person',
-    name: heroDisplayName.en,
-    alternateName: heroDisplayName.ru,
-    jobTitle: 'Product Manager (AI) / Product Engineer',
-    image: avatarUrl,
-    sameAs: [
-      `https://github.com/${githubUsername}`,
-      telegramUrl,
-      linkedinUrl,
-    ],
-    description: heroSubtitle.en,
-  },
+  mainEntity: personEntity,
 };
 ---
 
 <Layout
   title={`${heroFallbackName} - About`}
-  description="AI Product Manager at Prof-IT who drives the product through thoughtful AI adoption. How I work, where I add the most value, and what kind of role I am open to."
+  description="AI Product Manager at Prof-IT who drives the product through thoughtful AI adoption. How I work, where I add the most value, my core skills, and what kind of role I am open to. Remote, GMT+5, open to relocation."
   schema={aboutSchema}
   alternate="/ru/about"
 >
@@ -90,6 +81,22 @@ const aboutSchema = {
               </article>
             ))}
           </div>
+
+          <section class="about-skills" aria-labelledby="about-skills-title">
+            <p class="about-block-eyebrow">{uiCopy.about.skillsEyebrow.en}</p>
+            <h2 id="about-skills-title" class="about-block-title">{uiCopy.about.skillsTitle.en}</h2>
+            <p class="about-skills-note">{uiCopy.about.skillsNote.en}</p>
+            <div class="skill-groups">
+              {skillGroups.map((group) => (
+                <div class="skill-group">
+                  <p class="skill-group-label">{group.label.en}</p>
+                  <ul class="skill-chips" aria-label={group.label.en}>
+                    {group.items.map((item) => (<li class="skill-chip">{item}</li>))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </section>
 
           <div class="about-cta-card">
             <p class="about-cta-eyebrow">Get in touch</p>

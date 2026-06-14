@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Mikhail Semenov — AI Product Manager — CV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #14181f;
+    --muted: #5a6068;
+    --faint: #888d94;
+    --accent: #00a06b;
+    --accent-deep: #00794f;
+    --border: #e2e3dd;
+    --surface: #f7f8f4;
+    --font-sans: 'Geist', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    --font-mono: 'Geist Mono', 'JetBrains Mono', Menlo, monospace;
+    --font-serif: 'Newsreader', Georgia, serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  @page {
+    size: A4;
+    margin: 11mm 0 9mm;
+  }
+
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  body {
+    font-family: var(--font-sans);
+    color: var(--fg);
+    background: var(--bg);
+    font-size: 9.1pt;
+    line-height: 1.38;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page { width: 182mm; margin: 0 auto; padding: 0 14mm; }
+
+  /* ---- Header ---- */
+  .head { display: flex; justify-content: space-between; align-items: flex-end; gap: 1.5rem; padding-bottom: 12px; border-bottom: 1.5px solid var(--fg); }
+  .head-left { min-width: 0; }
+  .name { font-size: 22pt; font-weight: 600; letter-spacing: -0.02em; line-height: 1.05; }
+  .name .accent { color: var(--accent); }
+  .role { margin-top: 4px; font-family: var(--font-serif); font-size: 12.5pt; font-style: italic; color: var(--muted); }
+  .tagline { margin-top: 7px; font-size: 9pt; color: var(--muted); max-width: 105mm; line-height: 1.45; }
+  .head-right { text-align: right; font-family: var(--font-mono); font-size: 7.7pt; line-height: 1.7; color: var(--muted); white-space: nowrap; }
+  .head-right a { color: var(--accent-deep); text-decoration: none; }
+  .head-right .row span { color: var(--faint); }
+
+  /* ---- Signal strip ---- */
+  .signals { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 11px; }
+  .signal { font-family: var(--font-mono); font-size: 7.4pt; letter-spacing: 0.02em; text-transform: uppercase; color: var(--accent-deep); border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border)); background: color-mix(in srgb, var(--accent) 7%, transparent); border-radius: 5px; padding: 3px 8px; }
+
+  /* ---- Layout ---- */
+  .body { display: grid; grid-template-columns: 1fr; gap: 0; margin-top: 13px; }
+
+  section { margin-top: 11px; }
+  .sec-title { font-family: var(--font-mono); font-size: 7.6pt; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); padding-bottom: 4px; margin-bottom: 7px; border-bottom: 1px solid var(--border); }
+
+  .lead { font-size: 9.6pt; line-height: 1.5; color: var(--fg); }
+  .lead strong { font-weight: 600; }
+
+  /* metric band */
+  .metric { display: flex; align-items: baseline; gap: 10px; margin-top: 8px; padding: 8px 12px; border: 1px solid var(--border); border-left: 2.5px solid var(--accent); border-radius: 7px; background: var(--surface); }
+  .metric .num { font-size: 15pt; font-weight: 600; letter-spacing: -0.01em; color: var(--fg); }
+  .metric .num span { color: var(--accent); }
+  .metric .cap { font-size: 8.6pt; color: var(--muted); line-height: 1.35; }
+
+  /* experience */
+  .job { margin-bottom: 9px; }
+  .job:last-child { margin-bottom: 0; }
+  .job-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+  .job-title { font-size: 10pt; font-weight: 600; letter-spacing: -0.01em; }
+  .job-title .co { color: var(--accent-deep); }
+  .job-meta { font-family: var(--font-mono); font-size: 7.6pt; color: var(--faint); white-space: nowrap; }
+  .job-sub { font-family: var(--font-serif); font-style: italic; font-size: 8.8pt; color: var(--muted); margin-top: 1px; }
+  ul.pts { list-style: none; margin-top: 5px; }
+  ul.pts li { position: relative; padding-left: 13px; margin-bottom: 3px; line-height: 1.36; color: #2a2f37; }
+  ul.pts li::before { content: ''; position: absolute; left: 0; top: 6.5px; width: 5px; height: 1.5px; background: var(--accent); border-radius: 1px; }
+  ul.pts li b { font-weight: 600; color: var(--fg); }
+
+  /* skills + two-col blocks */
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 9px 22px; }
+  .skill-row { break-inside: avoid; }
+  .skill-label { font-family: var(--font-mono); font-size: 7.4pt; letter-spacing: 0.05em; text-transform: uppercase; color: var(--faint); margin-bottom: 3px; }
+  .skill-val { font-size: 8.8pt; line-height: 1.4; color: #2a2f37; }
+
+  /* projects grid */
+  .projs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 18px; }
+  .proj { break-inside: avoid; }
+  .proj-name { font-weight: 600; font-size: 9.2pt; }
+  .proj-name .tag { font-family: var(--font-mono); font-size: 6.8pt; font-weight: 400; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent-deep); margin-left: 5px; }
+  .proj-desc { font-size: 8.4pt; color: var(--muted); line-height: 1.38; margin-top: 1px; }
+
+  .meta-line { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 8.8pt; color: #2a2f37; }
+  .meta-line .k { font-family: var(--font-mono); font-size: 7.4pt; text-transform: uppercase; letter-spacing: 0.04em; color: var(--faint); margin-right: 5px; }
+
+  .foot { margin-top: 16px; padding-top: 8px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 7pt; color: var(--faint); }
+  .foot a { color: var(--accent-deep); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="head">
+    <div class="head-left">
+      <div class="name"><span class="accent">AI</span> Product Manager</div>
+      <div class="role">Mikhail Semenov · Михаил Семёнов</div>
+      <div class="tagline">I own the product and move it through thoughtful AI adoption. I ship end-to-end with AI coding agents, validating hypotheses in days, not sprints.</div>
+    </div>
+    <div class="head-right">
+      <div class="row"><a href="https://rebsem.ru">rebsem.ru</a></div>
+      <div class="row"><a href="mailto:perk77331@gmail.com">perk77331@gmail.com</a></div>
+      <div class="row"><span>tg</span> <a href="https://t.me/Michael_Semenov">@Michael_Semenov</a></div>
+      <div class="row"><a href="https://www.linkedin.com/in/mikhail-semenovv/">linkedin.com/in/mikhail-semenovv</a></div>
+      <div class="row"><a href="https://github.com/RebSem">github.com/RebSem</a></div>
+    </div>
+  </header>
+
+  <div class="signals">
+    <span class="signal">Remote · GMT+5</span>
+    <span class="signal">Open to relocation</span>
+    <span class="signal">RU native</span>
+    <span class="signal">EN working</span>
+    <span class="signal">5+ yrs product</span>
+  </div>
+
+  <div class="body">
+
+    <section>
+      <div class="sec-title">Summary</div>
+      <p class="lead">AI Product Manager at <strong>Prof-IT</strong> since early 2022. I launched and run the group's new product — <strong>voice AI agents for B2B</strong> — end-to-end across product, UX, and engineering. I embed AI where it does the real business job, not where it looks good in a demo, and I build alongside AI coding agents (Claude Code, Codex) to validate hypotheses in days.</p>
+      <div class="metric">
+        <div class="num">500,000<span>+</span></div>
+        <div class="cap">minutes of new-customer conversations handled in 2026 by the voice AI product I lead. AI agents convert 40% better than the previous IVR robots and lifted the service's average check by 30%.</div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-title">Experience</div>
+
+      <div class="job">
+        <div class="job-head">
+          <div class="job-title"><span class="co">Zvonobot / Prof-IT</span> — Product Manager</div>
+          <div class="job-meta">Feb 2022 — now · Perm</div>
+        </div>
+        <div class="job-sub">Project 1 — SaaS voice AI-agent platform (0→1, head of a new product line)</div>
+        <ul class="pts">
+          <li><b>Validated demand before building:</b> tested the hypothesis on live clients through an early integration; AI agents drove customers to the target action 40% better than IVR robots. Only then did I kick off the platform.</li>
+          <li><b>Business impact:</b> launching AI agents lifted the service's average check 30% — AI closed jobs the old tools couldn't and opened a segment of clients with more complex scenarios.</li>
+          <li><b>Product end-to-end:</b> designed it as a standalone product — client console, agent and dialog-script builder, call campaigns, telephony, per-second billing, client wallets, and call analytics — wiring best-in-class LLM, ASR, and TTS into one managed product layer.</li>
+          <li><b>From "robot" to business outcome:</b> added automatic post-processing of every dialog — lead and target-action detection, business-field extraction, per-campaign analytics — turning a dialer into a tool the business measures in leads and revenue, not minutes.</li>
+          <li><b>Unit economics &amp; pricing:</b> built a transparent model (per-second pricing, wallets, bonuses), spend reconciliation, and profitability control per call type so revenue growth isn't eaten by cost.</li>
+          <li><b>Roadmap:</b> shaped and prioritized the backlog from user-behavior data, call economics, and company strategy.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-head">
+          <div class="job-title"><span class="co">Prof-IT</span> — AI transformation (internal)</div>
+          <div class="job-meta">2022 — now</div>
+        </div>
+        <div class="job-sub">Project 2 — bringing AI into the company's own workflows</div>
+        <ul class="pts">
+          <li><b>Tech leadership:</b> first in the company to introduce LLM-based tooling to speed up business processes and product development; other teams now come to me to automate their work through AI.</li>
+          <li><b>MVP in 2 days:</b> solo-built a voice-bot prototype on the OpenAI Realtime API in two days, proved the value, and handed it off to full development with a ready use case.</li>
+          <li><b>Speed of delivery:</b> built an internal web tool over the client database in 4 days, alone — skipping the usual weeks-long spec-and-approval chain — and later grew it into a client-facing feature.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <div class="job-head">
+          <div class="job-title"><span class="co">Fodoj UG (Germany)</span> — iOS / UI Developer</div>
+          <div class="job-meta">Nov 2020 — Jan 2022</div>
+        </div>
+        <div class="job-sub">Time-tracking SaaS for the EU market (claimora.com)</div>
+        <ul class="pts">
+          <li>Built UI components for the web app; focused on the Spanish market — interface localization, local reporting and compliance.</li>
+          <li>Improved UX across mobile and desktop; ran tests with Spanish-speaking users.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-title">Selected projects</div>
+      <div class="projs">
+        <div class="proj">
+          <div class="proj-name">Zvonobot AI <span class="tag">flagship · live</span></div>
+          <div class="proj-desc">Multi-tenant voice AI-agent platform for B2B over telephony. Launched in 2026, run end-to-end. rebsem.ru/projects</div>
+        </div>
+        <div class="proj">
+          <div class="proj-name">cursivo <span class="tag">live</span></div>
+          <div class="proj-desc">AI-powered CRM for car rental — fleet, bookings, contracts; AI reads documents, scores deal risk, suggests next steps. cursivo.xyz</div>
+        </div>
+        <div class="proj">
+          <div class="proj-name">obrabot <span class="tag">internal</span></div>
+          <div class="proj-desc">Internal voice-AI analytics dashboard at Prof-IT — AI segments calls and surfaces what needs attention.</div>
+        </div>
+        <div class="proj">
+          <div class="proj-name">Pet projects <span class="tag">1–7 days each</span></div>
+          <div class="proj-desc">bazabot, Zodial, Slopiq, tubedrop, portfo — idea to a working release in days, built with AI agents. github.com/RebSem</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-title">Core skills</div>
+      <div class="cols">
+        <div class="skill-row">
+          <div class="skill-label">Product</div>
+          <div class="skill-val">Product discovery · strategy · roadmap · metrics &amp; unit economics · CustDev · B2B SaaS · go-to-market</div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-label">AI / LLM</div>
+          <div class="skill-val">Voice AI agents · conversational AI · LLM orchestration · prompt engineering · RAG · AI in real workflows</div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-label">Delivery</div>
+          <div class="skill-val">Spec → review → ship · agent-native (Claude Code, Codex) · Lean Startup · 0→1 · fast hypothesis validation</div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-label">Tech (shared language with engineers)</div>
+          <div class="skill-val">React / Next.js · TypeScript · Python / Flask · PostgreSQL / Redis · REST &amp; integrations · telephony</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="cols">
+        <div class="skill-row">
+          <div class="sec-title">Open to</div>
+          <p class="skill-val">AI Product Manager roles where I own the product and grow it through thoughtful, purposeful AI adoption — in any domain where AI solves a real business job. Remote-first, GMT+5, open to relocation.</p>
+        </div>
+        <div class="skill-row">
+          <div class="sec-title">Languages &amp; education</div>
+          <div class="meta-line">
+            <span><span class="k">RU</span>native</span>
+            <span><span class="k">EN</span>working, async/written</span>
+          </div>
+          <div class="meta-line" style="margin-top:5px;">
+            <span><span class="k">Edu</span>Perm State University (PGNIU)</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="foot">
+    <span>Mikhail Semenov — AI Product Manager</span>
+    <span><a href="https://rebsem.ru">rebsem.ru</a> · updated 2026</span>
+  </div>
+
+</div>
+</body>
+</html>
