@@ -849,28 +849,6 @@ html[data-theme='dark'] .theme-icon-sun {
   transform: scale(0.98);
 }
 
-/* Ghost CTA — lowest weight (e.g. CV download), keeps the row balanced
-   without competing with the primary/secondary buttons. */
-.cta-ghost {
-  background: transparent;
-  border-color: var(--border);
-  color: color-mix(in oklab, var(--foreground) 78%, transparent);
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
-  letter-spacing: 0.01em;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .cta-ghost:hover {
-    border-color: color-mix(in oklab, var(--accent) 50%, var(--border));
-    color: var(--accent);
-  }
-}
-
-.cta-ghost:active {
-  transform: scale(0.98);
-}
-
 /* Status + location signal row in the hero. */
 .hero-status-row {
   display: flex;
@@ -2042,11 +2020,6 @@ html[data-theme='dark'] .theme-icon-sun {
   font-size: 0.82rem;
   color: color-mix(in oklab, var(--foreground) 70%, transparent);
   text-decoration-color: color-mix(in oklab, var(--foreground) 30%, transparent);
-}
-
-.footer-link-cv {
-  color: color-mix(in oklab, var(--accent) 90%, var(--foreground));
-  text-decoration-color: color-mix(in oklab, var(--accent) 50%, transparent);
 }
 
 .footer-sep {

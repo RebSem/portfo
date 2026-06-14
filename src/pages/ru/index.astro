@@ -8,11 +8,8 @@ import SocialLinks from '../../components/SocialLinks.astro';
 import { projects } from '../../data/projects';
 import {
   buildPersonSchema,
-  cvPath,
-  email,
   githubUsername,
   heroDisplayName,
-  linkedinUrl,
   locationSignal,
   telegramUrl,
   uiCopy,
@@ -74,31 +71,9 @@ const personSchema = buildPersonSchema('https://rebsem.ru/ru');
             </svg>
             {uiCopy.home.heroCtaPrimary.ru}
           </a>
-          <a class="cta-button cta-secondary" href={`mailto:${email}`}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"/>
-              <path d="M3 7l9 6l9 -6"/>
-            </svg>
-            {uiCopy.home.heroCtaEmail.ru}
-          </a>
-          <a class="cta-button cta-secondary" href={linkedinUrl} target="_blank" rel="noreferrer">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M8 11v5"/><path d="M8 8v.01"/><path d="M12 16v-5"/><path d="M16 16v-3a2 2 0 1 0 -4 0"/>
-              <path d="M3 7a4 4 0 0 1 4 -4h10a4 4 0 0 1 4 4v10a4 4 0 0 1 -4 4h-10a4 4 0 0 1 -4 -4z"/>
-            </svg>
-            {uiCopy.home.heroCtaLinkedin.ru}
-          </a>
-          <a class="cta-button cta-ghost" href={cvPath} target="_blank" rel="noreferrer">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M14 3v4a1 1 0 0 0 1 1h4"/>
-              <path d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z"/>
-              <path d="M12 11v6"/><path d="M9.5 14.5l2.5 2.5l2.5 -2.5"/>
-            </svg>
-            {uiCopy.home.heroCtaCv.ru}
-          </a>
         </div>
 
-        <SocialLinks className="social-links profile-social-links" />
+        <SocialLinks className="social-links profile-social-links" hideTelegram />
       </div>
 
       <aside class="hero-metric-card" aria-label="Ключевая метрика">

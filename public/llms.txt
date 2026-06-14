@@ -20,7 +20,6 @@ hypotheses in days, not sprints. In 2026 the voice AI product I lead has handled
 - Home: https://rebsem.ru/
 - About: https://rebsem.ru/about
 - Blog: https://rebsem.ru/blog
-- CV (PDF): https://rebsem.ru/cv.pdf
 
 ## Selected work
 - Zvonobot AI: voice AI-agent platform for B2B (Prof-IT), launched in 2026 and run end-to-end (product, UX, engineering). Multi-tenant SaaS console over telephony infrastructure. Case: https://rebsem.ru/projects/zvonobot-ai-en/

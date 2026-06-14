@@ -4,7 +4,6 @@ export const githubUsername = 'RebSem';
 export const telegramUrl = 'https://t.me/Michael_Semenov';
 export const email = 'perk77331@gmail.com';
 export const linkedinUrl = 'https://www.linkedin.com/in/mikhail-semenovv/';
-export const cvPath = '/cv.pdf';
 
 export const homePath = '/';
 export const aboutPath = '/about';
@@ -24,7 +23,7 @@ export const locationSignal: LocalizedText = {
 
 export const heroFallbackName = 'Mikhail Semenov';
 export const heroDisplayName: LocalizedText = {
-  ru: 'Михаил Семенов',
+  ru: 'Михаил Семёнов',
   en: 'Mikhail Semenov',
 };
 
@@ -347,18 +346,6 @@ export const uiCopy = {
       ru: 'Написать в Telegram',
       en: 'Message me on Telegram',
     },
-    heroCtaEmail: {
-      ru: 'Написать на почту',
-      en: 'Email me',
-    },
-    heroCtaLinkedin: {
-      ru: 'Написать в LinkedIn',
-      en: 'Connect on LinkedIn',
-    },
-    heroCtaCv: {
-      ru: 'Скачать CV',
-      en: 'Download CV',
-    },
     metricLabel: {
       ru: 'Сигнал 2026 · голосовые AI-агенты Prof-IT',
       en: '2026 signal · Prof-IT voice AI agents',
@@ -380,7 +367,7 @@ export const uiCopy = {
       ru: 'B2B · voice + AI',
       en: 'B2B · voice + AI',
     },
-    photoAlt: { ru: 'Фото Михаила Семенова', en: 'Photo of Mikhail Semenov' },
+    photoAlt: { ru: 'Фото Михаила Семёнова', en: 'Photo of Mikhail Semenov' },
     currentlyEyebrow: { ru: 'Сейчас', en: 'Currently' },
     currentlyTitle: { ru: 'Что я делаю сейчас', en: 'What I do now' },
     currentlyRoleLabel: { ru: 'Роль', en: 'Role' },
@@ -589,7 +576,6 @@ export const uiCopy = {
       ru: 'Открыт к ролям AI Product Manager и к продуктам, где AI закрывает реальную бизнес-задачу. Проще всего написать напрямую: выбирайте удобный канал.',
       en: 'Open to AI Product Manager roles and to products where AI solves a real business job. The easiest way to reach me is directly: pick whichever channel suits you.',
     },
-    cv: { ru: 'Скачать CV (PDF)', en: 'Download CV (PDF)' },
   },
   localeToggleLabel: {
     ru: 'Switch to English',

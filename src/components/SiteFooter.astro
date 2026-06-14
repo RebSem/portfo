@@ -1,6 +1,6 @@
 ---
 import SocialLinks from './SocialLinks.astro';
-import { cvPath, email, linkedinUrl, telegramUrl, uiCopy } from '../data/site-content';
+import { email, linkedinUrl, telegramUrl, uiCopy } from '../data/site-content';
 
 interface Props {
   noteRu?: string;
@@ -34,8 +34,6 @@ const note = locale === 'ru' ? noteRu : noteEn;
         <a class="footer-link" href={`mailto:${email}`}>{email}</a>
         <span class="footer-sep" aria-hidden="true">·</span>
         <a class="footer-link" href={linkedinUrl} target="_blank" rel="noreferrer">LinkedIn</a>
-        <span class="footer-sep" aria-hidden="true">·</span>
-        <a class="footer-link footer-link-cv" href={cvPath} target="_blank" rel="noreferrer">{uiCopy.footer.cv[locale]}</a>
       </div>
     </div>
 
