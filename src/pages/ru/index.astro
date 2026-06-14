@@ -7,9 +7,10 @@ import SiteHeader from '../../components/SiteHeader.astro';
 import SocialLinks from '../../components/SocialLinks.astro';
 import { projects } from '../../data/projects';
 import {
+  buildPersonSchema,
   githubUsername,
   heroDisplayName,
-  linkedinUrl,
+  locationSignal,
   telegramUrl,
   uiCopy,
 } from '../../data/site-content';
@@ -22,28 +23,17 @@ import metricSpotlightScriptUrl from '../../scripts/metric-spotlight.js?url';
 const visibleProjects = projects.filter((project) => !project.placeholder);
 const featuredCaseProject = visibleProjects.find((p) => p.id === 'zvonobot-ai');
 const workLedProjects = visibleProjects.filter((p) => p.tier === 'work-led' && p.id !== 'zvonobot-ai');
-const petProjects = visibleProjects.filter((p) => p.tier === 'pet');
+const petProjects = visibleProjects
+  .filter((p) => p.tier === 'pet')
+  .sort((a, b) => (a.petOrder ?? 99) - (b.petOrder ?? 99));
 const projectEntries = await getCollection('projects', ({ data }) => !data.draft && data.lang === 'ru');
 
-const personSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: heroDisplayName.en,
-  alternateName: heroDisplayName.ru,
-  jobTitle: 'Product Manager (AI) / Product Engineer',
-  url: 'https://rebsem.ru/ru',
-  image: 'https://rebsem.ru/main-hero.jpg',
-  sameAs: [
-    `https://github.com/${githubUsername}`,
-    telegramUrl,
-    linkedinUrl,
-  ],
-};
+const personSchema = buildPersonSchema('https://rebsem.ru/ru');
 ---
 
 <Layout
   title={`${heroDisplayName.ru} - AI Product Manager`}
-  description="AI Product Manager в Prof-IT (zvonobot, effebot, p1sms), который драйвит продукт через продуманное внедрение AI. 500 000+ минут B2B-разговоров через AI-агентов за 2026. Пет-проекты собираю за дни, а не за спринты."
+  description="AI Product Manager в Prof-IT (zvonobot, effebot, p1sms), который драйвит продукт через продуманное внедрение AI. 500 000+ минут B2B-разговоров через AI-агентов за 2026. Пет-проекты собираю за дни, а не за спринты. Remote, GMT+5, EN/RU, открыт к релокации."
   schema={personSchema}
   alternate="/"
 >
@@ -54,10 +44,13 @@ const personSchema = {
   <main id="main-content" class="page-main" data-github-username={githubUsername}>
     <section class="home-intro" aria-labelledby="home-title">
       <div class="home-intro-copy">
-        <span class="hero-status">
-          <span class="pulse-dot"></span>
-          {uiCopy.home.heroStatus.ru}
-        </span>
+        <div class="hero-status-row">
+          <span class="hero-status">
+            <span class="pulse-dot"></span>
+            {uiCopy.home.heroStatus.ru}
+          </span>
+          <span class="hero-location" aria-label="Локация и формат работы">{locationSignal.ru}</span>
+        </div>
 
         <p class="about-eyebrow">{uiCopy.home.eyebrow.ru}</p>
 
@@ -80,7 +73,7 @@ const personSchema = {
           </a>
         </div>
 
-        <SocialLinks className="social-links profile-social-links" />
+        <SocialLinks className="social-links profile-social-links" hideTelegram />
       </div>
 
       <aside class="hero-metric-card" aria-label="Ключевая метрика">
@@ -314,6 +307,12 @@ const personSchema = {
                   <h4>{project.title.ru}</h4>
                 )}
                 <p class="pet-type">{project.appType.ru}</p>
+                {project.proof && (
+                  <p class="pet-proof">
+                    <span class="pet-proof-label">Доказывает</span>
+                    {project.proof.ru}
+                  </p>
+                )}
                 <p class="pet-stack">{project.stack.join(' · ')}</p>
                 {project.repoUrl && (
                   <a class="pet-repo-link" href={project.repoUrl} target="_blank" rel="noreferrer">

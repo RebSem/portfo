@@ -43,13 +43,22 @@ const projectSchema = {
     ],
   },
 };
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://rebsem.ru/' },
+    { '@type': 'ListItem', position: 2, name: entry.data.title, item: `https://rebsem.ru/projects/${entry.slug}` },
+  ],
+};
 ---
 
 <Layout
   title={`${entry.data.title} - ${heroFallbackName}`}
   description={entry.data.description}
   image={pageImage}
-  schema={projectSchema}
+  schema={[projectSchema, breadcrumbSchema]}
   alternate={ruSlug ? `/ru/projects/${ruSlug}/` : undefined}
 >
   <a id="skip-to-content" href="#main-content" class="skip-link">Skip to content</a>

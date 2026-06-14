@@ -78,6 +78,11 @@ export const projects: ProjectItem[] = [
     visibility: 'private',
     tier: 'pet',
     shipTime: { ru: '~2 дня', en: '~2 days' },
+    petOrder: 1,
+    proof: {
+      ru: 'AI/ops в реальном workflow: убирает ручную чистку баз перед обзвонами, ускоряет подготовку данных для команды.',
+      en: 'AI/ops in a real workflow: kills the manual base cleanup before call campaigns and speeds up data prep for the team.',
+    },
   },
   {
     id: 'Zodial',
@@ -97,6 +102,11 @@ export const projects: ProjectItem[] = [
     visibility: 'private',
     tier: 'pet',
     shipTime: { ru: '3 дня', en: '3 days' },
+    petOrder: 2,
+    proof: {
+      ru: 'Полный продукт за 3 дня: оплата, доставка и аналитика end-to-end. Доказательство, что довожу гипотезу до работающего платного продукта.',
+      en: 'A full product in 3 days: payments, delivery, and analytics end-to-end. Proof I can take a hypothesis to a working paid product.',
+    },
   },
   {
     id: 'Slopiq',
@@ -116,6 +126,11 @@ export const projects: ProjectItem[] = [
     visibility: 'private',
     tier: 'pet',
     shipTime: { ru: '~7 дней', en: '~7 days' },
+    petOrder: 4,
+    proof: {
+      ru: 'Product taste на новой платформе: за неделю собрал нативное iOS-приложение с AI-помощником с нуля до working build.',
+      en: 'Product taste on a new platform: a native iOS app with an AI assistant, from zero to a working build in a week.',
+    },
   },
   {
     id: 'tubedrop',
@@ -137,6 +152,11 @@ export const projects: ProjectItem[] = [
     repoUrl: 'https://github.com/RebSem/tubedrop',
     tier: 'pet',
     shipTime: { ru: '1 вечер', en: '1 evening' },
+    petOrder: 3,
+    proof: {
+      ru: 'Скорость и общий язык с инженерами: за вечер собрал и выложил в открытый код рабочий инструмент под собственную боль.',
+      en: 'Speed and a shared language with engineers: a working open-source tool for my own pain point, built and shipped in an evening.',
+    },
   },
   {
     id: 'portfo',
@@ -160,5 +180,10 @@ export const projects: ProjectItem[] = [
     featured: true,
     tier: 'pet',
     shipTime: { ru: '~2 дня', en: '~2 days' },
+    petOrder: 5,
+    proof: {
+      ru: 'Этот самый сайт: единственный публичный репозиторий, агент-native поддержка через PR. Доказательство подхода в действии.',
+      en: 'This very site: the only public repo here, maintained agent-native through PRs. Proof of the approach in action.',
+    },
   },
 ];
