@@ -24,6 +24,9 @@ export default defineConfig({
         name: 'Geist',
         cssVariable: '--font-geist',
         weights: ['400 700'],
+        // Without this the provider also builds (and preloads) italic faces
+        // the site never renders — nothing here sets sans/mono italic.
+        styles: ['normal'],
         subsets: ['latin', 'cyrillic'],
         fallbacks: ['Inter', 'Helvetica Neue', 'Arial', 'sans-serif'],
       },
@@ -32,17 +35,28 @@ export default defineConfig({
         name: 'Geist Mono',
         cssVariable: '--font-geist-mono',
         weights: ['400 600'],
+        styles: ['normal'],
         subsets: ['latin', 'cyrillic'],
         fallbacks: ['JetBrains Mono', 'Menlo', 'monospace'],
       },
       {
-        provider: fontProviders.google(),
+        // Local file instead of the google provider: the provider resolves
+        // static instances and drops the optical-size axis, flattening the
+        // hero serif to its 16pt text cut. This woff2 keeps opsz 6-72 so
+        // font-optical-sizing: auto picks the display cut at H1 sizes.
+        provider: fontProviders.local(),
         name: 'Newsreader',
         cssVariable: '--font-newsreader',
-        weights: ['400 500'],
-        styles: ['italic'],
-        subsets: ['latin'],
         fallbacks: ['Georgia', 'Times New Roman', 'serif'],
+        options: {
+          variants: [
+            {
+              weight: '400 500',
+              style: 'italic',
+              src: ['./src/assets/fonts/newsreader-italic-var-latin.woff2'],
+            },
+          ],
+        },
       },
     ],
   },

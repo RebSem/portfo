@@ -96,7 +96,7 @@ export const aboutBlocks: AboutBlock[] = [
       },
       {
         ru: 'Веду продукт целиком, от клиентского кабинета до биллинга. За 2026 год агенты провели больше 500 000 минут разговоров с новыми клиентами.',
-        en: 'I run the product end to end, from the client console to billing. In 2026 the agents have carried over 500,000 minutes of new-customer conversations.',
+        en: 'I run the product end to end, from the client console to billing. In 2026 the agents have handled over 500,000 minutes of new-customer conversations.',
       },
     ],
   },

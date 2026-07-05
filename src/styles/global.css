@@ -540,6 +540,12 @@ html[data-theme='dark'] .theme-icon-sun {
   margin-top: 0.5rem;
 }
 
+/* The junction between the two lists draws one hairline, not two: block 02
+   keeps its :last-child bottom rule suppressed, block 03's top border rules. */
+.about-grid .about-block:last-child {
+  border-bottom: 0;
+}
+
 .about-flow p {
   max-width: 62ch;
   color: color-mix(in oklab, var(--foreground) 82%, transparent);
@@ -2114,6 +2120,12 @@ html[data-theme='dark'] .theme-icon-sun {
   .about-grid {
     grid-template-columns: 1fr;
     gap: 1.6rem;
+  }
+
+  /* Once the photo rail is gone all six blocks share one full-width measure;
+     a still-capped centered column would jag 50-90px right of blocks 01-02. */
+  .about-flow {
+    max-width: none;
   }
 
   .about-image-wrap {
