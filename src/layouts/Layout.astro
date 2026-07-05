@@ -1,6 +1,8 @@
 ---
+import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
+import themeImagesScriptUrl from '../scripts/theme-images.js?url';
 
 interface Props {
   title?: string;
@@ -65,7 +67,9 @@ const hreflangRu = lang === 'ru' ? canonicalUrl : alternateUrl;
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://avatars.githubusercontent.com" crossorigin />
+    <Font cssVariable="--font-geist" preload />
+    <Font cssVariable="--font-newsreader" preload />
+    <Font cssVariable="--font-geist-mono" />
     <link rel="dns-prefetch" href="https://api.github.com" />
     <meta name="description" content={description} />
     <meta name="robots" content={robotsContent} />
@@ -100,8 +104,9 @@ const hreflangRu = lang === 'ru' ? canonicalUrl : alternateUrl;
     <link rel="manifest" href="/manifest.webmanifest" />
     {resolvedSchemas.map((entry) => <script is:inline type="application/ld+json" set:html={JSON.stringify(entry)}></script>)}
   </head>
-  <body>
+  <body id="top">
     <ClientRouter fallback="swap" />
     <slot />
+    <script is:inline type="module" src={themeImagesScriptUrl}></script>
   </body>
 </html>

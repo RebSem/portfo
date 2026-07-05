@@ -18,7 +18,6 @@ import Layout from '../layouts/Layout.astro';
 import githubScriptUrl from '../scripts/github-activity.js?url';
 import githubSyncScriptUrl from '../scripts/github-sync.js?url';
 import localeScriptUrl from '../scripts/locale.js?url';
-import metricSpotlightScriptUrl from '../scripts/metric-spotlight.js?url';
 
 const visibleProjects = projects.filter((project) => !project.placeholder);
 const featuredCaseProject = visibleProjects.find((p) => p.id === 'zvonobot-ai');
@@ -52,7 +51,7 @@ const personSchema = buildPersonSchema('https://rebsem.ru/');
           <span class="hero-location" aria-label="Location and work format">{locationSignal.en}</span>
         </div>
 
-        <p class="about-eyebrow">{uiCopy.home.eyebrow.en}</p>
+        <p class="about-eyebrow hero-eyebrow">{uiCopy.home.eyebrow.en}</p>
 
         <h1 id="home-title">
           <span class="hero-accent">AI</span> <span class="hero-serif">Product</span>&nbsp;Manager.
@@ -62,6 +61,11 @@ const personSchema = buildPersonSchema('https://rebsem.ru/');
           {uiCopy.home.lead.en}
           <br />
           <span class="home-lead-strong">{uiCopy.home.leadStrong.en}</span>
+        </p>
+
+        <p class="hero-metric-inline">
+          <strong>{uiCopy.home.metricNumber} <span class="unit">{uiCopy.home.metricUnit.en}</span></strong>
+          <span class="hero-metric-inline-caption">{uiCopy.home.metricCaption.en}</span>
         </p>
 
         <div class="hero-cta-row">
@@ -109,57 +113,6 @@ const personSchema = buildPersonSchema('https://rebsem.ru/');
           <dd>{uiCopy.home.currentlyMetricValue.en}</dd>
         </div>
       </dl>
-
-      <div class="github-inline" aria-labelledby="github-title">
-        <div class="github-inline-meta">
-          <span class="label">GitHub · last year</span>
-          <strong id="contributions-total">0</strong>
-          <span class="label" id="github-title">contributions</span>
-          <a
-            class="github-profile-link link"
-            href={`https://github.com/${githubUsername}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            github.com/{githubUsername}
-          </a>
-        </div>
-
-        <div class="github-heatmap">
-          <div
-            id="contribution-grid"
-            class="contribution-grid"
-            role="group"
-            aria-label="GitHub activity graph"
-          ></div>
-
-          <div class="heatmap-legend" aria-hidden="true">
-            <span>0</span>
-            <div class="legend-level level-0"></div>
-            <div class="legend-level level-1"></div>
-            <div class="legend-level level-2"></div>
-            <div class="legend-level level-3"></div>
-            <div class="legend-level level-4"></div>
-            <span>max</span>
-          </div>
-
-          <p
-            id="contribution-tooltip"
-            class="contribution-tooltip"
-            data-hint-ru="Наведите на ячейку, чтобы увидеть дату и число вкладов."
-            data-hint-en="Hover a cell to see the exact date and number of contributions."
-          >
-            Hover a cell to see the exact date and number of contributions.
-          </p>
-
-          <p
-            id="github-error"
-            class="github-error hidden"
-          >
-            Unable to load GitHub data. Please refresh later.
-          </p>
-        </div>
-      </div>
     </section>
 
     <AgentOps locale="en" />
@@ -325,6 +278,59 @@ const personSchema = buildPersonSchema('https://rebsem.ru/');
         </div>
       </div>
     </section>
+
+    <section class="section-block github-band" aria-labelledby="github-title">
+      <div class="github-inline">
+        <div class="github-inline-meta">
+          <span class="label">GitHub · last year</span>
+          <strong id="contributions-total">0</strong>
+          <span class="label" id="github-title">contributions</span>
+          <a
+            class="github-profile-link link"
+            href={`https://github.com/${githubUsername}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            github.com/{githubUsername}
+          </a>
+        </div>
+
+        <div class="github-heatmap">
+          <div
+            id="contribution-grid"
+            class="contribution-grid"
+            role="group"
+            aria-label="GitHub activity graph"
+          ></div>
+
+          <div class="heatmap-legend" aria-hidden="true">
+            <span>0</span>
+            <div class="legend-level level-0"></div>
+            <div class="legend-level level-1"></div>
+            <div class="legend-level level-2"></div>
+            <div class="legend-level level-3"></div>
+            <div class="legend-level level-4"></div>
+            <span>max</span>
+          </div>
+
+          <p
+            id="contribution-tooltip"
+            class="contribution-tooltip"
+            data-hint-ru="Наведите на ячейку, чтобы увидеть дату и число вкладов."
+            data-hint-en="Hover a cell to see the exact date and number of contributions."
+          >
+            Hover a cell to see the exact date and number of contributions.
+          </p>
+
+          <p
+            id="github-error"
+            class="github-error hidden"
+          >
+            Unable to load GitHub data. Please refresh later.
+          </p>
+        </div>
+      </div>
+    </section>
   </main>
 
   <SiteFooter />
@@ -332,5 +338,4 @@ const personSchema = buildPersonSchema('https://rebsem.ru/');
   <script is:inline type="module" src={localeScriptUrl}></script>
   <script is:inline type="module" src={githubScriptUrl}></script>
   <script is:inline type="module" src={githubSyncScriptUrl}></script>
-  <script is:inline type="module" src={metricSpotlightScriptUrl}></script>
 </Layout>
