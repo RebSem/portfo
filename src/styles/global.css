@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&family=Geist:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@1,6..72,400..500&display=swap');
-
 :root,
 html[data-theme='light'] {
   --background: #f4f4f1;
@@ -8,6 +6,13 @@ html[data-theme='light'] {
   --accent: #00b87a;
   --accent-strong: #00d68a;
   --accent-soft: rgba(0, 184, 122, 0.12);
+  /* Green split into fill vs text tiers: the brand #00b87a fails AA as text
+     on the light background (2.34:1), so text and focus get darker cuts.
+     --accent-text: small green text, 5.7:1. --accent-display: the big H1
+     accent, large-text tier, 3.4:1. --focus-ring: solid, 5.3:1 (needs 3:1). */
+  --accent-text: #006e49;
+  --accent-display: #00915f;
+  --focus-ring: #00744c;
   --muted: #e6e6e6;
   --border: #e2e3dd;
   --surface: #fdfdfb;
@@ -16,10 +21,12 @@ html[data-theme='light'] {
     0 16px 40px -24px color-mix(in oklab, var(--foreground) 16%, transparent);
   --container-width: 76rem;
   --container-narrow: 48rem;
-  --font-sans: 'Geist', 'Inter', 'Helvetica Neue', Arial, sans-serif;
-  --font-mono: 'Geist Mono', 'JetBrains Mono', 'Menlo', monospace;
+  /* Families come self-hosted via the Astro fonts config (astro.config.mjs):
+     each --font-* variable already carries its metric-matched fallback stack. */
+  --font-sans: var(--font-geist);
+  --font-mono: var(--font-geist-mono);
   /* Editorial accent — italic only, Latin-only strings (Newsreader has no Cyrillic). */
-  --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-serif: var(--font-newsreader);
   /* Lock glyph for the NDA badge (stroke-style, inherits currentColor via mask) */
   --icon-lock: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='11' width='18' height='11' rx='2'/%3E%3Cpath d='M7 11V7a5 5 0 0 1 10 0v4'/%3E%3C/svg%3E");
   --success-0: #ebedf0;
@@ -45,6 +52,10 @@ html[data-theme='dark'] {
   --accent: #2dd692;
   --accent-strong: #38e5a0;
   --accent-soft: rgba(45, 214, 146, 0.14);
+  /* Bright green passes on near-black (10.3:1), so all tiers share it. */
+  --accent-text: #2dd692;
+  --accent-display: #2dd692;
+  --focus-ring: #2dd692;
   --muted: #2a2d31;
   --border: #25282b;
   --surface: #15171a;
@@ -70,7 +81,9 @@ body {
 
 html {
   scroll-behavior: smooth;
-  overflow-y: scroll;
+  /* Reserve the scrollbar gutter without forcing an always-on scrollbar
+     (the old overflow-y: scroll hack cost ~15px and skewed centering). */
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -112,7 +125,9 @@ html[data-theme='dark'] body::after {
 }
 
 :is(a, button):focus-visible {
-  outline: 2px dashed color-mix(in oklab, var(--accent) 75%, transparent);
+  /* Solid token per theme: the old 75%-alpha accent ring sat at 1.94:1 on
+     the light background, invisible to keyboard users (WCAG needs 3:1). */
+  outline: 2px dashed var(--focus-ring);
   outline-offset: 1px;
   text-decoration: none;
 }
@@ -165,7 +180,7 @@ a {
 
 a:hover,
 a:focus-visible {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 .skip-link {
@@ -302,7 +317,7 @@ a:focus-visible {
 }
 
 .main-nav-link.active-nav {
-  color: var(--accent);
+  color: var(--accent-text);
   text-decoration: none;
 }
 
@@ -337,7 +352,7 @@ a:focus-visible {
 .locale-toggle:focus-visible {
   background: color-mix(in oklab, var(--surface) 92%, var(--accent) 8%);
   border-color: color-mix(in oklab, var(--accent) 35%, var(--border));
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 .locale-toggle:active {
@@ -365,7 +380,7 @@ a:focus-visible {
 
 .theme-toggle:hover,
 .theme-toggle:focus-visible {
-  color: var(--accent);
+  color: var(--accent-text);
   border-color: color-mix(in oklab, var(--accent) 35%, var(--border));
   background: color-mix(in oklab, var(--surface) 92%, var(--accent) 8%);
 }
@@ -459,6 +474,18 @@ html[data-theme='dark'] .theme-icon-sun {
   color: color-mix(in oklab, var(--foreground) 60%, transparent);
 }
 
+/* Hero variant: same slot, quieter voice. The role+company line reads as a
+   normal-case standfirst instead of a third uppercase mono label, so the
+   only mono-caps element left above the H1 is the availability pill. */
+.hero-eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: color-mix(in oklab, var(--foreground) 70%, transparent);
+}
+
 .about-section h1,
 .blog-index h1,
 .post-head h1 {
@@ -502,6 +529,28 @@ html[data-theme='dark'] .theme-icon-sun {
   min-width: 0;
 }
 
+/* After the photo-anchored intro (blocks 01-02), the page reflows to one
+   centered measure: no reserved 320px rail running empty beside the rest. */
+.about-flow {
+  width: 100%;
+  max-width: var(--container-narrow);
+  margin-inline: auto;
+  display: grid;
+  gap: 2rem;
+  margin-top: 0.5rem;
+}
+
+/* The junction between the two lists draws one hairline, not two: block 02
+   keeps its :last-child bottom rule suppressed, block 03's top border rules. */
+.about-grid .about-block:last-child {
+  border-bottom: 0;
+}
+
+.about-flow p {
+  max-width: 62ch;
+  color: color-mix(in oklab, var(--foreground) 82%, transparent);
+}
+
 .about-intro {
   max-width: 56ch;
   font-size: 1.15rem;
@@ -535,7 +584,7 @@ html[data-theme='dark'] .theme-icon-sun {
   font-size: 0.72rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: color-mix(in oklab, var(--accent) 90%, var(--foreground));
+  color: var(--accent-text);
 }
 
 .about-block-title {
@@ -666,7 +715,7 @@ html[data-theme='dark'] .theme-icon-sun {
   font-size: 0.72rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: color-mix(in oklab, var(--accent) 90%, var(--foreground));
+  color: var(--accent-text);
 }
 
 .about-cta-headline {
@@ -743,7 +792,9 @@ html[data-theme='dark'] .theme-icon-sun {
 }
 
 .home-intro h1 .hero-accent {
-  color: var(--accent);
+  /* Large-text tier: brand green misses even the 3:1 large-text bar on
+     light (2.34:1); --accent-display holds the hue at 3.65:1. */
+  color: var(--accent-display);
 }
 
 /* One serif italic word in the H1 — the editorial accent. Sized up slightly
@@ -841,7 +892,7 @@ html[data-theme='dark'] .theme-icon-sun {
 @media (hover: hover) and (pointer: fine) {
   .cta-secondary:hover {
     border-color: var(--accent);
-    color: var(--accent);
+    color: var(--accent-text);
   }
 }
 
@@ -886,7 +937,7 @@ html[data-theme='dark'] .theme-icon-sun {
   border-radius: 999px;
   background: color-mix(in oklab, var(--accent) 12%, transparent);
   border: 1px solid color-mix(in oklab, var(--accent) 28%, transparent);
-  color: color-mix(in oklab, var(--accent) 90%, var(--foreground));
+  color: var(--accent-text);
   font-family: var(--font-mono);
   font-size: 0.7rem;
   font-weight: 500;
@@ -905,12 +956,6 @@ html[data-theme='dark'] .theme-icon-sun {
 }
 
 .hero-metric-card {
-  /* Cursor position for the spotlight layer, set by metric-spotlight.js.
-     Defaults to the top-right so the card looks intentional before JS runs
-     (and stays put for no-JS / reduced-motion visitors). */
-  --mx: 100%;
-  --my: 0%;
-  --spot: 0;
   position: relative;
   display: grid;
   gap: 0.6rem;
@@ -934,34 +979,6 @@ html[data-theme='dark'] .theme-icon-sun {
   inset: 0;
   background: radial-gradient(60% 80% at 100% 0%, color-mix(in oklab, var(--accent) 22%, transparent), transparent 60%);
   pointer-events: none;
-}
-
-/* Cursor-following spotlight — a soft green wash that tracks the pointer.
-   Fades in on hover (opacity only, so it stays GPU-cheap) and follows the
-   pointer via --mx/--my. Sits above the ambient ::before glow but below the
-   text (text layers use position: relative for their own stacking context). */
-.hero-metric-card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    18rem 18rem at var(--mx) var(--my),
-    color-mix(in oklab, var(--accent-strong) 40%, transparent),
-    color-mix(in oklab, var(--accent) 14%, transparent) 35%,
-    transparent 68%
-  );
-  opacity: var(--spot);
-  transition: opacity var(--dur-base) var(--ease-out-strong);
-  pointer-events: none;
-  will-change: opacity;
-}
-
-/* Motion-safe + pointer-capable only: keyboard/touch and reduced-motion users
-   keep the calm static card and never trigger the JS-driven glow. */
-@media (prefers-reduced-motion: reduce) {
-  .hero-metric-card::after {
-    display: none;
-  }
 }
 
 .hero-metric-label {
@@ -1027,6 +1044,13 @@ html[data-theme='dark'] .theme-icon-sun {
   margin-left: -1rem;
 }
 
+/* Mobile-only twin of the metric card: plain text in the reading column, so
+   the one hard number survives the 375px fold instead of trailing the whole
+   copy stack as a below-fold card. Desktop keeps the card and never shows this. */
+.hero-metric-inline {
+  display: none;
+}
+
 .currently-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -1064,7 +1088,7 @@ html[data-theme='dark'] .theme-icon-sun {
 
 .currently-item-metric dd {
   font-weight: 500;
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 @media (max-width: 720px) {
@@ -1107,6 +1131,14 @@ html[data-theme='dark'] .theme-icon-sun {
   padding: 1.2rem 0;
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
+}
+
+/* The heatmap band lives below Selected work as a closing trust footnote
+   (product proof leads, commit activity supports). github-inline already
+   draws its own hairlines, so the section wrapper stays borderless. */
+.github-band {
+  border-top: 0;
+  padding-top: 0;
 }
 
 .github-inline-meta {
@@ -1418,7 +1450,7 @@ html[data-theme='dark'] .theme-icon-sun {
 
 @media (hover: hover) and (pointer: fine) {
   .project-card-pet h4 a:hover {
-    color: var(--accent);
+    color: var(--accent-text);
   }
 }
 
@@ -1454,7 +1486,7 @@ html[data-theme='dark'] .theme-icon-sun {
   font-size: 0.62rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: color-mix(in oklab, var(--accent) 90%, var(--foreground));
+  color: var(--accent-text);
 }
 
 .project-card-pet .pet-ship-time {
@@ -1466,7 +1498,7 @@ html[data-theme='dark'] .theme-icon-sun {
   line-height: 1;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: color-mix(in oklab, var(--accent) 90%, var(--foreground));
+  color: var(--accent-text);
   width: fit-content;
 }
 
@@ -1486,7 +1518,7 @@ html[data-theme='dark'] .theme-icon-sun {
 
 @media (hover: hover) and (pointer: fine) {
   .pet-repo-link:hover {
-    color: var(--accent);
+    color: var(--accent-text);
     border-color: var(--accent);
   }
 }
@@ -1569,7 +1601,7 @@ html[data-theme='dark'] .theme-icon-sun {
 }
 
 .project-card h3 a:hover {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 .project-card:has(h3 a:hover) {
@@ -1625,7 +1657,7 @@ html[data-theme='dark'] .theme-icon-sun {
   padding-left: 0;
   padding-right: 0;
   font-weight: 600;
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 .project-link[data-details-link] svg {
@@ -1699,7 +1731,7 @@ html[data-theme='dark'] .theme-icon-sun {
   font-weight: 500;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: color-mix(in oklab, var(--foreground) 55%, transparent);
+  color: color-mix(in oklab, var(--foreground) 60%, transparent);
 }
 
 .project-meta span {
@@ -1728,7 +1760,7 @@ html[data-theme='dark'] .theme-icon-sun {
   font-size: 0.64rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: color-mix(in oklab, var(--foreground) 55%, transparent);
+  color: color-mix(in oklab, var(--foreground) 60%, transparent);
 }
 
 .project-fact-chip strong {
@@ -1985,7 +2017,7 @@ html[data-theme='dark'] .theme-icon-sun {
   font-size: 0.72rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: color-mix(in oklab, var(--accent) 90%, var(--foreground));
+  color: var(--accent-text);
 }
 
 .footer-pitch {
@@ -2027,13 +2059,13 @@ html[data-theme='dark'] .theme-icon-sun {
    on every page; it shouldn't shout. */
 @media (hover: hover) and (pointer: fine) {
   .social-link:hover {
-    color: var(--accent);
+    color: var(--accent-text);
     transform: scale(1.08);
   }
 }
 
 .social-link:focus-visible {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 .social-link:active {
@@ -2047,10 +2079,53 @@ html[data-theme='dark'] .theme-icon-sun {
   color: color-mix(in oklab, var(--foreground) 76%, transparent);
 }
 
+/* Footer nav: on phones the header un-pins, so the end of a long page needs
+   its own way back to the sections (and to the demoted Blog). */
+.footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem 1.4rem;
+  margin-top: 0.3rem;
+}
+
+.footer-nav a {
+  font-size: 0.88rem;
+  color: color-mix(in oklab, var(--foreground) 72%, transparent);
+  text-decoration: none;
+}
+
+.footer-nav a:hover,
+.footer-nav a:focus-visible {
+  color: var(--accent-text);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* Build credit: the quiet one-line flex. The site itself is the work sample. */
+.footer-craft {
+  margin: 0.4rem 0 0;
+  text-align: center;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: color-mix(in oklab, var(--foreground) 62%, transparent);
+}
+
+.footer-craft a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
+
 @media (max-width: 980px) {
   .about-grid {
     grid-template-columns: 1fr;
     gap: 1.6rem;
+  }
+
+  /* Once the photo rail is gone all six blocks share one full-width measure;
+     a still-capped centered column would jag 50-90px right of blocks 01-02. */
+  .about-flow {
+    max-width: none;
   }
 
   .about-image-wrap {
@@ -2065,17 +2140,46 @@ html[data-theme='dark'] .theme-icon-sun {
     gap: 1.8rem;
   }
 
+  /* Single column: the card would stack below CTA + socials and fall off
+     the first screen. Swap it for the inline number inside the copy flow. */
   .hero-metric-card {
-    width: 100%;
+    display: none;
+  }
+
+  .hero-metric-inline {
+    display: grid;
+    gap: 0.35rem;
+    margin-top: 0.2rem;
+  }
+
+  /* Deliberately below the mobile H1 (~43px): the headline stays the
+     largest type on every breakpoint, the number confirms it. */
+  .hero-metric-inline strong {
+    font-size: clamp(2.1rem, 9.5vw, 2.75rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .hero-metric-inline strong .unit {
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    font-variant-numeric: normal;
+    color: color-mix(in oklab, var(--foreground) 70%, transparent);
+  }
+
+  .hero-metric-inline-caption {
+    font-size: 0.92rem;
+    line-height: 1.45;
+    max-width: 36ch;
+    color: color-mix(in oklab, var(--foreground) 75%, transparent);
   }
 
   .home-intro h1 {
     font-size: clamp(2.7rem, 11.5vw, 3.7rem);
     letter-spacing: -0.038em;
-  }
-
-  .hero-metric-value {
-    font-size: clamp(3rem, 13vw, 4.5rem);
   }
 }
 
@@ -2366,7 +2470,7 @@ html[data-theme='dark'] .theme-icon-sun {
   font-family: var(--font-mono);
   font-size: 0.73rem;
   letter-spacing: 0.02em;
-  color: color-mix(in oklab, var(--foreground) 55%, var(--muted) 45%);
+  color: color-mix(in oklab, var(--foreground) 62%, transparent);
   margin: 0.3rem 0 0;
 }
 
@@ -2395,7 +2499,7 @@ html[data-theme='dark'] .theme-icon-sun {
 .featured-case-kpi svg {
   width: 12px;
   height: 12px;
-  color: var(--accent);
+  color: var(--accent-text);
   flex: 0 0 auto;
 }
 
@@ -2555,25 +2659,13 @@ html[data-theme='dark'] .theme-icon-sun {
   line-height: 0;
 }
 
+/* One <img> per shot; theme-images.js swaps src on [data-theme] change,
+   so only the active variant ever downloads (was twin light+dark imgs). */
 .featured-case-shot {
   display: block;
   width: 100%;
   height: auto;
   background: var(--surface);
-}
-
-/* Default: show light, hide dark.
-   When theme=dark on <html>, swap them. */
-.featured-case-shot-dark {
-  display: none;
-}
-
-[data-theme='dark'] .featured-case-shot-light {
-  display: none;
-}
-
-[data-theme='dark'] .featured-case-shot-dark {
-  display: block;
 }
 
 /* NDA note as an intentional badge, not faint floating text. A lock glyph +
@@ -2687,18 +2779,6 @@ html[data-theme='dark'] .theme-icon-sun {
   background: var(--surface);
 }
 
-.project-shot-img-dark {
-  display: none;
-}
-
-[data-theme='dark'] .project-shot-img-light {
-  display: none;
-}
-
-[data-theme='dark'] .project-shot-img-dark {
-  display: block;
-}
-
 .project-shot-caption {
   font-family: var(--font-mono);
   font-size: 0.7rem;
@@ -2768,23 +2848,11 @@ html[data-theme='dark'] .theme-icon-sun {
   background: var(--surface);
 }
 
-.app-shot-img-dark {
-  display: none;
-}
-
-[data-theme='dark'] .app-shot-img-light {
-  display: none;
-}
-
-[data-theme='dark'] .app-shot-img-dark {
-  display: block;
-}
-
 .app-shot-caption {
   font-family: var(--font-mono);
   font-size: 0.7rem;
   letter-spacing: 0.04em;
-  color: color-mix(in oklab, var(--foreground) 55%, transparent);
+  color: color-mix(in oklab, var(--foreground) 60%, transparent);
   text-align: center;
 }
 
@@ -2813,7 +2881,7 @@ html[data-theme='dark'] .theme-icon-sun {
   border-radius: 999px;
   border: 1px solid color-mix(in oklab, var(--accent) 45%, var(--border));
   background: color-mix(in oklab, var(--accent) 12%, var(--surface));
-  color: color-mix(in oklab, var(--accent) 90%, var(--foreground));
+  color: var(--accent-text);
   font-family: var(--font-mono);
   font-size: 0.78rem;
   font-weight: 600;
@@ -2836,7 +2904,7 @@ html[data-theme='dark'] .theme-icon-sun {
 }
 
 .repo-cta .repo-cta-meta {
-  color: color-mix(in oklab, var(--foreground) 50%, transparent);
+  color: color-mix(in oklab, var(--foreground) 60%, transparent);
   font-weight: 500;
 }
 
@@ -2864,7 +2932,7 @@ html[data-theme='dark'] .theme-icon-sun {
 
 /* Clickable repo value inside quick-facts. */
 .fact-value a {
-  color: var(--accent);
+  color: var(--accent-text);
   text-decoration: none;
   border-bottom: 1px solid color-mix(in oklab, var(--accent) 35%, transparent);
 }
@@ -2912,7 +2980,7 @@ html[data-theme='dark'] .theme-icon-sun {
 }
 
 .prose ul li::marker {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 .prose p code,
@@ -2975,7 +3043,7 @@ html[data-theme='dark'] .theme-icon-sun {
   font-size: 0.72rem;
   letter-spacing: 0.06em;
   padding-top: 0.3rem;
-  color: color-mix(in oklab, var(--accent) 90%, var(--foreground));
+  color: var(--accent-text);
 }
 
 .agent-step-copy h3 {

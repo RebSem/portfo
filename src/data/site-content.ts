@@ -4,6 +4,7 @@ export const githubUsername = 'RebSem';
 export const telegramUrl = 'https://t.me/Michael_Semenov';
 export const email = 'perk77331@gmail.com';
 export const linkedinUrl = 'https://www.linkedin.com/in/mikhail-semenovv/';
+export const siteRepoUrl = 'https://github.com/RebSem/portfo';
 
 export const homePath = '/';
 export const aboutPath = '/about';
@@ -90,8 +91,12 @@ export const aboutBlocks: AboutBlock[] = [
     title: { ru: 'Voice AI агенты для B2B', en: 'Voice AI agents for B2B' },
     body: [
       {
-        ru: 'Product Manager в Prof-IT с начала 2022. Работал над голосовыми роботами в zvonobot и effebot, а в 2026-м запустил и развиваю новый продукт группы: голосовых AI-агентов для B2B. За 2026 год через них прошло более 500 000 минут разговоров от новых клиентов.',
-        en: 'Product Manager at Prof-IT since early 2022. Worked on voice automation at zvonobot and effebot, and in 2026 launched and have been scaling the group’s new product: voice AI agents for B2B. The new product has handled over 500,000 minutes of new-customer conversations in 2026.',
+        ru: 'В Prof-IT я с начала 2022 года: пришёл продактом в голосовые продукты zvonobot и effebot, где роботы обзванивают клиентов по записанным сценариям. Когда LLM научились вести нормальный диалог, стало понятно, что на записанных сценариях далеко не уедешь. Так в 2026-м появился новый продукт группы, который я запустил и развиваю: голосовые AI-агенты для B2B, они разговаривают вживую, а не проигрывают запись.',
+        en: 'I have been at Prof-IT since early 2022: I came in as a PM on its voice products, zvonobot and effebot, where robots call clients with pre-recorded scripts. Once LLMs learned to hold a real conversation, it became clear that recorded scripts would only get us so far. That is how the group’s new product came about in 2026, launched and now scaled by me: voice AI agents for B2B that talk to people live instead of playing a recording.',
+      },
+      {
+        ru: 'Веду продукт целиком, от клиентского кабинета до биллинга. За 2026 год агенты провели больше 500 000 минут разговоров с новыми клиентами.',
+        en: 'I run the product end to end, from the client console to billing. In 2026 the agents have handled over 500,000 minutes of new-customer conversations.',
       },
     ],
   },
@@ -571,6 +576,22 @@ export const uiCopy = {
     pitch: {
       ru: 'Пишите, если ищете AI-продакта.',
       en: 'Write me if you are hiring an AI product lead.',
+    },
+    navAria: {
+      ru: 'Навигация в подвале',
+      en: 'Footer navigation',
+    },
+    backToTop: {
+      ru: 'Наверх',
+      en: 'Back to top',
+    },
+    craft: {
+      ru: 'Собрал этот сайт сам, в паре с AI-агентами.',
+      en: 'Built this site myself, pairing with AI agents.',
+    },
+    craftSource: {
+      ru: 'Код открыт',
+      en: 'Source is open',
     },
   },
   localeToggleLabel: {

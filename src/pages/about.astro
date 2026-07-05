@@ -19,6 +19,10 @@ import localeScriptUrl from '../scripts/locale.js?url';
 import heroImage from '../assets/main-hero.jpg';
 
 const avatarUrl = `https://avatars.githubusercontent.com/${githubUsername}?size=560`;
+// The photo column only has content beside the first two blocks; the rest of
+// the page reflows to a single centered measure (no empty 320px rail).
+const gridBlocks = aboutBlocks.slice(0, 2);
+const flowBlocks = aboutBlocks.slice(2);
 const personEntity = buildPersonSchema('https://rebsem.ru/about');
 personEntity.image = avatarUrl;
 const aboutSchema = {
@@ -68,7 +72,7 @@ const aboutSchema = {
 
         <div class="about-copy">
           <div class="about-blocks">
-            {aboutBlocks.map((block) => (
+            {gridBlocks.map((block) => (
               <article class="about-block">
                 <p class="about-block-eyebrow">{block.eyebrow.en}</p>
                 <h2 class="about-block-title">{block.title.en}</h2>
@@ -81,8 +85,26 @@ const aboutSchema = {
               </article>
             ))}
           </div>
+        </div>
+      </div>
 
-          <section class="about-skills" aria-labelledby="about-skills-title">
+      <div class="about-flow">
+        <div class="about-blocks">
+          {flowBlocks.map((block) => (
+            <article class="about-block">
+              <p class="about-block-eyebrow">{block.eyebrow.en}</p>
+              <h2 class="about-block-title">{block.title.en}</h2>
+              {block.body.map((para) => (<p>{para.en}</p>))}
+              {block.bullets && (
+                <ul class="about-bullets">
+                  {block.bullets.map((item) => (<li>{item.en}</li>))}
+                </ul>
+              )}
+            </article>
+          ))}
+        </div>
+
+        <section class="about-skills" aria-labelledby="about-skills-title">
             <p class="about-block-eyebrow">{uiCopy.about.skillsEyebrow.en}</p>
             <h2 id="about-skills-title" class="about-block-title">{uiCopy.about.skillsTitle.en}</h2>
             <p class="about-skills-note">{uiCopy.about.skillsNote.en}</p>
@@ -98,18 +120,17 @@ const aboutSchema = {
             </div>
           </section>
 
-          <div class="about-cta-card">
-            <p class="about-cta-eyebrow">Get in touch</p>
-            <p class="about-cta-headline">Open to AI Product Manager roles where the product moves through smart AI adoption.</p>
-            <p class="about-cta-sub">Tell me about the product and the problem, and I'll tell you where AI actually moves the needle and where it doesn't.</p>
-            <div class="about-cta-row">
-              <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M4 11l16 -8l-4 18l-5 -4l-3 3l1 -5l8 -7"/>
-                </svg>
-                {uiCopy.home.heroCtaPrimary.en}
-              </a>
-            </div>
+        <div class="about-cta-card">
+          <p class="about-cta-eyebrow">Get in touch</p>
+          <p class="about-cta-headline">Open to AI Product Manager roles where the product moves through smart AI adoption.</p>
+          <p class="about-cta-sub">Tell me about the product and the problem, and I'll tell you where AI actually moves the needle and where it doesn't.</p>
+          <div class="about-cta-row">
+            <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 11l16 -8l-4 18l-5 -4l-3 3l1 -5l8 -7"/>
+              </svg>
+              {uiCopy.home.heroCtaPrimary.en}
+            </a>
           </div>
         </div>
       </div>

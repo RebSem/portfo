@@ -18,18 +18,10 @@ const { lightSrc, darkSrc, alt, caption } = Astro.props;
     </div>
     <img
       src={lightSrc}
+      data-light-src={lightSrc}
+      data-dark-src={darkSrc}
       alt={alt}
-      class="project-shot-img project-shot-img-light"
-      loading="lazy"
-      decoding="async"
-      width="1440"
-      height="920"
-    />
-    <img
-      src={darkSrc}
-      alt=""
-      aria-hidden="true"
-      class="project-shot-img project-shot-img-dark"
+      class="project-shot-img"
       loading="lazy"
       decoding="async"
       width="1440"

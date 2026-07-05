@@ -1,6 +1,6 @@
 ---
 import SocialLinks from './SocialLinks.astro';
-import { uiCopy } from '../data/site-content';
+import { siteRepoUrl, uiCopy } from '../data/site-content';
 
 interface Props {
   noteRu?: string;
@@ -14,6 +14,7 @@ const {
 
 const locale = Astro.currentLocale === 'ru' ? 'ru' : 'en';
 const note = locale === 'ru' ? noteRu : noteEn;
+const prefix = locale === 'ru' ? '/ru' : '';
 ---
 
 <footer class="site-footer">
@@ -26,5 +27,17 @@ const note = locale === 'ru' ? noteRu : noteEn;
     <p class="footer-pitch">{uiCopy.footer.pitch[locale]}</p>
     <SocialLinks />
     <p class="footer-note">{note}</p>
+
+    <nav class="footer-nav" aria-label={uiCopy.footer.navAria[locale]}>
+      <a href={`${prefix}/`}>{uiCopy.nav.home[locale]}</a>
+      <a href={`${prefix}/about`}>{uiCopy.nav.about[locale]}</a>
+      <a href={`${prefix}/blog`}>{uiCopy.nav.blog[locale]}</a>
+      <a href="#top">{uiCopy.footer.backToTop[locale]}</a>
+    </nav>
+
+    <p class="footer-craft">
+      {uiCopy.footer.craft[locale]}
+      <a href={siteRepoUrl} target="_blank" rel="noreferrer">{uiCopy.footer.craftSource[locale]}</a>.
+    </p>
   </div>
 </footer>

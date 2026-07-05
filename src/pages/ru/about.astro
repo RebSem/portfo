@@ -18,6 +18,10 @@ import localeScriptUrl from '../../scripts/locale.js?url';
 import heroImage from '../../assets/main-hero.jpg';
 
 const avatarUrl = `https://avatars.githubusercontent.com/${githubUsername}?size=560`;
+// Колонка с фото занята только рядом с первыми двумя блоками; дальше страница
+// перетекает в одну центрированную колонку (без пустого рельса в 320px).
+const gridBlocks = aboutBlocks.slice(0, 2);
+const flowBlocks = aboutBlocks.slice(2);
 const personEntity = buildPersonSchema('https://rebsem.ru/ru/about');
 personEntity.image = avatarUrl;
 const aboutSchema = {
@@ -67,7 +71,7 @@ const aboutSchema = {
 
         <div class="about-copy">
           <div class="about-blocks">
-            {aboutBlocks.map((block) => (
+            {gridBlocks.map((block) => (
               <article class="about-block">
                 <p class="about-block-eyebrow">{block.eyebrow.ru}</p>
                 <h2 class="about-block-title">{block.title.ru}</h2>
@@ -80,8 +84,26 @@ const aboutSchema = {
               </article>
             ))}
           </div>
+        </div>
+      </div>
 
-          <section class="about-skills" aria-labelledby="about-skills-title">
+      <div class="about-flow">
+        <div class="about-blocks">
+          {flowBlocks.map((block) => (
+            <article class="about-block">
+              <p class="about-block-eyebrow">{block.eyebrow.ru}</p>
+              <h2 class="about-block-title">{block.title.ru}</h2>
+              {block.body.map((para) => (<p>{para.ru}</p>))}
+              {block.bullets && (
+                <ul class="about-bullets">
+                  {block.bullets.map((item) => (<li>{item.ru}</li>))}
+                </ul>
+              )}
+            </article>
+          ))}
+        </div>
+
+        <section class="about-skills" aria-labelledby="about-skills-title">
             <p class="about-block-eyebrow">{uiCopy.about.skillsEyebrow.ru}</p>
             <h2 id="about-skills-title" class="about-block-title">{uiCopy.about.skillsTitle.ru}</h2>
             <p class="about-skills-note">{uiCopy.about.skillsNote.ru}</p>
@@ -97,18 +119,17 @@ const aboutSchema = {
             </div>
           </section>
 
-          <div class="about-cta-card">
-            <p class="about-cta-eyebrow">Связаться</p>
-            <p class="about-cta-headline">Открыт к ролям AI Product Manager, где продукт двигается за счёт продуманного внедрения AI.</p>
-            <p class="about-cta-sub">Расскажите про продукт и задачу, и я подскажу, где AI реально даёт результат, а где нет.</p>
-            <div class="about-cta-row">
-              <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M4 11l16 -8l-4 18l-5 -4l-3 3l1 -5l8 -7"/>
-                </svg>
-                {uiCopy.home.heroCtaPrimary.ru}
-              </a>
-            </div>
+        <div class="about-cta-card">
+          <p class="about-cta-eyebrow">Связаться</p>
+          <p class="about-cta-headline">Открыт к ролям AI Product Manager, где продукт двигается за счёт продуманного внедрения AI.</p>
+          <p class="about-cta-sub">Расскажите про продукт и задачу, и я подскажу, где AI реально даёт результат, а где нет.</p>
+          <div class="about-cta-row">
+            <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 11l16 -8l-4 18l-5 -4l-3 3l1 -5l8 -7"/>
+              </svg>
+              {uiCopy.home.heroCtaPrimary.ru}
+            </a>
           </div>
         </div>
       </div>

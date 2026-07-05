@@ -2,7 +2,8 @@
 // App-window screenshot for self-contained desktop apps that already carry
 // their own window chrome. Unlike ProjectScreenshot, it does NOT draw a
 // traffic-light bar (the app already has a header), so we avoid a
-// window-in-a-window look. Light/dark images swap via [data-theme].
+// window-in-a-window look. Light/dark variants swap via theme-images.js,
+// so only the active theme's image is ever fetched.
 //
 // Use one shot, or pass `shots` (2 items) for a responsive side-by-side duo.
 interface Shot {
@@ -36,18 +37,10 @@ const isDuo = panes.length > 1;
       <div class="app-shot-frame">
         <img
           src={p.lightSrc}
+          data-light-src={p.lightSrc}
+          data-dark-src={p.darkSrc}
           alt={p.alt}
-          class="app-shot-img app-shot-img-light"
-          loading="lazy"
-          decoding="async"
-          width={width}
-          height={height}
-        />
-        <img
-          src={p.darkSrc}
-          alt=""
-          aria-hidden="true"
-          class="app-shot-img app-shot-img-dark"
+          class="app-shot-img"
           loading="lazy"
           decoding="async"
           width={width}

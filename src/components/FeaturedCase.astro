@@ -77,21 +77,14 @@ const readCaseLabel = locale === 'ru' ? 'Открыть полный кейс' :
       </div>
       <img
         src={screenshotLight}
+        data-light-src={screenshotLight}
+        data-dark-src={screenshotDark}
         alt={c.featuredScreenshotAlt[locale]}
         loading="lazy"
         decoding="async"
         width="1440"
         height="920"
-        class="featured-case-shot featured-case-shot-light"
-      />
-      <img
-        src={screenshotDark}
-        alt={c.featuredScreenshotAlt[locale]}
-        loading="lazy"
-        decoding="async"
-        width="1440"
-        height="920"
-        class="featured-case-shot featured-case-shot-dark"
+        class="featured-case-shot"
       />
     </figure>
     <figcaption class="featured-case-caption">{c.featuredNda[locale]}</figcaption>

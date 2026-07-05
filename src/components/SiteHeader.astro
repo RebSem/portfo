@@ -58,13 +58,18 @@ const toggleUrl = localeToggleUrl ?? localeToggleByActive[active];
         >
           {isRu ? uiCopy.nav.about.ru : uiCopy.nav.about.en}
         </a>
-        <a
-          class:list={['main-nav-link', isBlog && 'active-nav']}
-          href={blogPath}
-          aria-current={isBlog ? 'page' : undefined}
-        >
-          {isRu ? uiCopy.nav.blog.ru : uiCopy.nav.blog.en}
-        </a>
+        {/* Blog stays reachable via the footer while the post count is thin;
+            a promoted nav item leading to a near-empty index reads worse
+            than no item. Restore here once there are 3+ substantive posts. */}
+        {isBlog && (
+          <a
+            class:list={['main-nav-link', 'active-nav']}
+            href={blogPath}
+            aria-current="page"
+          >
+            {isRu ? uiCopy.nav.blog.ru : uiCopy.nav.blog.en}
+          </a>
+        )}
       </nav>
 
       <a
