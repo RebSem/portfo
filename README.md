@@ -4,7 +4,7 @@
 [![Deploy to GitHub Pages](https://github.com/RebSem/portfo/actions/workflows/deploy.yml/badge.svg)](https://github.com/RebSem/portfo/actions/workflows/deploy.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 
-Personal portfolio + RU/EN blog built with Astro and deployed to GitHub Pages.
+Personal portfolio and RU/EN blog built with Astro and deployed to GitHub Pages.
 
 Live site: [rebsem.ru](https://rebsem.ru)
 
