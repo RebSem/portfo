@@ -38,7 +38,7 @@ Tech (shared language with engineers): React/Next.js, TypeScript, Python/Flask, 
 - This site is open source (Astro): https://github.com/RebSem/portfo
 
 ## Contact
-- Telegram: https://t.me/Michael_Semenov
+- Telegram: https://telegram.me/Michael_Semenov
 - Email: perk77331@gmail.com
 - LinkedIn: https://www.linkedin.com/in/mikhail-semenovv/
 - GitHub: https://github.com/RebSem

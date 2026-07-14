@@ -1,7 +1,10 @@
 import type { LocalizedText } from '../types/content';
 
 export const githubUsername = 'RebSem';
-export const telegramUrl = 'https://t.me/Michael_Semenov';
+// t.me has been in serverHold since 2026-07-13 (registry-level block; the
+// domain itself stays Telegram's until 2035) and no longer resolves in
+// browsers — telegram.me is the working alias, still recognized in-app too.
+export const telegramUrl = 'https://telegram.me/Michael_Semenov';
 export const email = 'perk77331@gmail.com';
 export const linkedinUrl = 'https://www.linkedin.com/in/mikhail-semenovv/';
 export const siteRepoUrl = 'https://github.com/RebSem/portfo';
