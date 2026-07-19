@@ -13,11 +13,9 @@
 // same reasoning as the MutationObserver in theme-images.js.
 
 import posthog from 'posthog-js';
+import { contactChannel, isInternal, projectDestination, projectSlugFromPath } from '../lib/analytics-links';
 
 const DEFAULT_HOST = 'https://eu.i.posthog.com';
-
-type ContactChannel = 'telegram' | 'email' | 'github' | 'linkedin';
-type ProjectDestination = 'case' | 'repo' | 'demo';
 
 interface AnalyticsState {
   initialized: boolean;
@@ -117,28 +115,6 @@ function baseProps(): Record<string, string> {
   };
 }
 
-function isInternal(url: URL): boolean {
-  return url.host === window.location.host;
-}
-
-function contactChannel(url: URL): ContactChannel | null {
-  if (url.protocol === 'mailto:') return 'email';
-  if (url.protocol !== 'http:' && url.protocol !== 'https:') return null;
-
-  const host = url.hostname.replace(/^www\./, '');
-  // telegram.me is the working alias — see the note on telegramUrl in site-content.ts.
-  if (host === 'telegram.me' || host === 't.me') return 'telegram';
-  if (host === 'github.com') return 'github';
-  if (host === 'linkedin.com' || host.endsWith('.linkedin.com')) return 'linkedin';
-  return null;
-}
-
-/** '/projects/foo' and '/ru/projects/foo' both yield 'foo'. */
-function projectSlugFromPath(pathname: string): string | null {
-  const match = pathname.match(/^\/(?:ru\/)?projects\/([^/]+)\/?$/);
-  return match ? match[1] ?? null : null;
-}
-
 /**
  * Repo and demo links carry no slug of their own, so read it off the sibling
  * case-study link. Every card variant (.project-card, .project-card-pet,
@@ -154,11 +130,6 @@ function projectSlugFromCard(anchor: HTMLAnchorElement): string | null {
   } catch {
     return null;
   }
-}
-
-function projectDestination(url: URL): ProjectDestination {
-  if (isInternal(url)) return 'case';
-  return url.hostname.replace(/^www\./, '') === 'github.com' ? 'repo' : 'demo';
 }
 
 // Autocapture keys events on DOM text, which on a bilingual site splits every
@@ -185,9 +156,6 @@ function bindClickTracking(): void {
       return;
     }
 
-    // Order matters: a project's GitHub link would otherwise be counted as a
-    // contact click, since both live on github.com.
-
     if (anchor.id === 'locale-switcher') {
       const from = pageLocale();
       posthog.capture('locale:toggle_click', {
@@ -208,17 +176,9 @@ function bindClickTracking(): void {
       return;
     }
 
-    const projectSlug = projectSlugFromPath(url.pathname) ?? projectSlugFromCard(anchor);
-    if (projectSlug) {
-      posthog.capture('project:card_click', {
-        ...baseProps(),
-        project_slug: projectSlug,
-        link_destination: projectDestination(url),
-        link_href: url.href,
-      });
-      return;
-    }
-
+    // Contact is checked before projects: now that github only matches the bare
+    // profile, no contact channel can also be a project link, so the two no
+    // longer compete for the same click.
     const channel = contactChannel(url);
     if (channel) {
       posthog.capture('contact:link_click', {
@@ -229,7 +189,27 @@ function bindClickTracking(): void {
       return;
     }
 
-    if (!isInternal(url) && (url.protocol === 'http:' || url.protocol === 'https:')) {
+    // A project link is the case-study URL itself, a sibling link inside a card,
+    // or — when already on a case-study page — any outbound repo/demo link that
+    // page carries. That last fallback is what attributes the "Repository" fact
+    // on /projects/<slug>, which sits in an <article> holding no /projects/ link
+    // of its own.
+    const projectSlug =
+      projectSlugFromPath(url.pathname) ??
+      projectSlugFromCard(anchor) ??
+      (isInternal(url, window.location.host) ? null : projectSlugFromPath(window.location.pathname));
+
+    if (projectSlug) {
+      posthog.capture('project:card_click', {
+        ...baseProps(),
+        project_slug: projectSlug,
+        link_destination: projectDestination(url, window.location.host),
+        link_href: url.href,
+      });
+      return;
+    }
+
+    if (!isInternal(url, window.location.host) && (url.protocol === 'http:' || url.protocol === 'https:')) {
       posthog.capture('outbound:link_click', {
         ...baseProps(),
         link_host: url.hostname,
