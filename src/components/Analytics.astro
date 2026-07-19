@@ -1,0 +1,26 @@
+---
+// Analytics loader.
+//
+// This is a *processed* (bundled) script, deliberately not is:inline. Astro
+// executes bundled module scripts exactly once per ClientRouter session and
+// ignores them on later transitions, so init cannot run twice. An is:inline
+// script would re-execute on every soft navigation and needs a global guard.
+// Bundled also means import.meta.env is substituted here, which does not
+// happen inside is:inline.
+//
+// With no token the branch folds away at build time and posthog-js is never
+// emitted into the bundle — so local dev, PR builds and CI stay clean.
+---
+
+<script>
+  const token = import.meta.env.PUBLIC_ANALYTICS_KEY;
+
+  if (token) {
+    import('../scripts/analytics')
+      .then((module) => module.initAnalytics(token, import.meta.env.PUBLIC_ANALYTICS_HOST))
+      .catch(() => {
+        // Never let analytics break the page. Most likely a tracking blocker
+        // refused the chunk, which is expected for a chunk named like this one.
+      });
+  }
+</script>
