@@ -42,6 +42,12 @@ jobs:
         run: npm run build
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          # Public write-only token; it ships in the built JS either way. Held as
+          # a secret only so it stays out of this public repo's git history and
+          # its public Actions logs, and so it can be rotated without a commit.
+          # Unset => the analytics chunk is not emitted at all.
+          PUBLIC_ANALYTICS_KEY: ${{ secrets.PUBLIC_ANALYTICS_KEY }}
+          PUBLIC_ANALYTICS_HOST: https://eu.i.posthog.com
 
       - name: Check internal links
         run: npm run link-check
