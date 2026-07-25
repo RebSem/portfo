@@ -139,10 +139,23 @@ const initTheme = () => {
   bindDelegatedClicks();
 };
 
-document.addEventListener('astro:page-load', initTheme);
+// ClientRouter's swapRootAttributes() wipes every attribute off <html> and
+// replaces them with the incoming document's, which carry neither data-theme
+// nor the inline color-scheme — the theme lives only in localStorage. Restoring
+// it at astro:page-load is too late: that fires after the swap, so the
+// view-transition captures a light-themed snapshot and a dark-mode visitor sees
+// the new page flash white on every navigation. Stamping the incoming document
+// here means the attributes are already correct when they get swapped in.
+document.addEventListener('astro:before-swap', (event) => {
+  const incoming = event.newDocument?.documentElement;
+  if (!incoming) return;
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initTheme, { once: true });
-} else {
-  initTheme();
-}
+  const theme = state.initialized ? state.activeTheme : readTheme();
+  incoming.setAttribute('data-theme', theme);
+  incoming.style.colorScheme = theme;
+});
+
+// Fires on the initial load as well as after every swap, so it is the whole
+// bootstrap. Calling init() directly here too would double-run it on a cold
+// load, because module scripts evaluate at readyState 'interactive'.
+document.addEventListener('astro:page-load', initTheme);

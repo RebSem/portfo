@@ -40,10 +40,5 @@ const init = () => {
 };
 
 // Re-sync after each swap: the new page's images arrive with the light src.
+// This also covers the initial load, so no separate bootstrap is needed.
 document.addEventListener('astro:page-load', init);
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init, { once: true });
-} else {
-  init();
-}

@@ -10,6 +10,7 @@ import {
   heroFallbackName,
   heroSubtitle,
   skillGroups,
+  skillItemText,
   telegramUrl,
   uiCopy,
 } from '../data/site-content';
@@ -113,7 +114,7 @@ const aboutSchema = {
                 <div class="skill-group">
                   <p class="skill-group-label">{group.label.en}</p>
                   <ul class="skill-chips" aria-label={group.label.en}>
-                    {group.items.map((item) => (<li class="skill-chip">{item}</li>))}
+                    {group.items.map((item) => (<li class="skill-chip">{skillItemText(item, 'en')}</li>))}
                   </ul>
                 </div>
               ))}
