@@ -28,3 +28,7 @@ pnpm-debug.log*
 
 # claude code local config and worktrees
 .claude/
+
+# personal notes and drafts — kept locally, never published
+private/
+scripts/cv/_archive/

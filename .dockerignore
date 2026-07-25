@@ -1,9 +1,0 @@
-.git
-.gitignore
-.vscode
-node_modules
-npm-debug.log*
-dist
-CV_.pdf
-grateful-graham
-README.md

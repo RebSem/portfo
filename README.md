@@ -1,131 +1,136 @@
-# Portfo
+# portfo
 
 [![Site](https://img.shields.io/badge/site-rebsem.ru-0a7cff)](https://rebsem.ru)
-[![Deploy to GitHub Pages](https://github.com/RebSem/portfo/actions/workflows/deploy.yml/badge.svg)](https://github.com/RebSem/portfo/actions/workflows/deploy.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
+[![CI](https://github.com/RebSem/portfo/actions/workflows/ci.yml/badge.svg)](https://github.com/RebSem/portfo/actions/workflows/ci.yml)
+[![Deploy](https://github.com/RebSem/portfo/actions/workflows/deploy.yml/badge.svg)](https://github.com/RebSem/portfo/actions/workflows/deploy.yml)
+[![License: MIT](https://img.shields.io/badge/code-MIT-green.svg)](./LICENSE)
 
-Personal portfolio and RU/EN blog built with Astro and deployed to GitHub Pages.
-
-Live site: [rebsem.ru](https://rebsem.ru)
+Source of [rebsem.ru](https://rebsem.ru) — the personal site and bilingual blog of
+Mikhail Semenov, AI Product Manager. Astro, statically built, deployed to GitHub
+Pages on every push to `main`.
 
 ## Stack
 
-- Astro 5
-- MDX (`astro:content`)
-- TypeScript
-- GitHub Actions + GitHub Pages
+| | |
+|---|---|
+| Framework | Astro 5, `output: 'static'` |
+| Content | MDX via `astro:content`, schema-validated collections |
+| Language | TypeScript (`astro/tsconfigs/strict`) |
+| Fonts | Self-hosted, built by Astro's font pipeline |
+| Tests | Vitest |
+| CI/CD | GitHub Actions → GitHub Pages |
+| Analytics | PostHog, anonymous and storage-free (see below) |
 
-## Features
-
-- RU/EN locale toggle with persistent preference
-- Light/dark theme toggle
-- Smooth client-side navigation
-- Bilingual blog posts (translation pairs)
-- Live GitHub profile/public repo sync with build-time contribution snapshots
-- `robots.txt`, `sitemap.xml`, `llms.txt`, meta tags, structured data
+No UI framework and no client-side router library: navigation uses Astro's
+`<ClientRouter />`, and every interactive piece is a small vanilla module in
+`src/scripts/`.
 
 ## Routes
 
-- `/` - landing page
-- `/about` - profile/about page
-- `/blog` - blog index
-- `/blog/:slug` - blog post
-- `/posts` - redirect/compat route
-- `/api/github/profile.json` - generated static JSON
-- `/api/github/repos.json` - generated static JSON
-- `/api/github/contributions.json` - generated static JSON
+Every page exists in both locales. English is the default and unprefixed;
+Russian lives under `/ru`.
 
-## Local Development
+| Route | |
+|---|---|
+| `/`, `/ru/` | Landing page |
+| `/about`, `/ru/about` | Profile, working style, anti-fit |
+| `/blog`, `/ru/blog` | Blog index |
+| `/blog/:slug` | Post, paired across locales by slug |
+| `/projects/:slug` | Project case study, 8 per locale |
+| `/api/github/{profile,repos,contributions}.json` | Static JSON, generated at build time |
+| `/sitemap.xml`, `/robots.txt`, `/llms.txt` | Generated |
 
-Requirements:
+## Layout
 
-- Node.js 20+
-- npm 10+
+```
+src/
+  components/   Astro components, styles scoped per component
+  content/      MDX collections: blog/, projects/
+  data/         Site copy and project metadata, bilingual
+  layouts/      The single page shell: head, meta, JSON-LD, transitions
+  lib/          Pure modules, unit-tested (GitHub parsing, link classification)
+  pages/        File-based routes; ru/ mirrors the root
+  scripts/      Client-side modules, one concern each
+  styles/       Global tokens and layout
+scripts/        Build and authoring tooling, plus the CV generator
+tests/          Vitest suites for the pure modules
+docs/           Contributor docs
+```
+
+`src/lib/` exists so that logic worth testing carries no DOM or SDK imports;
+`src/scripts/` is where the DOM lives. That split is why the test suite needs no
+browser environment.
+
+## Development
+
+Node 22 and npm 10 (CI pins the same major).
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open `http://localhost:4321`.
-
-## Build
-
-```bash
-npm run build
-```
-
-Preview locally:
-
-```bash
-npm run preview
-```
+Runs on `http://localhost:4321`.
 
 ## Validation
 
 ```bash
-npm run check
-npm test
-npm run build
-npm run link-check
+npm run validate
 ```
 
-Full pre-merge workflow: [`docs/workflow.md`](docs/workflow.md)
+Typecheck, tests, a production build, and an internal link check across every
+generated page. This is what CI runs on pull requests, so a green local run means
+a green PR. Pre-merge process: [`docs/workflow.md`](docs/workflow.md).
 
-## Blog Workflow
-
-Create a new RU/EN draft pair:
+## Writing a post
 
 ```bash
 npm run new:post -- my-post-slug --title-ru "Заголовок" --title-en "Title"
 ```
 
-Detailed guide: `docs/blog-authoring.md`
+Creates the RU/EN draft pair already linked to each other. Frontmatter reference
+and conventions: [`docs/blog-authoring.md`](docs/blog-authoring.md).
 
-## Docs
+## Environment
 
-- Workflow: `docs/workflow.md`
-- Blog authoring: `docs/blog-authoring.md`
-- Content plan: `docs/content-plan.md`
-- Deep positioning audit (RU): `docs/rebsem-audit-2026-04.md`
+All optional — the site builds without any of them. See [`.env.example`](.env.example).
 
-## Environment Variables
+| Variable | Effect when unset |
+|---|---|
+| `GITHUB_TOKEN` | GitHub API calls stay unauthenticated (60 req/hour); the build falls back to cached data |
+| `GITHUB_CACHE_FILE` | Defaults to `.cache/github-cache.json` |
+| `PUBLIC_ANALYTICS_KEY` | Analytics is compiled out of the bundle entirely |
+| `PUBLIC_ANALYTICS_HOST` | Defaults to PostHog EU |
 
-See `.env.example`.
+## Analytics
 
-- `GITHUB_TOKEN` - optional token for higher GitHub API rate limits during local build/preview
-- `GITHUB_CACHE_FILE` - local cache file path (default: `.cache/github-cache.json`)
+Deliberately minimal. `persistence: 'memory'` means nothing is written to the
+visitor's device — no cookie, no `localStorage`, no `sessionStorage` — so there is
+no consent banner. Nothing calls `identify()`, so every event is anonymous and no
+person profile is created. Session replay, feature flags, surveys and remote
+config are all off, which also removes their network requests.
 
-## Deploy (GitHub Pages)
+The project token is public by design and ships in the built JavaScript; it lives
+in an Actions secret so it stays out of git history and can be rotated without a
+commit. Without that secret the analytics module is dropped at build time, so
+pull-request builds cannot send events.
 
-This repository deploys via GitHub Actions workflow:
+## Deployment
 
-- Workflow: `.github/workflows/deploy.yml`
-- Trigger: push to `main`
-- Custom domain: `rebsem.ru` (via `public/CNAME`)
+Push to `main` builds and publishes to GitHub Pages, served at `rebsem.ru` via
+[`public/CNAME`](public/CNAME). Pull requests run [`ci.yml`](.github/workflows/ci.yml);
+`main` additionally runs [`deploy.yml`](.github/workflows/deploy.yml).
 
-CI for PRs and branch validation lives in `.github/workflows/ci.yml`.
+## Licensing
+
+Dual, and the split matters if you reuse anything here.
+
+- **Code** — MIT, see [`LICENSE`](LICENSE).
+- **Content** — text, images, case studies and the CV are All Rights Reserved,
+  see [`LICENSE-CONTENT`](LICENSE-CONTENT). Fork the code, not the biography.
 
 ## Attribution
 
-This project was originally bootstrapped from the website code of Peter Steinberger ([`steipete`](https://github.com/steipete)) and then adapted/modified for this portfolio.
-
-Reference repository:
-
-- [steipete/steipete.me](https://github.com/steipete/steipete.me)
-
-If you reuse this repository, keep attribution for upstream code where applicable.
-
-## License
-
-Code in this repository is licensed under the MIT License (`LICENSE`).
-
-Content (texts, images, media) is licensed separately under `LICENSE-CONTENT` unless otherwise noted.
-
-Portions of the code are derived from Peter Steinberger's site code and remain subject to the MIT license terms and attribution notice.
-
-## Content Licensing Notes
-
-- Repository code: MIT (`LICENSE`)
-- Portfolio/blog content and media authored for this site: All Rights Reserved (`LICENSE-CONTENT`)
-- Third-party content/assets (if any): keep original license/attribution requirements
+Originally bootstrapped from [steipete/steipete.me](https://github.com/steipete/steipete.me)
+by Peter Steinberger, then substantially rewritten. Upstream code remains MIT; see
+[`NOTICE`](NOTICE) for details, and keep the attribution if you reuse this.
