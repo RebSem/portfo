@@ -9,17 +9,15 @@
 
 ## Validation
 
-- [ ] `npm run check`
-- [ ] `npm test`
-- [ ] `npm run build`
-- [ ] `npm run link-check`
+- [ ] `npm run validate` (typecheck, tests, build, link check)
 
 ## Route checks
 
 - [ ] `/`
 - [ ] `/about`
 - [ ] `/blog`
-- [ ] affected `/blog/:slug` routes if content changed
+- [ ] affected `/blog/:slug` and `/projects/:slug` routes if content changed
+- [ ] the `/ru` counterpart of anything above that changed
 
 ## UI evidence
 
