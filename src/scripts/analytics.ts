@@ -116,12 +116,18 @@ function baseProps(): Record<string, string> {
 }
 
 /**
- * Repo and demo links carry no slug of their own, so read it off the sibling
- * case-study link. Every card variant (.project-card, .project-card-pet,
- * .featured-case) is an <article>, so that is the reliable container.
+ * Repo and demo links on a card carry no slug of their own, so read it off the
+ * sibling case-study link.
+ *
+ * The selector must name the card classes rather than just <article>: blog posts
+ * and case studies wrap their whole body in <article class="post-shell">, so a
+ * bare closest('article') matched there too and handed every link in a post the
+ * slug of the first case study the prose happened to link to.
  */
+const CARD_SELECTOR = 'article.project-card, article.project-card-pet, article.featured-case';
+
 function projectSlugFromCard(anchor: HTMLAnchorElement): string | null {
-  const card = anchor.closest('article');
+  const card = anchor.closest(CARD_SELECTOR);
   const caseLink = card?.querySelector<HTMLAnchorElement>('a[href*="/projects/"]');
   if (!caseLink) return null;
 
@@ -190,14 +196,17 @@ function bindClickTracking(): void {
     }
 
     // A project link is the case-study URL itself, a sibling link inside a card,
-    // or — when already on a case-study page — any outbound repo/demo link that
-    // page carries. That last fallback is what attributes the "Repository" fact
-    // on /projects/<slug>, which sits in an <article> holding no /projects/ link
-    // of its own.
+    // or a link the case-study page explicitly tags as belonging to the project
+    // it describes (the "Repository" quick fact, which sits outside any card).
+    //
+    // That last case is opt-in via data-project-link rather than "any outbound
+    // link while on a case page": the loose version also claimed the footer's
+    // link to this site's own source on all 16 case pages, plus every
+    // third-party repo credited in the prose.
     const projectSlug =
       projectSlugFromPath(url.pathname) ??
       projectSlugFromCard(anchor) ??
-      (isInternal(url, window.location.host) ? null : projectSlugFromPath(window.location.pathname));
+      (anchor.dataset.projectLink ? projectSlugFromPath(window.location.pathname) : null);
 
     if (projectSlug) {
       posthog.capture('project:card_click', {

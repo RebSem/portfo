@@ -107,11 +107,8 @@ const mergedPrsUrl = `https://github.com/${repoSlug}/pulls?q=is%3Apr+is%3Amerged
     }
   };
 
+  // astro:page-load already fires on the initial load, so the old
+  // DOMContentLoaded/immediate fallback just ran this twice per cold load —
+  // costly here, because the search endpoint allows only 10 requests a minute.
   document.addEventListener('astro:page-load', refreshPrCount);
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => void refreshPrCount(), { once: true });
-  } else {
-    void refreshPrCount();
-  }
 </script>

@@ -308,10 +308,6 @@ const initGithubActivity = () => {
   void hydrateGithub();
 };
 
+// astro:page-load fires on the initial load too, so this is the whole bootstrap;
+// see the note in github-sync.js about the double-init this replaces.
 document.addEventListener('astro:page-load', initGithubActivity);
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initGithubActivity, { once: true });
-} else {
-  initGithubActivity();
-}

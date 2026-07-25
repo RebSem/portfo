@@ -12,9 +12,18 @@ const lang = Astro.currentLocale ?? 'en';
 const isRu = lang === 'ru';
 const prefix = isRu ? '/ru' : '';
 
+// `active` marks the SECTION, which is what the visual highlight follows: a blog
+// post highlights Blog, a project page highlights Home. aria-current="page" means
+// something stricter — this link points at the page you are on — so it needs an
+// exact path match. Without that split, all 16 project pages announced "Home,
+// current page" to a screen reader while the visitor was on a project.
 const isHome = active === 'home';
 const isAbout = active === 'about';
 const isBlog = active === 'blog';
+
+const stripSlash = (path: string) => path.replace(/\/+$/, '') || '/';
+const currentPath = stripSlash(Astro.url.pathname);
+const isCurrentPage = (path: string) => stripSlash(path) === currentPath;
 
 const homePath = `${prefix}/`;
 const aboutPath = `${prefix}/about`;
@@ -47,14 +56,14 @@ const toggleUrl = localeToggleUrl ?? localeToggleByActive[active];
         <a
           class:list={['main-nav-link', isHome && 'active-nav']}
           href={homePath}
-          aria-current={isHome ? 'page' : undefined}
+          aria-current={isCurrentPage(homePath) ? 'page' : undefined}
         >
           {isRu ? uiCopy.nav.home.ru : uiCopy.nav.home.en}
         </a>
         <a
           class:list={['main-nav-link', isAbout && 'active-nav']}
           href={aboutPath}
-          aria-current={isAbout ? 'page' : undefined}
+          aria-current={isCurrentPage(aboutPath) ? 'page' : undefined}
         >
           {isRu ? uiCopy.nav.about.ru : uiCopy.nav.about.en}
         </a>
@@ -65,7 +74,7 @@ const toggleUrl = localeToggleUrl ?? localeToggleByActive[active];
           <a
             class:list={['main-nav-link', 'active-nav']}
             href={blogPath}
-            aria-current="page"
+            aria-current={isCurrentPage(blogPath) ? 'page' : undefined}
           >
             {isRu ? uiCopy.nav.blog.ru : uiCopy.nav.blog.en}
           </a>

@@ -1,4 +1,4 @@
-import type { LocalizedText } from '../types/content';
+import type { Locale, LocalizedText } from '../types/content';
 
 export const githubUsername = 'RebSem';
 // t.me has been in serverHold since 2026-07-13 (registry-level block; the
@@ -167,11 +167,22 @@ export const aboutBlocks: AboutBlock[] = [
   },
 ];
 
+/**
+ * A skill that reads identically in both locales (a tool, a proper noun, an
+ * established English term) stays a plain string; anything that needs real
+ * translating carries both. Most of this list is the former, so localizing
+ * every entry would be noise.
+ */
+export type SkillItem = string | LocalizedText;
+
 /** Grouped skills — rendered on About and mirrored into JSON-LD knowsAbout. */
 export interface SkillGroup {
   label: LocalizedText;
-  items: string[];
+  items: SkillItem[];
 }
+
+export const skillItemText = (item: SkillItem, locale: Locale): string =>
+  typeof item === 'string' ? item : item[locale];
 
 export const skillGroups: SkillGroup[] = [
   {
@@ -180,7 +191,7 @@ export const skillGroups: SkillGroup[] = [
       'Product discovery',
       'Product strategy',
       'Roadmap',
-      'Метрики · unit-экономика',
+      { ru: 'Метрики · unit-экономика', en: 'Metrics · unit economics' },
       'CustDev',
       'B2B SaaS',
       'Go-to-market',
@@ -194,7 +205,7 @@ export const skillGroups: SkillGroup[] = [
       'LLM orchestration',
       'Prompt engineering',
       'RAG',
-      'AI-в-workflow (не demo)',
+      { ru: 'AI-в-workflow (не demo)', en: 'AI in the workflow (not demos)' },
     ],
   },
   {
@@ -203,7 +214,7 @@ export const skillGroups: SkillGroup[] = [
       'Spec → review → ship',
       'Agent-native (Claude Code, Codex)',
       'Lean Startup · 0→1',
-      'Быстрая валидация гипотез',
+      { ru: 'Быстрая валидация гипотез', en: 'Fast hypothesis validation' },
     ],
   },
   {
@@ -213,8 +224,8 @@ export const skillGroups: SkillGroup[] = [
       'TypeScript',
       'Python / Flask',
       'PostgreSQL / Redis',
-      'REST · интеграции',
-      'Телефония',
+      { ru: 'REST · интеграции', en: 'REST · integrations' },
+      { ru: 'Телефония', en: 'Telephony' },
     ],
   },
 ];

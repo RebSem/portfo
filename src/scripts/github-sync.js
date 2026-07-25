@@ -217,17 +217,17 @@ const hydrateGithub = async () => {
   const username = getUsername();
   if (!username) return;
 
-  try {
-    const [profile, repos] = await Promise.all([
-      fetchGithubProfile(username),
-      fetchGithubRepos(username),
-    ]);
+  // allSettled, not all: the two requests fail independently, and under Promise.all
+  // a rejected profile threw away a perfectly good repos payload — leaving every
+  // project card on its server-rendered placeholder. Whichever half arrives renders.
+  const [profile, repos] = await Promise.allSettled([
+    fetchGithubProfile(username),
+    fetchGithubRepos(username),
+  ]);
 
-    updateProfile(profile);
-    updateRepoCards(repos);
-  } catch {
-    // Keep server-rendered fallback content if GitHub is unavailable.
-  }
+  // Keep server-rendered fallback content for whichever half is unavailable.
+  if (profile.status === 'fulfilled') updateProfile(profile.value);
+  if (repos.status === 'fulfilled') updateRepoCards(repos.value);
 };
 
 const initGithubSync = () => {
@@ -238,10 +238,9 @@ const initGithubSync = () => {
   void hydrateGithub();
 };
 
+// astro:page-load covers the initial load as well as every swap. The old
+// DOMContentLoaded/immediate fallback ran this a second time on every cold load
+// (module scripts evaluate at readyState 'interactive', so the else branch
+// always fired), which doubled every GitHub API request against a 60/hour
+// unauthenticated limit.
 document.addEventListener('astro:page-load', initGithubSync);
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initGithubSync, { once: true });
-} else {
-  initGithubSync();
-}
