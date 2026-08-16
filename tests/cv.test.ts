@@ -1,3 +1,4 @@
+import { execFileSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -9,10 +10,16 @@ import {
   cvProducts,
   cvSkillGroups,
   email,
+  linkedinHandle,
   linkedinUrl,
   telegramUrl,
 } from '../src/data/cv';
-import { CV_SECTION_KEYS, buildCvNodes, buildCvText } from '../src/lib/cv-text';
+import {
+  CV_SECTION_KEYS,
+  CV_SECTION_TITLES,
+  buildCvNodes,
+  buildCvText,
+} from '../src/lib/cv-text';
 import type { Locale } from '../src/types/content';
 
 const LOCALES: Locale[] = ['ru', 'en'];
@@ -186,7 +193,18 @@ describeBuilt('cv build output', () => {
       ['cv/index.html', 'en'],
       ['ru/cv/index.html', 'ru'],
     ] as Array<[string, Locale]>) {
-      const html = readDist(page);
+      // Compared against the rendered text, not the markup: hyphenated tokens
+      // ship wrapped in nowrap spans (see the nb() helper in CvDocument), so
+      // the canon strings are correct in the text stream while never being
+      // contiguous in the HTML source. Stripping tags is also closer to what
+      // an LLM reader actually consumes.
+      const html = readDist(page)
+        .replace(/<[^>]+>/g, '')
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&#39;/g, "'")
+        .replace(/\s+/g, ' ');
       const probes = collectCvStrings(locale).filter(
         (value) => value.length >= 25 && !/[&<>]/.test(value),
       );
@@ -201,6 +219,27 @@ describeBuilt('cv build output', () => {
   it('exposes the plain-text resume in both locales', () => {
     expect(readDist('cv.txt')).toBe(buildCvText('en'));
     expect(readDist('ru/cv.txt')).toBe(buildCvText('ru'));
+  });
+
+  it('gives every page with a theme button the script that drives it', () => {
+    // /cv shipped a theme toggle that did nothing: locale.js was imported by
+    // each page individually and the resume pages never got the import. The
+    // script now loads from SiteHeader, and this asserts nobody undoes that.
+    const walk = (directory: string): string[] =>
+      readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+        const full = path.join(directory, entry.name);
+        return entry.isDirectory() ? walk(full) : [full];
+      });
+
+    const pages = walk(DIST).filter((file) => file.endsWith('.html'));
+    const withToggle = pages.filter((file) => readFileSync(file, 'utf8').includes('id="theme-btn"'));
+
+    expect(withToggle.length).toBeGreaterThan(10);
+    for (const page of withToggle) {
+      expect(readFileSync(page, 'utf8'), `${page} has a dead theme button`).toMatch(
+        /src="\/_astro\/locale\.[^"]+\.js"/,
+      );
+    }
   });
 
   it('leaks no phone number into the deployed site', () => {
@@ -245,6 +284,78 @@ describe('cv download files', () => {
     for (const file of files.filter((name) => name.endsWith('.pdf'))) {
       const megabytes = statSync(path.join(CV_DIR, file)).size / 1024 / 1024;
       expect(megabytes, `${file} is ${megabytes.toFixed(1)} MB`).toBeLessThan(1.5);
+    }
+  });
+
+  /**
+   * Reads the PDF the way an ATS does. Nothing checked the text layer before,
+   * which is exactly how a PDF with no contact details, split headings and
+   * three destroyed keywords got shipped. Skipped where pdftotext is absent
+   * rather than failing the suite on a machine without poppler.
+   */
+  const pdfText = (file: string): string | null => {
+    try {
+      return execFileSync('pdftotext', [path.join(CV_DIR, file), '-'], {
+        encoding: 'utf8',
+        maxBuffer: 8 * 1024 * 1024,
+      });
+    } catch {
+      return null;
+    }
+  };
+
+  const hasPdftotext = files.length > 0 && pdfText('Mikhail_Semenov_AI_PM_EN.pdf') !== null;
+  const itWithPdftotext = hasPdftotext ? it : it.skip;
+
+  itWithPdftotext('keeps the PDF text layer readable by a parser', () => {
+    for (const [file, locale] of [
+      ['Mikhail_Semenov_AI_PM_EN.pdf', 'en'],
+      ['Mikhail_Semenov_AI_PM_RU.pdf', 'ru'],
+    ] as Array<[string, Locale]>) {
+      const text = pdfText(file);
+      expect(text).toBeTruthy();
+      const extracted = text as string;
+
+      // The August PDF rendered capital J as "Ã" and lost the whole
+      // employment history to the parser.
+      expect(extracted, `${file} has broken glyphs`).not.toContain('Ã');
+
+      // A resume with no way to reply is not a resume.
+      expect(extracted, `${file} has no email`).toContain(email);
+      expect(extracted, `${file} has no Telegram`).toContain('Michael_Semenov');
+      expect(extracted, `${file} has no LinkedIn`).toContain(linkedinHandle);
+
+      // Section headings: letter-spacing once split SUMMARY into "S U MMARY".
+      for (const key of CV_SECTION_KEYS) {
+        if (key === 'contact') continue; // Folded into the header line in print.
+        const heading = CV_SECTION_TITLES[key][locale].toUpperCase();
+        expect(extracted, `${file} lost the ${heading} heading`).toContain(heading);
+      }
+
+      // Date ranges have to survive as ranges, on one line with their role.
+      const range = locale === 'ru' ? 'февраль 2022 - настоящее время' : 'Feb 2022 - Present';
+      expect(extracted, `${file} lost the current role date range`).toContain(range);
+    }
+  });
+
+  itWithPdftotext('keeps hyphenated keywords whole in the PDF', () => {
+    // A compound word wrapping at its hyphen silently deletes the hyphen from
+    // the text layer: "full-time" became "Fulltime", "юнит-экономика" became
+    // "юнитэкономика". Every one of these is a term a recruiter searches on.
+    const cases: Array<[string, string[]]> = [
+      ['Mikhail_Semenov_AI_PM_EN.pdf', ['full-time', 'go-to-market', 'per-second']],
+      ['Mikhail_Semenov_AI_PM_RU.pdf', ['юнит-экономика', 'LLM-аналитика', 'go-to-market']],
+    ];
+
+    for (const [file, terms] of cases) {
+      const extracted = (pdfText(file) as string).toLowerCase();
+      for (const term of terms) {
+        expect(extracted, `${file} broke "${term}"`).toContain(term.toLowerCase());
+        expect(
+          extracted,
+          `${file} contains the hyphen-less "${term.replace(/-/g, '')}"`,
+        ).not.toContain(term.replace(/-/g, '').toLowerCase());
+      }
     }
   });
 

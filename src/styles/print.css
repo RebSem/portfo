@@ -73,6 +73,8 @@
   .skip-link,
   .cv-toc,
   .cv-actions,
+  /* Web affordance: on paper "Also as: DOCX TXT" is a dead instruction. */
+  .cv-formats,
   .cv-copy,
   /* The "CV" eyebrow: on a resume the first line of the text layer should be
      the candidate's name, not a label. */
@@ -123,8 +125,23 @@
   /* The attribute selector is load-bearing: without it these lose on
      specificity to the two expansion rules above and the URLs come back. */
   .cv-doc a[href^='mailto:']::after,
-  .cv-bullets a[href]::after {
+  .cv-bullets a[href]::after,
+  /* The header contact line already IS the address; appending the URL after
+     each one would print every address twice. */
+  .cv-contacts a[href]::after {
     content: '';
+  }
+
+  /* The contact list must not wrap onto its own line per item; it reads as a
+     single run of identifiers, which is the shape an ATS expects at the top
+     of a resume. */
+  .cv-contacts {
+    gap: 0.1rem 0.55rem;
+    font-size: 9pt;
+  }
+
+  .cv-contacts li + li::before {
+    margin-right: 0.55rem;
   }
 
   /* Letter-spacing has to go. The screen styling tracks the section headings
@@ -159,21 +176,21 @@
   .cv-product-proof,
   .cv-role-context {
     font-size: 9.5pt;
-    line-height: 1.42;
+    line-height: 1.38;
   }
 
   .cv-section {
-    margin-top: 0.75rem;
+    margin-top: 0.6rem;
   }
 
   .cv-section-title {
-    margin-bottom: 0.4rem;
-    padding-bottom: 0.2rem;
+    margin-bottom: 0.32rem;
+    padding-bottom: 0.16rem;
     font-size: 9pt;
   }
 
   .cv-bullets {
-    gap: 0.18rem;
+    gap: 0.14rem;
   }
 
   .cv-role + .cv-role {
@@ -219,9 +236,14 @@
     padding-left: 0.15rem;
   }
 
-  .cv-metric-value::after,
-  .cv-metric-label::after {
+  .cv-metric-value::after {
     content: ' ';
+  }
+
+  /* Colon, matching the txt and DOCX exports. Without it the PDF produced a
+     run-on: "~80 paying B2B customers repeat payments account for 30%...". */
+  .cv-metric-label::after {
+    content: ': ';
   }
 
   .cv-metric-label,
@@ -270,6 +292,27 @@
   /* Page breaks: never orphan a heading from its content, never split a role
      or a bullet across pages. An ATS parsing a split date range reads it as
      two jobs. */
+  /* Flex with space-between put the role title and its date range 215pt
+     apart on the same baseline, and pdftotext emitted them as two lines with
+     a blank line between. Parsers that segment jobs on blank lines orphaned
+     every date. Inline on paper, so the extracted line reads
+     "Product Manager, Zvonobot (Prof-IT Group) Feb 2022 - Present". */
+  .cv-role-head {
+    display: block;
+  }
+
+  .cv-role-title {
+    display: inline;
+  }
+
+  .cv-role-period {
+    display: inline;
+  }
+
+  .cv-role-title::after {
+    content: ' · ';
+  }
+
   h1,
   h2,
   h3,

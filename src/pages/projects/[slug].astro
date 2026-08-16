@@ -4,7 +4,6 @@ import SiteFooter from '../../components/SiteFooter.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import { githubUsername, heroDisplayName, heroFallbackName, linkedinUrl, telegramUrl } from '../../data/site-content';
 import Layout from '../../layouts/Layout.astro';
-import localeScriptUrl from '../../scripts/locale.js?url';
 
 export async function getStaticPaths() {
   const projectEntries = await getCollection('projects', ({ data }) => !data.draft && data.lang === 'en');
@@ -132,6 +131,4 @@ const breadcrumbSchema = {
   </main>
 
   <SiteFooter />
-
-  <script is:inline type="module" src={localeScriptUrl}></script>
 </Layout>

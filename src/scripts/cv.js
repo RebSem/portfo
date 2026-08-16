@@ -48,10 +48,24 @@ const initTocHighlight = () => {
 
   const visible = new Set();
 
+  // Within 2px of the bottom, allowing for fractional device pixel ratios.
+  const atDocumentEnd = () =>
+    Math.ceil(window.scrollY + window.innerHeight) >=
+    document.documentElement.scrollHeight - 2;
+
   const paint = () => {
-    // Topmost visible section wins, so scrolling past a short section does not
-    // leave two entries highlighted at once.
-    const active = sections.find((section) => visible.has(section.id));
+    // Topmost section in the detection band wins, so scrolling past a short
+    // section does not leave two entries highlighted at once.
+    //
+    // Except at the very bottom. The band is a thin strip in the upper third
+    // of the viewport, and the last sections can never enter it: the page runs
+    // out of scroll first. That left "Contact" and "Where I am a weaker fit"
+    // permanently unhighlightable, with an earlier entry stuck lit for the
+    // whole bottom third of the page, and it got worse the taller the window.
+    const active = atDocumentEnd()
+      ? sections[sections.length - 1]
+      : sections.find((section) => visible.has(section.id));
+
     linkById.forEach((link, id) => {
       if (id === active?.id) link.setAttribute('aria-current', 'true');
       else link.removeAttribute('aria-current');
@@ -70,6 +84,23 @@ const initTocHighlight = () => {
   );
 
   sections.forEach((section) => observer.observe(section));
+
+  // Parked at the bottom, no observer entry ever fires again, so the end-of-
+  // document case needs its own trigger. Passive and rAF-throttled: it reads
+  // scroll position and toggles one attribute, never layout.
+  let queued = false;
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => {
+        queued = false;
+        paint();
+      });
+    },
+    { passive: true },
+  );
 };
 
 const init = () => {
@@ -77,5 +108,8 @@ const init = () => {
   initTocHighlight();
 };
 
+// astro:page-load fires on the initial load as well as after every swap, so
+// this is the whole bootstrap. Calling init() directly here too would double
+// it on a cold load: two IntersectionObservers, and two clipboard writes per
+// click because every copy button ended up with two listeners.
 document.addEventListener('astro:page-load', init);
-init();

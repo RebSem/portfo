@@ -128,7 +128,7 @@ export interface CvSkillGroup {
 // --- Identity -------------------------------------------------------------
 
 export const cvName: LocalizedText = {
-  ru: 'Михаил Семёнов',
+  ru: 'Михаил Семенов',
   en: 'Mikhail Semenov',
 };
 
@@ -201,11 +201,18 @@ export const cvMetric = (id: string): CvMetric => {
 
 // --- Experience -----------------------------------------------------------
 
+/**
+ * Date ranges use a plain hyphen, never a comma. Every ATS date parser
+ * expects a dash or "to" between the endpoints; the Russian version read
+ * "февраль 2022, настоящее время", which a parser takes as a list and turns
+ * into either one open-ended job or two. A hyphen satisfies the no-em-dash
+ * rule and parses correctly.
+ */
 export const cvExperience: CvExperienceRole[] = [
   {
     role: { ru: 'Product Manager', en: 'Product Manager' },
     company: { ru: 'Zvonobot (группа Prof-IT)', en: 'Zvonobot (Prof-IT Group)' },
-    period: { ru: 'февраль 2022, настоящее время', en: 'Feb 2022 - Present' },
+    period: { ru: 'февраль 2022 - настоящее время', en: 'Feb 2022 - Present' },
     startDate: '2022-02',
     context: {
       ru: 'Zvonobot, B2B-сервис автоматизации звонков: голосовые роботы и AI-агенты для лидогенерации, продаж и реактивации клиентов.',
@@ -294,7 +301,7 @@ export const cvExperience: CvExperienceRole[] = [
   {
     role: { ru: 'iOS/Frontend-разработчик', en: 'iOS / Frontend Developer' },
     company: { ru: 'Fodoj UG (Германия)', en: 'Fodoj UG (Germany)' },
-    period: { ru: 'ноябрь 2020, январь 2022', en: 'Nov 2020 - Jan 2022' },
+    period: { ru: 'ноябрь 2020 - январь 2022', en: 'Nov 2020 - Jan 2022' },
     startDate: '2020-11',
     endDate: '2022-01',
     phases: [
@@ -312,6 +319,27 @@ export const cvExperience: CvExperienceRole[] = [
     ],
   },
 ];
+
+/**
+ * Employment history for JSON-LD.
+ *
+ * The site-wide Person schema says only `worksFor: Prof-IT` with no dates,
+ * so the word "Zvonobot" — the subject of the whole resume — appeared nowhere
+ * in the structured data an LLM screener reads first, and the second employer
+ * was missing entirely. Built from cvExperience so it cannot drift from the
+ * visible text, and it is what finally gives `startDate`/`endDate` a reader.
+ */
+export const buildEmploymentSchema = (locale: Locale): Record<string, unknown>[] =>
+  cvExperience.map((role) => ({
+    '@type': 'OrganizationRole',
+    roleName: role.role[locale],
+    startDate: role.startDate,
+    ...(role.endDate ? { endDate: role.endDate } : {}),
+    worksFor: {
+      '@type': 'Organization',
+      name: role.company[locale],
+    },
+  }));
 
 // --- Products -------------------------------------------------------------
 

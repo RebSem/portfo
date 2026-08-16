@@ -32,7 +32,7 @@ export const locationSignal: LocalizedText = {
 
 export const heroFallbackName = 'Mikhail Semenov';
 export const heroDisplayName: LocalizedText = {
-  ru: 'Михаил Семёнов',
+  ru: 'Михаил Семенов',
   en: 'Mikhail Semenov',
 };
 
@@ -403,7 +403,7 @@ export const uiCopy = {
       ru: 'B2B · voice + AI',
       en: 'B2B · voice + AI',
     },
-    photoAlt: { ru: 'Фото Михаила Семёнова', en: 'Photo of Mikhail Semenov' },
+    photoAlt: { ru: 'Фото Михаила Семенова', en: 'Photo of Mikhail Semenov' },
     currentlyEyebrow: { ru: 'Сейчас', en: 'Currently' },
     currentlyTitle: { ru: 'Что я делаю сейчас', en: 'What I do now' },
     currentlyRoleLabel: { ru: 'Роль', en: 'Role' },

@@ -74,11 +74,18 @@ const applyTheme = (theme, options = { manual: false }) => {
   }
 };
 
+const prefersReducedMotion = () =>
+  typeof window.matchMedia === 'function' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 const toggleTheme = () => {
   const nextTheme = state.activeTheme === 'dark' ? 'light' : 'dark';
   const setTheme = () => applyTheme(nextTheme, { manual: true });
 
-  if (typeof document.startViewTransition === 'function') {
+  // A full-page cross-fade is exactly the kind of motion someone with a
+  // vestibular sensitivity turns off, and it is decorative here: the theme
+  // still changes, just instantly.
+  if (typeof document.startViewTransition === 'function' && !prefersReducedMotion()) {
     document.startViewTransition(setTheme);
   } else {
     setTheme();

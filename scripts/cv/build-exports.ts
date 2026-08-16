@@ -13,7 +13,7 @@
  * the downloaded PDF and a visitor's Cmd+P produce the same document.
  */
 import { createReadStream } from 'node:fs';
-import { mkdir, rm, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, rm, writeFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { extname, join, resolve } from 'node:path';
 import { stat } from 'node:fs/promises';
@@ -285,6 +285,22 @@ const main = async () => {
       const pdfPath = join(outputDir, `${base}.pdf`);
       await rm(pdfPath, { force: true });
       await renderPdf(chrome, `http://127.0.0.1:${server.port}${pagePath}`, pdfPath);
+
+      // `astro build` copies public/ into dist/ before this script runs, so
+      // without this the built site keeps the previous generation of the
+      // download files: edit the canon, rebuild, re-export, and dist still
+      // serves yesterday's PDF. Only for the public run; the phone-carrying
+      // files must never be written into a directory that gets deployed.
+      if (!phone) {
+        const distCv = join(PUBLIC_DIST, 'cv');
+        await mkdir(distCv, { recursive: true });
+        for (const extension of ['pdf', 'docx', 'txt']) {
+          await copyFile(
+            join(outputDir, `${base}.${extension}`),
+            join(distCv, `${base}.${extension}`),
+          );
+        }
+      }
 
       console.log(`${locale}: ${base}.pdf, .docx, .txt -> ${outputDir}`);
     }

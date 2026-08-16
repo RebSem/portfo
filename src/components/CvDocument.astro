@@ -18,11 +18,13 @@ import {
   caseHref,
   email,
   githubUrl,
+  githubUsername,
   linkedinHandle,
   linkedinUrl,
   phone,
   runHref,
   siteHost,
+  siteUrl,
   telegramHandle,
   telegramUrl,
 } from '../data/cv';
@@ -31,9 +33,11 @@ import { CV_SECTION_TITLES } from '../lib/cv-text';
 interface Props {
   locale: Locale;
   pdfHref: string;
+  docxHref: string;
+  txtHref: string;
 }
 
-const { locale, pdfHref } = Astro.props;
+const { locale, pdfHref, docxHref, txtHref } = Astro.props;
 const isRu = locale === 'ru';
 
 // Build date, not a hand-maintained string: a stale "updated" line on a resume
@@ -68,7 +72,35 @@ const copy = {
   updated: { ru: 'Обновлено', en: 'Updated' },
   copy: { ru: 'Скопировать', en: 'Copy' },
   copied: { ru: 'Скопировано', en: 'Copied' },
+  alsoAvailable: { ru: 'Ещё форматы:', en: 'Also as:' },
 } as const;
+
+/**
+ * Wraps every hyphenated token in a nowrap span.
+ *
+ * When a compound word wraps at its hyphen, the PDF text layer loses the
+ * hyphen entirely: "full-time" came out of pdftotext as "Fulltime", and the
+ * Russian PDF turned "LLM-аналитика" into "LLMаналитика" and
+ * "юнит-экономика" into "юнитэкономика". Those are keywords an ATS and a
+ * recruiter search on, and all three were silently destroyed.
+ *
+ * There is no CSS property that suppresses a break after a hyphen. Measured
+ * across a width sweep in headless Chrome: `white-space: pre-wrap` and
+ * `word-break: keep-all` both still break; only an inline nowrap span holds.
+ *
+ * The character stream is untouched, so HTML text extraction, copy-paste and
+ * the txt/DOCX exports all still see a plain ASCII hyphen.
+ */
+const escapeHtml = (value: string) =>
+  value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+const HYPHENATED = /[\p{L}\p{N}]-[\p{L}\p{N}]/u;
+
+const nb = (value: string): string =>
+  escapeHtml(value)
+    .split(/(\s+)/)
+    .map((chunk) => (HYPHENATED.test(chunk) ? `<span class="nb">${chunk}</span>` : chunk))
+    .join('');
 
 const sectionIds = [
   { id: 'cv-summary', label: copy.sections.summary },
@@ -83,45 +115,60 @@ const sectionIds = [
 ---
 
 <div class="cv-layout">
-  {/* Desktop-only table of contents. Purely navigational, so nothing that
-      matters is lost when it is hidden on narrow screens or without JS. */}
-  <nav class="cv-toc" aria-label={copy.toc[locale]}>
-    <ol>
-      {sectionIds.map((section) => (
-        <li>
-          <a href={`#${section.id}`} data-cv-toc-link={section.id}>{section.label[locale]}</a>
-        </li>
-      ))}
-    </ol>
-  </nav>
-
   <article class="cv-doc">
     {/* 1. Visitka */}
     <header class="cv-head">
       <p class="cv-eyebrow">CV</p>
       <h1 class="cv-name">{cvName[locale]}</h1>
-      <p class="cv-headline">{cvHeadline[locale]}</p>
+      <p class="cv-headline" set:html={nb(cvHeadline[locale])} />
       {/* `phone` is undefined in every public build. It only resolves in the
           local, git-ignored build that produces the ATS-form exports.
           nowrap is load-bearing: when the number wrapped at its hyphen, the
           PDF text layer came out as "+7 982 230-6019", one digit group short
           of a number anyone could dial. */}
       <p class="cv-location">
-        {cvLocationLine[locale]}
+        <span set:html={nb(cvLocationLine[locale])} />
         {phone && <> · <span class="cv-phone">{phone}</span></>}
       </p>
+
+      {/*
+        Contacts belong at the top of a resume, and until now they were only
+        at the bottom, where print.css hid them: the generated PDF carried no
+        email, no Telegram and no LinkedIn at all. A recruiter who saved it
+        had no way to reply, and an ATS that keys candidate identity on an
+        email address would have dropped the record.
+      */}
+      <ul class="cv-contacts">
+        <li><a href={`mailto:${email}`}>{email}</a></li>
+        <li><a href={telegramUrl} rel="me noopener">{telegramHandle}</a></li>
+        <li><a href={linkedinUrl} rel="me noopener">{linkedinHandle}</a></li>
+        <li><a href={githubUrl} rel="me noopener">github.com/{githubUsername}</a></li>
+        <li><a href={`${siteUrl}/`}>{siteHost}</a></li>
+      </ul>
 
       <div class="cv-actions">
         <a class="cta-button cta-primary" href={pdfHref} download>{copy.downloadPdf[locale]}</a>
         <a class="cta-button cta-secondary" href={telegramUrl} rel="me noopener">{copy.writeTelegram[locale]}</a>
         <a class="cta-button cta-secondary" href={linkedinUrl} rel="me noopener">{copy.openLinkedin[locale]}</a>
       </div>
+
+      {/*
+        The DOCX is the artifact that survives an ATS import best: real
+        heading styles, real list numbering, hyphens intact. It existed but
+        nothing linked to it, so the only file anyone could reach was the PDF.
+        Secondary styling on purpose, since most readers want the PDF.
+      */}
+      <p class="cv-formats">
+        {copy.alsoAvailable[locale]}
+        <a href={docxHref} download>DOCX</a>
+        <a href={txtHref} target="_blank" rel="noopener">TXT</a>
+      </p>
     </header>
 
     {/* Summary */}
     <section class="cv-section" id="cv-summary" aria-labelledby="cv-summary-title">
       <h2 class="cv-section-title" id="cv-summary-title">{copy.sections.summary[locale]}</h2>
-      <p class="cv-lead">{cvSummary[locale]}</p>
+      <p class="cv-lead" set:html={nb(cvSummary[locale])} />
     </section>
 
     {/* 2. Metrics */}
@@ -131,8 +178,8 @@ const sectionIds = [
         {cvMetrics.map((metric) => (
           <li class="cv-metric">
             <p class="cv-metric-value">{metric.value[locale]}</p>
-            <p class="cv-metric-label">{metric.label[locale]}</p>
-            <p class="cv-metric-caption">{metric.caption[locale]}</p>
+            <p class="cv-metric-label" set:html={nb(metric.label[locale])} />
+            <p class="cv-metric-caption" set:html={nb(metric.caption[locale])} />
           </li>
         ))}
       </ul>
@@ -151,17 +198,19 @@ const sectionIds = [
             <p class="cv-role-period">{role.period[locale]}</p>
           </div>
 
-          {role.context && <p class="cv-role-context">{role.context[locale]}</p>}
+          {role.context && <p class="cv-role-context" set:html={nb(role.context[locale])} />}
 
           {role.phases.map((phase) => (
             <div class="cv-phase">
-              {phase.title[locale] && <p class="cv-phase-title">{phase.title[locale]}</p>}
+              {phase.title[locale] && <p class="cv-phase-title" set:html={nb(phase.title[locale])} />}
               <ul class="cv-bullets">
                 {phase.bullets.map((runs) => (
                   <li>
                     {runs.map((run) => {
                       const href = runHref(run, locale);
-                      return href ? <a href={href}>{run.text[locale]}</a> : <>{run.text[locale]}</>;
+                      return href
+                        ? <a href={href} set:html={nb(run.text[locale])} />
+                        : <span set:html={nb(run.text[locale])} />;
                     })}
                   </li>
                 ))}
@@ -179,16 +228,21 @@ const sectionIds = [
         {cvProducts.map((product) => (
           <li class="cv-product">
             <h3 class="cv-product-name">{product.name}</h3>
-            <p class="cv-product-summary">{product.summary[locale]}</p>
-            <p class="cv-product-proof">{product.proof[locale]}</p>
+            <p class="cv-product-summary" set:html={nb(product.summary[locale])} />
+            <p class="cv-product-proof" set:html={nb(product.proof[locale])} />
             <p class="cv-product-links">
               {product.caseId && (
-                <a href={caseHref(product.caseId, locale)}>{copy.caseLink[locale]}</a>
+                <a
+                  href={caseHref(product.caseId, locale)}
+                  aria-label={`${copy.caseLink[locale]}: ${product.name}`}
+                >{copy.caseLink[locale]}</a>
               )}
               {product.externalUrl && (
-                <a href={product.externalUrl} rel="noopener">
-                  {product.externalUrl === githubUrl ? 'GitHub' : copy.liveLink[locale]}
-                </a>
+                <a
+                  href={product.externalUrl}
+                  rel="noopener"
+                  aria-label={`${product.externalUrl === githubUrl ? 'GitHub' : copy.liveLink[locale]}: ${product.name}`}
+                >{product.externalUrl === githubUrl ? 'GitHub' : copy.liveLink[locale]}</a>
               )}
             </p>
           </li>
@@ -202,12 +256,12 @@ const sectionIds = [
       <dl class="cv-skills">
         <div class="cv-skill-group">
           <dt>{copy.roles[locale]}</dt>
-          <dd>{cvRoles[locale]}</dd>
+          <dd set:html={nb(cvRoles[locale])} />
         </div>
         {cvSkillGroups.map((group) => (
           <div class="cv-skill-group">
             <dt>{group.label[locale]}</dt>
-            <dd>{group.items.map((item) => item[locale]).join(', ')}</dd>
+            <dd set:html={nb(group.items.map((item) => item[locale]).join(', '))} />
           </div>
         ))}
       </dl>
@@ -219,15 +273,15 @@ const sectionIds = [
       <dl class="cv-skills">
         <div class="cv-skill-group">
           <dt>{copy.education[locale]}</dt>
-          <dd>{cvEducation[locale]}</dd>
+          <dd set:html={nb(cvEducation[locale])} />
         </div>
         <div class="cv-skill-group">
           <dt>{copy.languages[locale]}</dt>
-          <dd>{cvLanguages[locale]}</dd>
+          <dd set:html={nb(cvLanguages[locale])} />
         </div>
         <div class="cv-skill-group">
           <dt>{copy.format[locale]}</dt>
-          <dd>{cvWorkFormat[locale]}</dd>
+          <dd set:html={nb(cvWorkFormat[locale])} />
         </div>
       </dl>
     </section>
@@ -235,9 +289,9 @@ const sectionIds = [
     {/* 7. Anti-fit */}
     <section class="cv-section" id="cv-anti-fit" aria-labelledby="cv-anti-fit-title">
       <h2 class="cv-section-title" id="cv-anti-fit-title">{copy.sections.antiFit[locale]}</h2>
-      <p class="cv-lead">{cvAntiFitIntro[locale]}</p>
+      <p class="cv-lead" set:html={nb(cvAntiFitIntro[locale])} />
       <ul class="cv-bullets">
-        {cvAntiFit.map((item) => <li>{item[locale]}</li>)}
+        {cvAntiFit.map((item) => <li set:html={nb(item[locale])} />)}
       </ul>
     </section>
 
@@ -248,16 +302,30 @@ const sectionIds = [
         {phone && <li><a href={`tel:${phone.replace(/[^+\d]/g, '')}`}>{phone}</a></li>}
         <li>
           <a href={`mailto:${email}`}>{email}</a>
-          <button type="button" class="cv-copy" data-cv-copy={email} hidden>
+          <button
+            type="button"
+            class="cv-copy"
+            data-cv-copy={email}
+            aria-label={`${copy.copy[locale]}: ${email}`}
+            hidden
+          >
             <span class="cv-copy-idle">{copy.copy[locale]}</span>
-            <span class="cv-copy-done">{copy.copied[locale]}</span>
+            {/* Announced, not just shown: the idle -> copied swap was purely
+                visual, so a screen-reader user got no confirmation at all. */}
+            <span class="cv-copy-done" role="status">{copy.copied[locale]}</span>
           </button>
         </li>
         <li>
           <a href={telegramUrl} rel="me noopener">{telegramHandle}</a>
-          <button type="button" class="cv-copy" data-cv-copy={telegramHandle} hidden>
+          <button
+            type="button"
+            class="cv-copy"
+            data-cv-copy={telegramHandle}
+            aria-label={`${copy.copy[locale]}: ${telegramHandle}`}
+            hidden
+          >
             <span class="cv-copy-idle">{copy.copy[locale]}</span>
-            <span class="cv-copy-done">{copy.copied[locale]}</span>
+            <span class="cv-copy-done" role="status">{copy.copied[locale]}</span>
           </button>
         </li>
         <li><a href={linkedinUrl} rel="me noopener">{linkedinHandle}</a></li>
@@ -267,6 +335,23 @@ const sectionIds = [
       <p class="cv-updated">{copy.updated[locale]}: {updatedLabel}</p>
     </section>
   </article>
+
+  {/* Desktop-only table of contents. Placed after the resume in the markup
+      even though it renders to its right: with `order: 2` doing the moving,
+      DOM order disagreed with visual order and a keyboard user tabbed through
+      eight navigation links before reaching the candidate's name (WCAG 1.3.2,
+      2.4.3). Grid puts it in the second column by source order instead.
+      Purely navigational, so nothing is lost when it is hidden on narrow
+      screens or without JS. */}
+  <nav class="cv-toc" aria-label={copy.toc[locale]}>
+    <ol>
+      {sectionIds.map((section) => (
+        <li>
+          <a href={`#${section.id}`} data-cv-toc-link={section.id}>{section.label[locale]}</a>
+        </li>
+      ))}
+    </ol>
+  </nav>
 </div>
 
 <style>
@@ -290,7 +375,6 @@ const sectionIds = [
     }
 
     .cv-toc {
-      order: 2;
       position: sticky;
       top: 5.5rem;
       display: block;
@@ -312,7 +396,7 @@ const sectionIds = [
     padding: 0.3rem 0 0.3rem 0.85rem;
     margin-left: -1px;
     border-left: 2px solid transparent;
-    color: color-mix(in oklab, var(--foreground) 60%, transparent);
+    color: color-mix(in oklab, var(--foreground) 68%, transparent);
     font-size: 0.82rem;
     line-height: 1.35;
     text-decoration: none;
@@ -342,7 +426,7 @@ const sectionIds = [
     font-size: 0.72rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: color-mix(in oklab, var(--foreground) 60%, transparent);
+    color: color-mix(in oklab, var(--foreground) 68%, transparent);
   }
 
   .cv-name {
@@ -359,8 +443,38 @@ const sectionIds = [
     color: var(--foreground);
   }
 
+  /* Emitted by nb() around every hyphenated token. See the comment on that
+     helper: this is what keeps "full-time" and "юнит-экономика" intact in the
+     PDF text layer.
+     :global is required, not stylistic. Astro scopes styles by stamping a
+     data-astro-cid attribute onto the markup it renders, and it does not
+     stamp markup injected through set:html. Scoped, this compiled to
+     `.nb[data-astro-cid-…]` and matched nothing, so the spans shipped with no
+     nowrap at all and the hyphens kept breaking. */
+  :global(.nb) {
+    white-space: nowrap;
+  }
+
   .cv-phone {
     white-space: nowrap;
+  }
+
+  .cv-contacts {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.9rem;
+    margin: 0.55rem 0 0;
+    padding: 0;
+    font-size: 0.9rem;
+  }
+
+  /* Separators come from CSS rather than markup so the text layer of the PDF
+     reads as a clean list of addresses with nothing between them. */
+  .cv-contacts li + li::before {
+    content: '·';
+    margin-right: 0.9rem;
+    color: color-mix(in oklab, var(--foreground) 40%, transparent);
   }
 
   .cv-location {
@@ -376,10 +490,45 @@ const sectionIds = [
     margin-top: 1.35rem;
   }
 
+  .cv-formats {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.65rem;
+    margin: 0.9rem 0 0;
+    font-size: 0.82rem;
+    color: color-mix(in oklab, var(--foreground) 68%, transparent);
+  }
+
   .cv-section {
     margin-top: 2.6rem;
+    /* Clears the sticky header when a table-of-contents anchor jumps here. */
     scroll-margin-top: 5.5rem;
   }
+
+  /*
+   * Same entrance the rest of the site uses on .page-main > section, which the
+   * resume was missing because its sections sit inside .cv-doc rather than
+   * directly under .page-main. @starting-style rather than a keyframe on
+   * purpose: the resting state is the visible one, so if the browser does not
+   * support it, or a parser never renders at all, the text is simply there.
+   * Short and shallow, 280ms over 6px: a recruiter came to read, not to watch.
+   */
+  .cv-head,
+  .cv-doc > section {
+    transition:
+      opacity 280ms var(--ease-out-strong),
+      transform 280ms var(--ease-out-strong);
+
+    @starting-style {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+
+  .cv-doc > section:nth-of-type(2) { transition-delay: 45ms; }
+  .cv-doc > section:nth-of-type(3) { transition-delay: 90ms; }
+  .cv-doc > section:nth-of-type(4) { transition-delay: 135ms; }
 
   .cv-section-title {
     margin: 0 0 0.9rem;
@@ -390,7 +539,7 @@ const sectionIds = [
     font-weight: 600;
     letter-spacing: 0.13em;
     text-transform: uppercase;
-    color: color-mix(in oklab, var(--foreground) 60%, transparent);
+    color: color-mix(in oklab, var(--foreground) 68%, transparent);
   }
 
   .cv-lead {
@@ -516,10 +665,19 @@ const sectionIds = [
     }
   }
 
+  /* Flat, unlike the metric tiles: the numbers are the page's proof and earn
+     a surface, the product cards are supporting detail and get a hairline. */
   .cv-product {
     padding: 1rem 1.1rem;
     border: 1px solid var(--border);
     border-radius: 0.85rem;
+    transition: border-color var(--dur-fast) var(--ease-out-strong);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .cv-product:hover {
+      border-color: color-mix(in oklab, var(--accent) 32%, var(--border));
+    }
   }
 
   .cv-product-name {
@@ -544,9 +702,18 @@ const sectionIds = [
   .cv-product-links {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 0.9rem;
-    margin: 0.65rem 0 0;
+    margin: 0.5rem 0 0;
     font-size: 0.85rem;
+  }
+
+  /* 24px is the WCAG 2.2 AA target minimum; these links measured 21-22px. */
+  .cv-product-links a,
+  .cv-formats a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
   }
 
   .cv-skills {
@@ -561,7 +728,7 @@ const sectionIds = [
     font-size: 0.74rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: color-mix(in oklab, var(--foreground) 60%, transparent);
+    color: color-mix(in oklab, var(--foreground) 68%, transparent);
   }
 
   .cv-skill-group dd {
@@ -595,6 +762,9 @@ const sectionIds = [
     font-size: 0.68rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
     padding: 0.2rem 0.6rem;
     cursor: pointer;
     transition:
@@ -625,6 +795,24 @@ const sectionIds = [
     margin: 1.2rem 0 0;
     font-family: var(--font-mono);
     font-size: 0.76rem;
-    color: color-mix(in oklab, var(--foreground) 60%, transparent);
+    color: color-mix(in oklab, var(--foreground) 68%, transparent);
+  }
+
+  /* The resume's own motion was not covered by the site-wide reduce block,
+     which only names elements that existed before this page. */
+  @media (prefers-reduced-motion: reduce) {
+    .cv-head,
+    .cv-doc > section,
+    .cv-doc > section:nth-of-type(n) {
+      transition: none;
+      transition-delay: 0s;
+      opacity: 1;
+      transform: none;
+    }
+
+    .cv-toc a,
+    .cv-copy {
+      transition: none;
+    }
   }
 </style>

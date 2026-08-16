@@ -79,9 +79,20 @@ const hreflangRu = lang === 'ru' ? canonicalUrl : alternateUrl;
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {/*
+      Preload only what the first paint actually needs, which was backwards.
+      Geist Mono sets every section heading, eyebrow and date on the resume
+      and was NOT preloaded: it was discovered from CSS and landed 226ms after
+      first contentful paint, so those headings painted in Courier first and
+      then swapped. Newsreader WAS preloaded and holds the connection longest
+      of the three, for exactly two strings of body-free display text (the
+      header wordmark and one word in the home hero); it can arrive late
+      without anyone noticing, since its metric-matched fallback is sized to
+      match.
+    */}
     <Font cssVariable="--font-geist" preload />
-    <Font cssVariable="--font-newsreader" preload />
-    <Font cssVariable="--font-geist-mono" />
+    <Font cssVariable="--font-geist-mono" preload />
+    <Font cssVariable="--font-newsreader" />
     <link rel="dns-prefetch" href="https://api.github.com" />
     <meta name="description" content={description} />
     <meta name="robots" content={robotsContent} />

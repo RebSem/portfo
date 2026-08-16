@@ -1,5 +1,12 @@
 ---
 import { heroFallbackName, uiCopy } from '../data/site-content';
+// The theme button and the locale switcher live in this component, so the
+// script that drives them is loaded here rather than by each page. It used to
+// be an import every page had to remember, and the resume pages forgot it:
+// /cv shipped a theme toggle that did nothing at all when clicked. Module
+// scripts are evaluated once per URL, and locale.js guards its own init, so
+// rendering more than one header on a page is harmless.
+import localeScriptUrl from '../scripts/locale.js?url';
 
 interface Props {
   active: 'home' | 'about' | 'blog' | 'cv';
@@ -48,6 +55,8 @@ const localeToggleByActive: Record<typeof active, string> = {
 };
 const toggleUrl = localeToggleUrl ?? localeToggleByActive[active];
 ---
+
+<script is:inline type="module" src={localeScriptUrl}></script>
 
 <header class="site-header">
   <div class="header-inner">
@@ -179,6 +188,16 @@ const toggleUrl = localeToggleUrl ?? localeToggleByActive[active];
       switcher.setAttribute('href', `/${section}/${enSlug}/`);
     } else if (!isRu && ruSlug) {
       switcher.setAttribute('href', `/ru/${section}/${ruSlug}/`);
+    }
+
+    // Carry the query string across the switch. On the resume this is
+    // load-bearing: /cv?src=exness marks which outreach the link went out in,
+    // and dropping it when a recruiter flips to the other language throws
+    // away the attribution for the rest of that visit.
+    const { search } = window.location;
+    if (search) {
+      const href = switcher.getAttribute('href') || '';
+      if (!href.includes('?')) switcher.setAttribute('href', href + search);
     }
   };
 
