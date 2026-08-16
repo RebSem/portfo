@@ -60,6 +60,15 @@ export default defineConfig({
       },
     ],
   },
+  // /projects has no index page, only /projects/<slug>. It 404s, and the ATS
+  // PDF sent out in early August points recruiters straight at it. A redirect
+  // to the projects section of the home page recovers those visits; a static
+  // build emits a meta-refresh page with a canonical link, which is enough for
+  // a URL that only exists because an old document mentions it.
+  redirects: {
+    '/projects': '/#projects',
+    '/ru/projects': '/ru/#projects',
+  },
   integrations: [mdx()],
   vite: {
     resolve: {
