@@ -1,0 +1,41 @@
+---
+import CvDocument from '../../components/CvDocument.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import { cvFileBaseName, cvHeadline, cvName, cvSummary } from '../../data/cv';
+import { buildPersonSchema } from '../../data/site-content';
+import Layout from '../../layouts/Layout.astro';
+import cvScriptUrl from '../../scripts/cv.js?url';
+
+const pageUrl = 'https://rebsem.ru/ru/cv';
+const pdfHref = `/cv/${cvFileBaseName.ru}.pdf`;
+
+const personEntity = buildPersonSchema(pageUrl);
+const cvSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  url: pageUrl,
+  name: `${cvName.ru} - резюме`,
+  inLanguage: 'ru',
+  mainEntity: personEntity,
+};
+---
+
+<Layout
+  title={`${cvName.ru} - резюме`}
+  description={cvSummary.ru}
+  noIndex
+  followLinks
+  schema={cvSchema}
+  alternate="/cv"
+>
+  <a id="skip-to-content" href="#main-content" class="skip-link">К содержимому</a>
+
+  <SiteHeader active="cv" pdfHref={pdfHref} pdfLabel="PDF" />
+
+  <main id="main-content" class="page-main">
+    <p class="sr-only">{cvHeadline.ru}</p>
+    <CvDocument locale="ru" pdfHref={pdfHref} />
+  </main>
+
+  <script is:inline type="module" src={cvScriptUrl}></script>
+</Layout>

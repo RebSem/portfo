@@ -1,0 +1,65 @@
+Mikhail Semenov
+AI Product Manager · Voice AI Agents · LLM · B2B SaaS
+Perm, Russia (GMT+5) · Remote · Open to relocation (Cyprus, EU, UAE) · Telegram @Michael_Semenov · perk77331@gmail.com · rebsem.ru · linkedin.com/in/mikhail-semenovv · github.com/RebSem
+
+SUMMARY
+Product manager with an engineering background. Launched Zvonobot AI, a B2B voice AI agent platform, and took it from zero to roughly 10% of group revenue in under a year. Run discovery, unit economics, pricing and go-to-market; prototype with AI coding agents in days. Open to full-time or contract work; can start within 2-4 weeks.
+
+NUMBERS
+- ~10% of group revenue: share held by the line I launched from zero in under a year.
+- ~80 paying B2B customers: repeat payments account for 30% of the line revenue.
+- 500,000+ minutes of conversation: handled by the voice AI agents in production.
+- +30% average customer spend: growth in average spend after the AI plans launched.
+
+EXPERIENCE
+
+Product Manager, Zvonobot (Prof-IT Group) | Feb 2022 - Present
+Zvonobot is a B2B call automation service: voice bots and AI agents for lead generation, sales outreach and customer reactivation.
+
+Zvonobot AI (fall 2025 - present)
+- Launched Zvonobot AI, the voice AI agent line, from scratch: went to market on a white-label platform in weeks, proved demand with live customers, and made the case to build an in-house platform.
+- By August 2026: about 80 paying business customers, roughly 10% of group revenue, 500,000+ minutes of live conversations in production; 30% of revenue comes from repeat payments.
+- AI agents consistently outperform legacy robocalls on conversion to the target action on warm lead lists; average customer spend grew 30% after the launch of AI plans.
+- Built the AI product suite: agent and script builder, LLM call analytics, per-second billing plans (LLM, ASR, TTS stack).
+- Run go-to-market with a team of 4 engineers and a sales team that grew from 4 to 15 people to support the line; own pricing and per-call-type margins.
+
+Core platform (2022-2025)
+- Ran the core outbound-calling platform: customer console, call script builder, outbound campaigns, telephony, per-second billing, wallets, call analytics.
+- Launched a virtual PBX as a complementary product to improve customer retention.
+- Built the customer discovery process: interviews, metric-driven prioritization, a release cycle run jointly with sales and support.
+- Introduced LLM tooling across company workflows; built a voice bot MVP on the OpenAI Realtime API in 2 days and an internal database tool in 4 days.
+
+iOS / Frontend Developer, Fodoj UG (Germany) | Nov 2020 - Jan 2022
+- Built the web app UI for the EU market: Spanish localization, reporting and compliance, usability testing.
+
+PRODUCTS
+- Zvonobot AI: A B2B voice AI agent platform: agent builder, campaigns, telephony, per-second billing. Proves a line taken from zero to roughly 10% of group revenue in under a year. Case study: https://rebsem.ru/projects/zvonobot-ai-en/
+- cursivo: An AI CRM for car rental, live in production: reads client documents, scores deal risk, suggests the next step. Proves I take a product to live users outside the day job. Case study: https://rebsem.ru/projects/cursivo-en/ · https://cursivo.xyz
+- obrabot: An internal voice AI analytics console: an LLM segments calls and surfaces what needs human attention. Proves LLM analytics built on top of real production data. Case study: https://rebsem.ru/projects/obrabot-en/
+- pet projects: Side projects built personally with AI coding agents (Claude Code, Codex) in 1-7 days from idea to a working release. Proves hypothesis-validation speed and a shared language with engineers. https://github.com/RebSem
+
+SKILLS
+Roles: Product Manager, Product Owner
+Product: product strategy and roadmap, discovery, customer interviews, metrics and product analytics, unit economics, pricing, A/B experiments, go-to-market, B2B SaaS, CRM
+AI and LLM: voice AI agents, conversational AI, LLM orchestration, prompt engineering, RAG, LLM evals, ASR, TTS, contact centers, SIP telephony
+Delivery: spec, review, release cycle, working with engineers and sales, prototyping with AI coding agents (Claude Code, Codex), fast hypothesis validation, 0 to 1
+Technical: SQL, Python, TypeScript, REST, integrations, telephony
+
+EDUCATION, LANGUAGES, FORMAT
+Education: Diploma, Perm State University, 2022.
+Languages: Russian: native. English: working proficiency (B1+), daily written use.
+Work format: Remote from Perm (GMT+5), open to relocation (Cyprus, EU, UAE), available for business travel. Full-time or contract, can start within 2-4 weeks.
+
+WHERE I AM A WEAKER FIT
+So we do not waste each other's time, here is where I am not the best pick:
+- Pure research ML or data science with no product layer on top.
+- A single step in a long approval chain with no ownership over the problem.
+- Products that add AI as a checkbox rather than for a real business job.
+- Roles needing C-level live negotiation in English (written and async are comfortable).
+
+CONTACT
+Telegram: https://telegram.me/Michael_Semenov
+Email: perk77331@gmail.com
+LinkedIn: https://www.linkedin.com/in/mikhail-semenovv/
+GitHub: https://github.com/RebSem
+Site: https://rebsem.ru/

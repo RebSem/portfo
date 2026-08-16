@@ -359,6 +359,40 @@ a:focus-visible {
   transform: scale(0.94);
 }
 
+/* Resume-only download action. The header is sticky, so this is also the
+   "PDF button that follows you down the page" the CV brief asks for. */
+.header-pdf {
+  display: inline-flex;
+  align-items: center;
+  height: 2.2rem;
+  padding: 0 0.95rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: var(--foreground);
+  color: var(--background);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color var(--dur-fast) var(--ease-out-strong),
+    color var(--dur-fast) var(--ease-out-strong),
+    transform var(--dur-press) var(--ease-out-strong);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .header-pdf:hover {
+    background: var(--accent);
+    color: #0a1812;
+  }
+}
+
+.header-pdf:active {
+  transform: scale(0.96);
+}
+
 .theme-toggle {
   position: relative;
   width: 2.2rem;

@@ -41,10 +41,15 @@ export const siteUrl = `https://${siteHost}`;
 /**
  * The phone number is intentionally absent from this file and from the repo.
  * Git history on a public repository is permanent, so a number committed once
- * is public forever. The ATS-form variant of the resume carries it and is
- * produced by a local, git-ignored build step.
+ * is public forever.
+ *
+ * The ATS-form variant of the resume does carry it: `npm run cv:export --
+ * --phone "..."` builds the site into a git-ignored directory with CV_PHONE
+ * set, and the exports produced from that build include the number. The
+ * public build never sets the variable, and a test asserts no phone-shaped
+ * string reaches dist/. Never set CV_PHONE in CI.
  */
-export const phone = undefined;
+export const phone: string | undefined = import.meta.env?.CV_PHONE || undefined;
 
 // --- Inline runs (text that can carry a link) -----------------------------
 

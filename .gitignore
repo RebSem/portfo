@@ -32,3 +32,7 @@ pnpm-debug.log*
 # personal notes and drafts — kept locally, never published
 private/
 scripts/cv/_archive/
+
+# generated resume files carrying the phone number — never committed
+private-exports/
+dist-private/

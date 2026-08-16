@@ -5,6 +5,7 @@ const DIST_DIR = path.resolve('dist');
 const HTML_EXTENSIONS = new Set(['.html']);
 const ASSET_EXTENSIONS = new Set([
   '.css',
+  '.docx',
   '.gif',
   '.ico',
   '.jpg',
@@ -12,6 +13,7 @@ const ASSET_EXTENSIONS = new Set([
   '.js',
   '.json',
   '.mjs',
+  '.pdf',
   '.png',
   '.svg',
   '.txt',

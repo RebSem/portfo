@@ -1,0 +1,626 @@
+---
+import type { Locale } from '../types/content';
+import {
+  cvAntiFit,
+  cvAntiFitIntro,
+  cvEducation,
+  cvExperience,
+  cvHeadline,
+  cvLanguages,
+  cvLocationLine,
+  cvMetrics,
+  cvName,
+  cvProducts,
+  cvRoles,
+  cvSkillGroups,
+  cvSummary,
+  cvWorkFormat,
+  caseHref,
+  email,
+  githubUrl,
+  linkedinHandle,
+  linkedinUrl,
+  phone,
+  runHref,
+  siteHost,
+  telegramHandle,
+  telegramUrl,
+} from '../data/cv';
+import { CV_SECTION_TITLES } from '../lib/cv-text';
+
+interface Props {
+  locale: Locale;
+  pdfHref: string;
+}
+
+const { locale, pdfHref } = Astro.props;
+const isRu = locale === 'ru';
+
+// Build date, not a hand-maintained string: a stale "updated" line on a resume
+// is worse than none. Fixed locale so the output does not depend on the
+// machine that runs the build.
+const updatedAt = new Date();
+const updatedLabel = new Intl.DateTimeFormat(isRu ? 'ru-RU' : 'en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+}).format(updatedAt);
+
+const copy = {
+  // Section names come from cv-text.ts so the page, the txt export and the
+  // DOCX cannot end up calling the same section different things.
+  sections: CV_SECTION_TITLES,
+  toc: { ru: 'Разделы резюме', en: 'Resume sections' },
+  downloadPdf: { ru: 'Скачать PDF', en: 'Download PDF' },
+  writeTelegram: { ru: 'Написать в Telegram', en: 'Message on Telegram' },
+  openLinkedin: { ru: 'LinkedIn', en: 'LinkedIn' },
+  caseLink: { ru: 'Кейс', en: 'Case study' },
+  liveLink: { ru: 'Сайт', en: 'Live' },
+  roles: { ru: 'Роли', en: 'Roles' },
+  education: { ru: 'Образование', en: 'Education' },
+  languages: { ru: 'Языки', en: 'Languages' },
+  format: { ru: 'Формат работы', en: 'Work format' },
+  updated: { ru: 'Обновлено', en: 'Updated' },
+  copy: { ru: 'Скопировать', en: 'Copy' },
+  copied: { ru: 'Скопировано', en: 'Copied' },
+} as const;
+
+const sectionIds = [
+  { id: 'cv-summary', label: copy.sections.summary },
+  { id: 'cv-metrics', label: copy.sections.metrics },
+  { id: 'cv-experience', label: copy.sections.experience },
+  { id: 'cv-products', label: copy.sections.products },
+  { id: 'cv-skills', label: copy.sections.skills },
+  { id: 'cv-background', label: copy.sections.background },
+  { id: 'cv-anti-fit', label: copy.sections.antiFit },
+  { id: 'cv-contact', label: copy.sections.contact },
+];
+---
+
+<div class="cv-layout">
+  {/* Desktop-only table of contents. Purely navigational, so nothing that
+      matters is lost when it is hidden on narrow screens or without JS. */}
+  <nav class="cv-toc" aria-label={copy.toc[locale]}>
+    <ol>
+      {sectionIds.map((section) => (
+        <li>
+          <a href={`#${section.id}`} data-cv-toc-link={section.id}>{section.label[locale]}</a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+
+  <article class="cv-doc">
+    {/* 1. Visitka */}
+    <header class="cv-head">
+      <p class="cv-eyebrow">CV</p>
+      <h1 class="cv-name">{cvName[locale]}</h1>
+      <p class="cv-headline">{cvHeadline[locale]}</p>
+      {/* `phone` is undefined in every public build. It only resolves in the
+          local, git-ignored build that produces the ATS-form exports.
+          nowrap is load-bearing: when the number wrapped at its hyphen, the
+          PDF text layer came out as "+7 982 230-6019", one digit group short
+          of a number anyone could dial. */}
+      <p class="cv-location">
+        {cvLocationLine[locale]}
+        {phone && <> · <span class="cv-phone">{phone}</span></>}
+      </p>
+
+      <div class="cv-actions">
+        <a class="cta-button cta-primary" href={pdfHref} download>{copy.downloadPdf[locale]}</a>
+        <a class="cta-button cta-secondary" href={telegramUrl} rel="me noopener">{copy.writeTelegram[locale]}</a>
+        <a class="cta-button cta-secondary" href={linkedinUrl} rel="me noopener">{copy.openLinkedin[locale]}</a>
+      </div>
+    </header>
+
+    {/* Summary */}
+    <section class="cv-section" id="cv-summary" aria-labelledby="cv-summary-title">
+      <h2 class="cv-section-title" id="cv-summary-title">{copy.sections.summary[locale]}</h2>
+      <p class="cv-lead">{cvSummary[locale]}</p>
+    </section>
+
+    {/* 2. Metrics */}
+    <section class="cv-section" id="cv-metrics" aria-labelledby="cv-metrics-title">
+      <h2 class="cv-section-title" id="cv-metrics-title">{copy.sections.metrics[locale]}</h2>
+      <ul class="cv-metrics">
+        {cvMetrics.map((metric) => (
+          <li class="cv-metric">
+            <p class="cv-metric-value">{metric.value[locale]}</p>
+            <p class="cv-metric-label">{metric.label[locale]}</p>
+            <p class="cv-metric-caption">{metric.caption[locale]}</p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    {/* 3. Experience */}
+    <section class="cv-section" id="cv-experience" aria-labelledby="cv-experience-title">
+      <h2 class="cv-section-title" id="cv-experience-title">{copy.sections.experience[locale]}</h2>
+
+      {cvExperience.map((role) => (
+        <div class="cv-role">
+          <div class="cv-role-head">
+            <h3 class="cv-role-title">
+              {role.role[locale]}, {role.company[locale]}
+            </h3>
+            <p class="cv-role-period">{role.period[locale]}</p>
+          </div>
+
+          {role.context && <p class="cv-role-context">{role.context[locale]}</p>}
+
+          {role.phases.map((phase) => (
+            <div class="cv-phase">
+              {phase.title[locale] && <p class="cv-phase-title">{phase.title[locale]}</p>}
+              <ul class="cv-bullets">
+                {phase.bullets.map((runs) => (
+                  <li>
+                    {runs.map((run) => {
+                      const href = runHref(run, locale);
+                      return href ? <a href={href}>{run.text[locale]}</a> : <>{run.text[locale]}</>;
+                    })}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      ))}
+    </section>
+
+    {/* 4. Products */}
+    <section class="cv-section" id="cv-products" aria-labelledby="cv-products-title">
+      <h2 class="cv-section-title" id="cv-products-title">{copy.sections.products[locale]}</h2>
+      <ul class="cv-products">
+        {cvProducts.map((product) => (
+          <li class="cv-product">
+            <h3 class="cv-product-name">{product.name}</h3>
+            <p class="cv-product-summary">{product.summary[locale]}</p>
+            <p class="cv-product-proof">{product.proof[locale]}</p>
+            <p class="cv-product-links">
+              {product.caseId && (
+                <a href={caseHref(product.caseId, locale)}>{copy.caseLink[locale]}</a>
+              )}
+              {product.externalUrl && (
+                <a href={product.externalUrl} rel="noopener">
+                  {product.externalUrl === githubUrl ? 'GitHub' : copy.liveLink[locale]}
+                </a>
+              )}
+            </p>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    {/* 5. Skills */}
+    <section class="cv-section" id="cv-skills" aria-labelledby="cv-skills-title">
+      <h2 class="cv-section-title" id="cv-skills-title">{copy.sections.skills[locale]}</h2>
+      <dl class="cv-skills">
+        <div class="cv-skill-group">
+          <dt>{copy.roles[locale]}</dt>
+          <dd>{cvRoles[locale]}</dd>
+        </div>
+        {cvSkillGroups.map((group) => (
+          <div class="cv-skill-group">
+            <dt>{group.label[locale]}</dt>
+            <dd>{group.items.map((item) => item[locale]).join(', ')}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
+    {/* 6. Education, languages, format */}
+    <section class="cv-section" id="cv-background" aria-labelledby="cv-background-title">
+      <h2 class="cv-section-title" id="cv-background-title">{copy.sections.background[locale]}</h2>
+      <dl class="cv-skills">
+        <div class="cv-skill-group">
+          <dt>{copy.education[locale]}</dt>
+          <dd>{cvEducation[locale]}</dd>
+        </div>
+        <div class="cv-skill-group">
+          <dt>{copy.languages[locale]}</dt>
+          <dd>{cvLanguages[locale]}</dd>
+        </div>
+        <div class="cv-skill-group">
+          <dt>{copy.format[locale]}</dt>
+          <dd>{cvWorkFormat[locale]}</dd>
+        </div>
+      </dl>
+    </section>
+
+    {/* 7. Anti-fit */}
+    <section class="cv-section" id="cv-anti-fit" aria-labelledby="cv-anti-fit-title">
+      <h2 class="cv-section-title" id="cv-anti-fit-title">{copy.sections.antiFit[locale]}</h2>
+      <p class="cv-lead">{cvAntiFitIntro[locale]}</p>
+      <ul class="cv-bullets">
+        {cvAntiFit.map((item) => <li>{item[locale]}</li>)}
+      </ul>
+    </section>
+
+    {/* 8. Contact footer */}
+    <section class="cv-section cv-contact" id="cv-contact" aria-labelledby="cv-contact-title">
+      <h2 class="cv-section-title" id="cv-contact-title">{copy.sections.contact[locale]}</h2>
+      <ul class="cv-contact-list">
+        {phone && <li><a href={`tel:${phone.replace(/[^+\d]/g, '')}`}>{phone}</a></li>}
+        <li>
+          <a href={`mailto:${email}`}>{email}</a>
+          <button type="button" class="cv-copy" data-cv-copy={email} hidden>
+            <span class="cv-copy-idle">{copy.copy[locale]}</span>
+            <span class="cv-copy-done">{copy.copied[locale]}</span>
+          </button>
+        </li>
+        <li>
+          <a href={telegramUrl} rel="me noopener">{telegramHandle}</a>
+          <button type="button" class="cv-copy" data-cv-copy={telegramHandle} hidden>
+            <span class="cv-copy-idle">{copy.copy[locale]}</span>
+            <span class="cv-copy-done">{copy.copied[locale]}</span>
+          </button>
+        </li>
+        <li><a href={linkedinUrl} rel="me noopener">{linkedinHandle}</a></li>
+        <li><a href={githubUrl} rel="me noopener">github.com/RebSem</a></li>
+        <li><a href={`https://${siteHost}/`}>{siteHost}</a></li>
+      </ul>
+      <p class="cv-updated">{copy.updated[locale]}: {updatedLabel}</p>
+    </section>
+  </article>
+</div>
+
+<style>
+  .cv-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  /* Navigation only, so it simply does not exist on narrow screens rather
+     than collapsing into something that competes with the resume itself.
+     Declared before the media query so the wide-screen override wins. */
+  .cv-toc {
+    display: none;
+  }
+
+  @media (min-width: 1080px) {
+    .cv-layout {
+      grid-template-columns: minmax(0, 1fr) 13rem;
+    }
+
+    .cv-toc {
+      order: 2;
+      position: sticky;
+      top: 5.5rem;
+      display: block;
+    }
+  }
+
+  .cv-toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    border-left: 1px solid var(--border);
+  }
+
+  .cv-toc a {
+    display: block;
+    padding: 0.3rem 0 0.3rem 0.85rem;
+    margin-left: -1px;
+    border-left: 2px solid transparent;
+    color: color-mix(in oklab, var(--foreground) 60%, transparent);
+    font-size: 0.82rem;
+    line-height: 1.35;
+    text-decoration: none;
+    transition:
+      color var(--dur-fast) var(--ease-out-strong),
+      border-color var(--dur-fast) var(--ease-out-strong);
+  }
+
+  .cv-toc a:hover,
+  .cv-toc a:focus-visible {
+    color: var(--foreground);
+  }
+
+  .cv-toc a[aria-current='true'] {
+    color: var(--accent-text);
+    border-left-color: var(--accent);
+  }
+
+  .cv-doc {
+    min-width: 0;
+    max-width: 46rem;
+  }
+
+  .cv-eyebrow {
+    margin: 0 0 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: color-mix(in oklab, var(--foreground) 60%, transparent);
+  }
+
+  .cv-name {
+    margin: 0;
+    font-size: clamp(2.1rem, 6vw, 3rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .cv-headline {
+    margin: 0.7rem 0 0;
+    font-size: clamp(1rem, 2.4vw, 1.15rem);
+    font-weight: 500;
+    color: var(--foreground);
+  }
+
+  .cv-phone {
+    white-space: nowrap;
+  }
+
+  .cv-location {
+    margin: 0.45rem 0 0;
+    color: color-mix(in oklab, var(--foreground) 72%, transparent);
+    font-size: 0.92rem;
+  }
+
+  .cv-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.35rem;
+  }
+
+  .cv-section {
+    margin-top: 2.6rem;
+    scroll-margin-top: 5.5rem;
+  }
+
+  .cv-section-title {
+    margin: 0 0 0.9rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: color-mix(in oklab, var(--foreground) 60%, transparent);
+  }
+
+  .cv-lead {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  /* Metrics: one column on a phone, which is where half the recruiters open
+     a Telegram link. Grid rather than flex so the four tiles stay equal. */
+  .cv-metrics {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 640px) {
+    .cv-metrics {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .cv-metric {
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--border);
+    border-radius: 0.85rem;
+    background: var(--surface);
+  }
+
+  .cv-metric-value {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--accent-text);
+  }
+
+  .cv-metric-label {
+    margin: 0.25rem 0 0;
+    font-size: 0.92rem;
+    font-weight: 500;
+  }
+
+  .cv-metric-caption {
+    margin: 0.4rem 0 0;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: color-mix(in oklab, var(--foreground) 72%, transparent);
+  }
+
+  .cv-role + .cv-role {
+    margin-top: 1.9rem;
+  }
+
+  .cv-role-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.3rem 1rem;
+  }
+
+  .cv-role-title {
+    margin: 0;
+    font-size: 1.08rem;
+    font-weight: 600;
+  }
+
+  .cv-role-period {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: color-mix(in oklab, var(--foreground) 65%, transparent);
+    white-space: nowrap;
+  }
+
+  .cv-role-context {
+    margin: 0.5rem 0 0;
+    font-size: 0.92rem;
+    color: color-mix(in oklab, var(--foreground) 72%, transparent);
+    line-height: 1.55;
+  }
+
+  .cv-phase {
+    margin-top: 1.05rem;
+  }
+
+  .cv-phase-title {
+    margin: 0 0 0.5rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+
+  .cv-bullets {
+    margin: 0;
+    padding-left: 1.15rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .cv-bullets li {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .cv-products {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 640px) {
+    .cv-products {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .cv-product {
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--border);
+    border-radius: 0.85rem;
+  }
+
+  .cv-product-name {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .cv-product-summary {
+    margin: 0.4rem 0 0;
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+
+  .cv-product-proof {
+    margin: 0.5rem 0 0;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: color-mix(in oklab, var(--foreground) 72%, transparent);
+  }
+
+  .cv-product-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin: 0.65rem 0 0;
+    font-size: 0.85rem;
+  }
+
+  .cv-skills {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .cv-skill-group dt {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: color-mix(in oklab, var(--foreground) 60%, transparent);
+  }
+
+  .cv-skill-group dd {
+    margin: 0.25rem 0 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .cv-contact-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+  }
+
+  .cv-contact-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .cv-copy {
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: transparent;
+    color: color-mix(in oklab, var(--foreground) 65%, transparent);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.6rem;
+    cursor: pointer;
+    transition:
+      color var(--dur-fast) var(--ease-out-strong),
+      border-color var(--dur-fast) var(--ease-out-strong);
+  }
+
+  .cv-copy:hover,
+  .cv-copy:focus-visible {
+    color: var(--accent-text);
+    border-color: color-mix(in oklab, var(--accent) 35%, var(--border));
+  }
+
+  .cv-copy-done {
+    display: none;
+  }
+
+  .cv-copy[data-copied='true'] .cv-copy-idle {
+    display: none;
+  }
+
+  .cv-copy[data-copied='true'] .cv-copy-done {
+    display: inline;
+    color: var(--accent-text);
+  }
+
+  .cv-updated {
+    margin: 1.2rem 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: color-mix(in oklab, var(--foreground) 60%, transparent);
+  }
+</style>
