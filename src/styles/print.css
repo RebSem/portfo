@@ -298,15 +298,22 @@
      every date. Inline on paper, so the extracted line reads
      "Product Manager, Zvonobot (Prof-IT Group) Feb 2022 - Present". */
   .cv-role-head {
-    display: block;
+    /* !important because Astro compiles the component's scoped rule to
+       `.cv-role-head[data-astro-cid-…]`, which outranks a bare class here.
+       Without it the flex row survives, the two stay 215pt apart, and
+       pdftotext still emits the date on a line of its own. */
+    display: block !important;
   }
 
   .cv-role-title {
-    display: inline;
+    display: inline !important;
   }
 
+  /* The range itself must never wrap: a date split across two lines is the
+     same loss as a date on its own line. */
   .cv-role-period {
-    display: inline;
+    display: inline !important;
+    white-space: nowrap !important;
   }
 
   .cv-role-title::after {
