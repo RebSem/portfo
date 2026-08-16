@@ -120,8 +120,10 @@
      inside experience bullets. Every product named in a bullet appears again
      in the Products section with its URL spelled out, so expanding it twice
      only pushes the resume onto another page. */
+  /* The attribute selector is load-bearing: without it these lose on
+     specificity to the two expansion rules above and the URLs come back. */
   .cv-doc a[href^='mailto:']::after,
-  .cv-bullets a::after {
+  .cv-bullets a[href]::after {
     content: '';
   }
 
@@ -193,6 +195,12 @@
     border: 0 !important;
     background: transparent !important;
     padding: 0 !important;
+  }
+
+  /* Without the card borders the four products ran together into one wall of
+     text, so the separation moves from a box to whitespace. */
+  .cv-product + .cv-product {
+    margin-top: 0.5rem;
   }
 
   /* Each metric collapses to a single flowing line on paper: value, label,

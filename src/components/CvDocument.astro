@@ -37,14 +37,18 @@ const { locale, pdfHref } = Astro.props;
 const isRu = locale === 'ru';
 
 // Build date, not a hand-maintained string: a stale "updated" line on a resume
-// is worse than none. Fixed locale so the output does not depend on the
-// machine that runs the build.
+// is worse than none. Fixed locale and timezone so the output does not depend
+// on the machine that runs the build.
+//
+// Perm rather than UTC: a build run late in the evening local time is still
+// UTC "yesterday", and the page was dating itself a day behind. The date a
+// reader compares against is the author's own.
 const updatedAt = new Date();
 const updatedLabel = new Intl.DateTimeFormat(isRu ? 'ru-RU' : 'en-GB', {
   day: 'numeric',
   month: 'long',
   year: 'numeric',
-  timeZone: 'UTC',
+  timeZone: 'Asia/Yekaterinburg',
 }).format(updatedAt);
 
 const copy = {
