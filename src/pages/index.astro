@@ -33,7 +33,7 @@ const personSchema = buildPersonSchema('https://rebsem.ru/');
 
 <Layout
   title={`${heroFallbackName} - AI Product Manager`}
-  description="AI Product Manager at Prof-IT (zvonobot, effebot, p1sms) who drives the product through thoughtful AI adoption. 500,000+ minutes of B2B AI agent conversations in 2026. Ships pet projects with AI agents in days, not sprints. Remote, GMT+5, EN/RU, open to relocation."
+  description="AI Product Manager at Prof-IT (zvonobot, effebot, p1sms) who drives the product through thoughtful AI adoption. 500,000+ minutes of B2B AI agent conversations in production. Ships pet projects with AI agents in days, not sprints. Remote, GMT+5, EN/RU, open to relocation."
   schema={personSchema}
   alternate="/ru/"
 >
@@ -65,7 +65,7 @@ const personSchema = buildPersonSchema('https://rebsem.ru/');
         </p>
 
         <p class="hero-metric-inline">
-          <strong>{uiCopy.home.metricNumber} <span class="unit">{uiCopy.home.metricUnit.en}</span></strong>
+          <strong>{uiCopy.home.metricNumber.en} <span class="unit">{uiCopy.home.metricUnit.en}</span></strong>
           <span class="hero-metric-inline-caption">{uiCopy.home.metricCaption.en}</span>
         </p>
 
@@ -84,7 +84,7 @@ const personSchema = buildPersonSchema('https://rebsem.ru/');
       <aside class="hero-metric-card" aria-label="Key metric">
         <p class="hero-metric-label">{uiCopy.home.metricLabel.en}</p>
         <p class="hero-metric-value">
-          {uiCopy.home.metricNumber}<span class="unit">{uiCopy.home.metricUnit.en}</span>
+          {uiCopy.home.metricNumber.en}<span class="unit">{uiCopy.home.metricUnit.en}</span>
         </p>
         <p class="hero-metric-caption">{uiCopy.home.metricCaption.en}</p>
         <p class="hero-metric-footnote">
