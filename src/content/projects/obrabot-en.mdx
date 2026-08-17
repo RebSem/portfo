@@ -10,6 +10,8 @@ tags: ["Product", "Voice AI", "B2B", "Analytics"]
 draft: false
 ---
 
+import ProjectScreenshot from '../../components/ProjectScreenshot.astro';
+
 ## Obrabot: internal voice AI analytics cabinet
 
 Obrabot is an internal product at the Prof-IT group. It's a personal cabinet where customers and operators see what voice AI agents actually do: what they talk about, where the script breaks, and which calls need a human in the loop.
@@ -33,6 +35,22 @@ Without this layer the product sells worse, because the customer doesn't trust w
 - **Dashboards by agent and script.** Prompt version comparisons, scenario A/B, daily and per-campaign trends.
 - **Drill-down to a specific call.** Transcript, tags, audio, and metadata, all on one screen.
 - **Early signals.** Surfacing dialogs where a human should step in before the customer complains.
+- **Prompt generation from client material.** A registry of product prompts and a library of vetted references: the system assembles a new voice prompt out of the brief, the spec, and a call transcript.
+- **Commercial proposal assembly.** A short form describing the task, the niche and the integration, from which a proposal is generated with development cost and a per-second rate.
+
+<ProjectScreenshot
+  lightSrc="/projects/obrabot-prompts-light.png"
+  darkSrc="/projects/obrabot-prompts-light.png"
+  alt="Obrabot prompts section: counters for generated and reference prompts, a form generating a voice prompt from PDF material, and the reference library per project (demo data)"
+  caption="Prompt registry: generation from client material on top of a reference library · demo data"
+/>
+
+<ProjectScreenshot
+  lightSrc="/projects/obrabot-proposals-light.png"
+  darkSrc="/projects/obrabot-proposals-light.png"
+  alt="Obrabot commercial proposals section: counters for ready and draft proposals and the generation form with task, model and integration pickers (demo data)"
+  caption="Commercial proposals: the form, the model picker, and rate maths · demo data"
+/>
 
 ## Stack
 
@@ -40,4 +58,4 @@ Next.js, TypeScript, Prisma + PostgreSQL, OpenAI API, integrations with Prof-IT 
 
 I'm not an "external AI consultant" talking about voice AI's potential. I run an actual product inside the Prof-IT group, where voice AI is the main product line, not a pilot. That means real operational pain, real customers, NDA on the numbers, and accountability for outcomes.
 
-UI screenshots and metrics are under NDA; happy to discuss details in a private conversation.
+The screenshots above come from the live cabinet on demo data. Real customers, their prompts and the numbers stay under NDA; happy to discuss details in a private conversation.
