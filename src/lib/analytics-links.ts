@@ -41,3 +41,30 @@ export function projectDestination(url: URL, siteHost: string): ProjectDestinati
   if (isInternal(url, siteHost)) return 'case';
   return url.hostname.replace(/^www\./, '') === 'github.com' ? 'repo' : 'demo';
 }
+
+/** The resume routes, both locales, with or without a trailing slash. */
+export function isCvPath(pathname: string): boolean {
+  return /^\/(?:ru\/)?cv\/?$/.test(pathname);
+}
+
+/**
+ * The `?src=` tag on a resume link, e.g. /cv?src=exness. It records which
+ * outreach a view came from, which is the only attribution this site can have:
+ * every application goes out as a link in a direct message, and referrers do
+ * not survive Telegram or a mail client.
+ *
+ * Sanitized rather than passed through. The value ends up in an analytics
+ * property and anyone can put anything in a query string, so anything that is
+ * not a short plain slug is dropped rather than recorded.
+ */
+export function outreachTag(search: string): string | null {
+  const raw = new URLSearchParams(search).get('src');
+  if (!raw) return null;
+
+  // Rejected rather than truncated when it is too long: cutting to a fixed
+  // length would collapse two different long tags into one identical value,
+  // which is a worse failure for attribution than simply not recording it.
+  const cleaned = raw.trim().toLowerCase();
+  if (cleaned.length > 40) return null;
+  return /^[a-z0-9][a-z0-9._-]*$/.test(cleaned) ? cleaned : null;
+}

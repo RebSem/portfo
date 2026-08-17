@@ -1,13 +1,18 @@
 import type { Locale, LocalizedText } from '../types/content';
+import {
+  cvMetric,
+  email,
+  githubUsername,
+  linkedinUrl,
+  siteRepoUrl,
+  telegramUrl,
+} from './cv';
 
-export const githubUsername = 'RebSem';
-// t.me has been in serverHold since 2026-07-13 (registry-level block; the
-// domain itself stays Telegram's until 2035) and no longer resolves in
-// browsers — telegram.me is the working alias, still recognized in-app too.
-export const telegramUrl = 'https://telegram.me/Michael_Semenov';
-export const email = 'perk77331@gmail.com';
-export const linkedinUrl = 'https://www.linkedin.com/in/mikhail-semenovv/';
-export const siteRepoUrl = 'https://github.com/RebSem/portfo';
+// Contacts and career numbers are owned by cv.ts and re-exported here so the
+// rest of the site keeps its existing imports. The dependency runs one way,
+// site-content -> cv, which is what makes the resume and the site physically
+// unable to disagree.
+export { email, githubUsername, linkedinUrl, siteRepoUrl, telegramUrl };
 
 export const homePath = '/';
 export const aboutPath = '/about';
@@ -27,7 +32,7 @@ export const locationSignal: LocalizedText = {
 
 export const heroFallbackName = 'Mikhail Semenov';
 export const heroDisplayName: LocalizedText = {
-  ru: 'Михаил Семёнов',
+  ru: 'Михаил Семенов',
   en: 'Mikhail Semenov',
 };
 
@@ -37,13 +42,13 @@ export const heroSubtitle: LocalizedText = {
 };
 
 export const currentRole: LocalizedText = {
-  ru: 'Product Manager · Prof-IT (zvonobot, effebot, p1sms) · с начала 2022',
-  en: 'Product Manager · Prof-IT (zvonobot, effebot, p1sms) · since early 2022',
+  ru: 'Product Manager · Prof-IT (zvonobot, effebot, p1sms) · с февраля 2022',
+  en: 'Product Manager · Prof-IT (zvonobot, effebot, p1sms) · since Feb 2022',
 };
 
 export const currentFocus: LocalizedText = {
-  ru: 'Сейчас запустил и развиваю новый продукт группы: голосовых AI-агентов для B2B. За 2026 год через них прошло более 500 000 минут разговоров от новых клиентов.',
-  en: 'Now: launched and scaling a new product, voice AI agents for B2B. In 2026 the new product has handled over 500,000 minutes of conversations from new customers.',
+  ru: `Осенью 2025 запустил новый продукт группы: голосовых AI-агентов для B2B, и развиваю его. Через них прошло ${cvMetric('minutes').value.ru} минут разговоров в проде.`,
+  en: `In the fall of 2025 I launched a new product for the group, voice AI agents for B2B, and I keep scaling it. It has handled ${cvMetric('minutes').value.en} minutes of live conversations in production.`,
 };
 
 export const blogLabel: LocalizedText = {
@@ -94,12 +99,16 @@ export const aboutBlocks: AboutBlock[] = [
     title: { ru: 'Voice AI агенты для B2B', en: 'Voice AI agents for B2B' },
     body: [
       {
-        ru: 'В Prof-IT я с начала 2022 года: пришёл продактом в голосовые продукты zvonobot и effebot, где роботы обзванивают клиентов по записанным сценариям. Когда LLM научились вести нормальный диалог, стало понятно, что на записанных сценариях далеко не уедешь. Так в 2026-м появился новый продукт группы, который я запустил и развиваю: голосовые AI-агенты для B2B, они разговаривают вживую, а не проигрывают запись.',
-        en: 'I have been at Prof-IT since early 2022: I came in as a PM on its voice products, zvonobot and effebot, where robots call clients with pre-recorded scripts. Once LLMs learned to hold a real conversation, it became clear that recorded scripts would only get us so far. That is how the group’s new product came about in 2026, launched and now scaled by me: voice AI agents for B2B that talk to people live instead of playing a recording.',
+        ru: 'В Prof-IT я с февраля 2022 года: пришёл продактом в голосовые продукты zvonobot и effebot, где роботы обзванивают клиентов по записанным сценариям. Когда LLM научились вести нормальный диалог, стало понятно, что на записанных сценариях далеко не уедешь. Так осенью 2025 появился новый продукт группы, который я запустил и развиваю: голосовые AI-агенты для B2B, они разговаривают вживую, а не проигрывают запись.',
+        en: 'I have been at Prof-IT since February 2022: I came in as a PM on its voice products, zvonobot and effebot, where robots call clients with pre-recorded scripts. Once LLMs learned to hold a real conversation, it became clear that recorded scripts would only get us so far. That is how the group’s new product came about in the fall of 2025, launched and now scaled by me: voice AI agents for B2B that talk to people live instead of playing a recording.',
       },
       {
-        ru: 'Веду продукт целиком, от клиентского кабинета до биллинга. За 2026 год агенты провели больше 500 000 минут разговоров с новыми клиентами.',
-        en: 'I run the product end to end, from the client console to billing. In 2026 the agents have handled over 500,000 minutes of new-customer conversations.',
+        // Deliberately no revenue share here. The relative money figure is
+        // approved for the unlisted /cv, which Mikhail hands out by link;
+        // /about is indexed, so the same number would be findable by search.
+        // Both pages stay factually consistent, /cv just says more.
+        ru: `Веду продукт целиком, от клиентского кабинета до биллинга. Агенты провели в проде больше ${cvMetric('minutes').value.ru} минут разговоров.`,
+        en: `I run the product end to end, from the client console to billing. The agents have handled over ${cvMetric('minutes').value.en} minutes of live conversations.`,
       },
     ],
   },
@@ -259,10 +268,17 @@ export function buildPersonSchema(url: string): Record<string, unknown> {
     alternateName: heroDisplayName.ru,
     jobTitle: 'AI Product Manager',
     description:
-      'AI Product Manager at Prof-IT leading voice AI agents for B2B. Ships products with AI coding agents (Claude Code, Codex), validating hypotheses in days. Remote, GMT+5, open to relocation.',
+      'AI Product Manager at Prof-IT leading voice AI agents for B2B. Ships products with AI coding agents (Claude Code, Codex), validating hypotheses in days. Based in Perm, Russia. Remote, GMT+5, open to relocation.',
     url,
     image: 'https://rebsem.ru/main-hero.jpg',
     email: `mailto:${email}`,
+    // Location is a canon fact (Perm / Russia) and recruiter-side LLM tools
+    // read it straight out of JSON-LD, so it is stated explicitly.
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Perm',
+      addressCountry: 'RU',
+    },
     knowsLanguage: ['ru', 'en'],
     knowsAbout,
     worksFor: {
@@ -369,36 +385,37 @@ export const uiCopy = {
       ru: 'Сигнал 2026 · голосовые AI-агенты Prof-IT',
       en: '2026 signal · Prof-IT voice AI agents',
     },
-    metricNumber: '500,000+',
+    // Sourced from cv.ts so the hero number and the resume can never diverge.
+    metricNumber: cvMetric('minutes').value,
     metricUnit: {
       ru: 'минут',
       en: 'minutes',
     },
     metricCaption: {
-      ru: 'разговоров от новых клиентов прошло за 2026 год через продукт, который я веду.',
-      en: 'of new-customer conversations handled by the product I lead in 2026.',
+      ru: 'разговоров провели в проде голосовые AI-агенты, продукт, который я веду.',
+      en: 'of live conversations handled in production by the voice AI agents I lead.',
     },
     metricFootnoteOne: {
-      ru: 'Prof-IT · с начала 2022',
-      en: 'Prof-IT · since early 2022',
+      ru: 'Prof-IT · с февраля 2022',
+      en: 'Prof-IT · since Feb 2022',
     },
     metricFootnoteTwo: {
       ru: 'B2B · voice + AI',
       en: 'B2B · voice + AI',
     },
-    photoAlt: { ru: 'Фото Михаила Семёнова', en: 'Photo of Mikhail Semenov' },
+    photoAlt: { ru: 'Фото Михаила Семенова', en: 'Photo of Mikhail Semenov' },
     currentlyEyebrow: { ru: 'Сейчас', en: 'Currently' },
     currentlyTitle: { ru: 'Что я делаю сейчас', en: 'What I do now' },
     currentlyRoleLabel: { ru: 'Роль', en: 'Role' },
     currentlyFocusLabel: { ru: 'Фокус', en: 'Focus' },
     currentlyMetricLabel: { ru: 'Сигнал 2026', en: '2026 signal' },
     currentlyMetricValue: {
-      ru: '500 000+ минут разговоров от новых клиентов через голосовых AI-агентов',
-      en: '500,000+ minutes of new-customer conversations via voice AI agents',
+      ru: `${cvMetric('minutes').value.ru} минут разговоров в проде через голосовых AI-агентов`,
+      en: `${cvMetric('minutes').value.en} minutes of live conversations via voice AI agents`,
     },
     currentlyRole: {
-      ru: 'Product Manager в Prof-IT (zvonobot, effebot, p1sms), с начала 2022',
-      en: 'Product Manager at Prof-IT (zvonobot, effebot, p1sms), since early 2022',
+      ru: 'Product Manager в Prof-IT (zvonobot, effebot, p1sms), с февраля 2022',
+      en: 'Product Manager at Prof-IT (zvonobot, effebot, p1sms), since Feb 2022',
     },
     currentlyFocus: {
       ru: 'Веду продуктовое развитие нового продукта группы: голосовых AI-агентов для B2B',

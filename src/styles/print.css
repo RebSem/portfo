@@ -1,0 +1,344 @@
+/*
+ * Print rules. The site had none, so Cmd+P on any page produced a dark
+ * screenshot with cropped text. The resume is the page that actually gets
+ * printed, so it gets real typographic treatment; everything else at least
+ * comes out on white paper with readable text.
+ *
+ * The same stylesheet drives the generated PDF: scripts/cv/build-exports.mjs
+ * prints /cv and /ru/cv through headless Chrome, so what a recruiter gets by
+ * hitting Cmd+P and what they get from the Download PDF button are the same
+ * document, produced from the same source.
+ */
+
+@media print {
+  /* Force the light palette regardless of the visitor's theme. Without this
+     the dark theme prints a black rectangle and burns a toner cartridge. */
+  :root,
+  html[data-theme='light'],
+  html[data-theme='dark'] {
+    --background: #ffffff;
+    --background-alt: #ffffff;
+    --foreground: #101418;
+    --surface: #ffffff;
+    --border: #c7cac4;
+    /* Darker green than the screen tier: passes on white at small sizes and
+       survives a black-and-white printer as a legible grey. */
+    --accent: #00593a;
+    --accent-text: #00593a;
+    --accent-display: #00593a;
+    --accent-strong: #00593a;
+    --accent-soft: transparent;
+    --shadow-card: none;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    background-image: none !important;
+    color: #101418 !important;
+  }
+
+  /* The film-grain overlay is a fixed, full-viewport layer with
+     mix-blend-mode. Chrome cannot express a blend mode in PDF vector ops, so
+     it rasterizes the entire page instead: that single decorative texture was
+     turning each printed page into a ~991 KB bitmap and the resume into a
+     9.2 MB file that mail servers strip. Same story for the body gradient. */
+  body::before,
+  body::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  /* System fonts on paper, for two unrelated reasons that point the same way.
+     Embedding the Cyrillic variable webfonts pushed the generated PDF to
+     7.8 MB, which mail servers strip or bounce. And an ATS extracting text
+     from a standard font is a far better-trodden path than one extracting it
+     from a variable font subset: the last EN resume shipped a PDF whose
+     capital J came out as "Ã", which cost an unknown number of applications. */
+  .cv-doc,
+  .cv-doc * {
+    font-family: var(--font-geist), Arial, sans-serif !important;
+  }
+
+  /* A4 explicitly: headless Chrome defaults to US Letter, which is the wrong
+     sheet for every market this resume is aimed at. */
+  @page {
+    size: A4;
+    margin: 14mm 14mm 16mm;
+  }
+
+  /* Site chrome and anything interactive: a button on paper is noise. */
+  .site-header,
+  .site-footer,
+  .skip-link,
+  .cv-toc,
+  .cv-actions,
+  /* Web affordance: on paper "Also as: DOCX TXT" is a dead instruction. */
+  .cv-formats,
+  .cv-copy,
+  /* The "CV" eyebrow: on a resume the first line of the text layer should be
+     the candidate's name, not a label. */
+  .cv-eyebrow,
+  astro-dev-toolbar {
+    display: none !important;
+  }
+
+  .page-main {
+    width: 100% !important;
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  .cv-layout {
+    display: block !important;
+  }
+
+  .cv-doc {
+    max-width: none !important;
+  }
+
+  /* Links get their destination spelled out: on paper an anchor is a dead end
+     otherwise. mailto is skipped because the address is already the link text. */
+  .cv-doc a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  .cv-doc a[href^='/']::after {
+    content: ' (rebsem.ru' attr(href) ')';
+  }
+
+  .cv-doc a[href^='http']::after {
+    content: ' (' attr(href) ')';
+  }
+
+  .cv-doc a::after {
+    font-size: 0.82em;
+    color: #4a4f55;
+    word-break: break-word;
+  }
+
+  /* Not expanded: mailto (the address is already the link text) and links
+     inside experience bullets. Every product named in a bullet appears again
+     in the Products section with its URL spelled out, so expanding it twice
+     only pushes the resume onto another page. */
+  /* The attribute selector is load-bearing: without it these lose on
+     specificity to the two expansion rules above and the URLs come back. */
+  .cv-doc a[href^='mailto:']::after,
+  .cv-bullets a[href]::after,
+  /* The header contact line already IS the address; appending the URL after
+     each one would print every address twice. */
+  .cv-contacts a[href]::after {
+    content: '';
+  }
+
+  /* The contact list must not wrap onto its own line per item; it reads as a
+     single run of identifiers, which is the shape an ATS expects at the top
+     of a resume. */
+  .cv-contacts {
+    gap: 0.1rem 0.55rem;
+    font-size: 9pt;
+  }
+
+  .cv-contacts li + li::before {
+    margin-right: 0.55rem;
+  }
+
+  /* Letter-spacing has to go. The screen styling tracks the section headings
+     out by 0.13em, and pdftotext reads that spacing as word breaks: "SUMMARY"
+     came out of the text layer as "S U MMARY" and "NUMBERS" as "N U MBE RS".
+     An ATS looking for a SUMMARY or EXPERIENCE heading finds neither. Exactly
+     the same class of defect as the broken capital J in the August PDF. */
+  .cv-section-title,
+  .cv-skill-group dt,
+  .cv-eyebrow,
+  .cv-role-period,
+  .cv-updated {
+    letter-spacing: normal !important;
+    word-spacing: normal !important;
+  }
+
+  /* Tighter rhythm on paper: the goal is two pages, not five. */
+  .cv-name {
+    font-size: 19pt;
+  }
+
+  .cv-headline {
+    font-size: 10.5pt;
+    margin-top: 0.35rem;
+  }
+
+  .cv-location,
+  .cv-lead,
+  .cv-bullets li,
+  .cv-skill-group dd,
+  .cv-product-summary,
+  .cv-product-proof,
+  .cv-role-context {
+    font-size: 9.5pt;
+    line-height: 1.38;
+  }
+
+  .cv-section {
+    margin-top: 0.6rem;
+  }
+
+  .cv-section-title {
+    margin-bottom: 0.32rem;
+    padding-bottom: 0.16rem;
+    font-size: 9pt;
+  }
+
+  .cv-bullets {
+    gap: 0.14rem;
+  }
+
+  .cv-role + .cv-role {
+    margin-top: 0.8rem;
+  }
+
+  .cv-phase {
+    margin-top: 0.5rem;
+  }
+
+  .cv-skills {
+    gap: 0.35rem;
+  }
+
+  /* Cards are a screen affordance. On paper the border and padding buy
+     nothing and cost a page. */
+  .cv-metric,
+  .cv-product {
+    border: 0 !important;
+    background: transparent !important;
+    padding: 0 !important;
+  }
+
+  /* Without the card borders the four products ran together into one wall of
+     text, so the separation moves from a box to whitespace. */
+  .cv-product + .cv-product {
+    margin-top: 0.5rem;
+  }
+
+  /* Each metric collapses to a single flowing line on paper: value, label,
+     then caption. Three stacked paragraphs per tile cost a third of page one
+     and buy nothing in print, and the flat line reads better in the text
+     layer too, since value and label end up adjacent. */
+  .cv-metric p {
+    display: inline;
+    margin: 0;
+  }
+
+  .cv-metric {
+    display: list-item;
+    list-style: disc;
+    margin-left: 1.05rem;
+    padding-left: 0.15rem;
+  }
+
+  .cv-metric-value::after {
+    content: ' ';
+  }
+
+  /* Colon, matching the txt and DOCX exports. Without it the PDF produced a
+     run-on: "~80 paying B2B customers repeat payments account for 30%...". */
+  .cv-metric-label::after {
+    content: ': ';
+  }
+
+  .cv-metric-label,
+  .cv-product-name {
+    font-size: 9.5pt;
+  }
+
+  .cv-metric-caption {
+    font-size: 9pt;
+  }
+
+  /* The contact block repeats the header line verbatim. On screen that is a
+     convenience for someone who scrolled to the end; on paper it was spilling
+     a fourth sheet for 238 characters the reader already has. The "updated"
+     line stays, it is the only thing here the header does not carry. */
+  #cv-contact .cv-section-title,
+  .cv-contact-list {
+    display: none !important;
+  }
+
+  #cv-contact {
+    margin-top: 0.5rem;
+  }
+
+  /* Single column on paper, and this is about the text layer rather than
+     looks. A two-column grid makes pdftotext read across the page: the four
+     metric tiles came out as "~10% / ~80 / share held by... / repeat payments
+     ..." with every value divorced from its label. An ATS reads that same
+     stream, so the tiles stack and each one stays whole. */
+  .cv-metrics,
+  .cv-products {
+    grid-template-columns: 1fr !important;
+    gap: 0.35rem !important;
+  }
+
+  .cv-metric,
+  .cv-product {
+    padding: 0.5rem 0.6rem;
+  }
+
+  .cv-metric-value {
+    font-size: 11pt;
+    display: inline;
+  }
+
+  /* Page breaks: never orphan a heading from its content, never split a role
+     or a bullet across pages. An ATS parsing a split date range reads it as
+     two jobs. */
+  /* Flex with space-between put the role title and its date range 215pt
+     apart on the same baseline, and pdftotext emitted them as two lines with
+     a blank line between. Parsers that segment jobs on blank lines orphaned
+     every date. Inline on paper, so the extracted line reads
+     "Product Manager, Zvonobot (Prof-IT Group) Feb 2022 - Present". */
+  .cv-role-head {
+    /* !important because Astro compiles the component's scoped rule to
+       `.cv-role-head[data-astro-cid-…]`, which outranks a bare class here.
+       Without it the flex row survives, the two stay 215pt apart, and
+       pdftotext still emits the date on a line of its own. */
+    display: block !important;
+  }
+
+  .cv-role-title {
+    display: inline !important;
+  }
+
+  /* The range itself must never wrap: a date split across two lines is the
+     same loss as a date on its own line. */
+  .cv-role-period {
+    display: inline !important;
+    white-space: nowrap !important;
+  }
+
+  .cv-role-title::after {
+    content: ' · ';
+  }
+
+  h1,
+  h2,
+  h3,
+  .cv-section-title,
+  .cv-phase-title,
+  .cv-role-head {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* Deliberately NOT .cv-role or .cv-phase. The Zvonobot role runs longer
+     than a page on its own, so "keep it whole" makes the renderer push the
+     entire block to the next sheet and leave 40% of page one empty. Only
+     units that genuinely fit on a page are kept whole. */
+  .cv-metric,
+  .cv-product,
+  .cv-skill-group,
+  .cv-bullets li {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}

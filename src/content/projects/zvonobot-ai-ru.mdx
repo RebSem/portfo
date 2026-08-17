@@ -1,11 +1,11 @@
 ---
 projectId: "zvonobot-ai"
 title: "Zvonobot AI — платформа voice AI-агентов для B2B"
-description: "Multi-tenant SaaS-кабинет для голосовых AI-агентов на исходящих звонках. Запустил в 2026 в группе Prof-IT и веду end-to-end: продукт, UX, инженерия. Уже в проде, можно зайти и зарегистрироваться."
+description: "Multi-tenant SaaS-кабинет для голосовых AI-агентов на исходящих звонках. Запустил направление осенью 2025 в группе Prof-IT и веду end-to-end: продукт, UX, инженерия. Уже в проде, можно зайти и зарегистрироваться."
 role: "Продуктовый лид · product engineer"
-timeline: "Запуск 2026, активный shipping"
-impact: "500 000+ минут разговоров от новых клиентов за 2026"
-cover: "/projects/zvonobot-dashboard-ru-light.png"
+timeline: "Тест гипотезы осенью 2025, собственная платформа с 2026, активный shipping"
+impact: "500 000+ минут разговоров в проде"
+cover: "/projects/zvonobot-dashboard-light.png"
 draft: false
 lang: "ru"
 tags: ["React 19", "TypeScript", "Vite", "Flask", "PostgreSQL", "Redis", "LLM-оркестрация", "VoIP", "Multi-tenant SaaS"]
@@ -16,9 +16,9 @@ import LiveCabinetButton from '../../components/LiveCabinetButton.astro';
 
 ## Zvonobot AI: платформа voice AI-агентов, которую я отгружаю каждую неделю
 
-Zvonobot AI — это новый продукт группы Prof-IT, который я запустил в 2026-м и веду end-to-end: продукт, UX и инженерию. Multi-tenant SaaS-кабинет поверх telephony-инфраструктуры: клиенты собирают голосовых AI-агентов, дают им промпт и базу контактов, и запускают исходящие кампании: продажи, онбординг, реактивацию, опросы.
+Zvonobot AI — это новый продукт группы Prof-IT, который я запустил и веду end-to-end: продукт, UX и инженерию. Направление стартовало осенью 2025 как тест гипотезы на white-label платформе; когда спрос подтвердился на живых клиентах, перешли на собственное решение. Multi-tenant SaaS-кабинет поверх telephony-инфраструктуры: клиенты собирают голосовых AI-агентов, дают им промпт и базу контактов, и запускают исходящие кампании: продажи, онбординг, реактивацию, опросы.
 
-За 2026 год через продукт уже прошло **500 000+ минут разговоров от новых клиентов**.
+Через продукт уже прошло **500 000+ минут разговоров в проде**.
 
 <LiveCabinetButton
   href="https://lk2.ai-zvonki.ru"
@@ -30,8 +30,8 @@ Zvonobot AI — это новый продукт группы Prof-IT, кото�
 />
 
 <ProjectScreenshot
-  lightSrc="/projects/zvonobot-dashboard-ru-light.png"
-  darkSrc="/projects/zvonobot-dashboard-ru-dark.png"
+  lightSrc="/projects/zvonobot-dashboard-light.png"
+  darkSrc="/projects/zvonobot-dashboard-dark.png"
   alt="Клиентский дашборд Zvonobot AI: KPI по лидам, конверсии и стоимости лида, воронка и график звонков по дням (демо-данные)"
   caption="Клиентский дашборд · демо-аккаунт · реальные кабинеты клиентов под NDA"
 />
@@ -60,8 +60,15 @@ Zvonobot AI — это новый продукт группы Prof-IT, кото�
 - **Multi-tenant роли.** Супер-админ, менеджер, владелец кабинета, бухгалтер: четыре роли с разными скоупами и view, всё на одной кодовой базе.
 
 <ProjectScreenshot
-  lightSrc="/projects/zvonobot-calls-ru-light.png"
-  darkSrc="/projects/zvonobot-calls-ru-dark.png"
+  lightSrc="/projects/zvonobot-campaigns-light.png"
+  darkSrc="/projects/zvonobot-campaigns-dark.png"
+  alt="Список рассылок Zvonobot AI: именованные кампании со статусом, числом контактов, списанием и датой создания (демо-данные)"
+  caption="Рассылки: статус, обзвоненные контакты и списание по каждой кампании · демо-данные"
+/>
+
+<ProjectScreenshot
+  lightSrc="/projects/zvonobot-calls-light.png"
+  darkSrc="/projects/zvonobot-calls-dark.png"
   alt="Таблица истории звонков Zvonobot AI с замаскированными номерами, статусами, исходами и стоимостью каждого звонка (демо-данные)"
   caption="История звонков: маска номеров, статусы и стоимость каждого звонка · демо-данные"
 />
@@ -75,8 +82,8 @@ Zvonobot AI — это новый продукт группы Prof-IT, кото�
 - **Активность по часам.** Когда дозвоны проходят лучше, чтобы клиент звонил в правильное окно.
 
 <ProjectScreenshot
-  lightSrc="/projects/zvonobot-analytics-ru-light.png"
-  darkSrc="/projects/zvonobot-analytics-ru-dark.png"
+  lightSrc="/projects/zvonobot-analytics-light.png"
+  darkSrc="/projects/zvonobot-analytics-dark.png"
   alt="Страница аналитики Zvonobot AI: график исходов звонков, круговая диаграмма настроения и активность по часам (демо-данные)"
   caption="Аналитика: исходы, настроение и активность по часам, всё из пост-call анализа · демо-данные"
 />
@@ -86,8 +93,8 @@ Zvonobot AI — это новый продукт группы Prof-IT, кото�
 Агент — это центральный объект продукта. Клиент задаёт голос, модель и язык, пишет структурированный промпт со сценарием разговора, настраивает первую фразу (чтобы LLM не «думал» в тишину и звонок не обрывался), кастомные параметры для пост-call анализа и success-метки. После публикации и модерации агент готов звонить, и прямо отсюда можно запустить тестовый звонок на свой номер.
 
 <ProjectScreenshot
-  lightSrc="/projects/zvonobot-agent-ru-light.png"
-  darkSrc="/projects/zvonobot-agent-ru-dark.png"
+  lightSrc="/projects/zvonobot-agent-light.png"
+  darkSrc="/projects/zvonobot-agent-dark.png"
   alt="Страница агента Zvonobot AI: имя, статус «одобрен», выбор голоса/модели/языка, промпт со сценарием, первая фраза и панель пост-call параметров (демо-данные)"
   caption="Сборщик агента: голос, модель, промпт, первая фраза и пост-call параметры · демо-агент"
 />

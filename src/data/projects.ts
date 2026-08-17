@@ -12,8 +12,8 @@ export const projects: ProjectItem[] = [
       en: 'Voice AI-agent platform for B2B (Prof-IT)',
     },
     summary: {
-      ru: 'Новый продукт группы Prof-IT, который я запустил в 2026-м и веду end-to-end: продукт, UX и инженерию. Multi-tenant SaaS-кабинет поверх telephony-инфраструктуры, в котором клиенты собирают и публикуют голосовых AI-агентов для исходящих звонков: продажи, онбординг, реактивация, опросы.',
-      en: 'A new Prof-IT product I launched in 2026 and run end-to-end: product, UX, and engineering. A multi-tenant SaaS console built on top of telephony infrastructure: clients assemble and publish voice AI agents for outbound use cases like sales, onboarding, reactivation, and surveys.',
+      ru: 'Новый продукт группы Prof-IT, который я запустил осенью 2025 и веду end-to-end: продукт, UX и инженерию. Multi-tenant SaaS-кабинет поверх telephony-инфраструктуры, в котором клиенты собирают и публикуют голосовых AI-агентов для исходящих звонков: продажи, онбординг, реактивация, опросы.',
+      en: 'A new Prof-IT product I launched in the fall of 2025 and run end-to-end: product, UX, and engineering. A multi-tenant SaaS console built on top of telephony infrastructure: clients assemble and publish voice AI agents for outbound use cases like sales, onboarding, reactivation, and surveys.',
     },
     stack: ['React 19', 'TypeScript', 'Vite', 'Flask', 'PostgreSQL', 'Redis', 'LLM orchestration'],
     visibility: 'private',
