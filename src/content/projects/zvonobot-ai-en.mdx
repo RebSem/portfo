@@ -5,7 +5,7 @@ description: "Multi-tenant SaaS console for outbound voice AI agents. Launched t
 role: "Product lead, product engineer"
 timeline: "Hypothesis test in fall 2025, in-house platform from 2026, actively shipping"
 impact: "500,000+ minutes of live conversations in production"
-cover: "/projects/zvonobot-dashboard-en-light.png"
+cover: "/projects/zvonobot-dashboard-light.png"
 draft: false
 lang: "en"
 tags: ["React 19", "TypeScript", "Vite", "Flask", "PostgreSQL", "Redis", "LLM orchestration", "VoIP", "Multi-tenant SaaS"]
@@ -30,8 +30,8 @@ The product has already handled **500,000+ minutes of live conversations in prod
 />
 
 <ProjectScreenshot
-  lightSrc="/projects/zvonobot-dashboard-en-light.png"
-  darkSrc="/projects/zvonobot-dashboard-en-dark.png"
+  lightSrc="/projects/zvonobot-dashboard-light.png"
+  darkSrc="/projects/zvonobot-dashboard-dark.png"
   alt="Zvonobot AI client dashboard: KPIs for leads, conversion and cost per lead, a lead funnel, and a daily call timeline (demo data)"
   caption="Client dashboard · demo account · real client cabinets under NDA"
 />
@@ -60,8 +60,15 @@ The Zvonobot AI cabinet is the surface clients live in. It bundles agent assembl
 - **Multi-tenant roles.** Super-admin, manager, client owner, accountant: four roles with different scopes and views, all on one codebase.
 
 <ProjectScreenshot
-  lightSrc="/projects/zvonobot-calls-en-light.png"
-  darkSrc="/projects/zvonobot-calls-en-dark.png"
+  lightSrc="/projects/zvonobot-campaigns-light.png"
+  darkSrc="/projects/zvonobot-campaigns-dark.png"
+  alt="Zvonobot AI campaigns list: named outbound campaigns with status, contacts dialed, spend, and creation date (demo data)"
+  caption="Campaigns: status, contacts dialed, and spend per campaign · demo data"
+/>
+
+<ProjectScreenshot
+  lightSrc="/projects/zvonobot-calls-light.png"
+  darkSrc="/projects/zvonobot-calls-dark.png"
   alt="Zvonobot AI call history table with masked phone numbers, statuses, outcomes, and per-call cost (demo data)"
   caption="Call history: masked numbers, statuses, and per-call cost · demo data"
 />
@@ -75,8 +82,8 @@ Voice is only half the product. The other half is turning thousands of conversat
 - **Hourly activity:** when answers land best, so a client dials in the right window.
 
 <ProjectScreenshot
-  lightSrc="/projects/zvonobot-analytics-en-light.png"
-  darkSrc="/projects/zvonobot-analytics-en-dark.png"
+  lightSrc="/projects/zvonobot-analytics-light.png"
+  darkSrc="/projects/zvonobot-analytics-dark.png"
   alt="Zvonobot AI analytics page: call-outcomes bar chart, sentiment pie chart, and hourly activity (demo data)"
   caption="Analytics: outcomes, sentiment, and hourly activity, all from post-call analysis · demo data"
 />
@@ -86,8 +93,8 @@ Voice is only half the product. The other half is turning thousands of conversat
 The agent is the product's central object. A client sets a voice, model, and language, writes a structured prompt with the conversation script, configures the opening line (so the LLM doesn't "think" into silence and drop the call), custom post-call parameters, and success labels. Once published and moderated, the agent is ready to dial, and you can fire a test call to your own number right from here.
 
 <ProjectScreenshot
-  lightSrc="/projects/zvonobot-agent-en-light.png"
-  darkSrc="/projects/zvonobot-agent-en-dark.png"
+  lightSrc="/projects/zvonobot-agent-light.png"
+  darkSrc="/projects/zvonobot-agent-dark.png"
   alt="Zvonobot AI agent page: name, 'approved' status, voice/model/language pickers, the prompt script, the opening line, and a post-call parameters panel (demo data)"
   caption="Agent builder: voice, model, prompt, opening line, and post-call parameters · demo agent"
 />

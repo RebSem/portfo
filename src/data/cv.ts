@@ -454,9 +454,17 @@ export const cvSkillGroups: CvSkillGroup[] = [
 
 // --- Education, languages, format ----------------------------------------
 
+/**
+ * University and year, with no qualification level named.
+ *
+ * The two locales used to say different things: RU spelled out "среднее
+ * специальное" while EN said "Diploma", which a Western recruiter reads as a
+ * degree. Naming no level at all is both consistent and accurate, and the
+ * grade this resume argues for is carried by the numbers, not the credential.
+ */
 export const cvEducation: LocalizedText = {
-  ru: 'ПГНИУ, Пермский государственный национальный исследовательский университет, среднее специальное, 2022.',
-  en: 'Diploma, Perm State University, 2022.',
+  ru: 'ПГНИУ, Пермский государственный национальный исследовательский университет, 2022.',
+  en: 'Perm State University, 2022.',
 };
 
 export const cvLanguages: LocalizedText = {

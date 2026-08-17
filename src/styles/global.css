@@ -2024,18 +2024,27 @@ html[data-theme='dark'] .theme-icon-sun {
    subtle gradient alone couldn't.
    padding-left compensates the 3px (vs 1px on regular cards) so inner
    content stays aligned across featured and non-featured cards. */
+/* Same reasoning as .featured-case: the green rule, the green wash and the
+   green halo all went. A flagship card now reads as flagship because it sits
+   on a surface and casts a neutral shadow, not because it glows. */
 .project-card-featured {
-  border-color: color-mix(in oklab, var(--accent) 40%, var(--border));
-  border-left: 3px solid var(--accent);
-  padding-left: calc(1rem - 2px);
-  background:
-    linear-gradient(180deg, color-mix(in oklab, var(--surface) 78%, var(--accent) 9%), color-mix(in oklab, var(--surface) 96%, var(--background) 4%));
-  box-shadow: 0 24px 50px -22px color-mix(in oklab, var(--accent) 45%, transparent);
+  border-color: var(--border);
+  background: var(--surface);
+  box-shadow:
+    0 1px 2px color-mix(in oklab, var(--foreground) 5%, transparent),
+    0 20px 40px -30px color-mix(in oklab, var(--foreground) 20%, transparent);
+}
+
+[data-theme='dark'] .project-card-featured {
+  background: color-mix(in oklab, var(--surface) 92%, var(--background) 8%);
+  box-shadow:
+    inset 0 1px 0 color-mix(in oklab, white 3%, transparent),
+    0 22px 44px -32px rgb(0 0 0 / 0.5);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .project-card-featured:hover {
-    box-shadow: 0 28px 56px -20px color-mix(in oklab, var(--accent) 55%, transparent);
+    border-color: color-mix(in oklab, var(--foreground) 18%, var(--border));
   }
 }
 
@@ -2436,6 +2445,14 @@ html[data-theme='dark'] .theme-icon-sun {
    Asymmetric 2-col split, accent top-rail, browser-chrome frame,
    theme-aware screenshot (light/dark swap).
    ============================================================ */
+/*
+ * Flagship block. Deliberately no accent glow, no tinted gradient and no
+ * coloured top rule: a green halo around a card is the single most reliable
+ * tell of machine-generated UI, and it was doing the job that content should
+ * do. Prominence now comes from size, a real surface, and a shadow tinted to
+ * the page's own hue rather than to the brand colour. The only green left is
+ * the live-status pill and the links, which is where it means something.
+ */
 .featured-case {
   position: relative;
   display: grid;
@@ -2443,49 +2460,30 @@ html[data-theme='dark'] .theme-icon-sun {
   gap: 2.2rem;
   margin-bottom: 1.6rem;
   padding: 2rem 2.1rem 2.1rem;
-  border: 1px solid color-mix(in oklab, var(--accent) 32%, var(--border));
+  border: 1px solid var(--border);
   border-radius: 1.75rem;
-  background:
-    linear-gradient(180deg,
-      color-mix(in oklab, var(--surface) 78%, var(--accent) 6%),
-      color-mix(in oklab, var(--surface) 98%, var(--background) 2%));
+  background: var(--surface);
   box-shadow:
-    0 30px 60px -28px color-mix(in oklab, var(--accent) 38%, transparent),
-    inset 0 1px 0 color-mix(in oklab, var(--surface) 60%, white 40%);
+    0 1px 2px color-mix(in oklab, var(--foreground) 5%, transparent),
+    0 24px 48px -32px color-mix(in oklab, var(--foreground) 22%, transparent);
   isolation: isolate;
   overflow: hidden;
   transition:
     box-shadow var(--dur-base) var(--ease-out-strong),
+    border-color var(--dur-base) var(--ease-out-strong),
     transform var(--dur-base) var(--ease-out-strong);
 }
 
 [data-theme='dark'] .featured-case {
-  background:
-    linear-gradient(180deg,
-      color-mix(in oklab, var(--surface) 65%, var(--accent) 10%),
-      color-mix(in oklab, var(--surface) 90%, var(--background) 10%));
+  background: color-mix(in oklab, var(--surface) 92%, var(--background) 8%);
   box-shadow:
-    0 36px 72px -32px color-mix(in oklab, var(--accent) 55%, transparent),
-    inset 0 1px 0 color-mix(in oklab, white 4%, transparent);
-}
-
-.featured-case::before {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 3px;
-  background: linear-gradient(90deg,
-    color-mix(in oklab, var(--accent) 90%, transparent),
-    color-mix(in oklab, var(--accent) 55%, transparent) 60%,
-    transparent);
-  z-index: 1;
+    inset 0 1px 0 color-mix(in oklab, white 4%, transparent),
+    0 28px 56px -34px rgb(0 0 0 / 0.55);
 }
 
 @media (hover: hover) and (pointer: fine) {
   .featured-case:hover {
-    box-shadow:
-      0 36px 70px -24px color-mix(in oklab, var(--accent) 50%, transparent),
-      inset 0 1px 0 color-mix(in oklab, var(--surface) 60%, white 40%);
+    border-color: color-mix(in oklab, var(--foreground) 18%, var(--border));
   }
 
   .featured-case:hover .featured-case-frame {

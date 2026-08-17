@@ -46,7 +46,7 @@ Delivery: spec, review, release cycle, working with engineers and sales, prototy
 Technical: SQL, Python, TypeScript, REST, integrations, telephony
 
 EDUCATION, LANGUAGES, FORMAT
-Education: Diploma, Perm State University, 2022.
+Education: Perm State University, 2022.
 Languages: Russian: native. English: working proficiency (B1+), daily written use.
 Work format: Remote from Perm (GMT+5), open to relocation (Cyprus, EU, UAE), available for business travel. Full-time or contract, can start within 2-4 weeks.
 
