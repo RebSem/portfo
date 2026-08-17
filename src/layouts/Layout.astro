@@ -2,6 +2,7 @@
 import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
+import '../styles/print.css';
 import Analytics from '../components/Analytics.astro';
 import themeImagesScriptUrl from '../scripts/theme-images.js?url';
 
@@ -11,6 +12,13 @@ interface Props {
   image?: string;
   type?: 'website' | 'article';
   noIndex?: boolean;
+  /**
+   * Only meaningful together with noIndex. Keeps `follow`, so a crawler that
+   * lands on an unlisted page still walks its outbound links. The /cv page
+   * needs this: an LLM screener handed the link has to be able to reach the
+   * case studies it references.
+   */
+  followLinks?: boolean;
   schema?: Record<string, unknown> | Array<Record<string, unknown>>;
   /** Path of this page in the other locale, e.g. '/ru/about' — emits hreflang alternates. */
   alternate?: string;
@@ -22,6 +30,7 @@ const {
   image = '/main-hero.jpg',
   type = 'website',
   noIndex = false,
+  followLinks = false,
   schema = [],
   alternate,
 } = Astro.props;
@@ -32,7 +41,9 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).toString();
 const imageUrl = image.startsWith('http://') || image.startsWith('https://') ? image : new URL(image, siteUrl).toString();
 // The default hero is a known 1200x900; only emit og:image dimensions for it.
 const isDefaultImage = image === '/main-hero.jpg';
-const robotsContent = noIndex ? 'noindex,nofollow' : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1';
+const robotsContent = noIndex
+  ? (followLinks ? 'noindex,follow' : 'noindex,nofollow')
+  : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1';
 const resolvedSchemas = Array.isArray(schema) ? schema : [schema];
 const ogLocale = lang === 'ru' ? 'ru_RU' : 'en_US';
 const ogLocaleAlternate = lang === 'ru' ? 'en_US' : 'ru_RU';
@@ -68,9 +79,20 @@ const hreflangRu = lang === 'ru' ? canonicalUrl : alternateUrl;
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {/*
+      Preload only what the first paint actually needs, which was backwards.
+      Geist Mono sets every section heading, eyebrow and date on the resume
+      and was NOT preloaded: it was discovered from CSS and landed 226ms after
+      first contentful paint, so those headings painted in Courier first and
+      then swapped. Newsreader WAS preloaded and holds the connection longest
+      of the three, for exactly two strings of body-free display text (the
+      header wordmark and one word in the home hero); it can arrive late
+      without anyone noticing, since its metric-matched fallback is sized to
+      match.
+    */}
     <Font cssVariable="--font-geist" preload />
-    <Font cssVariable="--font-newsreader" preload />
-    <Font cssVariable="--font-geist-mono" />
+    <Font cssVariable="--font-geist-mono" preload />
+    <Font cssVariable="--font-newsreader" />
     <link rel="dns-prefetch" href="https://api.github.com" />
     <meta name="description" content={description} />
     <meta name="robots" content={robotsContent} />

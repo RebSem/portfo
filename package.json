@@ -18,11 +18,14 @@
     "validate": "npm run check && npm test && npm run build && npm run link-check",
     "preview": "astro preview",
     "astro": "astro",
-    "new:post": "node scripts/new-post.mjs"
+    "new:post": "node scripts/new-post.mjs",
+    "cv:export": "tsx scripts/cv/build-exports.ts"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",
     "@types/node": "^22.15.30",
+    "docx": "^9.7.1",
+    "tsx": "^4.23.12",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"
   },

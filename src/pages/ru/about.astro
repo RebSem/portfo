@@ -15,7 +15,6 @@ import {
 } from '../../data/site-content';
 import Layout from '../../layouts/Layout.astro';
 import githubScriptUrl from '../../scripts/github-activity.js?url';
-import localeScriptUrl from '../../scripts/locale.js?url';
 import heroImage from '../../assets/main-hero.jpg';
 
 const avatarUrl = `https://avatars.githubusercontent.com/${githubUsername}?size=560`;
@@ -66,7 +65,7 @@ const aboutSchema = {
             width={560}
             height={700}
             loading="eager"
-            alt="Портрет Михаила Семёнова"
+            alt="Портрет Михаила Семенова"
           />
         </div>
 
@@ -138,7 +137,5 @@ const aboutSchema = {
   </main>
 
   <SiteFooter />
-
-  <script is:inline type="module" src={localeScriptUrl}></script>
   <script is:inline type="module" src={githubScriptUrl}></script>
 </Layout>

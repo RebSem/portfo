@@ -13,13 +13,21 @@
 // same reasoning as the MutationObserver in theme-images.js.
 
 import posthog from 'posthog-js';
-import { contactChannel, isInternal, projectDestination, projectSlugFromPath } from '../lib/analytics-links';
+import {
+  contactChannel,
+  isCvPath,
+  isInternal,
+  outreachTag,
+  projectDestination,
+  projectSlugFromPath,
+} from '../lib/analytics-links';
 
 const DEFAULT_HOST = 'https://eu.i.posthog.com';
 
 interface AnalyticsState {
   initialized: boolean;
   clicksBound: boolean;
+  cvViewsBound: boolean;
 }
 
 declare global {
@@ -31,6 +39,7 @@ declare global {
 const state: AnalyticsState = window.__portfolioAnalyticsState ?? {
   initialized: false,
   clicksBound: false,
+  cvViewsBound: false,
 };
 
 window.__portfolioAnalyticsState = state;
@@ -102,6 +111,44 @@ export function initAnalytics(token: string, host?: string): void {
   });
 
   bindClickTracking();
+  bindCvViewTracking();
+}
+
+/**
+ * A dedicated event rather than relying on the pageview: the resume is the
+ * one page whose views are the point, and a named event survives any future
+ * change to pageview handling.
+ *
+ * Both an immediate call and an astro:page-load listener are needed, and they
+ * would otherwise double-count. This module is imported dynamically, so it can
+ * finish loading either before or after astro:page-load fires on the initial
+ * load; whichever happens, exactly one of the two paths has to record the
+ * view. Hence the dedupe on href, cleared when the visitor leaves the page so
+ * that navigating away and back counts again.
+ */
+function bindCvViewTracking(): void {
+  if (state.cvViewsBound) return;
+  state.cvViewsBound = true;
+
+  let capturedHref: string | null = null;
+
+  const capture = () => {
+    if (!isCvPath(window.location.pathname)) return;
+    if (capturedHref === window.location.href) return;
+    capturedHref = window.location.href;
+
+    const tag = outreachTag(window.location.search);
+    posthog.capture('cv:view', {
+      ...baseProps(),
+      ...(tag ? { cv_src: tag } : {}),
+    });
+  };
+
+  document.addEventListener('astro:page-load', capture);
+  document.addEventListener('astro:before-swap', () => {
+    capturedHref = null;
+  });
+  capture();
 }
 
 function pageLocale(): string {
@@ -175,9 +222,13 @@ function bindClickTracking(): void {
     // Catches the CV as soon as it is served from a .pdf path; the data
     // attribute is the escape hatch if it ever lands on a prettier URL.
     if (url.pathname.toLowerCase().endsWith('.pdf') || anchor.dataset.analytics === 'cv-download') {
+      // The outreach tag rides along so a download can be attributed to the
+      // message that produced it, not just counted.
+      const tag = outreachTag(window.location.search);
       posthog.capture('cv:pdf_download', {
         ...baseProps(),
         link_href: url.pathname,
+        ...(tag ? { cv_src: tag } : {}),
       });
       return;
     }

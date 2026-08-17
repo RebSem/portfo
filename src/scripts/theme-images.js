@@ -36,6 +36,14 @@ const bindObserver = () => {
 
 const init = () => {
   syncThemeImages();
+
+  // Only 8 of the ~30 built pages carry theme-aware screenshots, and the
+  // resume is not one of them. Binding a document-wide MutationObserver on a
+  // page with nothing to observe is pure overhead. init() runs again after
+  // every ClientRouter swap, so navigating to a page that does have them
+  // still binds it then.
+  if (!document.querySelector('img[data-light-src][data-dark-src]')) return;
+
   bindObserver();
 };
 

@@ -1,0 +1,49 @@
+---
+import CvDocument from '../components/CvDocument.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import { buildEmploymentSchema, cvFileBaseName, cvName, cvSummary } from '../data/cv';
+import { buildPersonSchema } from '../data/site-content';
+import Layout from '../layouts/Layout.astro';
+import cvScriptUrl from '../scripts/cv.js?url';
+
+const pageUrl = 'https://rebsem.ru/cv';
+const pdfHref = `/cv/${cvFileBaseName.en}.pdf`;
+const docxHref = `/cv/${cvFileBaseName.en}.docx`;
+const txtHref = '/cv.txt';
+
+// Unlisted, not secret: this page carries `noindex, follow` and is absent from
+// the sitemap, llms.txt, the menu and the footer, so it is only reachable by a
+// link Mikhail hands out. `follow` is deliberate, an LLM screener given the
+// link has to be able to reach the case studies it cites.
+const personEntity = buildPersonSchema(pageUrl);
+// Employment history, so an LLM screener handed this link can answer
+// "where did they work and when" from the structured data alone.
+personEntity.worksFor = buildEmploymentSchema('en');
+const cvSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  url: pageUrl,
+  name: `${cvName.en} - CV`,
+  inLanguage: 'en',
+  mainEntity: personEntity,
+};
+---
+
+<Layout
+  title={`${cvName.en} - CV`}
+  description={cvSummary.en}
+  noIndex
+  followLinks
+  schema={cvSchema}
+  alternate="/ru/cv"
+>
+  <a id="skip-to-content" href="#main-content" class="skip-link">Skip to content</a>
+
+  <SiteHeader active="cv" pdfHref={pdfHref} pdfLabel="PDF" />
+
+  <main id="main-content" class="page-main">
+    <CvDocument locale="en" pdfHref={pdfHref} docxHref={docxHref} txtHref={txtHref} />
+  </main>
+
+  <script is:inline type="module" src={cvScriptUrl}></script>
+</Layout>

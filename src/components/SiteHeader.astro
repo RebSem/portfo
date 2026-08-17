@@ -1,13 +1,27 @@
 ---
 import { heroFallbackName, uiCopy } from '../data/site-content';
+// The theme button and the locale switcher live in this component, so the
+// script that drives them is loaded here rather than by each page. It used to
+// be an import every page had to remember, and the resume pages forgot it:
+// /cv shipped a theme toggle that did nothing at all when clicked. Module
+// scripts are evaluated once per URL, and locale.js guards its own init, so
+// rendering more than one header on a page is harmless.
+import localeScriptUrl from '../scripts/locale.js?url';
 
 interface Props {
-  active: 'home' | 'about' | 'blog';
+  active: 'home' | 'about' | 'blog' | 'cv';
   /** Server-rendered locale-toggle target for deep pages (project/blog slugs). */
   localeToggleUrl?: string;
+  /**
+   * Resume-only download action. The /cv header is deliberately reduced to
+   * name, locale, theme and this button: a recruiter reading a resume has one
+   * job to do here, and site navigation competes with it.
+   */
+  pdfHref?: string;
+  pdfLabel?: string;
 }
 
-const { active, localeToggleUrl } = Astro.props;
+const { active, localeToggleUrl, pdfHref, pdfLabel } = Astro.props;
 const lang = Astro.currentLocale ?? 'en';
 const isRu = lang === 'ru';
 const prefix = isRu ? '/ru' : '';
@@ -20,6 +34,7 @@ const prefix = isRu ? '/ru' : '';
 const isHome = active === 'home';
 const isAbout = active === 'about';
 const isBlog = active === 'blog';
+const isCv = active === 'cv';
 
 const stripSlash = (path: string) => path.replace(/\/+$/, '') || '/';
 const currentPath = stripSlash(Astro.url.pathname);
@@ -36,9 +51,12 @@ const localeToggleByActive: Record<typeof active, string> = {
   home: isRu ? '/' : '/ru',
   about: isRu ? '/about' : '/ru/about',
   blog: isRu ? '/blog' : '/ru/blog',
+  cv: isRu ? '/cv' : '/ru/cv',
 };
 const toggleUrl = localeToggleUrl ?? localeToggleByActive[active];
 ---
+
+<script is:inline type="module" src={localeScriptUrl}></script>
 
 <header class="site-header">
   <div class="header-inner">
@@ -49,6 +67,7 @@ const toggleUrl = localeToggleUrl ?? localeToggleByActive[active];
       role="group"
       aria-label={isRu ? uiCopy.nav.controlsAria.ru : uiCopy.nav.controlsAria.en}
     >
+      {!isCv && (
       <nav
         class="main-nav"
         aria-label={isRu ? uiCopy.nav.primaryAria.ru : uiCopy.nav.primaryAria.en}
@@ -80,6 +99,13 @@ const toggleUrl = localeToggleUrl ?? localeToggleByActive[active];
           </a>
         )}
       </nav>
+      )}
+
+      {isCv && pdfHref && (
+        <a class="header-pdf" href={pdfHref} download>
+          {pdfLabel}
+        </a>
+      )}
 
       <a
         id="locale-switcher"
@@ -162,6 +188,16 @@ const toggleUrl = localeToggleUrl ?? localeToggleByActive[active];
       switcher.setAttribute('href', `/${section}/${enSlug}/`);
     } else if (!isRu && ruSlug) {
       switcher.setAttribute('href', `/ru/${section}/${ruSlug}/`);
+    }
+
+    // Carry the query string across the switch. On the resume this is
+    // load-bearing: /cv?src=exness marks which outreach the link went out in,
+    // and dropping it when a recruiter flips to the other language throws
+    // away the attribution for the rest of that visit.
+    const { search } = window.location;
+    if (search) {
+      const href = switcher.getAttribute('href') || '';
+      if (!href.includes('?')) switcher.setAttribute('href', href + search);
     }
   };
 

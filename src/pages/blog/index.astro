@@ -4,7 +4,6 @@ import SiteFooter from '../../components/SiteFooter.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import { heroFallbackName, uiCopy } from '../../data/site-content';
 import Layout from '../../layouts/Layout.astro';
-import localeScriptUrl from '../../scripts/locale.js?url';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft && data.lang === 'en'))
   .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
@@ -78,6 +77,4 @@ const blogSchema = {
   </main>
 
   <SiteFooter noteRu={uiCopy.footer.blogNote.ru} noteEn={uiCopy.footer.blogNote.en} />
-
-  <script is:inline type="module" src={localeScriptUrl}></script>
 </Layout>

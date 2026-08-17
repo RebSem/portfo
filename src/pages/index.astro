@@ -17,7 +17,6 @@ import {
 import Layout from '../layouts/Layout.astro';
 import githubScriptUrl from '../scripts/github-activity.js?url';
 import githubSyncScriptUrl from '../scripts/github-sync.js?url';
-import localeScriptUrl from '../scripts/locale.js?url';
 import metricSpotlightScriptUrl from '../scripts/metric-spotlight.js?url';
 
 const visibleProjects = projects.filter((project) => !project.placeholder);
@@ -33,7 +32,7 @@ const personSchema = buildPersonSchema('https://rebsem.ru/');
 
 <Layout
   title={`${heroFallbackName} - AI Product Manager`}
-  description="AI Product Manager at Prof-IT (zvonobot, effebot, p1sms) who drives the product through thoughtful AI adoption. 500,000+ minutes of B2B AI agent conversations in 2026. Ships pet projects with AI agents in days, not sprints. Remote, GMT+5, EN/RU, open to relocation."
+  description="AI Product Manager at Prof-IT (zvonobot, effebot, p1sms) who drives the product through thoughtful AI adoption. 500,000+ minutes of B2B AI agent conversations in production. Ships pet projects with AI agents in days, not sprints. Remote, GMT+5, EN/RU, open to relocation."
   schema={personSchema}
   alternate="/ru/"
 >
@@ -65,7 +64,7 @@ const personSchema = buildPersonSchema('https://rebsem.ru/');
         </p>
 
         <p class="hero-metric-inline">
-          <strong>{uiCopy.home.metricNumber} <span class="unit">{uiCopy.home.metricUnit.en}</span></strong>
+          <strong>{uiCopy.home.metricNumber.en} <span class="unit">{uiCopy.home.metricUnit.en}</span></strong>
           <span class="hero-metric-inline-caption">{uiCopy.home.metricCaption.en}</span>
         </p>
 
@@ -84,7 +83,7 @@ const personSchema = buildPersonSchema('https://rebsem.ru/');
       <aside class="hero-metric-card" aria-label="Key metric">
         <p class="hero-metric-label">{uiCopy.home.metricLabel.en}</p>
         <p class="hero-metric-value">
-          {uiCopy.home.metricNumber}<span class="unit">{uiCopy.home.metricUnit.en}</span>
+          {uiCopy.home.metricNumber.en}<span class="unit">{uiCopy.home.metricUnit.en}</span>
         </p>
         <p class="hero-metric-caption">{uiCopy.home.metricCaption.en}</p>
         <p class="hero-metric-footnote">
@@ -138,8 +137,8 @@ const personSchema = buildPersonSchema('https://rebsem.ru/');
             <FeaturedCase
               project={featuredCaseProject}
               locale="en"
-              screenshotLight="/projects/zvonobot-dashboard-en-light.png"
-              screenshotDark="/projects/zvonobot-dashboard-en-dark.png"
+              screenshotLight="/projects/zvonobot-dashboard-light.png"
+              screenshotDark="/projects/zvonobot-dashboard-dark.png"
               caseHref={fEntry ? `/projects/${fEntry.slug}/` : undefined}
             />
           );
@@ -335,8 +334,6 @@ const personSchema = buildPersonSchema('https://rebsem.ru/');
   </main>
 
   <SiteFooter />
-
-  <script is:inline type="module" src={localeScriptUrl}></script>
   <script is:inline type="module" src={githubScriptUrl}></script>
   <script is:inline type="module" src={githubSyncScriptUrl}></script>
   <script is:inline type="module" src={metricSpotlightScriptUrl}></script>

@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
   contactChannel,
+  isCvPath,
   isInternal,
+  outreachTag,
   projectDestination,
   projectSlugFromPath,
 } from '../src/lib/analytics-links';
@@ -72,5 +74,47 @@ describe('isInternal', () => {
   it('compares host, so the locale prefix does not matter', () => {
     expect(isInternal(u('https://rebsem.ru/ru/about'), SITE)).toBe(true);
     expect(isInternal(u('https://cursivo.xyz/'), SITE)).toBe(false);
+  });
+});
+
+describe('isCvPath', () => {
+  it('matches the resume routes in both locales', () => {
+    expect(isCvPath('/cv')).toBe(true);
+    expect(isCvPath('/cv/')).toBe(true);
+    expect(isCvPath('/ru/cv')).toBe(true);
+    expect(isCvPath('/ru/cv/')).toBe(true);
+  });
+
+  it('does not match anything else', () => {
+    // /cv.txt and the download files are separate artifacts, not page views.
+    expect(isCvPath('/cv.txt')).toBe(false);
+    expect(isCvPath('/cv/Mikhail_Semenov_AI_PM_EN.pdf')).toBe(false);
+    expect(isCvPath('/')).toBe(false);
+    expect(isCvPath('/about')).toBe(false);
+    expect(isCvPath('/blog/cv')).toBe(false);
+  });
+});
+
+describe('outreachTag', () => {
+  it('reads and normalizes the campaign tag', () => {
+    expect(outreachTag('?src=exness')).toBe('exness');
+    expect(outreachTag('?src=Exness')).toBe('exness');
+    expect(outreachTag('?src=%20wildberries%20')).toBe('wildberries');
+    expect(outreachTag('?utm_source=x&src=yandex-hr')).toBe('yandex-hr');
+  });
+
+  it('returns null when there is no usable tag', () => {
+    expect(outreachTag('')).toBeNull();
+    expect(outreachTag('?utm_source=linkedin')).toBeNull();
+    expect(outreachTag('?src=')).toBeNull();
+  });
+
+  it('drops anything that is not a plain slug', () => {
+    // The value lands in an analytics property and anyone can craft the URL.
+    expect(outreachTag('?src=<script>alert(1)</script>')).toBeNull();
+    expect(outreachTag('?src=a b')).toBeNull();
+    expect(outreachTag('?src=-leading-dash')).toBeNull();
+    expect(outreachTag(`?src=${'x'.repeat(41)}`)).toBeNull();
+    expect(outreachTag(`?src=${'x'.repeat(40)}`)).toBe('x'.repeat(40));
   });
 });
