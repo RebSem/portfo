@@ -275,6 +275,14 @@
 
   #cv-contact {
     margin-top: 0.5rem;
+    /* The RU PDF pushed the "updated" line alone onto a fourth sheet. */
+    break-before: avoid;
+    page-break-before: avoid;
+  }
+
+  .cv-updated {
+    break-before: avoid;
+    page-break-before: avoid;
   }
 
   /* Single column on paper, and this is about the text layer rather than

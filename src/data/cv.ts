@@ -159,7 +159,7 @@ export const cvSummary: LocalizedText = {
 export const cvMetrics: CvMetric[] = [
   {
     id: 'customers',
-    value: { ru: '~80', en: '~80' },
+    value: { ru: '80', en: '80' },
     label: { ru: 'платящих B2B-клиентов', en: 'paying B2B customers' },
     caption: {
       ru: '30% выручки направления дают повторные платежи.',
@@ -224,7 +224,7 @@ export const cvExperience: CvExperienceRole[] = [
     phases: [
       {
         title: {
-          ru: 'Запуск Zvonobot AI (осень 2025, настоящее время)',
+          ru: 'Запуск Zvonobot AI (осень 2025 - настоящее время)',
           en: 'Zvonobot AI (fall 2025 - present)',
         },
         bullets: [
@@ -526,6 +526,6 @@ export const cvAntiFit: LocalizedText[] = [
  * in their downloads folder. Convention is fixed in scripts/cv/README.md.
  */
 export const cvFileBaseName: Record<Locale, string> = {
-  en: 'Mikhail_Semenov_AI_PM_EN',
-  ru: 'Mikhail_Semenov_AI_PM_RU',
+  en: 'Mikhail_Semenov_CV_EN',
+  ru: 'Mikhail_Semenov_CV_RU',
 };

@@ -165,7 +165,7 @@ export const buildCvNodes = (locale: Locale, options: CvTextOptions = {}): CvNod
     // appended as a sentence rather than given a redundant label.
     nodes.push({
       type: 'bullet',
-      text: `${product.name}: ${product.summary[locale]} ${product.proof[locale]}${links ? ` ${links}` : ''}`,
+      text: `${product.name} - ${product.summary[locale]} ${product.proof[locale]}${links ? ` ${links}` : ''}`,
     });
   });
 

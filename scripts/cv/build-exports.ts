@@ -137,6 +137,9 @@ const nodeToParagraph = (node: CvNode): Paragraph => {
 const buildDocx = async (locale: Locale, phone?: string): Promise<Buffer> => {
   const nodes = buildCvNodes(locale, { phone, audience: 'file' });
   const doc = new Document({
+    // A declared font, or Word and LibreOffice pick their own defaults and the
+    // same file looks different on every machine that opens it.
+    styles: { default: { document: { run: { font: 'Arial', size: 21 } } } },
     creator: 'Mikhail Semenov',
     title: `${locale === 'ru' ? 'Резюме' : 'CV'} Mikhail Semenov`,
     description: 'Product Manager · B2B SaaS · Voice AI agents · LLM',
