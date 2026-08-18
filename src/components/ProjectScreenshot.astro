@@ -1,5 +1,6 @@
 ---
 interface Props {
+  /** PNG paths under public/projects. The WebP variants are derived from them. */
   lightSrc: string;
   darkSrc: string;
   alt: string;
@@ -7,6 +8,16 @@ interface Props {
 }
 
 const { lightSrc, darkSrc, alt, caption } = Astro.props;
+
+/**
+ * The PNGs stay in the repo as the source; scripts/webp-shots.mjs writes a
+ * 2x and a 1x WebP beside each. Five 350 KB PNGs per theme on a case page
+ * were the single heaviest thing on the site; the 1x WebP is ~50 KB and a
+ * laptop never asks for the 2x.
+ */
+const webp = (png: string) => png.replace(/\.png$/, '.webp');
+const webp1x = (png: string) => png.replace(/\.png$/, '-1440.webp');
+const srcset = (png: string) => `${webp1x(png)} 1440w, ${webp(png)} 2880w`;
 ---
 
 <figure class="project-shot">
@@ -16,16 +27,22 @@ const { lightSrc, darkSrc, alt, caption } = Astro.props;
       <span class="project-shot-dot"></span>
       <span class="project-shot-dot"></span>
     </div>
+    {/* Theme swap lives in src/scripts/theme-images.js: it flips src and
+        srcset together from these data attributes. */}
     <img
-      src={lightSrc}
-      data-light-src={lightSrc}
-      data-dark-src={darkSrc}
+      src={webp1x(lightSrc)}
+      srcset={srcset(lightSrc)}
+      sizes="(max-width: 980px) 100vw, 880px"
+      data-light-src={webp1x(lightSrc)}
+      data-dark-src={webp1x(darkSrc)}
+      data-light-srcset={srcset(lightSrc)}
+      data-dark-srcset={srcset(darkSrc)}
       alt={alt}
       class="project-shot-img"
       loading="lazy"
       decoding="async"
       width="1440"
-      height="920"
+      height="900"
     />
   </div>
   {caption && <figcaption class="project-shot-caption">{caption}</figcaption>}

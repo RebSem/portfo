@@ -12,27 +12,16 @@ const escapeXml = (value: string) =>
     .replace(/'/g, '&apos;');
 
 export const GET: APIRoute = async () => {
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
   const projects = await getCollection('projects', ({ data }) => !data.draft);
 
-  const staticUrls = [
-    '/', '/about', '/blog',
-    '/ru/', '/ru/about', '/ru/blog'
-  ];
+  // The blog is unlisted: not maintained, not linked, kept at its URLs only
+  // for anyone who already holds one.
+  const staticUrls = ['/', '/about', '/ru/', '/ru/about'];
 
   const staticEntries = staticUrls
     .map((path) => {
       const loc = `${SITE_URL}${path.endsWith('/') ? path : path + '/'}`;
       return `<url><loc>${escapeXml(loc)}</loc></url>`;
-    })
-    .join('');
-
-  const postEntries = posts
-    .map((post) => {
-      const prefix = post.data.lang === 'ru' ? '/ru' : '';
-      const loc = `${SITE_URL}${prefix}/blog/${post.slug}/`;
-      const updatedAt = (post.data.updatedAt ?? post.data.publishedAt).toISOString();
-      return `<url><loc>${escapeXml(loc)}</loc><lastmod>${updatedAt}</lastmod></url>`;
     })
     .join('');
 
@@ -44,7 +33,7 @@ export const GET: APIRoute = async () => {
     })
     .join('');
 
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${staticEntries}${postEntries}${projectEntries}</urlset>`;
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${staticEntries}${projectEntries}</urlset>`;
 
   return new Response(xml, {
     status: 200,

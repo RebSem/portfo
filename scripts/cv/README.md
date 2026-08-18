@@ -21,7 +21,7 @@ Requires Google Chrome (or Chromium) and a prior `npm run build`.
 npm run build && npm run cv:export
 ```
 
-Writes `Mikhail_Semenov_AI_PM_{EN,RU}.{pdf,docx,txt}` into `public/cv/`.
+Writes `Mikhail_Semenov_CV_{EN,RU}.{pdf,docx,txt}` into `public/cv/`.
 Commit the regenerated files together with the content change.
 
 The PDF is printed from the real page through `src/styles/print.css`, so a

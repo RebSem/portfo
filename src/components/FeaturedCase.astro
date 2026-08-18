@@ -14,6 +14,9 @@ interface Props {
 const { project, locale, screenshotLight, screenshotDark, caseHref } = Astro.props;
 const c = uiCopy.projects;
 const readCaseLabel = locale === 'ru' ? 'Открыть полный кейс' : 'Read the full case';
+
+const shot1x = (png: string) => png.replace(/\.png$/, '-1440.webp');
+const shotSet = (png: string) => `${shot1x(png)} 1440w, ${png.replace(/\.png$/, '.webp')} 2880w`;
 ---
 
 <article class="featured-case" aria-labelledby={`featured-${project.id}-title`}>
@@ -55,10 +58,6 @@ const readCaseLabel = locale === 'ru' ? 'Открыть полный кейс' :
       </ul>
     </div>
 
-    <ul class="featured-case-stack" aria-label={c.stackAria[locale]}>
-      {project.stack.map((item) => (<li>{item}</li>))}
-    </ul>
-
     {caseHref && (
       <a class="featured-case-cta" href={caseHref}>
         {readCaseLabel}
@@ -75,15 +74,21 @@ const readCaseLabel = locale === 'ru' ? 'Открыть полный кейс' :
         <span class="featured-case-frame-dot"></span>
         <span class="featured-case-frame-url">zvonobot-ai · client console</span>
       </div>
+      {/* WebP variants derived from the PNG paths, same scheme as
+          ProjectScreenshot; the theme swap flips src and srcset together. */}
       <img
-        src={screenshotLight}
-        data-light-src={screenshotLight}
-        data-dark-src={screenshotDark}
+        src={shot1x(screenshotLight)}
+        srcset={shotSet(screenshotLight)}
+        sizes="(max-width: 980px) 100vw, 640px"
+        data-light-src={shot1x(screenshotLight)}
+        data-dark-src={shot1x(screenshotDark)}
+        data-light-srcset={shotSet(screenshotLight)}
+        data-dark-srcset={shotSet(screenshotDark)}
         alt={c.featuredScreenshotAlt[locale]}
         loading="lazy"
         decoding="async"
         width="1440"
-        height="920"
+        height="900"
         class="featured-case-shot"
       />
     </figure>

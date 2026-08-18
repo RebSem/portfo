@@ -1,15 +1,16 @@
-# Mikhail Semenov, AI Product Manager
+# Mikhail Semenov, Product Manager
 
-AI Product Manager at Prof-IT. I lead voice AI agents for B2B (zvonobot, effebot, p1sms)
-and ship products end-to-end with AI coding agents (Claude Code, Codex), validating
-hypotheses in days, not sprints. The voice AI product I lead has handled
-500,000+ minutes of live conversations in production.
+Product manager in B2B SaaS at Zvonobot (Prof-IT Group). Launched the voice AI agent
+line from zero in the fall of 2025: 80 paying B2B customers and 500,000+ minutes of
+live conversations in production in under a year. Owns pricing, unit economics and
+go-to-market; prototypes with AI coding agents (Claude Code, Codex) so hypotheses get
+tested in days.
 
 ## Role and focus
-- Title: AI Product Manager
-- Company: Prof-IT (since February 2022)
-- Current focus: voice AI agents for B2B; AI embedded into real workflows
-- Open to: AI Product Manager roles where the product grows through thoughtful AI adoption
+- Title: Product Manager (B2B SaaS, voice AI agents, LLM)
+- Company: Zvonobot, Prof-IT Group (since February 2022); launched and runs the AI agent line since fall 2025
+- Team: 4 engineers; a sales team that grew from 4 to 15 to sell the line
+- Open to: Product Manager roles in B2B SaaS, payments and AI products
 - Languages: Russian (native), English (working proficiency, comfortable in written and async)
 - Work format: remote, GMT+5, open to relocation
 
@@ -19,22 +20,21 @@ hypotheses in days, not sprints. The voice AI product I lead has handled
 ## Main pages
 - Home: https://rebsem.ru/
 - About: https://rebsem.ru/about
-- Blog: https://rebsem.ru/blog
 
 ## Selected work
-- Zvonobot AI: voice AI-agent platform for B2B (Prof-IT), launched in the fall of 2025 and run end-to-end (product, UX, engineering). Multi-tenant SaaS console over telephony infrastructure. Case: https://rebsem.ru/projects/zvonobot-ai-en/
+- Zvonobot AI: voice AI-agent platform for B2B (Prof-IT), launched in the fall of 2025 and owned end-to-end (product, pricing, go-to-market). Multi-tenant SaaS console over telephony infrastructure. Case: https://rebsem.ru/projects/zvonobot-ai-en/
 - cursivo: AI-powered CRM for car rental, led from product logic to release. https://cursivo.xyz
-- obrabot: internal voice AI analytics dashboard (Prof-IT)
-- Pet projects shipped in 1-7 days with AI agents (bazabot, Zodial, Slopiq, tubedrop, portfo)
+- obrabot: internal voice AI analytics dashboard (Prof-IT). Case: https://rebsem.ru/projects/obrabot-en/
+- Side projects shipped in 1-7 days with AI coding agents (bazabot, Zodial, Slopiq, portfo)
 
 ## Skills
-Product: product discovery, product strategy, roadmap, metrics and unit economics, CustDev, B2B SaaS, go-to-market.
-AI / LLM: voice AI agents, conversational AI, LLM orchestration, prompt engineering, RAG, AI in real workflows.
-Delivery: spec to review to ship, agent-native development (Claude Code, Codex), Lean Startup, 0 to 1, fast hypothesis validation.
-Tech (shared language with engineers): React/Next.js, TypeScript, Python/Flask, PostgreSQL/Redis, REST and integrations, telephony.
+Product: product strategy, roadmap, discovery, customer interviews, metrics and unit economics, pricing, A/B experiments, go-to-market, B2B SaaS, CRM.
+AI / LLM: voice AI agents, conversational AI, LLM orchestration, prompt engineering, RAG, LLM evals, ASR, TTS, contact centers, SIP telephony.
+Delivery: spec, review, release cycle; prototyping with AI coding agents (Claude Code, Codex); fast hypothesis validation, 0 to 1.
+Shared language with engineers: TypeScript, Python, SQL, REST, telephony.
 
 ## Content notes
-- Blog and project cases are published in RU and EN.
+- Project cases are published in RU and EN.
 - This site is open source (Astro): https://github.com/RebSem/portfo
 
 ## Contact

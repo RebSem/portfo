@@ -27,7 +27,9 @@ interface Props {
 const {
   title = 'Mikhail Semenov - Portfolio',
   description = 'Interactive portfolio with GitHub activity, projects, and blog posts.',
-  image = '/main-hero.jpg',
+  // Undefined here and resolved below, because the default depends on the
+  // page language.
+  image: imageProp,
   type = 'website',
   noIndex = false,
   followLinks = false,
@@ -36,11 +38,17 @@ const {
 } = Astro.props;
 
 const lang = Astro.currentLocale ?? 'en';
+// The link-preview card. It used to fall back to the About portrait, which is
+// the wrong image for a recruiter's Telegram or LinkedIn preview: they see the
+// card before they see the site, so it carries the name, the role line and the
+// one number, in the site's own style. Rendered by scripts/og/build-og.mjs.
+const image = imageProp ?? `/og/home-${lang}.png`;
 const siteUrl = Astro.site ?? new URL(Astro.url.origin);
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).toString();
 const imageUrl = image.startsWith('http://') || image.startsWith('https://') ? image : new URL(image, siteUrl).toString();
-// The default hero is a known 1200x900; only emit og:image dimensions for it.
-const isDefaultImage = image === '/main-hero.jpg';
+// Only the generated cards have known dimensions (1200x630, the size
+// Telegram, LinkedIn and X all crop to); other images stay unsized.
+const isOgCard = image.startsWith('/og/');
 const robotsContent = noIndex
   ? (followLinks ? 'noindex,follow' : 'noindex,nofollow')
   : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1';
@@ -111,8 +119,8 @@ const hreflangRu = lang === 'ru' ? canonicalUrl : alternateUrl;
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={imageUrl} />
-    {isDefaultImage && <meta property="og:image:width" content="1200" />}
-    {isDefaultImage && <meta property="og:image:height" content="900" />}
+    {isOgCard && <meta property="og:image:width" content="1200" />}
+    {isOgCard && <meta property="og:image:height" content="630" />}
     <meta property="og:image:alt" content={title} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />

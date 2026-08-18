@@ -80,7 +80,7 @@ describe('cv canon', () => {
   it('states the same key numbers in both locales', () => {
     // The numbers are what sell the grade, so a figure present in one locale
     // and missing in the other is a defect, not a translation choice.
-    for (const figure of ['~10%', '~80', '30%', '2022']) {
+    for (const figure of ['80', '30%', '4 → 15', '2022']) {
       for (const locale of LOCALES) {
         expect(buildCvText(locale), `${figure} missing from ${locale}`).toContain(figure);
       }
@@ -89,15 +89,30 @@ describe('cv canon', () => {
     expect(buildCvText('ru')).toContain('500 000+');
   });
 
-  it('never publishes the absolute revenue of the AI line', () => {
-    // Relative figures only: the monthly revenue of the employer's product
-    // line is not ours to put on a public page. See the decision record in
-    // src/data/cv.ts.
+  it('publishes no money, absolute or relative', () => {
+    // Colleagues read this site too. Neither the monthly revenue of the line
+    // nor its share of group revenue belongs on a public page; product numbers
+    // only. See the decision record in src/data/cv.ts.
     for (const locale of LOCALES) {
       const text = buildCvText(locale);
       expect(text).not.toMatch(/\d\s*-?\s*\d?\s*млн/i);
       expect(text).not.toMatch(/RUB\s*\d/i);
       expect(text).not.toMatch(/\$\s*\d/);
+      expect(text).not.toMatch(/выручки группы|of group revenue|group revenue/i);
+    }
+  });
+
+  it('keeps the anti-fit section and the CEFR level off the downloadable files', () => {
+    // On the page both are candour a person reads. In a file uploaded to a
+    // form they are the first negative a keyword robot latches onto.
+    for (const locale of LOCALES) {
+      const page = buildCvText(locale);
+      const file = buildCvText(locale, { audience: 'file' });
+      expect(page).toMatch(/B1\+/);
+      expect(file).not.toMatch(/B1\+/);
+      expect(page).toMatch(/WEAKER FIT|НЕ ЛУЧШИЙ ВЫБОР/);
+      expect(file).not.toMatch(/WEAKER FIT|НЕ ЛУЧШИЙ ВЫБОР/);
+      expect(file).toMatch(/working proficiency|рабочий/i);
     }
   });
 
@@ -217,8 +232,10 @@ describeBuilt('cv build output', () => {
   });
 
   it('exposes the plain-text resume in both locales', () => {
-    expect(readDist('cv.txt')).toBe(buildCvText('en'));
-    expect(readDist('ru/cv.txt')).toBe(buildCvText('ru'));
+    // The txt is a downloadable artifact like the PDF and DOCX, so it carries
+    // the file variant.
+    expect(readDist('cv.txt')).toBe(buildCvText('en', { audience: 'file' }));
+    expect(readDist('ru/cv.txt')).toBe(buildCvText('ru', { audience: 'file' }));
   });
 
   it('gives every page with a theme button the script that drives it', () => {
@@ -271,7 +288,7 @@ describe('cv download files', () => {
   const itWithFiles = files.length > 0 ? it : it.skip;
 
   itWithFiles('publishes pdf, docx and txt for both locales', () => {
-    for (const base of ['Mikhail_Semenov_AI_PM_EN', 'Mikhail_Semenov_AI_PM_RU']) {
+    for (const base of ['Mikhail_Semenov_CV_EN', 'Mikhail_Semenov_CV_RU']) {
       for (const extension of ['pdf', 'docx', 'txt']) {
         expect(files, `${base}.${extension} is missing`).toContain(`${base}.${extension}`);
       }
@@ -304,13 +321,13 @@ describe('cv download files', () => {
     }
   };
 
-  const hasPdftotext = files.length > 0 && pdfText('Mikhail_Semenov_AI_PM_EN.pdf') !== null;
+  const hasPdftotext = files.length > 0 && pdfText('Mikhail_Semenov_CV_EN.pdf') !== null;
   const itWithPdftotext = hasPdftotext ? it : it.skip;
 
   itWithPdftotext('keeps the PDF text layer readable by a parser', () => {
     for (const [file, locale] of [
-      ['Mikhail_Semenov_AI_PM_EN.pdf', 'en'],
-      ['Mikhail_Semenov_AI_PM_RU.pdf', 'ru'],
+      ['Mikhail_Semenov_CV_EN.pdf', 'en'],
+      ['Mikhail_Semenov_CV_RU.pdf', 'ru'],
     ] as Array<[string, Locale]>) {
       const text = pdfText(file);
       expect(text).toBeTruthy();
@@ -328,6 +345,12 @@ describe('cv download files', () => {
       // Section headings: letter-spacing once split SUMMARY into "S U MMARY".
       for (const key of CV_SECTION_KEYS) {
         if (key === 'contact') continue; // Folded into the header line in print.
+        if (key === 'antiFit') {
+          // Page-only by design; the file must NOT carry it.
+          const heading = CV_SECTION_TITLES[key][locale].toUpperCase();
+          expect(extracted, `${file} leaked the anti-fit section`).not.toContain(heading);
+          continue;
+        }
         const heading = CV_SECTION_TITLES[key][locale].toUpperCase();
         expect(extracted, `${file} lost the ${heading} heading`).toContain(heading);
       }
@@ -343,8 +366,8 @@ describe('cv download files', () => {
     // the text layer: "full-time" became "Fulltime", "юнит-экономика" became
     // "юнитэкономика". Every one of these is a term a recruiter searches on.
     const cases: Array<[string, string[]]> = [
-      ['Mikhail_Semenov_AI_PM_EN.pdf', ['full-time', 'go-to-market', 'per-second']],
-      ['Mikhail_Semenov_AI_PM_RU.pdf', ['юнит-экономика', 'LLM-аналитика', 'go-to-market']],
+      ['Mikhail_Semenov_CV_EN.pdf', ['full-time', 'go-to-market', 'per-second']],
+      ['Mikhail_Semenov_CV_RU.pdf', ['юнит-экономика', 'LLM-аналитика', 'go-to-market']],
     ];
 
     for (const [file, terms] of cases) {
@@ -360,11 +383,11 @@ describe('cv download files', () => {
   });
 
   itWithFiles('ships downloadable text that matches the canon', () => {
-    expect(readFileSync(path.join(CV_DIR, 'Mikhail_Semenov_AI_PM_EN.txt'), 'utf8')).toBe(
-      buildCvText('en'),
+    expect(readFileSync(path.join(CV_DIR, 'Mikhail_Semenov_CV_EN.txt'), 'utf8')).toBe(
+      buildCvText('en', { audience: 'file' }),
     );
-    expect(readFileSync(path.join(CV_DIR, 'Mikhail_Semenov_AI_PM_RU.txt'), 'utf8')).toBe(
-      buildCvText('ru'),
+    expect(readFileSync(path.join(CV_DIR, 'Mikhail_Semenov_CV_RU.txt'), 'utf8')).toBe(
+      buildCvText('ru', { audience: 'file' }),
     );
   });
 });

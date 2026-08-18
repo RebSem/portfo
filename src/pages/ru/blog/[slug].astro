@@ -34,7 +34,7 @@ const dateLabel = new Intl.DateTimeFormat('ru-RU', {
   year: 'numeric',
 }).format(post.data.publishedAt);
 
-const pageImage = post.data.cover ?? '/main-hero.jpg';
+const pageImage = post.data.cover ?? '/og/home-ru.png';
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',

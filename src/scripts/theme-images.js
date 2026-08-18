@@ -19,6 +19,12 @@ const syncThemeImages = () => {
     if (want && img.getAttribute('src') !== want) {
       img.setAttribute('src', want);
     }
+    // srcset wins over src when both are present, so an image served through
+    // srcset would silently keep the light variant unless this is swapped too.
+    const wantSet = theme === 'dark' ? img.dataset.darkSrcset : img.dataset.lightSrcset;
+    if (wantSet && img.getAttribute('srcset') !== wantSet) {
+      img.setAttribute('srcset', wantSet);
+    }
   });
 };
 

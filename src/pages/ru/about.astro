@@ -36,7 +36,8 @@ const aboutSchema = {
 
 <Layout
   title={`${heroDisplayName.ru} - Обо мне`}
-  description="AI Product Manager в Prof-IT, который драйвит продукт через продуманное внедрение AI. Как я работаю, где приношу больше всего пользы, ключевые навыки и в какие роли открыт. Remote, GMT+5, открыт к релокации."
+  image="/og/about-ru.png"
+  description="Продакт-менеджер в B2B SaaS. Запустил в Zvonobot (группа Prof-IT) направление голосовых AI-агентов с нуля: 80 платящих клиентов и 500 000+ минут в проде меньше чем за год. Как работаю, где полезен сильнее всего и к каким ролям открыт. Удалённо, GMT+5, готов к релокации."
   schema={aboutSchema}
   alternate="/about"
 >
@@ -121,8 +122,8 @@ const aboutSchema = {
 
         <div class="about-cta-card">
           <p class="about-cta-eyebrow">Связаться</p>
-          <p class="about-cta-headline">Открыт к ролям AI Product Manager, где продукт двигается за счёт продуманного внедрения AI.</p>
-          <p class="about-cta-sub">Расскажите про продукт и задачу, и я подскажу, где AI реально даёт результат, а где нет.</p>
+          <p class="about-cta-headline">Открыт к ролям продакт-менеджера в B2B SaaS, платежах и AI-продуктах.</p>
+          <p class="about-cta-sub">Расскажите про продукт и задачу. Скажу честно, подхожу ли я, и где AI реально даст результат, а где нет.</p>
           <div class="about-cta-row">
             <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -131,6 +132,59 @@ const aboutSchema = {
               {uiCopy.home.heroCtaPrimary.ru}
             </a>
           </div>
+        </div>
+      </div>
+    </section>
+
+    {/* Moved here from the home page. A commit calendar on the front page of a
+        product manager's site read as "engineer" before anything else; beside
+        "how I validate ideas" it is context, not the headline. */}
+    <section class="section-block github-band" aria-labelledby="github-title">
+      <div class="github-inline">
+        <div class="github-inline-meta">
+          <span class="label">GitHub · за год</span>
+          <strong id="contributions-total">0</strong>
+          <span class="label" id="github-title">вкладов</span>
+          <a
+            class="github-profile-link link"
+            href={`https://github.com/${githubUsername}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            github.com/{githubUsername}
+          </a>
+        </div>
+
+        <div class="github-heatmap">
+          <div
+            id="contribution-grid"
+            class="contribution-grid"
+            role="group"
+            aria-label="График активности GitHub"
+          ></div>
+
+          <div class="heatmap-legend" aria-hidden="true">
+            <span>0</span>
+            <div class="legend-level level-0"></div>
+            <div class="legend-level level-1"></div>
+            <div class="legend-level level-2"></div>
+            <div class="legend-level level-3"></div>
+            <div class="legend-level level-4"></div>
+            <span>max</span>
+          </div>
+
+          <p
+            id="contribution-tooltip"
+            class="contribution-tooltip"
+            data-hint-ru="Наведите на ячейку, чтобы увидеть дату и число вкладов."
+            data-hint-en="Hover a cell to see the exact date and number of contributions."
+          >
+            Наведите на ячейку, чтобы увидеть дату и число вкладов.
+          </p>
+
+          <p id="github-error" class="github-error hidden">
+            Не удалось загрузить GitHub-данные. Попробуйте обновить страницу позже.
+          </p>
         </div>
       </div>
     </section>

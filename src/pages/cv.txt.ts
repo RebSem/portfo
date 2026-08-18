@@ -5,7 +5,7 @@ import { buildCvText } from '../lib/cv-text';
 // readers handed the link. Built from cv.ts like everything else, so it can
 // never fall behind the page.
 export const GET: APIRoute = () =>
-  new Response(buildCvText('en'), {
+  new Response(buildCvText('en', { audience: 'file' }), {
     status: 200,
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
