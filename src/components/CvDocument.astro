@@ -7,6 +7,7 @@ import {
   cvExperience,
   cvHeadline,
   cvLanguages,
+  cvLanguagesFile,
   cvLocationLine,
   cvMetrics,
   cvName,
@@ -277,7 +278,13 @@ const sectionIds = [
         </div>
         <div class="cv-skill-group">
           <dt>{copy.languages[locale]}</dt>
-          <dd set:html={nb(cvLanguages[locale])} />
+          {/* The PDF is printed from this page, so it carries the file variant
+              of the same fact: no CEFR code, which a form robot reads as a
+              filter before a human reads the rest. See cvLanguagesFile. */}
+          <dd>
+            <span class="cv-screen-only" set:html={nb(cvLanguages[locale])} />
+            <span class="cv-print-only" set:html={nb(cvLanguagesFile[locale])} />
+          </dd>
         </div>
         <div class="cv-skill-group">
           <dt>{copy.format[locale]}</dt>
@@ -370,8 +377,13 @@ const sectionIds = [
   }
 
   @media (min-width: 1080px) {
+    /* The document column is capped at its reading measure, and the table
+       of contents sits right after it rather than at the far edge of the
+       container: with a 1fr column the two drifted 20rem apart. */
     .cv-layout {
-      grid-template-columns: minmax(0, 1fr) 13rem;
+      grid-template-columns: minmax(0, 42.5rem) 13rem;
+      justify-content: start;
+      gap: 4rem;
     }
 
     .cv-toc {
@@ -415,9 +427,15 @@ const sectionIds = [
     border-left-color: var(--accent);
   }
 
+  /* 680px: a document measure rather than a landing-page one. The wider
+     column read as marketing; this reads as a resume. */
   .cv-doc {
     min-width: 0;
-    max-width: 46rem;
+    max-width: 42.5rem;
+  }
+
+  .cv-print-only {
+    display: none;
   }
 
   .cv-eyebrow {
@@ -572,6 +590,13 @@ const sectionIds = [
     background: var(--surface);
   }
 
+  /* In the dark theme --surface sits a hair above --background and the tiles
+     dissolved into the page; a slightly stronger hairline keeps them legible
+     as tiles without adding a glow. */
+  :global([data-theme='dark']) .cv-metric {
+    border-color: color-mix(in oklab, var(--foreground) 14%, var(--border));
+  }
+
   .cv-metric-value {
     margin: 0;
     font-size: 1.75rem;
@@ -647,7 +672,7 @@ const sectionIds = [
 
   .cv-bullets li {
     font-size: 0.95rem;
-    line-height: 1.6;
+    line-height: 1.68;
   }
 
   .cv-products {

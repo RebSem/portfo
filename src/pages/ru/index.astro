@@ -15,8 +15,6 @@ import {
   uiCopy,
 } from '../../data/site-content';
 import Layout from '../../layouts/Layout.astro';
-import githubScriptUrl from '../../scripts/github-activity.js?url';
-import githubSyncScriptUrl from '../../scripts/github-sync.js?url';
 import metricSpotlightScriptUrl from '../../scripts/metric-spotlight.js?url';
 
 const visibleProjects = projects.filter((project) => !project.placeholder);
@@ -27,12 +25,15 @@ const petProjects = visibleProjects
   .sort((a, b) => (a.petOrder ?? 99) - (b.petOrder ?? 99));
 const projectEntries = await getCollection('projects', ({ data }) => !data.draft && data.lang === 'ru');
 
+const zvonobotEntry = projectEntries.find((e) => e.data.projectId === 'zvonobot-ai');
+const zvonobotCaseHref = zvonobotEntry ? `/ru/projects/${zvonobotEntry.slug}/` : `/ru/#projects`;
+
 const personSchema = buildPersonSchema('https://rebsem.ru/ru');
 ---
 
 <Layout
-  title={`${heroDisplayName.ru} - AI Product Manager`}
-  description="AI Product Manager в Prof-IT (zvonobot, effebot, p1sms), который драйвит продукт через продуманное внедрение AI. 500 000+ минут B2B-разговоров через AI-агентов в проде. Пет-проекты собираю за дни, а не за спринты. Remote, GMT+5, EN/RU, открыт к релокации."
+  title={`${heroDisplayName.ru} - Product Manager`}
+  description="Продакт-менеджер в B2B SaaS. Запустил в Zvonobot направление голосовых AI-агентов с нуля: 80 платящих B2B-клиентов и 500 000+ минут живых разговоров в проде меньше чем за год. Прайсинг, юнит-экономика, вывод на рынок. Удалённо, GMT+5, EN/RU, готов к релокации."
   schema={personSchema}
   alternate="/"
 >
@@ -54,18 +55,15 @@ const personSchema = buildPersonSchema('https://rebsem.ru/ru');
         <p class="about-eyebrow hero-eyebrow">{uiCopy.home.eyebrow.ru}</p>
 
         <h1 id="home-title">
-          <span class="hero-accent">AI</span> <span class="hero-serif">Product</span>&nbsp;Manager.
+          <span class="hero-serif">Product</span> Manager.
         </h1>
+        <p class="hero-subtitle">{uiCopy.home.subtitle.ru}</p>
 
         <p class="home-lead">
           {uiCopy.home.lead.ru}
+          <span class="home-lead-more"> {uiCopy.home.leadMore.ru}</span>
           <br />
           <span class="home-lead-strong">{uiCopy.home.leadStrong.ru}</span>
-        </p>
-
-        <p class="hero-metric-inline">
-          <strong>{uiCopy.home.metricNumber.ru} <span class="unit">{uiCopy.home.metricUnit.ru}</span></strong>
-          <span class="hero-metric-inline-caption">{uiCopy.home.metricCaption.ru}</span>
         </p>
 
         <div class="hero-cta-row">
@@ -74,6 +72,12 @@ const personSchema = buildPersonSchema('https://rebsem.ru/ru');
               <path d="M4 11l16 -8l-4 18l-5 -4l-3 3l1 -5l8 -7"/>
             </svg>
             {uiCopy.home.heroCtaPrimary.ru}
+          </a>
+          <a class="cta-button cta-secondary" href={zvonobotCaseHref}>
+            {uiCopy.home.heroCtaSecondary.ru}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14"/><path d="M13 6l6 6l-6 6"/>
+            </svg>
           </a>
         </div>
 
@@ -108,14 +112,12 @@ const personSchema = buildPersonSchema('https://rebsem.ru/ru');
           <dt>{uiCopy.home.currentlyFocusLabel.ru}</dt>
           <dd>{uiCopy.home.currentlyFocus.ru}</dd>
         </div>
-        <div class="currently-item currently-item-metric">
+        <div class="currently-item">
           <dt>{uiCopy.home.currentlyMetricLabel.ru}</dt>
           <dd>{uiCopy.home.currentlyMetricValue.ru}</dd>
         </div>
       </dl>
     </section>
-
-    <AgentOps locale="ru" />
 
     <section id="projects" class="section-block" aria-labelledby="projects-title">
       <div class="section-head">
@@ -161,7 +163,7 @@ const personSchema = buildPersonSchema('https://rebsem.ru/ru');
                   {project.id === 'cursivo' && (
                     <div class="launch-badge launch-badge-ru">
                       <span class="pulse-dot"></span>
-                      В работе
+                      В проде
                     </div>
                   )}
                   {project.id === 'obrabot' && (
@@ -279,62 +281,9 @@ const personSchema = buildPersonSchema('https://rebsem.ru/ru');
       </div>
     </section>
 
-    <section class="section-block github-band" aria-labelledby="github-title">
-      <div class="github-inline">
-        <div class="github-inline-meta">
-          <span class="label">GitHub · за год</span>
-          <strong id="contributions-total">0</strong>
-          <span class="label" id="github-title">вкладов</span>
-          <a
-            class="github-profile-link link"
-            href={`https://github.com/${githubUsername}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            github.com/{githubUsername}
-          </a>
-        </div>
-
-        <div class="github-heatmap">
-          <div
-            id="contribution-grid"
-            class="contribution-grid"
-            role="group"
-            aria-label="График активности GitHub"
-          ></div>
-
-          <div class="heatmap-legend" aria-hidden="true">
-            <span>0</span>
-            <div class="legend-level level-0"></div>
-            <div class="legend-level level-1"></div>
-            <div class="legend-level level-2"></div>
-            <div class="legend-level level-3"></div>
-            <div class="legend-level level-4"></div>
-            <span>max</span>
-          </div>
-
-          <p
-            id="contribution-tooltip"
-            class="contribution-tooltip"
-            data-hint-ru="Наведите на ячейку, чтобы увидеть дату и число вкладов."
-            data-hint-en="Hover a cell to see the exact date and number of contributions."
-          >
-            Наведите на ячейку, чтобы увидеть дату и число вкладов.
-          </p>
-
-          <p
-            id="github-error"
-            class="github-error hidden"
-          >
-            Не удалось загрузить GitHub-данные. Попробуйте обновить страницу позже.
-          </p>
-        </div>
-      </div>
-    </section>
+    <AgentOps locale="ru" />
   </main>
 
   <SiteFooter />
-  <script is:inline type="module" src={githubScriptUrl}></script>
-  <script is:inline type="module" src={githubSyncScriptUrl}></script>
   <script is:inline type="module" src={metricSpotlightScriptUrl}></script>
 </Layout>

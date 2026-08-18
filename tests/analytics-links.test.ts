@@ -88,7 +88,7 @@ describe('isCvPath', () => {
   it('does not match anything else', () => {
     // /cv.txt and the download files are separate artifacts, not page views.
     expect(isCvPath('/cv.txt')).toBe(false);
-    expect(isCvPath('/cv/Mikhail_Semenov_AI_PM_EN.pdf')).toBe(false);
+    expect(isCvPath('/cv/Mikhail_Semenov_CV_EN.pdf')).toBe(false);
     expect(isCvPath('/')).toBe(false);
     expect(isCvPath('/about')).toBe(false);
     expect(isCvPath('/blog/cv')).toBe(false);

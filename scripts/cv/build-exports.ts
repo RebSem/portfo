@@ -135,11 +135,14 @@ const nodeToParagraph = (node: CvNode): Paragraph => {
 };
 
 const buildDocx = async (locale: Locale, phone?: string): Promise<Buffer> => {
-  const nodes = buildCvNodes(locale, { phone });
+  const nodes = buildCvNodes(locale, { phone, audience: 'file' });
   const doc = new Document({
+    // A declared font, or Word and LibreOffice pick their own defaults and the
+    // same file looks different on every machine that opens it.
+    styles: { default: { document: { run: { font: 'Arial', size: 21 } } } },
     creator: 'Mikhail Semenov',
     title: `${locale === 'ru' ? 'Резюме' : 'CV'} Mikhail Semenov`,
-    description: 'AI Product Manager',
+    description: 'Product Manager · B2B SaaS · Voice AI agents · LLM',
     sections: [
       {
         properties: {
@@ -279,7 +282,7 @@ const main = async () => {
       const base = cvFileBaseName[locale];
       const pagePath = locale === 'ru' ? '/ru/cv/' : '/cv/';
 
-      await writeFile(join(outputDir, `${base}.txt`), buildCvText(locale, { phone }), 'utf8');
+      await writeFile(join(outputDir, `${base}.txt`), buildCvText(locale, { phone, audience: 'file' }), 'utf8');
       await writeFile(join(outputDir, `${base}.docx`), await buildDocx(locale, phone));
 
       const pdfPath = join(outputDir, `${base}.pdf`);

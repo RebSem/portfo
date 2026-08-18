@@ -19,7 +19,9 @@
     "preview": "astro preview",
     "astro": "astro",
     "new:post": "node scripts/new-post.mjs",
-    "cv:export": "tsx scripts/cv/build-exports.ts"
+    "cv:export": "tsx scripts/cv/build-exports.ts",
+    "og:build": "node scripts/og/build-og.mjs",
+    "shots:webp": "node scripts/webp-shots.mjs"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",

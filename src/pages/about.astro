@@ -37,7 +37,8 @@ const aboutSchema = {
 
 <Layout
   title={`${heroFallbackName} - About`}
-  description="AI Product Manager at Prof-IT who drives the product through thoughtful AI adoption. How I work, where I add the most value, my core skills, and what kind of role I am open to. Remote, GMT+5, open to relocation."
+  image="/og/about-en.png"
+  description="Product manager in B2B SaaS. Launched a voice AI agent line from zero at Zvonobot (Prof-IT Group): 80 paying customers and 500,000+ minutes in production in under a year. How I work, where I add the most value, and what kind of role I am open to. Remote, GMT+5, open to relocation."
   schema={aboutSchema}
   alternate="/ru/about"
 >
@@ -122,8 +123,8 @@ const aboutSchema = {
 
         <div class="about-cta-card">
           <p class="about-cta-eyebrow">Get in touch</p>
-          <p class="about-cta-headline">Open to AI Product Manager roles where the product moves through smart AI adoption.</p>
-          <p class="about-cta-sub">Tell me about the product and the problem, and I'll tell you where AI actually moves the needle and where it doesn't.</p>
+          <p class="about-cta-headline">Open to Product Manager roles in B2B SaaS, payments and AI products.</p>
+          <p class="about-cta-sub">Tell me about the product and the problem. I will tell you honestly whether I am the right person for it, and where AI would actually move the needle.</p>
           <div class="about-cta-row">
             <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -132,6 +133,59 @@ const aboutSchema = {
               {uiCopy.home.heroCtaPrimary.en}
             </a>
           </div>
+        </div>
+      </div>
+    </section>
+
+    {/* Moved here from the home page. A commit calendar on the front page of a
+        product manager's site read as "engineer" before anything else; beside
+        "how I validate ideas" it is context, not the headline. */}
+    <section class="section-block github-band" aria-labelledby="github-title">
+      <div class="github-inline">
+        <div class="github-inline-meta">
+          <span class="label">GitHub · last year</span>
+          <strong id="contributions-total">0</strong>
+          <span class="label" id="github-title">contributions</span>
+          <a
+            class="github-profile-link link"
+            href={`https://github.com/${githubUsername}`}
+            target="_blank"
+            rel="noreferrer"
+          >
+            github.com/{githubUsername}
+          </a>
+        </div>
+
+        <div class="github-heatmap">
+          <div
+            id="contribution-grid"
+            class="contribution-grid"
+            role="group"
+            aria-label="GitHub activity graph"
+          ></div>
+
+          <div class="heatmap-legend" aria-hidden="true">
+            <span>0</span>
+            <div class="legend-level level-0"></div>
+            <div class="legend-level level-1"></div>
+            <div class="legend-level level-2"></div>
+            <div class="legend-level level-3"></div>
+            <div class="legend-level level-4"></div>
+            <span>max</span>
+          </div>
+
+          <p
+            id="contribution-tooltip"
+            class="contribution-tooltip"
+            data-hint-ru="Наведите на ячейку, чтобы увидеть дату и число вкладов."
+            data-hint-en="Hover a cell to see the exact date and number of contributions."
+          >
+            Hover a cell to see the exact date and number of contributions.
+          </p>
+
+          <p id="github-error" class="github-error hidden">
+            Unable to load GitHub data. Please refresh later.
+          </p>
         </div>
       </div>
     </section>

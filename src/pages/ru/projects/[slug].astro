@@ -20,7 +20,7 @@ const { Content } = await render(entry);
 const allProjects = await getCollection('projects', ({ data }) => !data.draft);
 const enSlug = allProjects.find((p) => p.data.projectId === entry.data.projectId && p.data.lang === 'en')?.slug;
 
-const pageImage = entry.data.cover ?? '/main-hero.jpg';
+const pageImage = entry.data.cover ?? '/og/home-ru.png';
 const projectSchema = {
   '@context': 'https://schema.org',
   '@type': 'CreativeWork',
