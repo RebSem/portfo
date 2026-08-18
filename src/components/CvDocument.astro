@@ -377,8 +377,13 @@ const sectionIds = [
   }
 
   @media (min-width: 1080px) {
+    /* The document column is capped at its reading measure, and the table
+       of contents sits right after it rather than at the far edge of the
+       container: with a 1fr column the two drifted 20rem apart. */
     .cv-layout {
-      grid-template-columns: minmax(0, 1fr) 13rem;
+      grid-template-columns: minmax(0, 42.5rem) 13rem;
+      justify-content: start;
+      gap: 4rem;
     }
 
     .cv-toc {

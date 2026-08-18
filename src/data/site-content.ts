@@ -107,8 +107,8 @@ export const aboutBlocks: AboutBlock[] = [
         // approved for the unlisted /cv, which Mikhail hands out by link;
         // /about is indexed, so the same number would be findable by search.
         // Both pages stay factually consistent, /cv just says more.
-        ru: `Веду продукт целиком, от клиентского кабинета до биллинга. Меньше чем за год: ${cvMetric('customers').value.ru} платящих B2B-клиентов, больше ${cvMetric('minutes').value.ru} минут разговоров в проде, отдел продаж под направление вырос с 4 до 15 менеджеров.`,
-        en: `I own the product end to end, from the client console to billing. In under a year: ${cvMetric('customers').value.en} paying B2B customers, over ${cvMetric('minutes').value.en} minutes of live conversations in production, and a sales team that grew from 4 to 15 to sell the line.`,
+        ru: `Веду продукт целиком, от клиентского кабинета до биллинга. Меньше чем за год: ${cvMetric('customers').value.ru} платящих B2B-клиентов, ${cvMetric('minutes').value.ru} минут разговоров в проде, отдел продаж под направление вырос с 4 до 15 менеджеров.`,
+        en: `I own the product end to end, from the client console to billing. In under a year: ${cvMetric('customers').value.en} paying B2B customers, ${cvMetric('minutes').value.en} minutes of live conversations in production, and a sales team that grew from 4 to 15 to sell the line.`,
       },
     ],
   },
