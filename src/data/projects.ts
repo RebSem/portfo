@@ -32,10 +32,12 @@ export const projects: ProjectItem[] = [
       en: 'AI-powered car rental CRM',
     },
     summary: {
-      ru: 'Личный продукт, который веду от продуктовой логики до релиза. CRM для автопрокатов закрывает весь цикл: автопарк и его загрузка, бронирования и договоры, клиентская база. AI берёт на себя рутину: распознаёт и проверяет документы клиента, считает скоринг и риск по сделке, подсказывает менеджеру следующий шаг. Цель в том, чтобы небольшой прокат работал как сеть, без раздувания штата.',
-      en: 'A personal product I lead from product logic to release. A CRM for car rental businesses covering the full cycle: fleet and utilization, bookings and contracts, customer base. AI handles the busywork: it reads and verifies client documents, scores deal risk, and suggests the next step to the manager. The goal: let a small rental operate like a chain, without growing headcount.',
+      ru: 'Личный продукт, за который отвечаю от продуктовой логики до релиза. CRM для автопрокатов закрывает весь цикл: автопарк и его загрузка, бронирования и договоры, клиентская база. AI берёт на себя рутину: распознаёт и проверяет документы клиента, считает скоринг и риск по сделке, подсказывает менеджеру следующий шаг. Цель в том, чтобы небольшой прокат работал как сеть, без раздувания штата.',
+      en: 'A personal product I own from product logic to release. A CRM for car rental businesses covering the full cycle: fleet and utilization, bookings and contracts, customer base. AI handles the busywork: it reads and verifies client documents, scores deal risk, and suggests the next step to the manager. The goal: let a small rental operate like a chain, without growing headcount.',
     },
-    stack: ['Next.js', 'TypeScript', 'Prisma', 'PostgreSQL', 'OpenAI', 'Linear'],
+    // Product tags, not the framework list: technologies live on the case
+    // page, where they prove a decision.
+    stack: ['AI CRM', 'Car rental', 'Live in production'],
     visibility: 'private',
     featured: true,
     demoUrl: 'https://cursivo.xyz',
@@ -52,10 +54,10 @@ export const projects: ProjectItem[] = [
       en: 'Internal voice AI analytics dashboard at Prof-IT',
     },
     summary: {
-      ru: 'Внутренний продукт Prof-IT: личный кабинет с аналитикой и дашбордами по работе голосовых AI-агентов. AI сегментирует звонки и подсвечивает то, что требует внимания. Я веду продукт.',
-      en: 'Internal Prof-IT product: a personal cabinet with analytics and dashboards for voice AI agents. AI segments calls and surfaces what needs human attention. I run the product.',
+      ru: 'Внутренний продукт Prof-IT: личный кабинет с аналитикой и дашбордами по работе голосовых AI-агентов. AI сегментирует звонки и подсвечивает то, что требует внимания. Продукт на мне.',
+      en: 'Internal Prof-IT product: a personal cabinet with analytics and dashboards for voice AI agents. AI segments calls and surfaces what needs human attention. I own the product.',
     },
-    stack: ['Next.js', 'TypeScript', 'Prisma', 'PostgreSQL', 'OpenAI API'],
+    stack: ['LLM call analytics', 'Internal product', 'Prof-IT'],
     visibility: 'private',
     featured: true,
     tier: 'work-led',

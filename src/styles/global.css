@@ -995,7 +995,7 @@ html[data-theme='dark'] .theme-icon-sun {
   color: color-mix(in oklab, var(--foreground) 62%, transparent);
 }
 
-.profile-social-links {
+.home-intro .profile-social-links {
   justify-content: flex-start;
   margin-top: 0.55rem;
   gap: 0.15rem;
@@ -2344,7 +2344,7 @@ html[data-theme='dark'] .theme-icon-sun {
   }
 
   .brand {
-    font-size: 0.98rem;
+    font-size: 0.92rem;
     white-space: nowrap;
   }
 
@@ -2357,22 +2357,35 @@ html[data-theme='dark'] .theme-icon-sun {
 
   .main-nav {
     width: auto;
-    gap: 0.15rem;
+    gap: 0.1rem;
+    flex-wrap: nowrap;
   }
 
   .main-nav-link {
-    padding: 0.35rem 0.4rem;
-    font-size: 0.82rem;
+    padding: 0.55rem 0.3rem;
+    font-size: 0.78rem;
+    white-space: nowrap;
   }
 
-  .locale-toggle {
+  /* Visual size stays compact; the hit area is extended to 44px on touch
+     with an invisible inset box, so the row does not grow. */
+  .locale-toggle,
+  .theme-toggle {
+    position: relative;
     min-width: 2.35rem;
     height: 2rem;
   }
 
   .theme-toggle {
     width: 2rem;
-    height: 2rem;
+    min-width: 2rem;
+  }
+
+  .locale-toggle::before,
+  .theme-toggle::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
   }
 
   .project-links {
@@ -2390,7 +2403,10 @@ html[data-theme='dark'] .theme-icon-sun {
   }
 }
 
-@media (max-width: 360px) {
+/* Below this the RU labels no longer fit beside the brand even at 0.78rem;
+   the footer still carries Home and About. Measured: 340px is where
+   "Главная · Обо мне" plus RU and the theme button stop fitting in one row. */
+@media (max-width: 340px) {
   .main-nav {
     display: none;
   }
@@ -2420,8 +2436,19 @@ html[data-theme='dark'] .theme-icon-sun {
   .project-card::before,
   .project-link,
   .brand,
-  .main-nav-link {
+  .main-nav-link,
+  .cta-button,
+  .header-pdf,
+  .featured-case,
+  .featured-case-cta,
+  .project-card-pet,
+  .pet-repo-link {
     transition: none;
+  }
+
+  .cta-button:active,
+  .header-pdf:active {
+    transform: none;
   }
 
   .locale-toggle:active,

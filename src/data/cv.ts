@@ -145,7 +145,7 @@ export const cvLocationLine: LocalizedText = {
 };
 
 export const cvSummary: LocalizedText = {
-  ru: 'Продакт-менеджер с инженерным бэкграундом. В Zvonobot запустил с нуля направление голосовых AI-агентов и меньше чем за год довёл его до 80 платящих B2B-клиентов и 500 000+ минут разговоров в проде. Отвечаю за discovery, юнит-экономику, прайсинг и go-to-market. Гипотезы проверяю быстро: рабочий прототип на нейросетях (LLM) собираю с AI-агентами за 2-4 дня.',
+  ru: 'Продакт-менеджер с инженерным бэкграундом. В Zvonobot запустил с нуля направление голосовых AI-агентов и меньше чем за год довёл его до 80 платящих B2B-клиентов и 500 000+ минут разговоров в проде. Отвечаю за discovery, юнит-экономику, прайсинг и go-to-market; прототипы собираю с AI-агентами за дни. Открыт к полной занятости или контракту, готов выйти за 2-4 недели.',
   en: 'Product manager with an engineering background. Launched Zvonobot AI, a B2B voice AI agent platform, from zero to 80 paying business customers and 500,000+ minutes in production in under a year. Run discovery, unit economics, pricing and go-to-market; prototype with AI coding agents in days. Open to full-time or contract work; can start within 2-4 weeks.',
 };
 

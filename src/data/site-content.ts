@@ -421,8 +421,8 @@ export const uiCopy = {
       en: 'minutes',
     },
     metricCaption: {
-      ru: 'разговоров провели в проде голосовые AI-агенты, продукт, который я веду.',
-      en: 'of live conversations handled in production by the voice AI agents I lead.',
+      ru: 'разговоров провели в проде голосовые AI-агенты, продукт, за который я отвечаю.',
+      en: 'of live conversations handled in production by the voice AI agents I own.',
     },
     metricFootnoteOne: {
       ru: '80 платящих клиентов',
@@ -445,8 +445,8 @@ export const uiCopy = {
       en: 'LLM orchestration, ASR/TTS, SIP telephony, per-second billing, wallets, LLM call analytics',
     },
     currentlyRole: {
-      ru: 'Product Manager, Zvonobot (группа Prof-IT), с февраля 2022. Осенью 2025 запустил и с тех пор веду направление AI-агентов.',
-      en: 'Product Manager, Zvonobot (Prof-IT Group), since Feb 2022. Launched and run the AI agent line since fall 2025.',
+      ru: 'Product Manager, Zvonobot (группа Prof-IT), с февраля 2022. Осенью 2025 запустил направление AI-агентов и с тех пор отвечаю за него.',
+      en: 'Product Manager, Zvonobot (Prof-IT Group), since Feb 2022. Launched the AI agent line in fall 2025 and own it since.',
     },
     currentlyFocus: {
       ru: '4 инженера; отдел продаж вырос под направление с 4 до 15 менеджеров. Прайсинг и маржа на мне.',

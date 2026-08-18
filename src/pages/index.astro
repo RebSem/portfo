@@ -15,7 +15,6 @@ import {
   uiCopy,
 } from '../data/site-content';
 import Layout from '../layouts/Layout.astro';
-import githubSyncScriptUrl from '../scripts/github-sync.js?url';
 import metricSpotlightScriptUrl from '../scripts/metric-spotlight.js?url';
 
 const visibleProjects = projects.filter((project) => !project.placeholder);
@@ -286,6 +285,5 @@ const personSchema = buildPersonSchema('https://rebsem.ru/');
   </main>
 
   <SiteFooter />
-  <script is:inline type="module" src={githubSyncScriptUrl}></script>
   <script is:inline type="module" src={metricSpotlightScriptUrl}></script>
 </Layout>
