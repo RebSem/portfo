@@ -6,6 +6,7 @@ import {
   cvExperience,
   cvHeadline,
   cvLanguages,
+  cvLanguagesFile,
   cvLocationLine,
   cvMetrics,
   cvName,
@@ -99,6 +100,14 @@ export const CV_SECTION_KEYS = Object.keys(CV_SECTION_TITLES) as Array<
  */
 export interface CvTextOptions {
   phone?: string;
+  /**
+   * `page` (default) mirrors /cv exactly. `file` is what goes into the PDF,
+   * DOCX and txt a recruiter uploads to a form: the anti-fit section is left
+   * out and the English level loses its CEFR code. On the page both are a
+   * trust signal read by a person; in a file they are the first thing a
+   * keyword robot and a 30-second skim latch onto, and both read as negative.
+   */
+  audience?: 'page' | 'file';
 }
 
 export const buildCvNodes = (locale: Locale, options: CvTextOptions = {}): CvNode[] => {
@@ -170,14 +179,22 @@ export const buildCvNodes = (locale: Locale, options: CvTextOptions = {}): CvNod
     });
   });
 
+  const forFile = options.audience === 'file';
+
   nodes.push({ type: 'heading', text: HEADINGS.background[locale] });
   nodes.push({ type: 'row', label: LABELS.education[locale], text: cvEducation[locale] });
-  nodes.push({ type: 'row', label: LABELS.languages[locale], text: cvLanguages[locale] });
+  nodes.push({
+    type: 'row',
+    label: LABELS.languages[locale],
+    text: (forFile ? cvLanguagesFile : cvLanguages)[locale],
+  });
   nodes.push({ type: 'row', label: LABELS.format[locale], text: cvWorkFormat[locale] });
 
-  nodes.push({ type: 'heading', text: HEADINGS.antiFit[locale] });
-  nodes.push({ type: 'paragraph', text: cvAntiFitIntro[locale] });
-  cvAntiFit.forEach((item) => nodes.push({ type: 'bullet', text: item[locale] }));
+  if (!forFile) {
+    nodes.push({ type: 'heading', text: HEADINGS.antiFit[locale] });
+    nodes.push({ type: 'paragraph', text: cvAntiFitIntro[locale] });
+    cvAntiFit.forEach((item) => nodes.push({ type: 'bullet', text: item[locale] }));
+  }
 
   nodes.push({ type: 'heading', text: HEADINGS.contact[locale] });
   if (options.phone) {

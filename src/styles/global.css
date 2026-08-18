@@ -882,6 +882,14 @@ html[data-theme='dark'] .theme-icon-sun {
   padding-right: 0.05em;
 }
 
+.hero-subtitle {
+  margin: 0.55rem 0 0;
+  font-size: clamp(1.02rem, 0.4vw + 0.95rem, 1.2rem);
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  color: color-mix(in oklab, var(--foreground) 82%, transparent);
+}
+
 .home-lead {
   max-width: 52ch;
   font-size: clamp(1.0625rem, 0.35vw + 1rem, 1.1875rem);
@@ -1149,13 +1157,6 @@ html[data-theme='dark'] .theme-icon-sun {
   margin-left: -1rem;
 }
 
-/* Mobile-only twin of the metric card: plain text in the reading column, so
-   the one hard number survives the 375px fold instead of trailing the whole
-   copy stack as a below-fold card. Desktop keeps the card and never shows this. */
-.hero-metric-inline {
-  display: none;
-}
-
 .currently-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -1189,11 +1190,6 @@ html[data-theme='dark'] .theme-icon-sun {
   font-size: 0.98rem;
   line-height: 1.45;
   color: var(--foreground);
-}
-
-.currently-item-metric dd {
-  font-weight: 500;
-  color: var(--accent-text);
 }
 
 @media (max-width: 720px) {
@@ -2254,41 +2250,13 @@ html[data-theme='dark'] .theme-icon-sun {
     gap: 1.8rem;
   }
 
-  /* Single column: the card would stack below CTA + socials and fall off
-     the first screen. Swap it for the inline number inside the copy flow. */
+  /* Single column: copy first, then the number. On a phone the rule is
+     "the Telegram button is visible without scrolling", so the card stacks
+     under the CTA rather than competing with it, and the lead drops its
+     second sentence (below) to make room. */
   .hero-metric-card {
-    display: none;
-  }
-
-  .hero-metric-inline {
-    display: grid;
-    gap: 0.35rem;
-    margin-top: 0.2rem;
-  }
-
-  /* Deliberately below the mobile H1 (~43px): the headline stays the
-     largest type on every breakpoint, the number confirms it. */
-  .hero-metric-inline strong {
-    font-size: clamp(2.1rem, 9.5vw, 2.75rem);
-    font-weight: 600;
-    letter-spacing: -0.03em;
-    line-height: 1;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .hero-metric-inline strong .unit {
-    font-size: 1rem;
-    font-weight: 500;
-    letter-spacing: -0.01em;
-    font-variant-numeric: normal;
-    color: color-mix(in oklab, var(--foreground) 70%, transparent);
-  }
-
-  .hero-metric-inline-caption {
-    font-size: 0.92rem;
-    line-height: 1.45;
-    max-width: 36ch;
-    color: color-mix(in oklab, var(--foreground) 75%, transparent);
+    max-width: none;
+    padding: 1.15rem 1.2rem;
   }
 
   .home-intro h1 {
@@ -2298,6 +2266,23 @@ html[data-theme='dark'] .theme-icon-sun {
 }
 
 @media (max-width: 720px) {
+  /* Second sentence of the hero lead. Desktop reads it; on a phone it pushed
+     the Telegram button under the fold, and the first sentence carries the
+     result on its own. */
+  .home-lead-more {
+    display: none;
+  }
+
+  /* The gh terminal is a nice desktop detail and two phone screens of noise
+     for someone hiring a product manager. */
+  .agent-terminal {
+    display: none;
+  }
+
+  .agent-ops-grid {
+    grid-template-columns: 1fr;
+  }
+
   /* The wrapped 2-3 row header would eat too much of a phone viewport
      if it stayed pinned - let it scroll away on small screens. */
   .site-header {
@@ -2346,18 +2331,49 @@ html[data-theme='dark'] .theme-icon-sun {
 }
 
 @media (max-width: 520px) {
+  /* One row: name left, nav + locale + theme right. The stacked version took
+     ~300px of a 375px-wide first screen before the page even started. Type
+     and gaps shrink so the row fits 343px of content width; below 360px the
+     two nav links give way (the footer still carries them). */
   .header-inner {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    padding-top: 0.6rem;
+    padding-bottom: 0.6rem;
+  }
+
+  .brand {
+    font-size: 0.98rem;
+    white-space: nowrap;
   }
 
   .header-controls {
-    width: 100%;
-    justify-content: flex-start;
+    width: auto;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    gap: 0.3rem;
   }
 
   .main-nav {
-    width: 100%;
+    width: auto;
+    gap: 0.15rem;
+  }
+
+  .main-nav-link {
+    padding: 0.35rem 0.4rem;
+    font-size: 0.82rem;
+  }
+
+  .locale-toggle {
+    min-width: 2.35rem;
+    height: 2rem;
+  }
+
+  .theme-toggle {
+    width: 2rem;
+    height: 2rem;
   }
 
   .project-links {
@@ -2372,6 +2388,12 @@ html[data-theme='dark'] .theme-icon-sun {
   .project-card-head {
     align-items: flex-start;
     flex-direction: column;
+  }
+}
+
+@media (max-width: 360px) {
+  .main-nav {
+    display: none;
   }
 }
 

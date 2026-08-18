@@ -73,6 +73,11 @@
   .skip-link,
   .cv-toc,
   .cv-actions,
+  /* The anti-fit section stays on the page, where a person reads it as
+     candour. In the file a recruiter uploads to a form it is the first
+     negative a keyword robot and a 30-second skim find. */
+  #cv-anti-fit,
+  .cv-screen-only,
   /* Web affordance: on paper "Also as: DOCX TXT" is a dead instruction. */
   .cv-formats,
   .cv-copy,
@@ -95,6 +100,10 @@
 
   .cv-doc {
     max-width: none !important;
+  }
+
+  .cv-print-only {
+    display: inline !important;
   }
 
   /* Links get their destination spelled out: on paper an anchor is a dead end

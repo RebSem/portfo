@@ -13,8 +13,8 @@ import type { Locale, LocalizedText } from '../types/content';
  *
  * - Canon is resume v3 (12 Aug 2026). Location is Perm / Russia everywhere.
  * - The word "Senior" never appears in a title. The numbers sell the grade.
- * - Revenue is relative only (share of group revenue). The absolute monthly
- *   figure is employer-sensitive and stays out of every public artifact.
+ * - No money, absolute or relative. Colleagues read this site too, and a share
+ *   of group revenue is still group revenue. Product numbers only.
  * - No phone number anywhere in this repository or on the public site. The
  *   variant carrying it is built locally and is git-ignored.
  * - No em dashes. They read as machine-written text; use a hyphen or a comma.
@@ -132,9 +132,11 @@ export const cvName: LocalizedText = {
   en: 'Mikhail Semenov',
 };
 
+// B2B SaaS before the AI words on purpose: a recruiter for a payments or
+// subscriptions role should not close the page on the first token.
 export const cvHeadline: LocalizedText = {
-  ru: 'Product Manager (AI/ML) · голосовые AI-агенты · LLM · B2B SaaS',
-  en: 'AI Product Manager · Voice AI Agents · LLM · B2B SaaS',
+  ru: 'Product Manager · B2B SaaS · голосовые AI-агенты · LLM',
+  en: 'Product Manager · B2B SaaS · Voice AI Agents · LLM',
 };
 
 export const cvLocationLine: LocalizedText = {
@@ -143,26 +145,18 @@ export const cvLocationLine: LocalizedText = {
 };
 
 export const cvSummary: LocalizedText = {
-  ru: 'Продакт-менеджер с инженерным бэкграундом. В Zvonobot запустил с нуля направление голосовых AI-агентов и меньше чем за год довёл его до ~10% выручки группы. Отвечаю за discovery, юнит-экономику, прайсинг и go-to-market. Гипотезы проверяю быстро: рабочий прототип на нейросетях (LLM) собираю с AI-агентами за 2-4 дня.',
-  en: 'Product manager with an engineering background. Launched Zvonobot AI, a B2B voice AI agent platform, and took it from zero to roughly 10% of group revenue in under a year. Run discovery, unit economics, pricing and go-to-market; prototype with AI coding agents in days. Open to full-time or contract work; can start within 2-4 weeks.',
+  ru: 'Продакт-менеджер с инженерным бэкграундом. В Zvonobot запустил с нуля направление голосовых AI-агентов и меньше чем за год довёл его до 80 платящих B2B-клиентов и 500 000+ минут разговоров в проде. Отвечаю за discovery, юнит-экономику, прайсинг и go-to-market. Гипотезы проверяю быстро: рабочий прототип на нейросетях (LLM) собираю с AI-агентами за 2-4 дня.',
+  en: 'Product manager with an engineering background. Launched Zvonobot AI, a B2B voice AI agent platform, from zero to 80 paying business customers and 500,000+ minutes in production in under a year. Run discovery, unit economics, pricing and go-to-market; prototype with AI coding agents in days. Open to full-time or contract work; can start within 2-4 weeks.',
 };
 
 // --- Metrics --------------------------------------------------------------
 
 /**
- * The four tiles that sell the grade. All relative: the absolute monthly
- * revenue of the AI line is employer-sensitive and is not published anywhere.
+ * The four tiles that sell the grade. No money at all, absolute or relative:
+ * colleagues read this site too, and a share of group revenue is still group
+ * revenue. Product numbers only, which is what a hiring manager can act on.
  */
 export const cvMetrics: CvMetric[] = [
-  {
-    id: 'revenue-share',
-    value: { ru: '~10%', en: '~10%' },
-    label: { ru: 'выручки группы', en: 'of group revenue' },
-    caption: {
-      ru: 'доля направления, которое я запустил с нуля меньше чем за год.',
-      en: 'share held by the line I launched from zero in under a year.',
-    },
-  },
   {
     id: 'customers',
     value: { ru: '~80', en: '~80' },
@@ -179,6 +173,15 @@ export const cvMetrics: CvMetric[] = [
     caption: {
       ru: 'проведено голосовыми AI-агентами в проде.',
       en: 'handled by the voice AI agents in production.',
+    },
+  },
+  {
+    id: 'sales-team',
+    value: { ru: '4 → 15', en: '4 → 15' },
+    label: { ru: 'менеджеров в отделе продаж', en: 'people on the sales team' },
+    caption: {
+      ru: 'вырос под направление меньше чем за год.',
+      en: 'grew to sell the line in under a year.',
     },
   },
   {
@@ -235,8 +238,8 @@ export const cvExperience: CvExperienceRole[] = [
           ],
           [
             t(
-              'Результат к августу 2026: около 80 платящих B2B-клиентов, ~10% выручки группы, 500 000+ минут разговоров в проде; 30% выручки дают повторные платежи.',
-              'By August 2026: about 80 paying business customers, roughly 10% of group revenue, 500,000+ minutes of live conversations in production; 30% of revenue comes from repeat payments.',
+              'Результат к августу 2026: около 80 платящих B2B-клиентов, 500 000+ минут разговоров в проде; 30% выручки направления дают повторные платежи.',
+              'By August 2026: about 80 paying business customers and 500,000+ minutes of live conversations in production; 30% of the line’s revenue comes from repeat payments.',
             ),
           ],
           [
@@ -258,8 +261,8 @@ export const cvExperience: CvExperienceRole[] = [
           ],
           [
             t(
-              'Веду go-to-market в связке с командой из 4 разработчиков и отделом продаж, выросшим под направление с 4 до 15 менеджеров; выстраиваю прайсинг и контролирую маржу по типам звонков.',
-              'Run go-to-market with a team of 4 engineers and a sales team that grew from 4 to 15 people to support the line; own pricing and per-call-type margins.',
+              'Веду продуктовую команду (4 разработчика) и go-to-market вместе с отделом продаж, выросшим под направление с 4 до 15 менеджеров; выстраиваю прайсинг и контролирую маржу по типам звонков.',
+              'Lead the product team (4 engineers) and run go-to-market with a sales team that grew from 4 to 15 to sell the line; own pricing and per-call-type margins.',
             ),
           ],
         ],
@@ -284,8 +287,8 @@ export const cvExperience: CvExperienceRole[] = [
           ],
           [
             t(
-              'Наладил работу с клиентами: кастдев-интервью, приоритизация по метрикам, релизный цикл в связке с отделами продаж и поддержки.',
-              'Built the customer discovery process: interviews, metric-driven prioritization, a release cycle run jointly with sales and support.',
+              'Наладил работу с клиентами: кастдев-интервью, приоритизация по метрикам, A/B-тесты сценариев звонков, релизный цикл в связке с отделами продаж и поддержки.',
+              'Built the customer discovery process: interviews, metric-driven prioritization, A/B testing of call scripts, a release cycle run jointly with sales and support.',
             ),
           ],
           [
@@ -353,8 +356,8 @@ export const cvProducts: CvProduct[] = [
       en: 'A B2B voice AI agent platform: agent builder, campaigns, telephony, per-second billing.',
     },
     proof: {
-      ru: 'Доказывает запуск направления с нуля до ~10% выручки группы меньше чем за год.',
-      en: 'Proves a line taken from zero to roughly 10% of group revenue in under a year.',
+      ru: 'Доказывает запуск направления с нуля до 80 платящих клиентов меньше чем за год.',
+      en: 'Proves a line taken from zero to 80 paying customers in under a year.',
     },
   },
   {
@@ -470,6 +473,16 @@ export const cvEducation: LocalizedText = {
 export const cvLanguages: LocalizedText = {
   ru: 'Русский родной. Английский B1+, ежедневная рабочая переписка и документация.',
   en: 'Russian: native. English: working proficiency (B1+), daily written use.',
+};
+
+/**
+ * Same fact for the downloadable files, without the CEFR code. On the page the
+ * level is a trust signal; on a form it is a filter a robot applies before a
+ * human reads the rest.
+ */
+export const cvLanguagesFile: LocalizedText = {
+  ru: 'Русский родной. Английский рабочий, ежедневная переписка и документация.',
+  en: 'Russian: native. English: working proficiency, daily written use.',
 };
 
 export const cvWorkFormat: LocalizedText = {

@@ -12,8 +12,8 @@ export const projects: ProjectItem[] = [
       en: 'Voice AI-agent platform for B2B (Prof-IT)',
     },
     summary: {
-      ru: 'Новый продукт группы Prof-IT, который я запустил осенью 2025 и веду end-to-end: продукт, UX и инженерию. Multi-tenant SaaS-кабинет поверх telephony-инфраструктуры, в котором клиенты собирают и публикуют голосовых AI-агентов для исходящих звонков: продажи, онбординг, реактивация, опросы.',
-      en: 'A new Prof-IT product I launched in the fall of 2025 and run end-to-end: product, UX, and engineering. A multi-tenant SaaS console built on top of telephony infrastructure: clients assemble and publish voice AI agents for outbound use cases like sales, onboarding, reactivation, and surveys.',
+      ru: 'Направление группы Prof-IT, которое я запустил осенью 2025 с нуля и за которое отвечаю целиком: продукт, прайсинг, вывод на рынок. Multi-tenant SaaS-кабинет поверх telephony-инфраструктуры: клиенты собирают и публикуют голосовых AI-агентов для исходящих звонков, от продаж до реактивации и опросов.',
+      en: 'A Prof-IT product line I launched from zero in the fall of 2025 and own end to end: product, pricing, go-to-market. A multi-tenant SaaS console on top of telephony infrastructure: clients assemble and publish voice AI agents for outbound calls, from sales to reactivation and surveys.',
     },
     stack: ['React 19', 'TypeScript', 'Vite', 'Flask', 'PostgreSQL', 'Redis', 'LLM orchestration'],
     visibility: 'private',
@@ -55,7 +55,7 @@ export const projects: ProjectItem[] = [
       ru: 'Внутренний продукт Prof-IT: личный кабинет с аналитикой и дашбордами по работе голосовых AI-агентов. AI сегментирует звонки и подсвечивает то, что требует внимания. Я веду продукт.',
       en: 'Internal Prof-IT product: a personal cabinet with analytics and dashboards for voice AI agents. AI segments calls and surfaces what needs human attention. I run the product.',
     },
-    stack: ['Next.js', 'TypeScript', 'Prisma', 'PostgreSQL', 'OpenAI API', 'Google Sheets API'],
+    stack: ['Next.js', 'TypeScript', 'Prisma', 'PostgreSQL', 'OpenAI API'],
     visibility: 'private',
     featured: true,
     tier: 'work-led',
@@ -130,32 +130,6 @@ export const projects: ProjectItem[] = [
     proof: {
       ru: 'Product taste на новой платформе: за неделю собрал нативное iOS-приложение с AI-помощником с нуля до working build.',
       en: 'Product taste on a new platform: a native iOS app with an AI assistant, from zero to a working build in a week.',
-    },
-  },
-  {
-    id: 'tubedrop',
-    title: {
-      ru: 'tubedrop',
-      en: 'tubedrop',
-    },
-    appType: {
-      ru: 'macOS-обёртка над YouTube-конвертером',
-      en: 'macOS wrapper over a YouTube converter',
-    },
-    summary: {
-      ru: 'Двухкликовая локальная веб-обёртка над kaifcodec/ytconverter: вставил ссылку, получил файл. Личный пет-проект, чтобы перестать мучиться со сайтами-конвертерами. Собран на коленке за вечер с Claude Code.',
-      en: 'Two-click local web wrapper around kaifcodec/ytconverter: drop a link, get the file. Personal pet project to stop fighting sketchy converter sites. Hacked together in an evening with Claude Code.',
-    },
-    stack: ['Python', 'yt-dlp', 'ffmpeg', 'macOS'],
-    visibility: 'public',
-    githubRepo: 'tubedrop',
-    repoUrl: 'https://github.com/RebSem/tubedrop',
-    tier: 'pet',
-    shipTime: { ru: '1 вечер', en: '1 evening' },
-    petOrder: 3,
-    proof: {
-      ru: 'Скорость и общий язык с инженерами: за вечер собрал и выложил в открытый код рабочий инструмент под собственную боль.',
-      en: 'Speed and a shared language with engineers: a working open-source tool for my own pain point, built and shipped in an evening.',
     },
   },
   {

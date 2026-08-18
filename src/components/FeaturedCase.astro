@@ -55,10 +55,6 @@ const readCaseLabel = locale === 'ru' ? 'Открыть полный кейс' :
       </ul>
     </div>
 
-    <ul class="featured-case-stack" aria-label={c.stackAria[locale]}>
-      {project.stack.map((item) => (<li>{item}</li>))}
-    </ul>
-
     {caseHref && (
       <a class="featured-case-cta" href={caseHref}>
         {readCaseLabel}
