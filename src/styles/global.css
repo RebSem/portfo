@@ -2931,7 +2931,7 @@ html[data-theme='dark'] .theme-icon-sun {
   font-family: var(--font-mono);
   font-size: 0.7rem;
   letter-spacing: 0.04em;
-  color: var(--muted);
+  color: color-mix(in oklab, var(--foreground) 60%, transparent);
   text-align: center;
 }
 
