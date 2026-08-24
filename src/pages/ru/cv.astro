@@ -6,7 +6,7 @@ import { buildPersonSchema } from '../../data/site-content';
 import Layout from '../../layouts/Layout.astro';
 import cvScriptUrl from '../../scripts/cv.js?url';
 
-const pageUrl = 'https://rebsem.ru/ru/cv';
+const pageUrl = 'https://rebsem.ru/ru/cv/';
 const pdfHref = `/cv/${cvFileBaseName.ru}.pdf`;
 const docxHref = `/cv/${cvFileBaseName.ru}.docx`;
 const txtHref = '/ru/cv.txt';
@@ -32,7 +32,7 @@ const cvSchema = {
   noIndex
   followLinks
   schema={cvSchema}
-  alternate="/cv"
+  alternate="/cv/"
 >
   <a id="skip-to-content" href="#main-content" class="skip-link">К содержимому</a>
 

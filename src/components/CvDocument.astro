@@ -1,14 +1,12 @@
 ---
 import type { Locale } from '../types/content';
 import {
-  cvAntiFit,
-  cvAntiFitIntro,
   cvEducation,
   cvExperience,
   cvHeadline,
   cvLanguages,
-  cvLanguagesFile,
   cvLocationLine,
+  cvLookingFor,
   cvMetrics,
   cvName,
   cvProducts,
@@ -63,9 +61,10 @@ const copy = {
   toc: { ru: 'Разделы резюме', en: 'Resume sections' },
   downloadPdf: { ru: 'Скачать PDF', en: 'Download PDF' },
   writeTelegram: { ru: 'Написать в Telegram', en: 'Message on Telegram' },
-  openLinkedin: { ru: 'LinkedIn', en: 'LinkedIn' },
   caseLink: { ru: 'Кейс', en: 'Case study' },
-  liveLink: { ru: 'Сайт', en: 'Live' },
+  // "Site", not "Live": cursivo's card says "In development" one line above,
+  // and a link labeled "Live" next to that status read as a contradiction.
+  liveLink: { ru: 'Сайт', en: 'Site' },
   roles: { ru: 'Роли', en: 'Roles' },
   education: { ru: 'Образование', en: 'Education' },
   languages: { ru: 'Языки', en: 'Languages' },
@@ -109,8 +108,8 @@ const sectionIds = [
   { id: 'cv-experience', label: copy.sections.experience },
   { id: 'cv-products', label: copy.sections.products },
   { id: 'cv-skills', label: copy.sections.skills },
+  { id: 'cv-looking-for', label: copy.sections.lookingFor },
   { id: 'cv-background', label: copy.sections.background },
-  { id: 'cv-anti-fit', label: copy.sections.antiFit },
   { id: 'cv-contact', label: copy.sections.contact },
 ];
 ---
@@ -138,19 +137,32 @@ const sectionIds = [
         email, no Telegram and no LinkedIn at all. A recruiter who saved it
         had no way to reply, and an ATS that keys candidate identity on an
         email address would have dropped the record.
+
+        One channel, one appearance on screen. Telegram lives in the button
+        below and the site's own address is the page you are on, so both are
+        screen-hidden here; they stay in the DOM because the printed PDF hides
+        the footer contact list and this line is the only contact carrier on
+        paper (print.css brings them back). Every channel also remains visible
+        text in the footer Contact section and in JSON-LD, so nothing is lost
+        to a parser that skips hidden nodes.
       */}
       <ul class="cv-contacts">
         <li><a href={`mailto:${email}`}>{email}</a></li>
-        <li><a href={telegramUrl} rel="me noopener">{telegramHandle}</a></li>
+        {/* "Telegram" spelled out: the PDF prints this line, and an ATS
+            field-mapper cannot classify a bare @handle. txt and DOCX already
+            label it; the PDF was the odd one out. */}
+        <li class="cv-print-only"><a href={telegramUrl} rel="me noopener">Telegram {telegramHandle}</a></li>
         <li><a href={linkedinUrl} rel="me noopener">{linkedinHandle}</a></li>
         <li><a href={githubUrl} rel="me noopener">github.com/{githubUsername}</a></li>
-        <li><a href={`${siteUrl}/`}>{siteHost}</a></li>
+        <li class="cv-print-only"><a href={`${siteUrl}/`}>{siteHost}</a></li>
       </ul>
 
+      {/* Two actions, not three: download the file or start a conversation.
+          The LinkedIn button duplicated the text link one line above and was
+          the third competing call to action on the first screen. */}
       <div class="cv-actions">
         <a class="cta-button cta-primary" href={pdfHref} download>{copy.downloadPdf[locale]}</a>
         <a class="cta-button cta-secondary" href={telegramUrl} rel="me noopener">{copy.writeTelegram[locale]}</a>
-        <a class="cta-button cta-secondary" href={linkedinUrl} rel="me noopener">{copy.openLinkedin[locale]}</a>
       </div>
 
       {/*
@@ -172,7 +184,8 @@ const sectionIds = [
       <p class="cv-lead" set:html={nb(cvSummary[locale])} />
     </section>
 
-    {/* 2. Metrics */}
+    {/* 2. Metrics: six tiles, value over label, in the site's original card
+        style. Every figure lives in the text layer. */}
     <section class="cv-section" id="cv-metrics" aria-labelledby="cv-metrics-title">
       <h2 class="cv-section-title" id="cv-metrics-title">{copy.sections.metrics[locale]}</h2>
       <ul class="cv-metrics">
@@ -180,7 +193,6 @@ const sectionIds = [
           <li class="cv-metric">
             <p class="cv-metric-value">{metric.value[locale]}</p>
             <p class="cv-metric-label" set:html={nb(metric.label[locale])} />
-            <p class="cv-metric-caption" set:html={nb(metric.caption[locale])} />
           </li>
         ))}
       </ul>
@@ -226,28 +238,35 @@ const sectionIds = [
     <section class="cv-section" id="cv-products" aria-labelledby="cv-products-title">
       <h2 class="cv-section-title" id="cv-products-title">{copy.sections.products[locale]}</h2>
       <ul class="cv-products">
-        {cvProducts.map((product) => (
-          <li class="cv-product">
-            <h3 class="cv-product-name">{product.name}</h3>
-            <p class="cv-product-summary" set:html={nb(product.summary[locale])} />
-            <p class="cv-product-proof" set:html={nb(product.proof[locale])} />
-            <p class="cv-product-links">
-              {product.caseId && (
-                <a
-                  href={caseHref(product.caseId, locale)}
-                  aria-label={`${copy.caseLink[locale]}: ${product.name}`}
-                >{copy.caseLink[locale]}</a>
-              )}
-              {product.externalUrl && (
-                <a
-                  href={product.externalUrl}
-                  rel="noopener"
-                  aria-label={`${product.externalUrl === githubUrl ? 'GitHub' : copy.liveLink[locale]}: ${product.name}`}
-                >{product.externalUrl === githubUrl ? 'GitHub' : copy.liveLink[locale]}</a>
-              )}
-            </p>
-          </li>
-        ))}
+        {cvProducts.map((product) => {
+          const externalLabel =
+            product.externalLabel?.[locale] ??
+            (product.externalUrl === githubUrl ? 'GitHub' : copy.liveLink[locale]);
+          return (
+            <li class="cv-product">
+              <h3 class="cv-product-name">{product.name}</h3>
+              {/* Exactly one fact line per card, right under the name. */}
+              <p class="cv-product-metric" set:html={nb(product.metric[locale])} />
+              <p class="cv-product-summary" set:html={nb(product.summary[locale])} />
+              <p class="cv-product-proof" set:html={nb(product.proof[locale])} />
+              <p class="cv-product-links">
+                {product.caseId && (
+                  <a
+                    href={caseHref(product.caseId, locale)}
+                    aria-label={`${copy.caseLink[locale]}: ${product.name}`}
+                  >{copy.caseLink[locale]}</a>
+                )}
+                {product.externalUrl && (
+                  <a
+                    href={product.externalUrl}
+                    rel="noopener"
+                    aria-label={`${externalLabel}: ${product.name}`}
+                  >{externalLabel}</a>
+                )}
+              </p>
+            </li>
+          );
+        })}
       </ul>
     </section>
 
@@ -268,7 +287,14 @@ const sectionIds = [
       </dl>
     </section>
 
-    {/* 6. Education, languages, format */}
+    {/* 6. What I am looking for: the positive filter that replaced the
+        anti-fit list. Placed after skills, before education, per the spec. */}
+    <section class="cv-section" id="cv-looking-for" aria-labelledby="cv-looking-for-title">
+      <h2 class="cv-section-title" id="cv-looking-for-title">{copy.sections.lookingFor[locale]}</h2>
+      <p class="cv-lead" set:html={nb(cvLookingFor[locale])} />
+    </section>
+
+    {/* 7. Education, languages, format */}
     <section class="cv-section" id="cv-background" aria-labelledby="cv-background-title">
       <h2 class="cv-section-title" id="cv-background-title">{copy.sections.background[locale]}</h2>
       <dl class="cv-skills">
@@ -278,28 +304,13 @@ const sectionIds = [
         </div>
         <div class="cv-skill-group">
           <dt>{copy.languages[locale]}</dt>
-          {/* The PDF is printed from this page, so it carries the file variant
-              of the same fact: no CEFR code, which a form robot reads as a
-              filter before a human reads the rest. See cvLanguagesFile. */}
-          <dd>
-            <span class="cv-screen-only" set:html={nb(cvLanguages[locale])} />
-            <span class="cv-print-only" set:html={nb(cvLanguagesFile[locale])} />
-          </dd>
+          <dd set:html={nb(cvLanguages[locale])} />
         </div>
         <div class="cv-skill-group">
           <dt>{copy.format[locale]}</dt>
           <dd set:html={nb(cvWorkFormat[locale])} />
         </div>
       </dl>
-    </section>
-
-    {/* 7. Anti-fit */}
-    <section class="cv-section" id="cv-anti-fit" aria-labelledby="cv-anti-fit-title">
-      <h2 class="cv-section-title" id="cv-anti-fit-title">{copy.sections.antiFit[locale]}</h2>
-      <p class="cv-lead" set:html={nb(cvAntiFitIntro[locale])} />
-      <ul class="cv-bullets">
-        {cvAntiFit.map((item) => <li set:html={nb(item[locale])} />)}
-      </ul>
     </section>
 
     {/* 8. Contact footer */}
@@ -434,6 +445,9 @@ const sectionIds = [
     max-width: 42.5rem;
   }
 
+  /* Contact entries that exist for the printed PDF only: on screen the same
+     channel already appears once elsewhere in the header. print.css restores
+     them, because on paper this line is the only contact carrier. */
   .cv-print-only {
     display: none;
   }
@@ -567,7 +581,10 @@ const sectionIds = [
   }
 
   /* Metrics: one column on a phone, which is where half the recruiters open
-     a Telegram link. Grid rather than flex so the four tiles stay equal. */
+     a Telegram link. Grid rather than flex so the six tiles stay equal. The
+     card look is the site's original one: Mikhail rejected the display-size
+     variant with decorative bars, so the spec's six tiles render in the
+     modest pre-redesign style. */
   .cv-metrics {
     list-style: none;
     margin: 0;
@@ -610,13 +627,6 @@ const sectionIds = [
     margin: 0.25rem 0 0;
     font-size: 0.92rem;
     font-weight: 500;
-  }
-
-  .cv-metric-caption {
-    margin: 0.4rem 0 0;
-    font-size: 0.85rem;
-    line-height: 1.5;
-    color: color-mix(in oklab, var(--foreground) 72%, transparent);
   }
 
   .cv-role + .cv-role {
@@ -709,6 +719,15 @@ const sectionIds = [
     margin: 0;
     font-size: 1rem;
     font-weight: 600;
+  }
+
+  /* The one fact line per card: reads as a small stat, not a sentence. */
+  .cv-product-metric {
+    margin: 0.2rem 0 0;
+    font-size: 0.82rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent-text);
   }
 
   .cv-product-summary {

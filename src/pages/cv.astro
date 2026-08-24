@@ -6,7 +6,10 @@ import { buildPersonSchema } from '../data/site-content';
 import Layout from '../layouts/Layout.astro';
 import cvScriptUrl from '../scripts/cv.js?url';
 
-const pageUrl = 'https://rebsem.ru/cv';
+// Trailing slash, matching the canonical the build emits: the JSON-LD url,
+// canonical and hreflang disagreed on the slash and an LLM screener reading
+// raw HTML sees all three.
+const pageUrl = 'https://rebsem.ru/cv/';
 const pdfHref = `/cv/${cvFileBaseName.en}.pdf`;
 const docxHref = `/cv/${cvFileBaseName.en}.docx`;
 const txtHref = '/cv.txt';
@@ -36,7 +39,7 @@ const cvSchema = {
   noIndex
   followLinks
   schema={cvSchema}
-  alternate="/ru/cv"
+  alternate="/ru/cv/"
 >
   <a id="skip-to-content" href="#main-content" class="skip-link">Skip to content</a>
 

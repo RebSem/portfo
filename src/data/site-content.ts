@@ -265,6 +265,8 @@ export const knowsAbout: string[] = [
   'Prompt engineering',
   'RAG',
   'B2B SaaS',
+  'Payments and billing',
+  'CPaaS',
   'Product discovery',
   'Product strategy',
   'Unit economics',
@@ -298,6 +300,12 @@ export function buildPersonSchema(url: string): Record<string, unknown> {
     },
     knowsLanguage: ['ru', 'en'],
     knowsAbout,
+    // Education existed nowhere in the structured data an LLM screener reads
+    // first, while the visible page names the university.
+    alumniOf: {
+      '@type': 'CollegeOrUniversity',
+      name: 'Perm State University',
+    },
     worksFor: {
       '@type': 'Organization',
       name: 'Prof-IT',
