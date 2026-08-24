@@ -37,7 +37,7 @@ export const projects: ProjectItem[] = [
     },
     // Product tags, not the framework list: technologies live on the case
     // page, where they prove a decision.
-    stack: ['AI CRM', 'Car rental', 'Live in production'],
+    stack: ['AI CRM', 'Car rental', 'In development'],
     visibility: 'private',
     featured: true,
     demoUrl: 'https://cursivo.xyz',

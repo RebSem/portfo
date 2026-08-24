@@ -4,8 +4,8 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
   caseHref,
-  cvAntiFit,
   cvExperience,
+  cvLookingFor,
   cvMetrics,
   cvProducts,
   cvSkillGroups,
@@ -48,17 +48,25 @@ const collectCvStrings = (locale: Locale): string[] => {
     });
   });
   cvMetrics.forEach((metric) => {
-    strings.push(metric.value[locale], metric.label[locale], metric.caption[locale]);
+    strings.push(metric.value[locale], metric.label[locale]);
   });
   cvProducts.forEach((product) => {
-    strings.push(product.name, product.summary[locale], product.proof[locale]);
+    strings.push(product.name, product.metric[locale], product.summary[locale], product.proof[locale]);
   });
   cvSkillGroups.forEach((group) => {
     strings.push(group.label[locale], ...group.items.map((item) => item[locale]));
   });
-  cvAntiFit.forEach((item) => strings.push(item[locale]));
+  strings.push(cvLookingFor[locale]);
   return strings;
 };
+
+/**
+ * The former anti-fit section, in both languages. It was removed on purpose:
+ * screeners index the whole page and negatives from the candidate's own site
+ * surface in their summaries. Nothing shaped like it may come back into any
+ * rendering of the resume.
+ */
+const WEAKNESS_MARKERS = /weaker fit|не лучший выбор/i;
 
 describe('cv canon', () => {
   it('carries the same sections in both locales', () => {
@@ -80,39 +88,42 @@ describe('cv canon', () => {
   it('states the same key numbers in both locales', () => {
     // The numbers are what sell the grade, so a figure present in one locale
     // and missing in the other is a defect, not a translation choice.
-    for (const figure of ['80', '30%', '4 → 15', '2022']) {
+    for (const figure of ['80', '30%', '~10%', '+30%', '130+', '2022']) {
       for (const locale of LOCALES) {
         expect(buildCvText(locale), `${figure} missing from ${locale}`).toContain(figure);
       }
     }
     expect(buildCvText('en')).toContain('500,000+');
     expect(buildCvText('ru')).toContain('500 000+');
+    // The sales-team growth left the tiles (it is the sales director's
+    // number) but must survive inside the go-to-market bullet.
+    expect(buildCvText('ru')).toContain('с 4 до 15');
+    expect(buildCvText('en')).toContain('from 4 to 15');
   });
 
-  it('publishes no money, absolute or relative', () => {
-    // Colleagues read this site too. Neither the monthly revenue of the line
-    // nor its share of group revenue belongs on a public page; product numbers
-    // only. See the decision record in src/data/cv.ts.
+  it('publishes no absolute money', () => {
+    // Shares and percentages are allowed since the 24 Aug 2026 spec (the
+    // "~10% of group revenue" tile is its centrepiece); rubles, dollars and
+    // millions still never appear. See the decision record in src/data/cv.ts.
     for (const locale of LOCALES) {
       const text = buildCvText(locale);
       expect(text).not.toMatch(/\d\s*-?\s*\d?\s*млн/i);
       expect(text).not.toMatch(/RUB\s*\d/i);
       expect(text).not.toMatch(/\$\s*\d/);
-      expect(text).not.toMatch(/выручки группы|of group revenue|group revenue/i);
     }
   });
 
-  it('keeps the anti-fit section and the CEFR level off the downloadable files', () => {
-    // On the page both are candour a person reads. In a file uploaded to a
-    // form they are the first negative a keyword robot latches onto.
+  it('carries no weakness section and states the language level as a fact', () => {
+    // The anti-fit list was replaced with the positive "What I am looking
+    // for" section: screeners, human and LLM, index everything, and a
+    // negative from the candidate's own page surfaces in their summaries.
+    // The CEFR label is deliberate (Mikhail, 25 Aug 2026): recruiters file
+    // English as a level field, and no level gets recorded as "not stated".
     for (const locale of LOCALES) {
-      const page = buildCvText(locale);
-      const file = buildCvText(locale, { audience: 'file' });
-      expect(page).toMatch(/B1\+/);
-      expect(file).not.toMatch(/B1\+/);
-      expect(page).toMatch(/WEAKER FIT|НЕ ЛУЧШИЙ ВЫБОР/);
-      expect(file).not.toMatch(/WEAKER FIT|НЕ ЛУЧШИЙ ВЫБОР/);
-      expect(file).toMatch(/working proficiency|рабочий/i);
+      const text = buildCvText(locale);
+      expect(text).toMatch(/B1\+/);
+      expect(text).not.toMatch(WEAKNESS_MARKERS);
+      expect(text).toMatch(/WHAT I AM LOOKING FOR|ЧТО Я ИЩУ/);
     }
   });
 
@@ -202,8 +213,8 @@ describeBuilt('cv build output', () => {
     // browser. Nothing that matters may depend on JS.
     //
     // Checked against the atomic canon strings rather than the composed text
-    // nodes: the page splits a metric across three elements, so the flattened
-    // "value label caption" line legitimately never appears as one substring.
+    // nodes: the page splits a metric across two elements, so the flattened
+    // "value label" line legitimately never appears as one substring.
     for (const [page, locale] of [
       ['cv/index.html', 'en'],
       ['ru/cv/index.html', 'ru'],
@@ -228,14 +239,28 @@ describeBuilt('cv build output', () => {
       for (const probe of probes) {
         expect(html, `missing from static ${page}: ${probe.slice(0, 60)}`).toContain(probe);
       }
+
+      // The six tile figures are short, so the >=25-char probe filter above
+      // never covers them; each one must reach the copyable text layer, which
+      // is the spec's own acceptance check.
+      const values = cvMetrics.map((metric) => metric.value[locale]);
+      expect(values).toHaveLength(6);
+      for (const value of values) {
+        expect(html, `metric value ${value} missing from ${page}`).toContain(value);
+      }
+
+      // The weakness section must be gone from the rendered HTML too.
+      expect(html).not.toMatch(WEAKNESS_MARKERS);
     }
   });
 
   it('exposes the plain-text resume in both locales', () => {
-    // The txt is a downloadable artifact like the PDF and DOCX, so it carries
-    // the file variant.
-    expect(readDist('cv.txt')).toBe(buildCvText('en', { audience: 'file' }));
-    expect(readDist('ru/cv.txt')).toBe(buildCvText('ru', { audience: 'file' }));
+    // Same text as the page: the page/file split died with the anti-fit
+    // section, so an LLM reader gets identical content from either surface.
+    expect(readDist('cv.txt')).toBe(buildCvText('en'));
+    expect(readDist('ru/cv.txt')).toBe(buildCvText('ru'));
+    expect(readDist('cv.txt')).not.toMatch(WEAKNESS_MARKERS);
+    expect(readDist('ru/cv.txt')).not.toMatch(WEAKNESS_MARKERS);
   });
 
   it('gives every page with a theme button the script that drives it', () => {
@@ -345,15 +370,13 @@ describe('cv download files', () => {
       // Section headings: letter-spacing once split SUMMARY into "S U MMARY".
       for (const key of CV_SECTION_KEYS) {
         if (key === 'contact') continue; // Folded into the header line in print.
-        if (key === 'antiFit') {
-          // Page-only by design; the file must NOT carry it.
-          const heading = CV_SECTION_TITLES[key][locale].toUpperCase();
-          expect(extracted, `${file} leaked the anti-fit section`).not.toContain(heading);
-          continue;
-        }
         const heading = CV_SECTION_TITLES[key][locale].toUpperCase();
         expect(extracted, `${file} lost the ${heading} heading`).toContain(heading);
       }
+
+      // The weakness section died with the 24 Aug 2026 spec and must not
+      // resurface in the file a recruiter forwards.
+      expect(extracted, `${file} carries the weakness section`).not.toMatch(WEAKNESS_MARKERS);
 
       // Date ranges have to survive as ranges, on one line with their role.
       const range = locale === 'ru' ? 'февраль 2022 - настоящее время' : 'Feb 2022 - Present';
@@ -384,10 +407,10 @@ describe('cv download files', () => {
 
   itWithFiles('ships downloadable text that matches the canon', () => {
     expect(readFileSync(path.join(CV_DIR, 'Mikhail_Semenov_CV_EN.txt'), 'utf8')).toBe(
-      buildCvText('en', { audience: 'file' }),
+      buildCvText('en'),
     );
     expect(readFileSync(path.join(CV_DIR, 'Mikhail_Semenov_CV_RU.txt'), 'utf8')).toBe(
-      buildCvText('ru', { audience: 'file' }),
+      buildCvText('ru'),
     );
   });
 });

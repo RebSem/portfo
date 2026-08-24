@@ -1,13 +1,11 @@
 import type { Locale } from '../types/content';
 import {
-  cvAntiFit,
-  cvAntiFitIntro,
   cvEducation,
   cvExperience,
   cvHeadline,
   cvLanguages,
-  cvLanguagesFile,
   cvLocationLine,
+  cvLookingFor,
   cvMetrics,
   cvName,
   cvProducts,
@@ -65,8 +63,8 @@ export const CV_SECTION_TITLES = {
   experience: { ru: 'Опыт работы', en: 'Experience' },
   products: { ru: 'Продукты', en: 'Products' },
   skills: { ru: 'Навыки', en: 'Skills' },
+  lookingFor: { ru: 'Что я ищу', en: 'What I am looking for' },
   background: { ru: 'Образование, языки, формат', en: 'Education, languages, format' },
-  antiFit: { ru: 'Где я не лучший выбор', en: 'Where I am a weaker fit' },
   contact: { ru: 'Контакт', en: 'Contact' },
 } as const;
 
@@ -97,17 +95,13 @@ export const CV_SECTION_KEYS = Object.keys(CV_SECTION_TITLES) as Array<
  * `phone` is threaded through rather than read from cv.ts on purpose: the
  * repository never holds the number, and the ATS-form variant of the exports
  * passes it in at build time from outside the repo.
+ *
+ * There is no page/file audience split any more: the anti-fit section it
+ * existed for is gone, and the languages line is a fact without a CEFR code,
+ * so the page, the txt, the DOCX and the PDF all carry the same text.
  */
 export interface CvTextOptions {
   phone?: string;
-  /**
-   * `page` (default) mirrors /cv exactly. `file` is what goes into the PDF,
-   * DOCX and txt a recruiter uploads to a form: the anti-fit section is left
-   * out and the English level loses its CEFR code. On the page both are a
-   * trust signal read by a person; in a file they are the first thing a
-   * keyword robot and a 30-second skim latch onto, and both read as negative.
-   */
-  audience?: 'page' | 'file';
 }
 
 export const buildCvNodes = (locale: Locale, options: CvTextOptions = {}): CvNode[] => {
@@ -134,7 +128,7 @@ export const buildCvNodes = (locale: Locale, options: CvTextOptions = {}): CvNod
   cvMetrics.forEach((metric) => {
     nodes.push({
       type: 'bullet',
-      text: `${metric.value[locale]} ${metric.label[locale]}: ${metric.caption[locale]}`,
+      text: `${metric.value[locale]} ${metric.label[locale]}`,
     });
   });
 
@@ -162,10 +156,11 @@ export const buildCvNodes = (locale: Locale, options: CvTextOptions = {}): CvNod
       .filter(Boolean)
       .join(' · ');
     // The proof line already opens with "Proves" / "Доказывает", so it is
-    // appended as a sentence rather than given a redundant label.
+    // appended as a sentence rather than given a redundant label. A colon
+    // after the name, not a hyphen: the no-dash rule covers the txt too.
     nodes.push({
       type: 'bullet',
-      text: `${product.name} - ${product.summary[locale]} ${product.proof[locale]}${links ? ` ${links}` : ''}`,
+      text: `${product.name}: ${product.metric[locale]}. ${product.summary[locale]} ${product.proof[locale]}${links ? ` ${links}` : ''}`,
     });
   });
 
@@ -179,22 +174,13 @@ export const buildCvNodes = (locale: Locale, options: CvTextOptions = {}): CvNod
     });
   });
 
-  const forFile = options.audience === 'file';
+  nodes.push({ type: 'heading', text: HEADINGS.lookingFor[locale] });
+  nodes.push({ type: 'paragraph', text: cvLookingFor[locale] });
 
   nodes.push({ type: 'heading', text: HEADINGS.background[locale] });
   nodes.push({ type: 'row', label: LABELS.education[locale], text: cvEducation[locale] });
-  nodes.push({
-    type: 'row',
-    label: LABELS.languages[locale],
-    text: (forFile ? cvLanguagesFile : cvLanguages)[locale],
-  });
+  nodes.push({ type: 'row', label: LABELS.languages[locale], text: cvLanguages[locale] });
   nodes.push({ type: 'row', label: LABELS.format[locale], text: cvWorkFormat[locale] });
-
-  if (!forFile) {
-    nodes.push({ type: 'heading', text: HEADINGS.antiFit[locale] });
-    nodes.push({ type: 'paragraph', text: cvAntiFitIntro[locale] });
-    cvAntiFit.forEach((item) => nodes.push({ type: 'bullet', text: item[locale] }));
-  }
 
   nodes.push({ type: 'heading', text: HEADINGS.contact[locale] });
   if (options.phone) {

@@ -73,11 +73,6 @@
   .skip-link,
   .cv-toc,
   .cv-actions,
-  /* The anti-fit section stays on the page, where a person reads it as
-     candour. In the file a recruiter uploads to a form it is the first
-     negative a keyword robot and a 30-second skim find. */
-  #cv-anti-fit,
-  .cv-screen-only,
   /* Web affordance: on paper "Also as: DOCX TXT" is a dead instruction. */
   .cv-formats,
   .cv-copy,
@@ -102,8 +97,13 @@
     max-width: none !important;
   }
 
+  /* Contact entries hidden on screen as duplicates (Telegram lives in a
+     button, the site address is the page itself) return on paper: the footer
+     contact list is hidden in print, so the header line must carry every
+     channel the PDF reader can reply to. !important outranks the component's
+     scoped attribute selector. */
   .cv-print-only {
-    display: inline !important;
+    display: block !important;
   }
 
   /* Links get their destination spelled out: on paper an anchor is a dead end
@@ -229,10 +229,10 @@
     margin-top: 0.5rem;
   }
 
-  /* Each metric collapses to a single flowing line on paper: value, label,
-     then caption. Three stacked paragraphs per tile cost a third of page one
-     and buy nothing in print, and the flat line reads better in the text
-     layer too, since value and label end up adjacent. */
+  /* Each metric collapses to a single flowing line on paper: value, then
+     label. Stacked display paragraphs per tile cost a third of page one and
+     buy nothing in print, and the flat line reads better in the text layer
+     too, since value and label end up adjacent. */
   .cv-metric p {
     display: inline;
     margin: 0;
@@ -249,19 +249,10 @@
     content: ' ';
   }
 
-  /* Colon, matching the txt and DOCX exports. Without it the PDF produced a
-     run-on: "~80 paying B2B customers repeat payments account for 30%...". */
-  .cv-metric-label::after {
-    content: ': ';
-  }
-
   .cv-metric-label,
-  .cv-product-name {
+  .cv-product-name,
+  .cv-product-metric {
     font-size: 9.5pt;
-  }
-
-  .cv-metric-caption {
-    font-size: 9pt;
   }
 
   /* The contact block repeats the header line verbatim. On screen that is a
@@ -286,10 +277,10 @@
   }
 
   /* Single column on paper, and this is about the text layer rather than
-     looks. A two-column grid makes pdftotext read across the page: the four
+     looks. A multi-column grid makes pdftotext read across the page: the
      metric tiles came out as "~10% / ~80 / share held by... / repeat payments
      ..." with every value divorced from its label. An ATS reads that same
-     stream, so the tiles stack and each one stays whole. */
+     stream, so the six tiles stack and each one stays whole. */
   .cv-metrics,
   .cv-products {
     grid-template-columns: 1fr !important;
@@ -301,8 +292,11 @@
     padding: 0.5rem 0.6rem;
   }
 
+  /* !important because the screen size is a scoped attribute selector
+     (0-2-0) that outranks this bare class: without it the value printed at
+     its screen size instead of body scale. */
   .cv-metric-value {
-    font-size: 11pt;
+    font-size: 11pt !important;
     display: inline;
   }
 

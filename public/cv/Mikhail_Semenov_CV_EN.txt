@@ -1,55 +1,61 @@
 Mikhail Semenov
 Product Manager · B2B SaaS · Voice AI Agents · LLM
-Perm, Russia (GMT+5) · Remote · Open to relocation (Cyprus, EU, UAE) · Available for business travel · Telegram @Michael_Semenov · perk77331@gmail.com · rebsem.ru · linkedin.com/in/mikhail-semenovv · github.com/RebSem
+Perm, Russia (GMT+5) · Remote · Open to relocation (Cyprus, EU, UAE) · Telegram @Michael_Semenov · perk77331@gmail.com · rebsem.ru · linkedin.com/in/mikhail-semenovv · github.com/RebSem
 
 SUMMARY
-Product manager with an engineering background, 4.5 years in product. Launched Zvonobot AI, a B2B voice AI agent line, from zero to 80 paying business customers and 500,000+ minutes of live conversations in production in under a year. Lead the product team of 4 engineers, set quarterly goals for the line, own pricing, unit economics and go-to-market. Prototype with AI coding agents in days. Open to full-time or contract work; can start within 2-4 weeks.
+Product manager with an engineering background, 4.5 years in B2B SaaS. Launched a voice AI agent line from zero to 80 paying customers, 500,000+ minutes in production and ~10% of group revenue in under a year. Currently lead a product team of 4 engineers, own pricing, unit economics and new line launches.
 
 NUMBERS
-- 80 paying B2B customers: repeat payments account for 30% of the line revenue.
-- 500,000+ minutes of conversation: handled by the voice AI agents in production.
-- 4 → 15 people on the sales team: grew to sell the line in under a year.
-- +30% average customer spend: growth in average spend after the AI plans launched.
+- ~10% of group revenue comes from a line launched from zero in a year
+- 80 paying B2B customers
+- 500,000+ minutes of conversations in production
+- +30% average customer spend after the new plans launched
+- 30% of line revenue comes from repeat purchases
+- 130+ countries: the group CPaaS products, bulk calls and SMS
 
 EXPERIENCE
 
 Product Manager, Zvonobot (Prof-IT Group) | Feb 2022 - Present
 Zvonobot is a B2B call automation platform: voice bots and AI agents for lead generation, sales outreach and customer reactivation.
 
-Zvonobot AI (fall 2025 - present)
-- Launched Zvonobot AI, the voice AI agent line, from scratch: went to market on a white-label platform in weeks, proved demand with live customers, and made the case to build an in-house platform.
-- By August 2026: 80 paying business customers and 500,000+ minutes of live conversations in production. Retention of the paying base: 30% of the line revenue comes from repeat payments.
-- The hypothesis "AI plans will lift average spend" was confirmed after launch: +30%. AI agents consistently outperform legacy robocalls on conversion to the target action on warm lead lists, which became the basis for pricing.
-- Built the AI product suite: agent and script builder, LLM call analytics (outcome, sentiment, custom post-call fields), per-second billing plans by cost component (LLM, ASR, TTS), balance hold at campaign start.
-- Lead the product team of 4 engineers: engineering reports to the tech lead, while priorities, specs and acceptance are mine. Set quarterly OKRs for the line and defend them with leadership.
-- Run go-to-market with stakeholders in sales, support and finance: the sales team grew from 4 to 15 people to sell the line, and I train sales and support on the product weekly. Own pricing, plans, per-call-type margins and the unit economics of the line.
+Zvonobot AI (Oct 2025 - present)
+- ~10% of group revenue in under a year: 80 paying B2B customers and 500,000+ minutes of live conversations in production by August 2026. Repeat purchases bring 30% of the line revenue.
+- From zero to market in weeks: launched Zvonobot AI, the voice AI agent line, on a white-label platform and proved demand with live customers. Now moving the line to our own, more flexible platform.
+- +30% in average customer spend after the AI plans launched: customers on AI agents versus customers on the legacy linear IVR robot. AI agents consistently outperform the scripted robots on conversion to the target action on warm lead lists, which became the basis for pricing.
+- The full product suite of the line: agent and script builder, LLM call analytics (outcome, sentiment, custom post-call fields), per-second billing plans by cost component (LLM, ASR, TTS), balance hold at campaign start.
+- A product team of 4 engineers: engineering reports to the tech lead, while priorities, specs and acceptance are mine. Set quarterly OKRs for the line and defend them with leadership.
+- The sales team grew from 4 to 15 people to sell the line: I run go-to-market with stakeholders in sales, support and finance, and train sales and support on the product weekly. Own pricing, plans, per-call-type margins and the product's unit economics.
 
 Core platform (2022-2025)
-- Owned the core B2B SaaS platform end to end: self-service customer console, campaign creation and lead-list targeting, script builder, telephony, per-second billing, wallets, reporting and call analytics; prioritized by metrics and data.
-- Launched a virtual PBX as a complementary product to raise customer retention.
-- Set up discovery and delivery: customer interviews, hypotheses formulated and defended with metrics, A/B testing of call scripts, effect sizing before development, decomposition and PRDs, a release cycle run jointly with sales, support and engineering.
-- Introduced LLM tooling and vibe coding across company workflows: built a voice bot MVP on the OpenAI Realtime API in 2 days and an internal analytics tool over the database in 4 days; work with Claude Code and Codex daily.
+- The core B2B SaaS platform end to end: self-service customer console, campaign creation and lead-list targeting, script builder, telephony, per-second billing, wallets, reporting and call analytics. Prioritization by metrics and data.
+- 130+ countries, bulk calls and SMS: ran the group CPaaS products, Effebot (Zvonobot's international brand) and P1SMS. Traffic routing across providers, billing, API integrations.
+- A virtual PBX launched as a complementary product to raise customer retention.
+- A full discovery and delivery loop: customer interviews, hypotheses formulated and defended with metrics, A/B testing of call scripts, effect sizing before development, decomposition and PRDs, a cross-functional release cycle run jointly with sales, support and engineering.
+- A voice bot MVP on the OpenAI Realtime API in 2 days and an internal analytics tool over the database in 4 days: brought LLM tooling and AI-assisted prototyping into company workflows. Work with Claude Code and Codex daily.
 
 iOS / Frontend Developer, Fodoj UG (Germany) | Nov 2020 - Jan 2022
-- Shipped a web product for the EU market: a self-service web account, Spanish localization, reporting and compliance features, usability testing with users.
+- A web product for the EU market: a self-service web account, Spanish localization, reporting and compliance features, usability testing.
 
 PRODUCTS
-- Zvonobot AI - A B2B voice AI agent platform: agent builder, campaigns, telephony, per-second billing. Proves a line taken from zero to 80 paying customers in under a year. Case study: https://rebsem.ru/projects/zvonobot-ai-en/
-- cursivo - An AI CRM for car rental, live in production: reads client documents, scores deal risk, suggests the next step. Proves I take a product to live users outside the day job. Case study: https://rebsem.ru/projects/cursivo-en/ · https://cursivo.xyz
-- obrabot - An internal voice AI analytics console: an LLM segments calls and surfaces what needs human attention. Proves LLM analytics built on top of real production data. Case study: https://rebsem.ru/projects/obrabot-en/
-- pet projects - Side projects built personally with AI coding agents (Claude Code, Codex) in 1-7 days from idea to a working release. Proves hypothesis-validation speed and a shared language with engineers. https://github.com/RebSem
+- Zvonobot AI: 80 customers, 500,000+ minutes. A B2B voice AI agent platform: agent builder, campaigns, telephony, per-second billing. Proves a new line launched from zero to a visible share of group revenue in a year. Case study: https://rebsem.ru/projects/zvonobot-ai-en/ · https://zvonobot.ru/ai-agent
+- cursivo: In development. An AI CRM for car rental: reads client documents, scores deal risk, suggests the next step. My own product, from idea to a working system, outside the day job. Case study: https://rebsem.ru/projects/cursivo-en/ · https://cursivo.xyz
+- obrabot: Live in production, internal Prof-IT tool. An internal voice AI analytics console: an LLM segments calls and surfaces what needs human attention. LLM analytics built on top of real production data. Case study: https://rebsem.ru/projects/obrabot-en/
 
 SKILLS
 Roles: Product Manager, Product Owner
-Product: product strategy and roadmap, discovery, customer interviews, metrics and product analytics, unit economics (LTV, CAC, retention, average spend), pricing, A/B experiments, hypothesis validation, go-to-market, OKRs, B2B SaaS, CRM
-AI and LLM: voice AI agents, conversational AI, LLM orchestration, prompt engineering, RAG, LLM evals, ASR, TTS, contact centers, SIP telephony, AI tools in daily work
-Delivery: PRDs and specs, decomposition, spec, review, release cycle, working with engineers and sales, prototyping with AI coding agents (Claude Code, Codex), fast hypothesis validation, 0 to 1
+Product: product strategy and roadmap, discovery, customer interviews, metrics and product analytics, unit economics (LTV, CAC, retention and churn, average spend), pricing and monetization, A/B experiments, hypothesis validation, go-to-market, OKRs, stakeholder management, B2B SaaS, CRM
+AI and LLM: generative AI (GenAI), voice AI agents, conversational AI, LLM orchestration, prompt engineering, RAG, LLM evals, ASR, TTS, contact centers, SIP telephony
+Delivery: PRDs and specs, decomposition, acceptance criteria, reviews, release cycle, working with engineers and sales, fast hypothesis validation, 0 to 1
 Tools: Jira, YouTrack, Notion, Confluence, Figma, Miro, Yandex Metrica, PostHog
-Technical: SQL, Python, TypeScript, REST, integrations, telephony
+AI tools: Claude Code, Codex, prototyping with AI agents
+Technical: SQL, Python, TypeScript, REST, integrations, telephony (SIP)
+
+WHAT I AM LOOKING FOR
+A Product Manager or Product Owner role on a product team. Domains where my experience works from day one: B2B SaaS, AI and LLM products, payments and billing, telecom and CPaaS, infrastructure platforms with integrations and APIs. I am at my best where a product needs to be launched from zero or taken from MVP to growth.
 
 EDUCATION, LANGUAGES, FORMAT
 Education: Perm State University, 2022.
-Languages: Russian: native. English: working proficiency, daily written use, comfortable on work calls.
+Languages: Russian: native. English: B1+, working correspondence and documentation daily, confident on work calls.
 Work format: Remote from Perm (GMT+5), open to relocation (Cyprus, EU, UAE), available for business travel. Full-time or contract (self-employed), can start within 2-4 weeks.
 
 CONTACT
