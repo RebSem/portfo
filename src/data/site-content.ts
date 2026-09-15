@@ -18,18 +18,6 @@ export const homePath = '/';
 export const aboutPath = '/about';
 export const blogPath = '/blog';
 
-/** Work format and availability signal — recruiter filters and LLMs key on this first. */
-export const workFormat: LocalizedText = {
-  ru: 'Remote · GMT+5 · открыт к релокации · RU native, EN working',
-  en: 'Remote · GMT+5 · open to relocation · RU native, EN working',
-};
-
-/** Compact timezone/format chip shown next to the hero status. */
-export const locationSignal: LocalizedText = {
-  ru: 'Remote · GMT+5 · релокация',
-  en: 'Remote · GMT+5 · relocation',
-};
-
 export const heroFallbackName = 'Mikhail Semenov';
 export const heroDisplayName: LocalizedText = {
   ru: 'Михаил Семенов',
@@ -39,16 +27,6 @@ export const heroDisplayName: LocalizedText = {
 export const heroSubtitle: LocalizedText = {
   ru: 'Продакт-менеджер в B2B SaaS. Запустил в Zvonobot (группа Prof-IT) направление голосовых AI-агентов с нуля: 80 платящих клиентов и 500 000+ минут разговоров в проде меньше чем за год. Прайсинг, юнит-экономика и вывод на рынок на мне; прототипы собираю с AI-агентами, чтобы гипотезы проверялись за дни. Удалённо, GMT+5, открыт к релокации.',
   en: 'Product manager in B2B SaaS. Launched the voice AI agent line at Zvonobot (Prof-IT Group) from zero: 80 paying customers and 500,000+ minutes of live conversations in production in under a year. Pricing, unit economics and go-to-market are mine; I prototype with AI coding agents so hypotheses get tested in days. Remote, GMT+5, open to relocation.',
-};
-
-export const currentRole: LocalizedText = {
-  ru: 'Product Manager · Zvonobot (группа Prof-IT) · с февраля 2022',
-  en: 'Product Manager · Zvonobot (Prof-IT Group) · since Feb 2022',
-};
-
-export const currentFocus: LocalizedText = {
-  ru: `Осенью 2025 запустил новый продукт группы: голосовых AI-агентов для B2B, и развиваю его. Через них прошло ${cvMetric('minutes').value.ru} минут разговоров в проде.`,
-  en: `In the fall of 2025 I launched a new product for the group, voice AI agents for B2B, and I keep scaling it. It has handled ${cvMetric('minutes').value.en} minutes of live conversations in production.`,
 };
 
 export const blogLabel: LocalizedText = {
@@ -379,36 +357,33 @@ export const uiCopy = {
     primaryAria: { ru: 'Основная навигация', en: 'Primary navigation' },
   },
   home: {
-    // Concrete result instead of a slogan: what was launched and how many pay.
-    eyebrow: { ru: 'Запустил направление голосовых AI-агентов с нуля · 80 платящих B2B-клиентов', en: 'Launched a voice AI product line from zero · 80 paying B2B customers' },
+    // The hero makes one claim and backs it with one result. Career numbers
+    // stay owned by cv.ts; both locales render the same semantic component.
     title: {
-      ru: 'Product Manager.',
-      en: 'Product Manager.',
+      ru: 'Запускаю и развиваю',
+      en: 'I launch and grow',
     },
-    // "AI" moved out of the H1 and into this line: the roles applied for are
-    // B2B SaaS, payments and AI products, and a headline that leads with AI
-    // reads as a narrow specialist to the first two.
-    subtitle: {
-      ru: 'B2B SaaS · голосовые AI-агенты · LLM',
-      en: 'B2B SaaS · Voice AI agents · LLM',
+    titleFocus: {
+      ru: 'B2B и AI-продукты.',
+      en: 'B2B & AI products.',
     },
-    // Split in two so the phone can show only the first sentence above the
-    // fold and keep the Telegram button visible without scrolling.
-    lead: {
-      ru: 'Запустил в Zvonobot направление голосовых AI-агентов с нуля: 80 платящих B2B-клиентов и 500 000+ минут живых разговоров в проде меньше чем за год.',
-      en: 'I launched Zvonobot AI, a voice AI agent line, from zero: 80 paying B2B customers and 500,000+ minutes of live conversations in production in under a year.',
+    proofIntro: {
+      ru: 'В Zvonobot запустил направление голосовых AI-агентов с нуля.',
+      en: 'Launched Zvonobot’s voice AI agent line from zero.',
     },
-    leadMore: {
-      ru: 'Отвечаю за прайсинг, юнит-экономику и вывод на рынок, а прототипы собираю с AI-агентами за дни, поэтому гипотезы проверяются, а не обсуждаются.',
-      en: 'I own pricing, unit economics and go-to-market, and I prototype with AI coding agents in days so hypotheses get tested, not debated.',
-    },
-    leadStrong: {
-      ru: 'Открыт к ролям продакт-менеджера в B2B SaaS, платежах и AI-продуктах. Удалённо (GMT+5), готов к релокации.',
-      en: 'Open to Product Manager roles in B2B SaaS, payments and AI products. Remote (GMT+5), open to relocation.',
+    proofResult: {
+      ru: `${cvMetric('customers').value.ru} платящих B2B-клиентов меньше чем за год.`,
+      en: `${cvMetric('customers').value.en} paying B2B customers in under a year.`,
     },
     heroStatus: {
-      ru: 'Открыт к новым проектам',
-      en: 'Open to new projects',
+      ru: 'Открыт к предложениям',
+      en: 'Open to opportunities',
+    },
+    // Same wording as the meta description, /cv and About: the stance is
+    // "open to", not a bare noun, in both locales.
+    workFormat: {
+      ru: 'Удалённо · GMT+5 · открыт к релокации',
+      en: 'Remote · GMT+5 · open to relocation',
     },
     heroCtaPrimary: {
       ru: 'Написать в Telegram',
@@ -418,31 +393,16 @@ export const uiCopy = {
       ru: 'Смотреть кейс',
       en: 'See the case',
     },
-    metricLabel: {
-      ru: 'Zvonobot AI · голосовые агенты для B2B',
-      en: 'Zvonobot AI · voice agents for B2B',
+    heroCaseLabel: {
+      ru: 'Смотреть кейс Zvonobot AI',
+      en: 'See the case: Zvonobot AI',
     },
-    // Sourced from cv.ts so the hero number and the resume can never diverge.
-    metricNumber: cvMetric('minutes').value,
-    metricUnit: {
-      ru: 'минут',
-      en: 'minutes',
-    },
-    metricCaption: {
-      ru: 'разговоров провели в проде голосовые AI-агенты, продукт, за который я отвечаю.',
-      en: 'of live conversations handled in production by the voice AI agents I own.',
-    },
-    metricFootnoteOne: {
-      ru: '80 платящих клиентов',
-      en: '80 paying customers',
-    },
-    metricFootnoteTwo: {
-      ru: 'запуск с нуля осенью 2025',
-      en: 'from zero since fall 2025',
-    },
-    photoAlt: { ru: 'Фото Михаила Семенова', en: 'Photo of Mikhail Semenov' },
+    // The footer renders the same icon row under uiCopy.footer.socialAria;
+    // two landmarks with one name would be indistinguishable to a screen reader.
+    heroSocialAria: { ru: 'Контакты и профили', en: 'Contact and profiles' },
     // Three things the hero does not already say: where, with whom, on what.
-    // The old third column repeated the minutes from the card above it.
+    // No minutes column on purpose: that figure lives in the Zvonobot case
+    // and on /cv, the home page carries the customer count only.
     currentlyEyebrow: { ru: 'Сейчас', en: 'Currently' },
     currentlyTitle: { ru: 'Что я делаю сейчас', en: 'What I do now' },
     currentlyRoleLabel: { ru: 'Роль', en: 'Role' },
