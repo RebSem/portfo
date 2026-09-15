@@ -5,14 +5,16 @@ interface Props {
   className?: string;
   /** Drop the Telegram icon (used where a dedicated Telegram CTA button is already shown). */
   hideTelegram?: boolean;
+  /** Landmark name; pass a distinct one when a page renders this row twice. */
+  label?: string;
 }
 
-const { className = 'social-links', hideTelegram = false } = Astro.props;
+const { className = 'social-links', hideTelegram = false, label } = Astro.props;
 const profileUrl = `https://github.com/${githubUsername}`;
 const locale = Astro.currentLocale === 'ru' ? 'ru' : 'en';
 ---
 
-<nav class={className} aria-label={uiCopy.footer.socialAria[locale]}>
+<nav class={className} aria-label={label ?? uiCopy.footer.socialAria[locale]}>
   <a
     class="social-link"
     href={profileUrl}

@@ -4,18 +4,15 @@ import AgentOps from '../components/AgentOps.astro';
 import FeaturedCase from '../components/FeaturedCase.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
-import SocialLinks from '../components/SocialLinks.astro';
+import HomeHero from '../components/HomeHero.astro';
 import { projects } from '../data/projects';
 import {
   buildPersonSchema,
   githubUsername,
   heroFallbackName,
-  locationSignal,
-  telegramUrl,
   uiCopy,
 } from '../data/site-content';
 import Layout from '../layouts/Layout.astro';
-import metricSpotlightScriptUrl from '../scripts/metric-spotlight.js?url';
 
 const visibleProjects = projects.filter((project) => !project.placeholder);
 const featuredCaseProject = visibleProjects.find((p) => p.id === 'zvonobot-ai');
@@ -42,60 +39,7 @@ const personSchema = buildPersonSchema('https://rebsem.ru/');
   <SiteHeader active="home" />
 
   <main id="main-content" class="page-main" data-github-username={githubUsername}>
-    <section class="home-intro" aria-labelledby="home-title">
-      <div class="home-intro-copy">
-        <div class="hero-status-row">
-          <span class="hero-status">
-            <span class="pulse-dot"></span>
-            {uiCopy.home.heroStatus.en}
-          </span>
-          <span class="hero-location" aria-label="Location and work format">{locationSignal.en}</span>
-        </div>
-
-        <p class="about-eyebrow hero-eyebrow">{uiCopy.home.eyebrow.en}</p>
-
-        <h1 id="home-title">
-          <span class="hero-serif">Product</span> Manager.
-        </h1>
-        <p class="hero-subtitle">{uiCopy.home.subtitle.en}</p>
-
-        <p class="home-lead">
-          {uiCopy.home.lead.en}
-          <span class="home-lead-more"> {uiCopy.home.leadMore.en}</span>
-          <br />
-          <span class="home-lead-strong">{uiCopy.home.leadStrong.en}</span>
-        </p>
-
-        <div class="hero-cta-row">
-          <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M4 11l16 -8l-4 18l-5 -4l-3 3l1 -5l8 -7"/>
-            </svg>
-            {uiCopy.home.heroCtaPrimary.en}
-          </a>
-          <a class="cta-button cta-secondary" href={zvonobotCaseHref}>
-            {uiCopy.home.heroCtaSecondary.en}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M5 12h14"/><path d="M13 6l6 6l-6 6"/>
-            </svg>
-          </a>
-        </div>
-
-        <SocialLinks className="social-links profile-social-links" hideTelegram />
-      </div>
-
-      <aside class="hero-metric-card" aria-label="Key metric">
-        <p class="hero-metric-label">{uiCopy.home.metricLabel.en}</p>
-        <p class="hero-metric-value">
-          {uiCopy.home.metricNumber.en}<span class="unit">{uiCopy.home.metricUnit.en}</span>
-        </p>
-        <p class="hero-metric-caption">{uiCopy.home.metricCaption.en}</p>
-        <p class="hero-metric-footnote">
-          <span>{uiCopy.home.metricFootnoteOne.en}</span>
-          <span>{uiCopy.home.metricFootnoteTwo.en}</span>
-        </p>
-      </aside>
-    </section>
+    <HomeHero locale="en" caseHref={zvonobotCaseHref} />
 
     <section class="section-block currently-section" aria-labelledby="currently-title">
       <div class="section-head">
@@ -285,5 +229,4 @@ const personSchema = buildPersonSchema('https://rebsem.ru/');
   </main>
 
   <SiteFooter />
-  <script is:inline type="module" src={metricSpotlightScriptUrl}></script>
 </Layout>
