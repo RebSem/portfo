@@ -13,6 +13,7 @@
 // same reasoning as the MutationObserver in theme-images.js.
 
 import posthog from 'posthog-js';
+import { isOwnerOptedOut } from '../lib/analytics-optout';
 import {
   contactChannel,
   isCvPath,
@@ -48,6 +49,17 @@ export function initAnalytics(token: string, host?: string): void {
   if (state.initialized) return;
   state.initialized = true;
 
+  // The owner's own browsers (see analytics-optout.ts): stop before init, so
+  // not a single request leaves the page. The accessor itself can throw when
+  // site data is blocked, hence the guard around reading localStorage.
+  let storage: Storage | null = null;
+  try {
+    storage = window.localStorage;
+  } catch {
+    storage = null;
+  }
+  if (isOwnerOptedOut(window.location.search, storage)) return;
+
   posthog.init(token, {
     api_host: host || DEFAULT_HOST,
 
@@ -67,7 +79,9 @@ export function initAnalytics(token: string, host?: string): void {
 
     // --- identity ----------------------------------------------------
     // Nothing is written to the visitor's device: no cookie, no localStorage,
-    // no sessionStorage. Because <ClientRouter /> never reloads the document,
+    // no sessionStorage. (The one exception is the owner's own opt-out flag,
+    // which only he ever sets — see analytics-optout.ts.)
+    // Because <ClientRouter /> never reloads the document,
     // an in-memory id still spans a whole visit; it resets on hard reload, new
     // tab, or any outbound round trip. Returning visitors are therefore not
     // recognisable — that is the accepted trade for needing no consent banner.

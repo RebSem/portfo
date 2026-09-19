@@ -110,6 +110,12 @@ no consent banner. Nothing calls `identify()`, so every event is anonymous and n
 person profile is created. Session replay, feature flags, surveys and remote
 config are all off, which also removes their network requests.
 
+The one thing the site ever writes to a device is the owner's own opt-out: open
+any page once with `?me=1` and that browser stops sending events (`?me=0` turns
+them back on). Ordinary visits never write the key. It exists because the author
+reads his own site through a VPN, and those visits otherwise look like real
+visitors from abroad — the audience the analytics is there to measure.
+
 The project token is public by design and ships in the built JavaScript; it lives
 in an Actions secret so it stays out of git history and can be rotated without a
 commit. Without that secret the analytics module is dropped at build time, so
