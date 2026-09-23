@@ -117,11 +117,12 @@ describe('cv canon', () => {
     // The anti-fit list was replaced with the positive "What I am looking
     // for" section: screeners, human and LLM, index everything, and a
     // negative from the candidate's own page surfaces in their summaries.
-    // The CEFR label is deliberate (Mikhail, 25 Aug 2026): recruiters file
+    // The CEFR label is deliberate (Mikhail, 25 Aug 2026; he raised it to B2
+    // on 14 Sep 2026): recruiters file
     // English as a level field, and no level gets recorded as "not stated".
     for (const locale of LOCALES) {
       const text = buildCvText(locale);
-      expect(text).toMatch(/B1\+/);
+      expect(text).toMatch(/English: B2|Английский B2/);
       expect(text).not.toMatch(WEAKNESS_MARKERS);
       expect(text).toMatch(/WHAT I AM LOOKING FOR|ЧТО Я ИЩУ/);
     }
