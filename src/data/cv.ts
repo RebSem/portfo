@@ -572,13 +572,13 @@ export const cvEducation: LocalizedText = {
  * the files alike.
  */
 export const cvLanguages: LocalizedText = {
-  ru: 'Русский родной. Английский B1+: рабочая переписка и документация ежедневно, уверенно на рабочих созвонах.',
-  en: 'Russian: native. English: B1+, working correspondence and documentation daily, confident on work calls.',
+  ru: 'Русский родной. Английский B2: рабочая переписка и документация ежедневно, уверенно на рабочих созвонах.',
+  en: 'Russian: native. English: B2, working correspondence and documentation daily, confident on work calls.',
 };
 
 export const cvWorkFormat: LocalizedText = {
-  ru: 'Удалённо из Перми (GMT+5), открыт к релокации (Кипр, ЕС, ОАЭ), готов к командировкам. Полная занятость или контракт (ИП), готов выйти за 2-4 недели.',
-  en: 'Remote from Perm (GMT+5), open to relocation (Cyprus, EU, UAE), available for business travel. Full-time or contract (self-employed), can start within 2-4 weeks.',
+  ru: 'Удалённо из Перми (GMT+5), открыт к релокации (Кипр, ЕС, ОАЭ), готов к командировкам. Полная занятость или контракт (ИП или самозанятость), оплата в USD, EUR или USDT, готов выйти за 2-4 недели.',
+  en: 'Remote from Perm (GMT+5), open to relocation (Cyprus, EU, UAE), available for business travel. Full-time or contract (self-employed), invoices in USD, EUR or USDT, can start within 2-4 weeks.',
 };
 
 // --- What I am looking for ------------------------------------------------
