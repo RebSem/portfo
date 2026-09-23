@@ -577,7 +577,7 @@ export const cvLanguages: LocalizedText = {
 };
 
 export const cvWorkFormat: LocalizedText = {
-  ru: 'Удалённо из Перми (GMT+5), открыт к релокации (Кипр, ЕС, ОАЭ), готов к командировкам. Полная занятость или контракт (ИП), оплата в USD, EUR или USDT, готов выйти за 2-4 недели.',
+  ru: 'Удалённо из Перми (GMT+5), открыт к релокации (Кипр, ЕС, ОАЭ), готов к командировкам. Полная занятость или контракт (ИП или самозанятость), оплата в USD, EUR или USDT, готов выйти за 2-4 недели.',
   en: 'Remote from Perm (GMT+5), open to relocation (Cyprus, EU, UAE), available for business travel. Full-time or contract (self-employed), invoices in USD, EUR or USDT, can start within 2-4 weeks.',
 };
 
