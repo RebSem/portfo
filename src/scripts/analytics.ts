@@ -12,7 +12,7 @@
 // (<body> is replaced, the document is not), so it binds exactly once — the
 // same reasoning as the MutationObserver in theme-images.js.
 
-import posthog from 'posthog-js';
+import posthog, { type CaptureOptions } from 'posthog-js';
 import { isOwnerOptedOut } from '../lib/analytics-optout';
 import {
   contactChannel,
@@ -22,6 +22,13 @@ import {
   projectDestination,
   projectSlugFromPath,
 } from '../lib/analytics-links';
+import {
+  EngagementTracker,
+  classifyBrowser,
+  scrollDepthPercent,
+  sectionKey,
+  type VisitorKind,
+} from '../lib/visitor-signals';
 
 const DEFAULT_HOST = 'https://eu.i.posthog.com';
 
@@ -29,6 +36,7 @@ interface AnalyticsState {
   initialized: boolean;
   clicksBound: boolean;
   cvViewsBound: boolean;
+  engagementBound: boolean;
 }
 
 declare global {
@@ -41,7 +49,54 @@ const state: AnalyticsState = window.__portfolioAnalyticsState ?? {
   initialized: false,
   clicksBound: false,
   cvViewsBound: false,
+  engagementBound: false,
 };
+
+/**
+ * Stamped onto every event in before_send (see visitor-signals.ts for what the
+ * labels mean). before_send rather than register(): the SDK captures the first
+ * pageview during init, before any register() call could run, and that first
+ * pageview is exactly the one a link scanner produces.
+ */
+const visit: {
+  visitor_kind: VisitorKind;
+  visitor_flags: string;
+  client_tz: string;
+  cv_src?: string;
+} = {
+  visitor_kind: 'unverified',
+  visitor_flags: '',
+  client_tz: '',
+};
+
+function readVisitorSignals(): void {
+  const verdict = classifyBrowser({
+    userAgent: navigator.userAgent,
+    webdriver: navigator.webdriver === true,
+    screenWidth: window.screen.width,
+    screenHeight: window.screen.height,
+    innerWidth: window.innerWidth,
+    innerHeight: window.innerHeight,
+    outerWidth: window.outerWidth,
+    outerHeight: window.outerHeight,
+  });
+  visit.visitor_kind = verdict.kind;
+  visit.visitor_flags = verdict.flags.join(',');
+
+  // Read against PostHog's own $geoip_time_zone: a sandbox in an Amsterdam
+  // datacenter rarely runs on Amsterdam time.
+  try {
+    visit.client_tz = Intl.DateTimeFormat().resolvedOptions().timeZone ?? '';
+  } catch {
+    visit.client_tz = '';
+  }
+
+  // The outreach tag used to live on cv:view only, so a recruiter who went on
+  // from /cv to a case study left the attribution behind. Now the whole visit
+  // carries it.
+  const tag = outreachTag(window.location.search);
+  if (tag) visit.cv_src = tag;
+}
 
 window.__portfolioAnalyticsState = state;
 
@@ -60,8 +115,16 @@ export function initAnalytics(token: string, host?: string): void {
   }
   if (isOwnerOptedOut(window.location.search, storage)) return;
 
+  readVisitorSignals();
+
   posthog.init(token, {
     api_host: host || DEFAULT_HOST,
+
+    // Event-level properties win, so an event can still state its own values.
+    before_send: (event) => {
+      if (event) event.properties = { ...visit, ...event.properties };
+      return event;
+    },
 
     // Dated snapshot of the SDK's starting values, so an SDK upgrade cannot
     // silently change behaviour. Everything we actually rely on is also set
@@ -101,6 +164,13 @@ export function initAnalytics(token: string, host?: string): void {
     // It survives advanced_disable_flags below.
     autocapture: true,
 
+    // Heatmaps: click, mouse-position and scroll-depth coordinates batched into
+    // $$heatmap events, no page text, nothing stored. Part of the core bundle,
+    // so it works with external loading disabled; set explicitly because with
+    // flags disabled the remote "heatmaps" switch never arrives. Automation is
+    // in this data too; filter on visitor_kind in SQL.
+    capture_heatmaps: true,
+
     // --- network diet ------------------------------------------------
     // Drops the /flags request, the remote-config fetch and its refresh timer.
     // Everything normally gated by remote config is pinned off explicitly below,
@@ -117,7 +187,8 @@ export function initAnalytics(token: string, host?: string): void {
     disable_session_recording: true,
     disable_surveys: true,
     disable_web_experiments: true,
-    capture_heatmaps: false,
+    // Dead-click detection is a lazily fetched extension, which the setting
+    // above forbids.
     capture_dead_clicks: false,
     capture_exceptions: false,
     capture_performance: false,
@@ -126,12 +197,17 @@ export function initAnalytics(token: string, host?: string): void {
 
   bindClickTracking();
   bindCvViewTracking();
+  bindEngagementTracking();
 }
 
 /**
  * A dedicated event rather than relying on the pageview: the resume is the
  * one page whose views are the point, and a named event survives any future
  * change to pageview handling.
+ *
+ * cv:view means "the page was opened", by anyone: mail scanners open every
+ * link in an application, so most cv:view events are machines. cv:read (see
+ * bindEngagementTracking) is the one that means a person read it.
  *
  * Both an immediate call and an astro:page-load listener are needed, and they
  * would otherwise double-count. This module is imported dynamically, so it can
@@ -163,6 +239,217 @@ function bindCvViewTracking(): void {
     capturedHref = null;
   });
   capture();
+}
+
+interface PageVisit {
+  href: string;
+  path: string;
+  locale: string;
+  tracker: EngagementTracker;
+  /** performance.now() when the page last became visible; null while hidden. */
+  visibleSince: number | null;
+  maxScroll: number;
+  clicks: number;
+  sections: Set<string>;
+  observer: IntersectionObserver | null;
+  engaged: boolean;
+  closed: boolean;
+  timer: number | null;
+}
+
+let current: PageVisit | null = null;
+
+/**
+ * Human signal per page view, three events:
+ *
+ * - page:engaged, once, when the page has been on screen for a few seconds AND
+ *   real input arrived (a mouse path, a touch, wheel scrolling, a key). This is
+ *   also the moment the whole visit is relabelled visitor_kind: 'human',
+ *   unless the browser was already identified as automation.
+ * - cv:read, the same moment on /cv: the human counterpart of cv:view.
+ * - page:summary, when the visitor leaves the page: seconds actually on screen
+ *   (unlike $pageleave, which counts a tab forgotten in the background), max
+ *   scroll, input counts and which sections came into view.
+ *
+ * Same lifecycle reasoning as bindCvViewTracking: an immediate start plus
+ * astro:page-load, deduplicated on href. A page closes on
+ * astro:before-preparation (soft navigation, location still the old page) or
+ * pagehide (sent by beacon, since the page is going away).
+ */
+function bindEngagementTracking(): void {
+  if (state.engagementBound) return;
+  state.engagementBound = true;
+
+  const passive = { passive: true } as const;
+
+  document.addEventListener(
+    'pointermove',
+    (event) => {
+      if (event.isTrusted) current?.tracker.input('pointer', event.timeStamp, event.clientX, event.clientY);
+    },
+    passive,
+  );
+  document.addEventListener('touchstart', (event) => {
+    if (event.isTrusted) current?.tracker.input('touch', event.timeStamp);
+  }, passive);
+  document.addEventListener('wheel', (event) => {
+    if (event.isTrusted) current?.tracker.input('wheel', event.timeStamp);
+  }, passive);
+  document.addEventListener('keydown', (event) => {
+    if (event.isTrusted) current?.tracker.input('key', event.timeStamp);
+  });
+  // Capture phase: a click on an internal link makes ClientRouter close the
+  // page (astro:before-preparation) before a bubbling listener would run, and
+  // that click belongs to the page it was made on.
+  document.addEventListener('click', () => {
+    if (current) current.clicks += 1;
+  }, { capture: true, passive: true });
+
+  let scrollFrame = 0;
+  window.addEventListener('scroll', () => {
+    if (scrollFrame) return;
+    scrollFrame = window.requestAnimationFrame(() => {
+      scrollFrame = 0;
+      recordScroll();
+    });
+  }, passive);
+
+  document.addEventListener('visibilitychange', () => {
+    if (!current || current.closed) return;
+    if (document.visibilityState === 'visible') current.visibleSince = performance.now();
+    else syncVisible(current);
+  });
+
+  document.addEventListener('astro:page-load', startPage);
+  document.addEventListener('astro:before-preparation', () => closePage());
+  window.addEventListener('pagehide', () => closePage({ transport: 'sendBeacon', send_instantly: true }));
+  // Back/forward cache: the page that was closed on pagehide is alive again.
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) startPage();
+  });
+
+  startPage();
+}
+
+function startPage(): void {
+  if (current && !current.closed && current.href === window.location.href) return;
+  if (current && !current.closed) closePage();
+
+  const page: PageVisit = {
+    href: window.location.href,
+    path: window.location.pathname,
+    locale: pageLocale(),
+    tracker: new EngagementTracker(),
+    visibleSince: document.visibilityState === 'visible' ? performance.now() : null,
+    maxScroll: 0,
+    clicks: 0,
+    sections: new Set(),
+    observer: null,
+    engaged: false,
+    closed: false,
+    timer: null,
+  };
+  current = page;
+  recordScroll();
+
+  if (typeof IntersectionObserver === 'function') {
+    // A section counts as seen once its top has come up into the upper part
+    // of the screen, so a section merely peeking in at the bottom does not.
+    page.observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) page.sections.add(sectionName(entry.target));
+        }
+      },
+      { rootMargin: '0px 0px -35% 0px' },
+    );
+    document.querySelectorAll('main section[aria-labelledby], footer').forEach((element) => {
+      page.observer?.observe(element);
+    });
+  }
+
+  page.timer = window.setInterval(checkEngaged, 1000);
+}
+
+function sectionName(element: Element): string {
+  const labelledBy = element.getAttribute('aria-labelledby');
+  return labelledBy ? sectionKey(labelledBy) : element.tagName.toLowerCase();
+}
+
+function recordScroll(): void {
+  if (!current || current.closed) return;
+  const depth = scrollDepthPercent(
+    window.scrollY,
+    window.innerHeight,
+    document.documentElement.scrollHeight,
+  );
+  if (depth > current.maxScroll) current.maxScroll = depth;
+}
+
+function syncVisible(page: PageVisit): void {
+  if (page.visibleSince === null) return;
+  const now = performance.now();
+  page.tracker.addVisible(now - page.visibleSince);
+  page.visibleSince = document.visibilityState === 'visible' ? now : null;
+}
+
+function stopTimer(page: PageVisit): void {
+  if (page.timer !== null) {
+    window.clearInterval(page.timer);
+    page.timer = null;
+  }
+}
+
+function checkEngaged(): void {
+  const page = current;
+  if (!page || page.closed || page.engaged) return;
+  syncVisible(page);
+  if (!page.tracker.engaged) return;
+
+  page.engaged = true;
+  stopTimer(page);
+  if (visit.visitor_kind !== 'automation') visit.visitor_kind = 'human';
+
+  const props = {
+    ...baseProps(),
+    engaged_after_s: Math.round(page.tracker.visibleMs / 1000),
+    input_evidence: page.tracker.evidence ?? 'none',
+    max_scroll_pct: page.maxScroll,
+  };
+  posthog.capture('page:engaged', props);
+
+  if (isCvPath(page.path)) {
+    const tag = outreachTag(window.location.search);
+    posthog.capture('cv:read', { ...props, ...(tag ? { cv_src: tag } : {}) });
+  }
+}
+
+function closePage(options?: CaptureOptions): void {
+  const page = current;
+  if (!page || page.closed) return;
+  syncVisible(page);
+  page.closed = true;
+  stopTimer(page);
+  page.observer?.disconnect();
+
+  posthog.capture(
+    'page:summary',
+    {
+      page_locale: page.locale,
+      page_path: page.path,
+      active_s: Math.round(page.tracker.visibleMs / 1000),
+      max_scroll_pct: page.maxScroll,
+      engaged: page.engaged,
+      input_evidence: page.tracker.evidence ?? 'none',
+      pointer_moves: page.tracker.pointerMoves,
+      touches: page.tracker.touches,
+      wheels: page.tracker.wheels,
+      keys: page.tracker.keys,
+      clicks: page.clicks,
+      sections_seen: [...page.sections],
+    },
+    options,
+  );
 }
 
 function pageLocale(): string {
