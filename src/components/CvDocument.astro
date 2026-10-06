@@ -38,6 +38,10 @@ interface Props {
 
 const { locale, pdfHref, docxHref, txtHref } = Astro.props;
 const isRu = locale === 'ru';
+// Absolute on purpose: the PDF is printed from a local preview server, and
+// Chrome resolves relative links against it, so the case links in the
+// published PDFs pointed at http://127.0.0.1:<port>/ until October 2026.
+const homeUrl = `${siteUrl}${isRu ? '/ru/' : '/'}`;
 
 // Build date, not a hand-maintained string: a stale "updated" line on a resume
 // is worse than none. Fixed locale and timezone so the output does not depend
@@ -154,7 +158,7 @@ const sectionIds = [
         <li class="cv-print-only"><a href={telegramUrl} rel="me noopener">Telegram {telegramHandle}</a></li>
         <li><a href={linkedinUrl} rel="me noopener">{linkedinHandle}</a></li>
         <li><a href={githubUrl} rel="me noopener">github.com/{githubUsername}</a></li>
-        <li class="cv-print-only"><a href={`${siteUrl}/`}>{siteHost}</a></li>
+        <li class="cv-print-only"><a href={homeUrl}>{siteHost}</a></li>
       </ul>
 
       {/* Two actions, not three: download the file or start a conversation.
@@ -220,7 +224,9 @@ const sectionIds = [
                 {phase.bullets.map((runs) => (
                   <li>
                     {runs.map((run) => {
-                      const href = runHref(run, locale);
+                      // Site-relative case links made absolute, see homeUrl above.
+                      const target = runHref(run, locale);
+                      const href = target?.startsWith('/') ? `${siteUrl}${target}` : target;
                       return href
                         ? <a href={href} set:html={nb(run.text[locale])} />
                         : <span set:html={nb(run.text[locale])} />;
@@ -252,7 +258,7 @@ const sectionIds = [
               <p class="cv-product-links">
                 {product.caseId && (
                   <a
-                    href={caseHref(product.caseId, locale)}
+                    href={`${siteUrl}${caseHref(product.caseId, locale)}`}
                     aria-label={`${copy.caseLink[locale]}: ${product.name}`}
                   >{copy.caseLink[locale]}</a>
                 )}
@@ -348,7 +354,7 @@ const sectionIds = [
         </li>
         <li><a href={linkedinUrl} rel="me noopener">{linkedinHandle}</a></li>
         <li><a href={githubUrl} rel="me noopener">github.com/RebSem</a></li>
-        <li><a href={`https://${siteHost}/`}>{siteHost}</a></li>
+        <li><a href={homeUrl}>{siteHost}</a></li>
       </ul>
       <p class="cv-updated">{copy.updated[locale]}: {updatedLabel}</p>
     </section>

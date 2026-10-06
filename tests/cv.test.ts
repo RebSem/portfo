@@ -1,6 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
+import { inflateSync } from 'node:zlib';
 import { describe, expect, it } from 'vitest';
 import {
   caseHref,
@@ -318,6 +319,30 @@ describe('cv download files', () => {
       for (const extension of ['pdf', 'docx', 'txt']) {
         expect(files, `${base}.${extension} is missing`).toContain(`${base}.${extension}`);
       }
+    }
+  });
+
+  // The PDFs are printed from a local preview server, and Chrome resolves a
+  // relative href against it: from August to October 2026 every case link in
+  // both published PDFs pointed at http://127.0.0.1:<port>/. Link annotations
+  // can sit inside compressed object streams, so those are inflated too.
+  itWithFiles('links nothing in the PDFs to a local server', () => {
+    const LOCAL = /https?:\/\/(?:127\.0\.0\.1|localhost|0\.0\.0\.0)/;
+    for (const file of files.filter((name) => name.endsWith('.pdf'))) {
+      const raw = readFileSync(path.join(CV_DIR, file));
+      const chunks = [raw.toString('latin1')];
+      const text = chunks[0];
+      for (const match of text.matchAll(/stream\r?\n/g)) {
+        const start = (match.index ?? 0) + match[0].length;
+        const end = text.indexOf('endstream', start);
+        if (end < 0) continue;
+        try {
+          chunks.push(inflateSync(raw.subarray(start, end)).toString('latin1'));
+        } catch {
+          // Not a Flate stream (fonts, images); nothing to look for there.
+        }
+      }
+      for (const chunk of chunks) expect(chunk, `${file} links to a local server`).not.toMatch(LOCAL);
     }
   });
 
