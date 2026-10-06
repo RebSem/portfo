@@ -1,12 +1,12 @@
 // Telling people from robots, without fingerprinting anyone.
 //
 // The resume link goes out inside job applications, and corporate mail
-// security opens every link before a person does. Of the 78 visits between
-// July and early October 2026 that were not the author's own, 49 were bots,
-// mail-link scanners or other automation: Microsoft and AWS sandboxes that
-// loaded /cv, scrolled it to the bottom and pressed both Copy buttons within
-// half a second. On a site with about two real visitors a week, that noise
-// was most of the signal.
+// security opens every link before a person does. Of the roughly 60 visits to
+// rebsem.ru between July and early October 2026 that were not the author's
+// own, about 35 were bots, mail-link scanners or other automation: Microsoft
+// and AWS sandboxes that loaded /cv, scrolled it to the bottom and pressed
+// both Copy buttons within half a second. On a site with about one real
+// visitor a week, that noise was most of the signal.
 //
 // Two layers, both pure so the tests can feed them shapes seen in production:
 //
