@@ -116,6 +116,26 @@ them back on). Ordinary visits never write the key. It exists because the author
 reads his own site through a VPN, and those visits otherwise look like real
 visitors from abroad — the audience the analytics is there to measure.
 
+Most early "visitors" were machines: corporate mail security opens every link
+in a job application, and those sandboxes load `/cv`, scroll it and press its
+buttons. So every event carries `visitor_kind`:
+
+- `automation`: the browser has a shape no ordinary browser has (a desktop
+  Chrome with a full build number, an OS version no browser reports, an
+  impossible screen, `navigator.webdriver`); the reasons are in `visitor_flags`;
+- `suspect`: softer signs only, such as a window exactly the size of the screen;
+- `unverified`: nothing suspicious yet;
+- `human`: the page was on screen for a few seconds and real input arrived (a
+  mouse path, a touch, wheel scrolling, a key). Set from that moment on.
+
+`page:engaged` and, on the resume, `cv:read` fire at that moment; `cv:view`
+still fires on open and is mostly scanners. `page:summary` closes every page
+view with seconds actually on screen, scroll depth and the sections seen. The
+`?src=` outreach tag now rides on the whole visit, and heatmaps (click, mouse
+and scroll coordinates) are on. Classification lives in
+[`src/lib/visitor-signals.ts`](src/lib/visitor-signals.ts) with its tests;
+nothing in it is stored or precise enough to recognise anyone.
+
 The project token is public by design and ships in the built JavaScript; it lives
 in an Actions secret so it stays out of git history and can be rotated without a
 commit. Without that secret the analytics module is dropped at build time, so
