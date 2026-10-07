@@ -71,3 +71,28 @@ read, so the print stylesheet keeps a comment at every one of them:
 
 Check any regenerated PDF with `pdftotext file.pdf - | head -40` before
 sending it anywhere. `tests/cv.test.ts` covers the rest.
+
+## A resume written for one vacancy
+
+Resumes rewritten for a single vacancy live in the job tracker, not here, and
+they carry the phone number on purpose (they go into application forms). To
+give one a link on the site:
+
+```bash
+npm run cv:vacancy -- "<tracker folder>/<vacancy>/исходники/<file>.md" <slug> <FileBaseName>
+```
+
+The script drops the phone from a copy of the markdown, renders it with the
+tracker's own renderer (`build-resumes.mjs`, so the layout matches the attached
+files exactly), checks the PDF for a phone, garbled glyphs and local links,
+checks the DOCX for a phone, and writes both to `public/cv/<slug>/`. Nothing
+else in the text is changed: it is the candidate's document, not site copy.
+Slug and file name are ASCII, because the link gets pasted into chats and forms.
+
+The files are unlisted like `/cv`: nothing on the site links to them.
+`tests/cv.test.ts` scans every file under `public/cv/`, subfolders included,
+for a phone number and for links to a local server.
+
+| Vacancy | Link |
+|---|---|
+| Drinkit, Product Owner (7 Oct 2026) | `/cv/drinkit/Semenov_Mikhail_Product_Owner_Drinkit_RU.pdf` |
