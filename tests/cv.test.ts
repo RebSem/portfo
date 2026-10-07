@@ -313,6 +313,14 @@ describe('cv download files', () => {
   const CV_DIR = path.resolve('public/cv');
   const files = existsSync(CV_DIR) ? readdirSync(CV_DIR) : [];
   const itWithFiles = files.length > 0 ? it : it.skip;
+  // Including the per-vacancy resumes in subfolders (public/cv/<slug>/).
+  const walk = (dir: string): string[] =>
+    readdirSync(dir, { withFileTypes: true }).flatMap((entry) =>
+      entry.isDirectory()
+        ? walk(path.join(dir, entry.name)).map((name) => path.join(entry.name, name))
+        : [entry.name],
+    );
+  const allFiles = existsSync(CV_DIR) ? walk(CV_DIR) : [];
 
   itWithFiles('publishes pdf, docx and txt for both locales', () => {
     for (const base of ['Mikhail_Semenov_CV_EN', 'Mikhail_Semenov_CV_RU']) {
@@ -328,7 +336,7 @@ describe('cv download files', () => {
   // can sit inside compressed object streams, so those are inflated too.
   itWithFiles('links nothing in the PDFs to a local server', () => {
     const LOCAL = /https?:\/\/(?:127\.0\.0\.1|localhost|0\.0\.0\.0)/;
-    for (const file of files.filter((name) => name.endsWith('.pdf'))) {
+    for (const file of allFiles.filter((name) => name.endsWith('.pdf'))) {
       const raw = readFileSync(path.join(CV_DIR, file));
       const chunks = [raw.toString('latin1')];
       const text = chunks[0];
@@ -349,7 +357,7 @@ describe('cv download files', () => {
   itWithFiles('keeps the PDFs small enough to survive a mail server', () => {
     // A decorative blend mode once rasterized every page and pushed these to
     // 9.2 MB. See scripts/cv/README.md.
-    for (const file of files.filter((name) => name.endsWith('.pdf'))) {
+    for (const file of allFiles.filter((name) => name.endsWith('.pdf'))) {
       const megabytes = statSync(path.join(CV_DIR, file)).size / 1024 / 1024;
       expect(megabytes, `${file} is ${megabytes.toFixed(1)} MB`).toBeLessThan(1.5);
     }
@@ -374,6 +382,36 @@ describe('cv download files', () => {
 
   const hasPdftotext = files.length > 0 && pdfText('Mikhail_Semenov_CV_EN.pdf') !== null;
   const itWithPdftotext = hasPdftotext ? it : it.skip;
+
+  const docxText = (file: string): string | null => {
+    try {
+      return execFileSync('unzip', ['-p', path.join(CV_DIR, file), 'word/document.xml'], {
+        encoding: 'utf8',
+        maxBuffer: 8 * 1024 * 1024,
+      });
+    } catch {
+      return null;
+    }
+  };
+
+  // Vacancy resumes come from the job tracker, whose files carry the phone
+  // number on purpose; scripts/cv/publish-vacancy-cv.mjs strips it. This is the
+  // backstop for every downloadable file, since the dist scan above only reads
+  // html/txt/xml/json and a number inside a PDF or DOCX would leak silently.
+  // PDFs need pdftotext and DOCX needs unzip; a missing tool skips that file.
+  itWithFiles('publishes no phone number in any resume file', () => {
+    const PHONE = /\+7[\s(]*\d{3}[)\s]*\d{3}[-\s]?\d{2}[-\s]?\d{2}/;
+    for (const file of allFiles) {
+      const text = file.endsWith('.txt')
+        ? readFileSync(path.join(CV_DIR, file), 'utf8')
+        : file.endsWith('.pdf')
+          ? pdfText(file)
+          : file.endsWith('.docx')
+            ? docxText(file)
+            : null;
+      if (text !== null) expect(text, `phone number in ${file}`).not.toMatch(PHONE);
+    }
+  });
 
   itWithPdftotext('keeps the PDF text layer readable by a parser', () => {
     for (const [file, locale] of [
