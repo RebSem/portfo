@@ -63,8 +63,8 @@ read, so the print stylesheet keeps a comment at every one of them:
 - **`break-inside: avoid` on a role emptied a page.** The Zvonobot block is
   longer than a sheet, so keeping it whole pushed all of it forward and left
   40% of page one blank. Only bullets and cards are kept whole now.
-- **Hyphens vanish at line breaks.** A wrapped `+7 982 230-60-19` came out of
-  the text layer as `+7 982 230-6019`. The number is `white-space: nowrap`
+- **Hyphens vanish at line breaks.** A wrapped number such as `+7 900 000-00-00` came
+  out of the text layer as `+7 900 000-0000`. The number is `white-space: nowrap`
   now. The same still happens to `full-time` in the EN summary when it wraps,
   which is one more reason DOCX is the better upload for an ATS form: there
   the word is intact.
