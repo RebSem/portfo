@@ -9,6 +9,8 @@ Source of [rebsem.ru](https://rebsem.ru) — the personal site and bilingual blo
 Mikhail Semenov, AI Product Manager. Astro, statically built, deployed to GitHub
 Pages on every push to `main`.
 
+Status: in production at rebsem.ru. Coding agents start at [`AGENTS.md`](AGENTS.md).
+
 ## Stack
 
 | | |
@@ -34,11 +36,16 @@ Russian lives under `/ru`.
 |---|---|
 | `/`, `/ru/` | Landing page |
 | `/about`, `/ru/about` | Profile, working style, anti-fit |
-| `/blog`, `/ru/blog` | Blog index |
-| `/blog/:slug` | Post, paired across locales by slug |
-| `/projects/:slug` | Project case study, 8 per locale |
+| `/blog`, `/ru/blog` | Blog index (unlisted: not in the menu or sitemap) |
+| `/blog/:slug` | Post, paired across locales by `translationKey` |
+| `/projects/:slug` | Project case study, 7 published per locale (slugs end in `-en` / `-ru`) |
+| `/projects` | Redirects to `/#projects` (no index page) |
+| `/cv`, `/ru/cv` | Interactive resume, unlisted (`noindex,follow`) |
+| `/cv.txt`, `/ru/cv.txt` | Plain-text resume |
+| `/cv/*.pdf`, `/cv/*.docx` | Generated resume files, see [`scripts/cv/README.md`](scripts/cv/README.md) |
 | `/api/github/{profile,repos,contributions}.json` | Static JSON, generated at build time |
-| `/sitemap.xml`, `/robots.txt`, `/llms.txt` | Generated |
+| `/sitemap.xml`, `/robots.txt` | Generated |
+| `/llms.txt` | Hand-maintained, in `public/` |
 
 ## Layout
 
@@ -90,6 +97,17 @@ npm run new:post -- my-post-slug --title-ru "Заголовок" --title-en "Tit
 
 Creates the RU/EN draft pair already linked to each other. Frontmatter reference
 and conventions: [`docs/blog-authoring.md`](docs/blog-authoring.md).
+
+## Other scripts
+
+| Command | What it does |
+|---|---|
+| `npm run cv:export` | Regenerates `public/cv/*` from the built `/cv` page (run `npm run build` first; needs Google Chrome) |
+| `npm run cv:vacancy -- <md> <slug> <FileBase>` | Publishes a resume written for one vacancy under `public/cv/<slug>/` |
+| `npm run og:build` | Renders the link-preview cards in `public/og/` (headless Chrome, macOS path) |
+| `npm run shots:webp` | Converts case-study PNGs in `public/projects/` to WebP |
+
+Resume pipeline details: [`scripts/cv/README.md`](scripts/cv/README.md).
 
 ## Environment
 
