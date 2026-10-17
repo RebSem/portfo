@@ -2,7 +2,9 @@
  * Renders the link-preview cards (og:image) for the pages that used to fall
  * back to a photo. A recruiter sees this card in Telegram or LinkedIn before
  * they see the site, so it carries the same three things the hero does: the
- * name, the role line, and the one number.
+ * name, the role line, and the one number. Since October 2026 it also carries
+ * the job-search status, top right: the preview is often the only part of a
+ * forwarded link anyone looks at, and "available now" is the deciding fact.
  *
  *   node scripts/og/build-og.mjs
  *
@@ -35,8 +37,8 @@ const CARDS = [
 ];
 
 const COPY = {
-  en: { name: 'Mikhail Semenov', number: '500,000+', unit: 'minutes', caption: 'of live voice-AI conversations in production · 80 paying B2B customers · launched from zero' },
-  ru: { name: 'Михаил Семенов', number: '500 000+', unit: 'минут', caption: 'живых разговоров голосовых AI-агентов в проде · 80 платящих B2B-клиентов · запуск с нуля' },
+  en: { name: 'Mikhail Semenov', status: 'Open to work · available now', number: '500,000+', unit: 'minutes', caption: 'of live voice-AI conversations in production · 80 paying B2B customers · launched from zero' },
+  ru: { name: 'Михаил Семенов', status: 'Ищу работу · готов выйти сразу', number: '500 000+', unit: 'минут', caption: 'живых разговоров голосовых AI-агентов в проде · 80 платящих B2B-клиентов · запуск с нуля' },
 };
 
 const html = ({ locale, eyebrow, role }) => {
@@ -61,6 +63,9 @@ const html = ({ locale, eyebrow, role }) => {
     content: ''; position: absolute; inset: 0;
     background: radial-gradient(900px 420px at 6% -10%, rgba(45,214,146,0.14), transparent 65%);
   }
+  .top { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .status { display: inline-flex; align-items: center; gap: 12px; padding: 9px 20px 9px 16px; border: 1px solid rgba(45,214,146,0.38); border-radius: 999px; background: rgba(45,214,146,0.08); font-size: 22px; font-weight: 500; color: #2dd692; white-space: nowrap; }
+  .status::before { content: ''; width: 10px; height: 10px; border-radius: 50%; background: #2dd692; }
   .eyebrow { position: relative; font-family: 'Geist Mono', monospace; font-size: 20px; letter-spacing: 0.14em; text-transform: uppercase; color: #8b9096; }
   .name { position: relative; margin-top: 18px; font-size: 96px; line-height: 1.02; letter-spacing: -0.02em; color: #ffffff; }
   .name.serif { font-family: 'Newsreader', Georgia, serif; font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
@@ -72,7 +77,10 @@ const html = ({ locale, eyebrow, role }) => {
   .caption { max-width: 560px; font-size: 21px; line-height: 1.4; color: #a4a9af; text-align: right; }
 </style></head><body>
   <div>
-    <p class="eyebrow">${eyebrow}</p>
+    <div class="top">
+      <p class="eyebrow">${eyebrow}</p>
+      <p class="status">${c.status}</p>
+    </div>
     <h1 class="name ${serifName ? 'serif' : 'sans'}">${c.name}</h1>
     <p class="role">${role}</p>
   </div>

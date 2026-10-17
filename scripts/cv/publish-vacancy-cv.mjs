@@ -64,7 +64,14 @@ try {
   // The renderer resolves its fonts from <cwd>/node_modules.
   symlinkSync(join(tracker, 'node_modules'), join(work, 'node_modules'));
   // RESUMES_EXPORT=0: never let the renderer touch the role folders on the desktop.
-  execFileSync('node', [renderer], { cwd: work, env: { ...process.env, RESUMES_EXPORT: '0' }, stdio: 'inherit' });
+  // DATA_DIR: since Oct 2026 the renderer resolves its data from its own
+  // location, not from cwd, so without it the run rendered the tracker's real
+  // sources into the tracker's real out/ and never saw the stripped copy.
+  execFileSync('node', [renderer], {
+    cwd: work,
+    env: { ...process.env, RESUMES_EXPORT: '0', DATA_DIR: join(work, 'data') },
+    stdio: 'inherit',
+  });
 
   const out = join(work, 'data', 'resumes', 'out');
   const pdf = join(out, `${base}.pdf`);

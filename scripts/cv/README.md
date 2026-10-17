@@ -89,10 +89,15 @@ checks the DOCX for a phone, and writes both to `public/cv/<slug>/`. Nothing
 else in the text is changed: it is the candidate's document, not site copy.
 Slug and file name are ASCII, because the link gets pasted into chats and forms.
 
+The renderer is pointed at the temporary copy through `DATA_DIR`. Since October
+2026 `build-resumes.mjs` resolves its data from its own location, not from the
+working directory, and without `DATA_DIR` it rendered the tracker's real
+sources into the tracker's real `out/` instead of the stripped copy.
+
 The files are unlisted like `/cv`: nothing on the site links to them.
 `tests/cv.test.ts` scans every file under `public/cv/`, subfolders included,
 for a phone number and for links to a local server.
 
 | Vacancy | Link |
 |---|---|
-| Drinkit, Product Owner (7 Oct 2026) | `/cv/drinkit/Semenov_Mikhail_Product_Owner_Drinkit_RU.pdf` |
+| Drinkit, Product Owner (7 Oct 2026; republished 18 Oct 2026 from the owner's updated source, Zvonobot dated to Oct 2026) | `/cv/drinkit/Semenov_Mikhail_Product_Owner_Drinkit_RU.pdf` |

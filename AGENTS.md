@@ -20,6 +20,12 @@ The repository is **public**. Treat every commit as permanent and world-readable
   deployed state is whatever is on `main`.
 - Last meaningful activity: 2026-10-07, per-vacancy resume publishing (#59); before
   that 2026-10-06, human/bot classification in analytics (#56) and CV PDF link fix (#57).
+- Since 2026-10-18 there is no current employer: the Zvonobot (Prof-IT Group) role
+  ended in October 2026 (the position was cut) and the owner is actively looking,
+  available to start immediately. `src/data/cv.ts` (`endDate`, `cvAvailability`,
+  `cvWorkFormat`) is the source; the home "Before you ask" block
+  (`StatusBoard.astro`), About, the case studies, JSON-LD, llms.txt and the OG cards
+  all say the same. Present tense about that role is a bug.
 - Content status: 7 published project case studies per locale (`tubedrop` is
   `draft: true`); one published blog post pair (`welcome`), the `tubedrop` post pair is
   a draft. The blog is **unlisted** since 2026-08-18: kept at its URLs, absent from the
@@ -199,6 +205,9 @@ is git-ignored; `.env.example` is the template.
 - 2026-10-06: human vs automation classification, engagement events, heatmaps (#56);
   resume PDFs no longer link to a local server (#57).
 - 2026-10-07: `cv:vacancy` command for per-vacancy resumes under `/cv/<slug>/` (#59).
+- 2026-10-18: open to work. The Zvonobot role is dated Feb 2022 - Oct 2026, the resume and
+  the site say "available now, no notice period", the home "What I do now" block became
+  the "Before you ask" status block.
 
 ## Gotchas
 
@@ -214,7 +223,11 @@ is git-ignored; `.env.example` is the template.
   `scripts/cv/README.md`.
 - Project and blog slugs carry the locale suffix: `/projects/<id>-en/`,
   `/ru/projects/<id>-ru/`. `/projects` itself has no page and redirects to `/#projects`.
-- `og:build` uses the macOS Google Chrome path; it won't run on Linux CI as is.
+- `og:build` uses the macOS Google Chrome path; it won't run on Linux CI as is. When
+  the card text changes, bump `OG_CARD_VERSION` in `Layout.astro` so preview caches
+  fetch the new image.
+- `cv:vacancy` must pass `DATA_DIR` to the tracker renderer (it does); without it the
+  renderer writes into the real tracker `out/`.
 - `astro.config.mjs` uses `experimental.fonts`; Newsreader is a local woff2 on purpose
   (the Google provider drops the optical-size axis).
 - Telegram links use `telegram.me`, not `t.me` (the `t.me` domain was in serverHold

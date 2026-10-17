@@ -1,6 +1,7 @@
 ---
 import type { Locale } from '../types/content';
 import {
+  cvAvailability,
   cvEducation,
   cvExperience,
   cvHeadline,
@@ -125,6 +126,14 @@ const sectionIds = [
       <p class="cv-eyebrow">CV</p>
       <h1 class="cv-name">{cvName[locale]}</h1>
       <p class="cv-headline" set:html={nb(cvHeadline[locale])} />
+      {/* Availability straight under the headline: since October 2026 there
+          is no current employer, and "can he start" is the first screening
+          question. The dot is decoration; the text carries the status, so
+          the PDF text layer and screen readers get the full sentence. */}
+      <p class="cv-availability">
+        <span class="cv-availability-dot" aria-hidden="true"></span>
+        <span>{cvAvailability[locale]}</span>
+      </p>
       {/* `phone` is undefined in every public build. It only resolves in the
           local, git-ignored build that produces the ATS-form exports.
           nowrap is load-bearing: when the number wrapped at its hyphen, the
@@ -513,6 +522,36 @@ const sectionIds = [
     content: '·';
     margin-right: 0.9rem;
     color: color-mix(in oklab, var(--foreground) 40%, transparent);
+  }
+
+  .cv-availability {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0.55rem 0 0;
+    color: var(--accent-text);
+    font-size: 0.92rem;
+    font-weight: 500;
+  }
+
+  .cv-availability-dot {
+    width: 7px;
+    height: 7px;
+    flex: none;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* Here and not in print.css: a bare class there loses to this scoped rule
+     (class plus data-astro-cid attribute), which is how the first PDF of
+     this line came out green. Paper is black on white: the accent green
+     prints as a washed-out grey on office printers. */
+  @media print {
+    .cv-availability {
+      margin-top: 0.2rem;
+      color: #000;
+      font-size: 9.5pt;
+    }
   }
 
   .cv-location {

@@ -26,6 +26,11 @@ import type { Locale, LocalizedText } from '../types/content';
  *   Hyphens inside compound words and ATS date ranges stay.
  * - The "10% -> 38% conversion" line from older drafts is intentionally gone:
  *   it was a retrospective estimate, not a measured experiment.
+ * - Since 18 Oct 2026 there is no current employer: the Zvonobot role ended
+ *   in October 2026, when the position was cut. Everything about that role
+ *   is in the past tense; the present tense stays only for habits that are
+ *   still true (daily work with Claude Code and Codex). Availability lives in
+ *   cvAvailability and cvWorkFormat and must say the same thing.
  */
 
 // --- Contacts -------------------------------------------------------------
@@ -160,10 +165,23 @@ export const cvLocationLine: LocalizedText = {
 };
 
 export const cvSummary: LocalizedText = {
-  ru: 'Продакт-менеджер с инженерным бэкграундом, 4,5 года в B2B SaaS. Запустил направление голосовых AI-агентов с нуля до 80 платящих клиентов, 500 000+ минут в проде и ~10% выручки группы меньше чем за год. Веду продуктовую команду из 4 инженеров, отвечаю за прайсинг, юнит-экономику и запуск новых направлений.',
-  // "Currently lead", not "Lead": after the past-tense "Launched", a bare
-  // "Lead" reads as a typo for "Led" to a native skimmer.
-  en: 'Product manager with an engineering background, 4.5 years in B2B SaaS. Launched a voice AI agent line from zero to 80 paying customers, 500,000+ minutes in production and ~10% of group revenue in under a year. Currently lead a product team of 4 engineers, own pricing, unit economics and new line launches.',
+  ru: 'Продакт-менеджер с инженерным бэкграундом, 4,5 года в B2B SaaS. Запустил направление голосовых AI-агентов с нуля до 80 платящих клиентов, 500 000+ минут в проде и ~10% выручки группы меньше чем за год. Вёл продуктовую команду из 4 инженеров, отвечал за прайсинг, юнит-экономику и запуск новых направлений. Сейчас ищу следующую продуктовую роль, готов выйти сразу.',
+  // The role at Zvonobot ended in October 2026 (the position was cut), so
+  // the team and ownership lines moved to the past tense, and the last
+  // sentence answers the first question a recruiter asks: can he start.
+  en: 'Product manager with an engineering background, 4.5 years in B2B SaaS. Launched a voice AI agent line from zero to 80 paying customers, 500,000+ minutes in production and ~10% of group revenue in under a year. Led a product team of 4 engineers and owned pricing, unit economics and new line launches. Looking for my next product role and can start immediately.',
+};
+
+/**
+ * Availability, one line under the headline on the page and in every export.
+ * Not dated on purpose: the experience section already says when the last
+ * role ended, and a "since" date on a status line ages badly. "No notice
+ * period" is the screening question this line exists to answer before it is
+ * asked; it is true because the role ended with the position.
+ */
+export const cvAvailability: LocalizedText = {
+  ru: 'Ищу работу · готов выйти сразу, без отработки',
+  en: 'Open to work · can start immediately, no notice period',
 };
 
 // --- Metrics --------------------------------------------------------------
@@ -188,8 +206,8 @@ export const cvMetrics: CvMetric[] = [
     id: 'group-share',
     value: { ru: '~10%', en: '~10%' },
     label: {
-      ru: 'выручки группы даёт направление, запущенное с нуля за год',
-      en: 'of group revenue comes from a line launched from zero in a year',
+      ru: 'выручки группы давало направление, запущенное с нуля за год',
+      en: 'of group revenue came from a line launched from zero in a year',
     },
   },
   {
@@ -214,8 +232,8 @@ export const cvMetrics: CvMetric[] = [
     id: 'repeat-revenue',
     value: { ru: '30%', en: '30%' },
     label: {
-      ru: 'выручки направления приносят повторные оплаты',
-      en: 'of line revenue comes from repeat purchases',
+      ru: 'выручки направления приносили повторные оплаты',
+      en: 'of line revenue came from repeat purchases',
     },
   },
   {
@@ -248,8 +266,11 @@ export const cvExperience: CvExperienceRole[] = [
   {
     role: { ru: 'Product Manager', en: 'Product Manager' },
     company: { ru: 'Zvonobot (группа Prof-IT)', en: 'Zvonobot (Prof-IT Group)' },
-    period: { ru: 'февраль 2022 - настоящее время', en: 'Feb 2022 - Present' },
+    period: { ru: 'февраль 2022 - октябрь 2026', en: 'Feb 2022 - Oct 2026' },
     startDate: '2022-02',
+    // The position was cut in October 2026. The day is not on record, and an
+    // ISO month is what both JSON-LD and ATS parsers expect anyway.
+    endDate: '2026-10',
     context: {
       ru: 'Zvonobot, B2B-платформа автоматизации звонков: голосовые роботы и AI-агенты для лидогенерации, продаж и реактивации клиентов.',
       en: 'Zvonobot is a B2B call automation platform: voice bots and AI agents for lead generation, sales outreach and customer reactivation.',
@@ -259,8 +280,8 @@ export const cvExperience: CvExperienceRole[] = [
         // October, not "fall": a season is not a parseable date, and a resume
         // parser reading the phase line needs a real month to anchor it.
         title: {
-          ru: 'Запуск Zvonobot AI (октябрь 2025 - настоящее время)',
-          en: 'Zvonobot AI (Oct 2025 - present)',
+          ru: 'Запуск Zvonobot AI (октябрь 2025 - октябрь 2026)',
+          en: 'Zvonobot AI (Oct 2025 - Oct 2026)',
         },
         // Result first, then the action: every bullet opens with a number or
         // an outcome, never with a process verb. Spec of 24 Aug 2026.
@@ -273,16 +294,16 @@ export const cvExperience: CvExperienceRole[] = [
         bullets: [
           [
             t(
-              '~10% выручки группы меньше чем за год: 80 платящих B2B-клиентов и 500 000+ минут живых разговоров в проде к августу 2026. Повторные оплаты дают 30% выручки направления.',
-              '~10% of group revenue in under a year: 80 paying B2B customers and 500,000+ minutes of live conversations in production by August 2026. Repeat purchases bring 30% of the line revenue.',
+              '~10% выручки группы меньше чем за год: 80 платящих B2B-клиентов и 500 000+ минут живых разговоров в проде к августу 2026. Повторные оплаты давали 30% выручки направления.',
+              '~10% of group revenue in under a year: 80 paying B2B customers and 500,000+ minutes of live conversations in production by August 2026. Repeat purchases brought 30% of the line revenue.',
             ),
           ],
           [
             t('С нуля до рынка за несколько недель: запустил ', 'From zero to market in weeks: launched '),
             link('Zvonobot AI', 'Zvonobot AI', { caseId: 'zvonobot-ai' }),
             t(
-              ', направление голосовых AI-агентов, на white-label платформе и доказал спрос на живых клиентах. Сейчас перевожу направление на собственную, более гибкую платформу.',
-              ', the voice AI agent line, on a white-label platform and proved demand with live customers. Now moving the line to our own, more flexible platform.',
+              ', направление голосовых AI-агентов, на white-label платформе и доказал спрос на живых клиентах. Затем обосновал цифрами переход на собственную, более гибкую платформу и начал перевод направления на неё.',
+              ', the voice AI agent line, on a white-label platform and proved demand with live customers. Then made the case, with numbers, for an in-house, more flexible platform and started moving the line onto it.',
             ),
           ],
           [
@@ -304,14 +325,14 @@ export const cvExperience: CvExperienceRole[] = [
           ],
           [
             t(
-              'Команда из 4 инженеров: разработка подчиняется техлиду, приоритеты, постановка и приёмка за мной. Ставлю квартальные цели по направлению и защищаю их перед руководством.',
-              'A product team of 4 engineers: engineering reports to the tech lead, while priorities, specs and acceptance are mine. Set quarterly OKRs for the line and defend them with leadership.',
+              'Команда из 4 инженеров: разработка подчинялась техлиду, приоритеты, постановка и приёмка были за мной. Ставил квартальные цели по направлению и защищал их перед руководством.',
+              'A product team of 4 engineers: engineering reported to the tech lead, while priorities, specs and acceptance were mine. Set quarterly OKRs for the line and defended them with leadership.',
             ),
           ],
           [
             t(
-              'Отдел продаж вырос с 4 до 15 менеджеров под направление: веду go-to-market со стейкхолдерами из продаж, поддержки и финансов, еженедельно обучаю продажи и поддержку продукту. Отвечаю за прайсинг, тарифы, маржу по типам звонков и юнит-экономику направления.',
-              "The sales team grew from 4 to 15 people to sell the line: I run go-to-market with stakeholders in sales, support and finance, and train sales and support on the product weekly. Own pricing, plans, per-call-type margins and the product's unit economics.",
+              'Отдел продаж вырос с 4 до 15 менеджеров под направление: вёл go-to-market со стейкхолдерами из продаж, поддержки и финансов, еженедельно обучал продажи и поддержку продукту. Отвечал за прайсинг, тарифы, маржу по типам звонков и юнит-экономику направления.',
+              "The sales team grew from 4 to 15 people to sell the line: I ran go-to-market with stakeholders in sales, support and finance, and trained sales and support on the product weekly. Owned pricing, plans, per-call-type margins and the product's unit economics.",
             ),
           ],
         ],
@@ -352,8 +373,8 @@ export const cvExperience: CvExperienceRole[] = [
             // first" is a superlative colleagues can dispute. The 2-day MVP
             // fact carries the point on its own.
             t(
-              'MVP голосового бота на OpenAI Realtime API за 2 дня, внутренний аналитический инструмент поверх базы данных за 4 дня: внедрил LLM-инструменты и прототипирование с AI-агентами в процессы компании. Ежедневно работаю с Claude Code и Codex.',
-              'A voice bot MVP on the OpenAI Realtime API in 2 days and an internal analytics tool over the database in 4 days: brought LLM tooling and AI-assisted prototyping into company workflows. Work with Claude Code and Codex daily.',
+              'MVP голосового бота на OpenAI Realtime API за 2 дня, внутренний аналитический инструмент поверх базы данных за 4 дня: внедрил LLM-инструменты и прототипирование с AI-агентами в процессы компании. С Claude Code и Codex по-прежнему работаю каждый день.',
+              'A voice bot MVP on the OpenAI Realtime API in 2 days and an internal analytics tool over the database in 4 days: brought LLM tooling and AI-assisted prototyping into company workflows. Still work with Claude Code and Codex every day.',
             ),
           ],
         ],
@@ -442,7 +463,7 @@ export const cvProducts: CvProduct[] = [
     // as a template. One card keeps the frame, the other two state the fact.
     proof: {
       ru: 'Собственный продукт от идеи до работающей системы вне рабочего контекста.',
-      en: 'My own product, from idea to a working system, outside the day job.',
+      en: 'My own product, from idea to a working system, built on my own time.',
     },
   },
   {
@@ -577,8 +598,8 @@ export const cvLanguages: LocalizedText = {
 };
 
 export const cvWorkFormat: LocalizedText = {
-  ru: 'Удалённо из Перми (GMT+5), открыт к релокации (Кипр, ЕС, ОАЭ), готов к командировкам. Полная занятость или контракт (ИП или самозанятость), оплата в USD, EUR или USDT, готов выйти за 2-4 недели.',
-  en: 'Remote from Perm (GMT+5), open to relocation (Cyprus, EU, UAE), available for business travel. Full-time or contract (self-employed), invoices in USD, EUR or USDT, can start within 2-4 weeks.',
+  ru: 'Удалённо из Перми (GMT+5), открыт к релокации (Кипр, ЕС, ОАЭ), готов к командировкам. Полная занятость или контракт (ИП или самозанятость), оплата в USD, EUR или USDT, готов выйти сразу.',
+  en: 'Remote from Perm (GMT+5), open to relocation (Cyprus, EU, UAE), available for business travel. Full-time or contract (self-employed), invoices in USD, EUR or USDT, can start immediately.',
 };
 
 // --- What I am looking for ------------------------------------------------

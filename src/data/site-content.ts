@@ -25,8 +25,8 @@ export const heroDisplayName: LocalizedText = {
 };
 
 export const heroSubtitle: LocalizedText = {
-  ru: 'Продакт-менеджер в B2B SaaS. Запустил в Zvonobot (группа Prof-IT) направление голосовых AI-агентов с нуля: 80 платящих клиентов и 500 000+ минут разговоров в проде меньше чем за год. Прайсинг, юнит-экономика и вывод на рынок на мне; прототипы собираю с AI-агентами, чтобы гипотезы проверялись за дни. Удалённо, GMT+5, открыт к релокации.',
-  en: 'Product manager in B2B SaaS. Launched the voice AI agent line at Zvonobot (Prof-IT Group) from zero: 80 paying customers and 500,000+ minutes of live conversations in production in under a year. Pricing, unit economics and go-to-market are mine; I prototype with AI coding agents so hypotheses get tested in days. Remote, GMT+5, open to relocation.',
+  ru: 'Продакт-менеджер в B2B SaaS. Запустил в Zvonobot (группа Prof-IT) направление голосовых AI-агентов с нуля: 80 платящих клиентов и 500 000+ минут разговоров в проде меньше чем за год. Прайсинг, юнит-экономика и вывод на рынок были на мне; прототипы собираю с AI-агентами, чтобы гипотезы проверялись за дни. Сейчас ищу следующую роль и готов выйти сразу. Удалённо, GMT+5, открыт к релокации.',
+  en: 'Product manager in B2B SaaS. Launched the voice AI agent line at Zvonobot (Prof-IT Group) from zero: 80 paying customers and 500,000+ minutes of live conversations in production in under a year. Pricing, unit economics and go-to-market were mine; I prototype with AI coding agents so hypotheses get tested in days. Looking for my next role now and can start immediately. Remote, GMT+5, open to relocation.',
 };
 
 export const blogLabel: LocalizedText = {
@@ -73,20 +73,21 @@ export interface AboutBlock {
 
 export const aboutBlocks: AboutBlock[] = [
   {
-    eyebrow: { ru: '01 · Сейчас', en: '01 · Now' },
+    // "Latest role", not "Now": the Zvonobot role ended in October 2026.
+    eyebrow: { ru: '01 · Последняя роль', en: '01 · Latest role' },
     title: { ru: 'Voice AI агенты для B2B', en: 'Voice AI agents for B2B' },
     body: [
       {
-        ru: 'В Prof-IT я с февраля 2022 года: пришёл продактом в голосовые продукты zvonobot и effebot, где роботы обзванивают клиентов по записанным сценариям. Когда LLM научились вести нормальный диалог, стало понятно, что на записанных сценариях далеко не уедешь. Так осенью 2025 появился новый продукт группы, который я запустил и развиваю: голосовые AI-агенты для B2B, они разговаривают вживую, а не проигрывают запись.',
-        en: 'I have been at Prof-IT since February 2022: I came in as a PM on its voice products, zvonobot and effebot, where robots call clients with pre-recorded scripts. Once LLMs learned to hold a real conversation, it became clear that recorded scripts would only get us so far. That is how the group’s new product came about in the fall of 2025, launched and now scaled by me: voice AI agents for B2B that talk to people live instead of playing a recording.',
+        ru: 'В Prof-IT я работал с февраля 2022 по октябрь 2026 года: пришёл продактом в голосовые продукты zvonobot и effebot, где роботы обзванивают клиентов по записанным сценариям. Когда LLM научились вести нормальный диалог, стало понятно, что на записанных сценариях далеко не уедешь. Так осенью 2025 появился новый продукт группы, который я запустил и развивал до октября 2026: голосовые AI-агенты для B2B, они разговаривают вживую, а не проигрывают запись.',
+        en: 'I was at Prof-IT from February 2022 to October 2026: I came in as a PM on its voice products, zvonobot and effebot, where robots call clients with pre-recorded scripts. Once LLMs learned to hold a real conversation, it became clear that recorded scripts would only get us so far. That is how the group’s new product came about: voice AI agents for B2B that talk to people live instead of playing a recording. I launched it in the fall of 2025 and grew it until October 2026.',
       },
       {
         // Deliberately no revenue share here. The relative money figure is
         // approved for the unlisted /cv, which Mikhail hands out by link;
         // /about is indexed, so the same number would be findable by search.
         // Both pages stay factually consistent, /cv just says more.
-        ru: `Веду продукт целиком, от клиентского кабинета до биллинга. Меньше чем за год: ${cvMetric('customers').value.ru} платящих B2B-клиентов, ${cvMetric('minutes').value.ru} минут разговоров в проде, отдел продаж под направление вырос с 4 до 15 менеджеров.`,
-        en: `I own the product end to end, from the client console to billing. In under a year: ${cvMetric('customers').value.en} paying B2B customers, ${cvMetric('minutes').value.en} minutes of live conversations in production, and a sales team that grew from 4 to 15 to sell the line.`,
+        ru: `Вёл продукт целиком, от клиентского кабинета до биллинга. Меньше чем за год: ${cvMetric('customers').value.ru} платящих B2B-клиентов, ${cvMetric('minutes').value.ru} минут разговоров в проде, отдел продаж под направление вырос с 4 до 15 менеджеров.`,
+        en: `I owned the product end to end, from the client console to billing. In under a year: ${cvMetric('customers').value.en} paying B2B customers, ${cvMetric('minutes').value.en} minutes of live conversations in production, and a sales team that grew from 4 to 15 to sell the line.`,
       },
     ],
   },
@@ -110,8 +111,8 @@ export const aboutBlocks: AboutBlock[] = [
     title: { ru: 'Гипотеза получает рабочий релиз за дни', en: 'A hypothesis gets a working release in days' },
     body: [
       {
-        ru: 'Пет-проекты собираю с AI-агентами Claude Code и Codex, чтобы проверять гипотезу за дни и говорить с инженерами на одном языке. В основной работе продуктовые решения, прайсинг и вывод на рынок за мной, а команда инженеров отгружает. Каждый пет-проект на сайте прошёл путь от идеи до working release за 1-7 дней.',
-        en: 'I build side projects with AI coding agents (Claude Code and Codex) so I can validate a hypothesis in days and speak the same language as engineers. In the day job, product decisions, pricing and go-to-market are mine, and the engineering team ships. Each side project on this site went from idea to a working release in 1-7 days.',
+        ru: 'Пет-проекты собираю с AI-агентами Claude Code и Codex, чтобы проверять гипотезу за дни и говорить с инженерами на одном языке. В Zvonobot продуктовые решения, прайсинг и вывод на рынок были за мной, а команда инженеров отгружала. Каждый пет-проект на сайте прошёл путь от идеи до working release за 1-7 дней.',
+        en: 'I build side projects with AI coding agents (Claude Code and Codex) so I can validate a hypothesis in days and speak the same language as engineers. At Zvonobot, product decisions, pricing and go-to-market were mine, and the engineering team shipped. Each side project on this site went from idea to a working release in 1-7 days.',
       },
     ],
   },
@@ -124,16 +125,16 @@ export const aboutBlocks: AboutBlock[] = [
     title: { ru: 'Без формальной власти, с общей целью', en: 'No formal authority, one shared goal' },
     body: [
       {
-        ru: 'Направление я запускал с командой из четырёх разработчиков, ни один из которых мне не подчиняется. Работает это через понятную постановку, честный приоритет и ревью, где я читаю каждый дифф сам: инженерам проще делать, когда видно, зачем.',
-        en: 'I launched the line with a team of four engineers, none of whom report to me. What makes it work is a clear spec, an honest priority call and a review where I read every diff myself: engineers move faster when the why is visible.',
+        ru: 'Направление я запускал с командой из четырёх разработчиков, ни один из которых мне не подчинялся. Работало это через понятную постановку, честный приоритет и ревью, где я сам читал каждый дифф: инженерам проще делать, когда видно, зачем.',
+        en: 'I launched the line with a team of four engineers, none of whom reported to me. What made it work was a clear spec, an honest priority call and a review where I read every diff myself: engineers move faster when the why is visible.',
       },
       {
         ru: 'Продажам новый продукт пришлось продать раньше, чем клиентам. Мы вышли на white-label платформу за несколько недель, доказали спрос на живых клиентах, и с этими цифрами отдел продаж вырос под направление с 4 до 15 менеджеров.',
         en: 'The sales team had to be sold on the product before any customer was. We went to market on a white-label platform in weeks, proved demand with live customers, and on those numbers the sales team grew from 4 to 15 to carry the line.',
       },
       {
-        ru: 'Собственную платформу вместо white-label я обосновал не презентацией, а маржой по типам звонков и повторными оплатами. Релизный цикл веду вместе с продажами и поддержкой, поэтому обратная связь от клиента доходит до бэклога за дни, а не за квартал.',
-        en: 'The case for building our own platform instead of staying on white-label was made with per-call-type margins and repeat payments, not with a deck. The release cycle runs jointly with sales and support, so customer feedback reaches the backlog in days, not a quarter.',
+        ru: 'Собственную платформу вместо white-label я обосновал не презентацией, а маржой по типам звонков и повторными оплатами. Релизный цикл я вёл вместе с продажами и поддержкой, поэтому обратная связь от клиента доходила до бэклога за дни, а не за квартал.',
+        en: 'The case for building an in-house platform instead of staying on white-label was made with per-call-type margins and repeat payments, not with a deck. I ran the release cycle jointly with sales and support, so customer feedback reached the backlog in days, not a quarter.',
       },
     ],
   },
@@ -149,12 +150,12 @@ export const aboutBlocks: AboutBlock[] = [
     ],
   },
   {
-    eyebrow: { ru: '06 · Open to', en: '06 · Open to' },
+    eyebrow: { ru: '06 · Ищу работу', en: '06 · Looking now' },
     title: { ru: 'Продакт-менеджер в B2B SaaS, платежах и AI-продуктах', en: 'Product manager in B2B SaaS, payments and AI products' },
     body: [
       {
-        ru: 'Открыт к ролям продакт-менеджера, где я отвечаю за продукт целиком: B2B SaaS, платежи и подписки, AI-продукты. Голос лишь один из доменов, где я это уже делал; интересны любые продукты, где AI закрывает реальную бизнес-задачу, а не добавлен для галочки. Формат: удалённо (живу в зоне GMT+5), открыт к релокации. Русский родной, английский рабочий, уверенно в письменном и async-общении.',
-        en: 'Open to product manager roles where I own the product end to end: B2B SaaS, payments and subscriptions, AI products. Voice is just one domain where I have already done this; I am interested in any product where AI solves a real business job rather than being a checkbox. Format: remote (I am in the GMT+5 zone), open to relocation. Russian native, English at working proficiency, comfortable in written and async communication.',
+        ru: 'Сейчас активно ищу работу и могу выйти сразу, без отработки. Открыт к ролям продакт-менеджера, где я отвечаю за продукт целиком: B2B SaaS, платежи и подписки, AI-продукты. Голос лишь один из доменов, где я это уже делал; интересны любые продукты, где AI закрывает реальную бизнес-задачу, а не добавлен для галочки. Формат: удалённо (живу в зоне GMT+5), открыт к релокации. Русский родной, английский B2, уверенно в письменном и async-общении.',
+        en: 'I am actively looking now and can start right away, with no notice period. Open to product manager roles where I own the product end to end: B2B SaaS, payments and subscriptions, AI products. Voice is just one domain where I have already done this; I am interested in any product where AI solves a real business job rather than being a checkbox. Format: remote (I am in the GMT+5 zone), open to relocation. Russian native, English B2, comfortable in written and async communication.',
       },
     ],
   },
@@ -265,7 +266,7 @@ export function buildPersonSchema(url: string): Record<string, unknown> {
     alternateName: heroDisplayName.ru,
     jobTitle: 'Product Manager',
     description:
-      'Product Manager at Zvonobot (Prof-IT Group). Launched a B2B voice AI agent line from zero: 80 paying customers and 500,000+ minutes of live conversations in production in under a year. Owns pricing, unit economics and go-to-market. Based in Perm, Russia. Remote, GMT+5, open to relocation.',
+      'Product Manager, open to work and available to start immediately. At Zvonobot (Prof-IT Group) from February 2022 to October 2026, launched a B2B voice AI agent line from zero: 80 paying customers and 500,000+ minutes of live conversations in production in under a year. Owned pricing, unit economics and go-to-market. Based in Perm, Russia. Remote, GMT+5, open to relocation.',
     url,
     image: 'https://rebsem.ru/main-hero.jpg',
     email: `mailto:${email}`,
@@ -284,10 +285,9 @@ export function buildPersonSchema(url: string): Record<string, unknown> {
       '@type': 'CollegeOrUniversity',
       name: 'Perm State University',
     },
-    worksFor: {
-      '@type': 'Organization',
-      name: 'Prof-IT',
-    },
+    // No worksFor: since October 2026 there is no current employer, and a
+    // bare worksFor is read as one. The dated history (OrganizationRole with
+    // start and end) is attached on /cv from buildEmploymentSchema.
     hasOccupation: {
       '@type': 'Occupation',
       name: 'Product Manager',
@@ -296,7 +296,7 @@ export function buildPersonSchema(url: string): Record<string, unknown> {
     },
     seeks: {
       '@type': 'Demand',
-      name: 'Product Manager roles in B2B SaaS, payments and AI products',
+      name: 'Product Manager or Product Owner roles in B2B SaaS, payments and AI products, available to start immediately',
     },
     sameAs: [
       `https://github.com/${githubUsername}`,
@@ -375,9 +375,12 @@ export const uiCopy = {
       ru: `${cvMetric('customers').value.ru} платящих B2B-клиентов меньше чем за год.`,
       en: `${cvMetric('customers').value.en} paying B2B customers in under a year.`,
     },
+    // An active search, not a passive "open to offers": the role at Zvonobot
+    // ended in October 2026, and the status links down to the block that
+    // answers the screening questions.
     heroStatus: {
-      ru: 'Открыт к предложениям',
-      en: 'Open to opportunities',
+      ru: 'Ищу работу · готов выйти сразу',
+      en: 'Open to work · available now',
     },
     // Same wording as the meta description, /cv and About: the stance is
     // "open to", not a bare noun, in both locales.
@@ -400,25 +403,52 @@ export const uiCopy = {
     // The footer renders the same icon row under uiCopy.footer.socialAria;
     // two landmarks with one name would be indistinguishable to a screen reader.
     heroSocialAria: { ru: 'Контакты и профили', en: 'Contact and profiles' },
-    // Three things the hero does not already say: where, with whom, on what.
-    // No minutes column on purpose: that figure lives in the Zvonobot case
-    // and on /cv, the home page carries the customer count only.
-    currentlyEyebrow: { ru: 'Сейчас', en: 'Currently' },
-    currentlyTitle: { ru: 'Что я делаю сейчас', en: 'What I do now' },
-    currentlyRoleLabel: { ru: 'Роль', en: 'Role' },
-    currentlyFocusLabel: { ru: 'Команда', en: 'Team' },
-    currentlyMetricLabel: { ru: 'Стек', en: 'Stack' },
-    currentlyMetricValue: {
-      ru: 'LLM-оркестрация, ASR/TTS, SIP-телефония, посекундный биллинг, кошельки, LLM-аналитика звонков',
-      en: 'LLM orchestration, ASR/TTS, SIP telephony, per-second billing, wallets, LLM call analytics',
-    },
-    currentlyRole: {
-      ru: 'Product Manager, Zvonobot (группа Prof-IT), с февраля 2022. Осенью 2025 запустил направление AI-агентов и с тех пор отвечаю за него.',
-      en: 'Product Manager, Zvonobot (Prof-IT Group), since Feb 2022. Launched the AI agent line in fall 2025 and own it since.',
-    },
-    currentlyFocus: {
-      ru: '4 инженера; отдел продаж вырос под направление с 4 до 15 менеджеров. Прайсинг и маржа на мне.',
-      en: '4 engineers; a sales team that grew from 4 to 15 to sell the line. Pricing and margins are mine.',
+    // The "What I do now" block became a status block when the Zvonobot role
+    // ended (October 2026): it answers, in order, the questions a recruiter
+    // screens on before a first call. Facts that the resume also states are
+    // read from cv.ts in StatusBoard.astro, not retyped here.
+    status: {
+      eyebrow: { ru: 'Статус', en: 'Status' },
+      title: { ru: 'Сразу о главном', en: 'Before you ask' },
+      roleLabel: { ru: 'Ищу', en: 'Looking for' },
+      role: {
+        ru: 'Роль Product Manager или Product Owner: B2B SaaS, AI и LLM-продукты, платежи и биллинг.',
+        en: 'A Product Manager or Product Owner role: B2B SaaS, AI and LLM products, payments and billing.',
+      },
+      startLabel: { ru: 'Выход', en: 'Start' },
+      start: { ru: 'Сразу, без отработки.', en: 'Right away, no notice period.' },
+      formatLabel: { ru: 'Формат', en: 'Format' },
+      format: {
+        ru: 'Удалённо (GMT+5) или с релокацией. Полная занятость или контракт.',
+        en: 'Remote (GMT+5) or relocation. Full-time or contract.',
+      },
+      englishLabel: { ru: 'Английский', en: 'English' },
+      english: {
+        ru: 'B2: каждый день переписка и документация, уверенно на рабочих созвонах.',
+        en: 'B2: written work and documentation every day, confident on work calls.',
+      },
+      lastRoleLabel: { ru: 'Последняя роль', en: 'Last role' },
+      lastRole: {
+        ru: 'Product Manager в Zvonobot (группа Prof-IT), февраль 2022 - октябрь 2026. Команда из 4 инженеров, отдел продаж под направление вырос с 4 до 15.',
+        en: 'Product Manager at Zvonobot (Prof-IT Group), Feb 2022 to Oct 2026. A team of 4 engineers; the sales team grew from 4 to 15 to sell the line.',
+      },
+      repliesLabel: { ru: 'Ответ', en: 'Replies' },
+      replies: {
+        ru: 'Обычно в тот же день, быстрее всего в Telegram.',
+        en: 'Usually the same day. Telegram is fastest.',
+      },
+      actionsAria: { ru: 'Связаться', en: 'Get in touch' },
+      telegram: { ru: 'Написать в Telegram', en: 'Message on Telegram' },
+      email: { ru: 'Письмо с готовой темой', en: 'Email, subject prefilled' },
+      copy: { ru: 'Скопировать карточку кандидата', en: 'Copy for your shortlist' },
+      copied: {
+        ru: 'Скопировано. Вставьте в ATS или в сообщение нанимающему менеджеру.',
+        en: 'Copied. Paste it into your ATS or a note to the hiring manager.',
+      },
+      copyFailed: {
+        ru: 'Скопировать не вышло. Всё то же самое есть в блоке выше.',
+        en: 'Could not copy here. The same details are in the block above.',
+      },
     },
     postsTitle: { ru: 'Свежие статьи', en: 'Recent posts' },
     postsSubtitle: {
@@ -495,8 +525,8 @@ export const uiCopy = {
   projects: {
     title: { ru: 'Проекты', en: 'Projects' },
     subtitle: {
-      ru: 'Два уровня: продукты, за которые я отвечаю в Prof-IT, и пет-проекты, доведённые до релиза за дни.',
-      en: 'Two tiers: the products I own at Prof-IT, and side projects taken to release in days.',
+      ru: 'Два уровня: продукты, за которые я отвечал целиком, и пет-проекты, доведённые до релиза за дни.',
+      en: 'Two tiers: products I have owned end to end, and side projects taken to release in days.',
     },
     featuredEyebrow: {
       ru: 'Флагман · 2026',
@@ -544,8 +574,8 @@ export const uiCopy = {
         en: 'Average customer spend grew 30% after the AI plans launched.',
       },
       {
-        ru: '30% выручки направления дают повторные оплаты.',
-        en: '30% of the line’s revenue comes from repeat payments.',
+        ru: '30% выручки направления давали повторные оплаты.',
+        en: '30% of the line’s revenue came from repeat payments.',
       },
     ],
     featuredScreenshotAlt: {
@@ -556,11 +586,14 @@ export const uiCopy = {
       ru: 'Демо-данные · реальные интерфейсы клиентов под NDA',
       en: 'Demo data · real client interfaces under NDA',
     },
-    workLedTitle: { ru: 'Продукты, за которые отвечаю', en: 'Products I own' },
-    workLedEyebrow: { ru: '01 · Day job', en: '01 · Day job' },
+    // The tier mixes ended work (Prof-IT, until October 2026) and a product
+    // that is still mine (cursivo), so the note says which is which instead
+    // of forcing one tense on both.
+    workLedTitle: { ru: 'Продукты, за которые я отвечал целиком', en: 'Products I have owned end to end' },
+    workLedEyebrow: { ru: '01 · Работа и свой продукт', en: '01 · Work and my own product' },
     workLedNote: {
-      ru: 'Здесь я отвечаю за продуктовую логику, метрики и delivery end-to-end.',
-      en: 'Here I own product logic, metrics, and end-to-end delivery.',
+      ru: 'Продуктовая логика, метрики и delivery end-to-end: в Prof-IT были на мне до октября 2026, в cursivo на мне и сейчас.',
+      en: 'Product logic, metrics and end-to-end delivery were mine: at Prof-IT until October 2026, and still are at cursivo.',
     },
     petTitle: { ru: 'Пет-проекты, доведённые до релиза', en: 'Side projects, shipped' },
     petEyebrow: { ru: '02 · Собраны с AI-агентами', en: '02 · Built with AI coding agents' },
@@ -597,8 +630,8 @@ export const uiCopy = {
   },
   footer: {
     defaultNote: {
-      ru: 'Открыт к новым проектам и коллаборациям.',
-      en: 'Open to new projects and collaborations.',
+      ru: 'Ищу роль продакт-менеджера, готов выйти сразу.',
+      en: 'Looking for a product manager role, available now.',
     },
     blogNote: {
       ru: 'Заметки без расписания.',
