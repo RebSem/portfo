@@ -5,6 +5,7 @@ import FeaturedCase from '../../components/FeaturedCase.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import HomeHero from '../../components/HomeHero.astro';
+import StatusBoard from '../../components/StatusBoard.astro';
 import { projects } from '../../data/projects';
 import {
   buildPersonSchema,
@@ -30,7 +31,7 @@ const personSchema = buildPersonSchema('https://rebsem.ru/ru');
 
 <Layout
   title={`${heroDisplayName.ru} - Product Manager`}
-  description="Продакт-менеджер в B2B SaaS. Запустил в Zvonobot направление голосовых AI-агентов с нуля: 80 платящих B2B-клиентов и 500 000+ минут живых разговоров в проде меньше чем за год. Прайсинг, юнит-экономика, вывод на рынок. Удалённо, GMT+5, EN/RU, готов к релокации."
+  description="Продакт-менеджер в B2B SaaS, ищу работу и готов выйти сразу. Запустил в Zvonobot направление голосовых AI-агентов с нуля: 80 платящих B2B-клиентов и 500 000+ минут живых разговоров в проде меньше чем за год. Отвечал за прайсинг, юнит-экономику и вывод на рынок. Удалённо, GMT+5, EN/RU, готов к релокации."
   schema={personSchema}
   alternate="/"
 >
@@ -41,27 +42,7 @@ const personSchema = buildPersonSchema('https://rebsem.ru/ru');
   <main id="main-content" class="page-main" data-github-username={githubUsername}>
     <HomeHero locale="ru" caseHref={zvonobotCaseHref} />
 
-    <section class="section-block currently-section" aria-labelledby="currently-title">
-      <div class="section-head">
-        <p class="about-eyebrow">{uiCopy.home.currentlyEyebrow.ru}</p>
-        <h2 id="currently-title">{uiCopy.home.currentlyTitle.ru}</h2>
-      </div>
-
-      <dl class="currently-grid">
-        <div class="currently-item">
-          <dt>{uiCopy.home.currentlyRoleLabel.ru}</dt>
-          <dd>{uiCopy.home.currentlyRole.ru}</dd>
-        </div>
-        <div class="currently-item">
-          <dt>{uiCopy.home.currentlyFocusLabel.ru}</dt>
-          <dd>{uiCopy.home.currentlyFocus.ru}</dd>
-        </div>
-        <div class="currently-item">
-          <dt>{uiCopy.home.currentlyMetricLabel.ru}</dt>
-          <dd>{uiCopy.home.currentlyMetricValue.ru}</dd>
-        </div>
-      </dl>
-    </section>
+    <StatusBoard locale="ru" />
 
     <section id="projects" class="section-block" aria-labelledby="projects-title">
       <div class="section-head">

@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
+  cleanKey,
   contactChannel,
+  contactHref,
   isCvPath,
   isInternal,
   outreachTag,
@@ -43,6 +45,47 @@ describe('contactChannel', () => {
     expect(contactChannel(u('https://cursivo.xyz/'))).toBeNull();
     expect(contactChannel(u('https://rebsem.ru/about'))).toBeNull();
     expect(contactChannel(u('tel:+70000000000'))).toBeNull();
+  });
+});
+
+describe('contactHref', () => {
+  it('records a prefilled mailto as the bare address plus a flag', () => {
+    const prefilled = u(
+      'mailto:perk77331@gmail.com?subject=Product%20Manager%20role%20at%20%5Bcompany%5D&body=Hi%20Mikhail%2C%0D%0A',
+    );
+    expect(contactChannel(prefilled)).toBe('email');
+    expect(contactHref(prefilled)).toEqual({ href: 'mailto:perk77331@gmail.com', prefilled: true });
+  });
+
+  it('handles a Russian template the same way', () => {
+    const ru = u(
+      `mailto:perk77331@gmail.com?subject=${encodeURIComponent('Роль продакта в [компания]')}`,
+    );
+    expect(contactHref(ru)).toEqual({ href: 'mailto:perk77331@gmail.com', prefilled: true });
+  });
+
+  it('leaves a plain mailto and every web link untouched', () => {
+    expect(contactHref(u('mailto:perk77331@gmail.com'))).toEqual({
+      href: 'mailto:perk77331@gmail.com',
+      prefilled: false,
+    });
+    expect(contactHref(u('https://telegram.me/Michael_Semenov'))).toEqual({
+      href: 'https://telegram.me/Michael_Semenov',
+      prefilled: false,
+    });
+  });
+});
+
+describe('cleanKey', () => {
+  it('normalizes a short slug and rejects anything else', () => {
+    expect(cleanKey('Status')).toBe('status');
+    expect(cleanKey(' footer ')).toBe('footer');
+    expect(cleanKey('hr-card')).toBe('hr-card');
+    expect(cleanKey('<x>')).toBeNull();
+    expect(cleanKey('-lead')).toBeNull();
+    expect(cleanKey('a'.repeat(41))).toBeNull();
+    expect(cleanKey('')).toBeNull();
+    expect(cleanKey(undefined)).toBeNull();
   });
 });
 

@@ -15,7 +15,9 @@
 import posthog, { type CaptureOptions } from 'posthog-js';
 import { isOwnerOptedOut } from '../lib/analytics-optout';
 import {
+  cleanKey,
   contactChannel,
+  contactHref,
   isCvPath,
   isInternal,
   outreachTag,
@@ -539,10 +541,18 @@ function bindClickTracking(): void {
     // longer compete for the same click.
     const channel = contactChannel(url);
     if (channel) {
+      // Where the link sits (hero, status block, footer): the same Telegram
+      // link appears in all three, and page_path alone cannot tell them apart.
+      const placement = cleanKey(
+        anchor.closest<HTMLElement>('[data-analytics-placement]')?.dataset.analyticsPlacement,
+      );
+      const contact = contactHref(url);
       posthog.capture('contact:link_click', {
         ...baseProps(),
         contact_channel: channel,
-        link_href: url.href,
+        link_href: contact.href,
+        ...(contact.prefilled ? { mail_prefilled: true } : {}),
+        ...(placement ? { link_placement: placement } : {}),
       });
       return;
     }

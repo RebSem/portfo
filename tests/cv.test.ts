@@ -5,11 +5,14 @@ import { inflateSync } from 'node:zlib';
 import { describe, expect, it } from 'vitest';
 import {
   caseHref,
+  cvAvailability,
   cvExperience,
   cvLookingFor,
   cvMetrics,
   cvProducts,
   cvSkillGroups,
+  cvSummary,
+  cvWorkFormat,
   email,
   linkedinHandle,
   linkedinUrl,
@@ -136,6 +139,34 @@ describe('cv canon', () => {
       const offenders = collectCvStrings(locale).filter((value) => value.includes('—'));
       expect(offenders, `em dash in ${locale}: ${offenders.join(' | ')}`).toEqual([]);
     }
+  });
+
+  it('contains no dashes of either kind anywhere in the rendered text', () => {
+    // The em dash test above walks only the experience/product/skills runs;
+    // the summary, the work format and the availability line were never
+    // covered, and the owner's rule bans en dashes in resume text as well.
+    // Hyphens in compound words and in " - " date ranges are not dashes.
+    for (const locale of LOCALES) {
+      expect(buildCvText(locale)).not.toMatch(/[—–]/);
+    }
+  });
+
+  it('dates the Zvonobot role as ended and says the candidate can start now', () => {
+    // Position cut in October 2026: no role may read as current, and the
+    // availability stated in the header, the summary and the work format
+    // must agree with each other.
+    expect(cvExperience.every((role) => Boolean(role.endDate))).toBe(true);
+    expect(cvExperience[0].endDate).toBe('2026-10');
+    for (const locale of LOCALES) {
+      const text = buildCvText(locale);
+      expect(text).not.toMatch(/Present|present\)|настоящее время/);
+      expect(text).toContain(cvAvailability[locale]);
+      expect(text).not.toMatch(/2-4 (weeks|недели)/);
+    }
+    expect(cvWorkFormat.en).toContain('can start immediately');
+    expect(cvWorkFormat.ru).toContain('готов выйти сразу');
+    expect(cvSummary.en).toContain('can start immediately');
+    expect(cvSummary.ru).toContain('готов выйти сразу');
   });
 
   it('never uses the word Senior in a title', () => {
@@ -443,8 +474,12 @@ describe('cv download files', () => {
       expect(extracted, `${file} carries the weakness section`).not.toMatch(WEAKNESS_MARKERS);
 
       // Date ranges have to survive as ranges, on one line with their role.
-      const range = locale === 'ru' ? 'февраль 2022 - настоящее время' : 'Feb 2022 - Present';
-      expect(extracted, `${file} lost the current role date range`).toContain(range);
+      // Read from the canon so the check follows the dates instead of
+      // pinning one; the Zvonobot range closed in October 2026.
+      const range = cvExperience[0].period[locale];
+      expect(extracted, `${file} lost the Zvonobot date range`).toContain(range);
+      expect(extracted, `${file} still calls a past role current`).not.toMatch(/Present|настоящее время/);
+      expect(extracted, `${file} lost the availability line`).toContain(cvAvailability[locale]);
     }
   });
 

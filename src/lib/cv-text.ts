@@ -1,5 +1,6 @@
 import type { Locale } from '../types/content';
 import {
+  cvAvailability,
   cvEducation,
   cvExperience,
   cvHeadline,
@@ -35,13 +36,14 @@ import {
  * consume it care about order and role, not hierarchy: the txt writer maps
  * node type to spacing, the DOCX writer maps it to a paragraph style. The
  * `roleHeader` type exists specifically so the "Job, Company | Feb 2022 -
- * Present" line stays a standalone line: ATS date parsers key on that shape,
+ * Oct 2026" line stays a standalone line: ATS date parsers key on that shape,
  * and burying it in a bullet list is a known way to lose the employment
  * history entirely.
  */
 export type CvNode =
   | { type: 'name'; text: string }
   | { type: 'headline'; text: string }
+  | { type: 'availability'; text: string }
   | { type: 'contact'; text: string }
   | { type: 'heading'; text: string }
   | { type: 'roleHeader'; text: string }
@@ -119,6 +121,9 @@ export const buildCvNodes = (locale: Locale, options: CvTextOptions = {}): CvNod
 
   nodes.push({ type: 'name', text: cvName[locale] });
   nodes.push({ type: 'headline', text: cvHeadline[locale] });
+  // Right under the headline and above the contacts: the line a recruiter
+  // and an ATS both read before deciding whether the rest is worth parsing.
+  nodes.push({ type: 'availability', text: cvAvailability[locale] });
   nodes.push({ type: 'contact', text: contactLine });
 
   nodes.push({ type: 'heading', text: HEADINGS.summary[locale] });

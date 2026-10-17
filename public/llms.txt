@@ -1,17 +1,19 @@
 # Mikhail Semenov, Product Manager
 
-Product manager in B2B SaaS at Zvonobot (Prof-IT Group). Launched the voice AI agent
-line from zero in the fall of 2025: 80 paying B2B customers and 500,000+ minutes of
-live conversations in production in under a year. Owns pricing, unit economics and
-go-to-market; prototypes with AI coding agents (Claude Code, Codex) so hypotheses get
-tested in days.
+Product manager in B2B SaaS, open to work and available to start immediately (no
+notice period). At Zvonobot (Prof-IT Group) from February 2022 to October 2026, where
+he launched the voice AI agent line from zero in the fall of 2025: 80 paying B2B
+customers and 500,000+ minutes of live conversations in production in under a year.
+Owned pricing, unit economics and go-to-market; prototypes with AI coding agents
+(Claude Code, Codex) so hypotheses get tested in days.
 
 ## Role and focus
 - Title: Product Manager (B2B SaaS, voice AI agents, LLM)
-- Company: Zvonobot, Prof-IT Group (since February 2022); launched and runs the AI agent line since fall 2025
-- Team: 4 engineers; a sales team that grew from 4 to 15 to sell the line
-- Open to: Product Manager roles in B2B SaaS, payments and AI products
-- Languages: Russian (native), English (working proficiency, comfortable in written and async)
+- Status: open to work, can start immediately, no notice period
+- Most recent role: Product Manager at Zvonobot, Prof-IT Group (February 2022 to October 2026); launched the AI agent line in fall 2025 and ran it until October 2026
+- Team at Zvonobot: 4 engineers; a sales team that grew from 4 to 15 to sell the line
+- Looking for: Product Manager or Product Owner roles in B2B SaaS, payments and AI products; full-time or contract
+- Languages: Russian (native), English B2 (written work and documentation daily, confident on work calls)
 - Work format: remote, GMT+5, open to relocation
 
 ## Canonical site
@@ -22,8 +24,8 @@ tested in days.
 - About: https://rebsem.ru/about
 
 ## Selected work
-- Zvonobot AI: voice AI-agent platform for B2B (Prof-IT), launched in the fall of 2025 and owned end-to-end (product, pricing, go-to-market). Multi-tenant SaaS console over telephony infrastructure. Case: https://rebsem.ru/projects/zvonobot-ai-en/
-- cursivo: AI-powered CRM for car rental, led from product logic to release. https://cursivo.xyz
+- Zvonobot AI: voice AI-agent platform for B2B (Prof-IT), launched in the fall of 2025 and owned end-to-end until October 2026 (product, pricing, go-to-market). Multi-tenant SaaS console over telephony infrastructure. Case: https://rebsem.ru/projects/zvonobot-ai-en/
+- cursivo: AI-powered CRM for car rental, his own product, in development (no public release and no users yet). https://cursivo.xyz
 - obrabot: internal voice AI analytics dashboard (Prof-IT). Case: https://rebsem.ru/projects/obrabot-en/
 - Side projects shipped in 1-7 days with AI coding agents (bazabot, Zodial, Slopiq, portfo)
 

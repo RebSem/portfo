@@ -12,7 +12,7 @@ const { locale, caseHref } = Astro.props;
 const copy = uiCopy.home;
 ---
 
-<section class="home-intro" aria-labelledby="home-title">
+<section class="home-intro" aria-labelledby="home-title" data-analytics-placement="hero">
   <p class="hero-identity">
     <span>{heroDisplayName[locale]}</span>
     <span class="hero-identity-divider" aria-hidden="true">/</span>
@@ -46,7 +46,11 @@ const copy = uiCopy.home;
 
   <div class="hero-footer">
     <p class="hero-availability">
-      <span class="hero-status"><span class="hero-status-dot" aria-hidden="true"></span>{copy.heroStatus[locale]}</span>
+      {/* A link, not a label: the status block right under the hero answers
+          the questions this line raises (start date, format, contacts). */}
+      <a class="hero-status" href="#status">
+        <span class="hero-status-dot" aria-hidden="true"></span>{copy.heroStatus[locale]}
+      </a>
       <span class="hero-format">{copy.workFormat[locale]}</span>
     </p>
     <SocialLinks className="social-links hero-social-links" hideTelegram label={copy.heroSocialAria[locale]} />
@@ -149,6 +153,16 @@ const copy = uiCopy.home;
     align-items: center;
     gap: 0.5rem;
     color: var(--accent-text);
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in oklab, var(--accent-text) 35%, transparent);
+    text-underline-offset: 0.3em;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .hero-status:hover {
+      text-decoration-color: currentColor;
+    }
   }
 
   .hero-status-dot {

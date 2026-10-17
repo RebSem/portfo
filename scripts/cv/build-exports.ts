@@ -91,6 +91,11 @@ const nodeToParagraph = (node: CvNode): Paragraph => {
         children: [new TextRun({ text: node.text, bold: true, size: 22 })],
         spacing: { after: 60 },
       });
+    case 'availability':
+      return new Paragraph({
+        children: [new TextRun({ text: node.text, bold: true, size: 20 })],
+        spacing: { after: 60 },
+      });
     case 'contact':
       return new Paragraph({
         children: [new TextRun({ text: node.text, size: 19 })],
