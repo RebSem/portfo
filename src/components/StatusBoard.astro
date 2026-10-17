@@ -1,6 +1,7 @@
 ---
 import { telegramUrl, uiCopy } from '../data/site-content';
 import { buildIntroMailto, buildShortlistText } from '../lib/shortlist';
+import { OWNER_TIME_ZONE } from '../lib/tz-overlap';
 import type { Locale } from '../types/content';
 
 interface Props {
@@ -17,7 +18,9 @@ const copy = uiCopy.home.status;
 const rows = [
   { label: copy.roleLabel, value: copy.role },
   { label: copy.startLabel, value: copy.start },
-  { label: copy.formatLabel, value: copy.format },
+  // The format row also hosts the live time-zone line (filled in by the
+  // script below, absent without JS).
+  { label: copy.formatLabel, value: copy.format, timezone: true },
   { label: copy.englishLabel, value: copy.english },
   { label: copy.lastRoleLabel, value: copy.lastRole },
   { label: copy.repliesLabel, value: copy.replies },
@@ -42,14 +45,51 @@ const rows = [
     <h2 id="status-title">{copy.title[locale]}</h2>
   </div>
 
+  <p class="status-banner">
+    <span class="status-banner-dot" aria-hidden="true"></span>
+    {copy.banner[locale]}
+  </p>
+
   <dl class="status-grid">
     {rows.map((row) => (
       <div class="status-item">
         <dt>{row.label[locale]}</dt>
-        <dd>{row.value[locale]}</dd>
+        <dd>
+          {row.value[locale]}
+          {row.timezone && (
+            <span
+              class="status-tz"
+              data-tz-overlap
+              data-tz-locale={locale}
+              data-tz-owner={OWNER_TIME_ZONE}
+              hidden
+            ></span>
+          )}
+        </dd>
       </div>
     ))}
   </dl>
+
+  {/* The status-page joke, kept to one entry and two lines of fact: the
+      reason for the search (asked in every screening) and what the reader
+      can do about it. */}
+  <div class="status-incidents">
+    <h3 class="status-incidents-title">{copy.incidentsTitle[locale]}</h3>
+    <article class="status-incident">
+      <p class="status-incident-head">
+        <time datetime="2026-10">{copy.incidentDate[locale]}</time>
+        <strong>{copy.incidentTitle[locale]}</strong>
+      </p>
+      <dl class="status-incident-updates">
+        {copy.incidentUpdates.map((update) => (
+          <div>
+            <dt>{update.label[locale]}</dt>
+            <dd>{update.text[locale]}</dd>
+          </div>
+        ))}
+      </dl>
+    </article>
+  </div>
 
   <div class="status-actions" role="group" aria-label={copy.actionsAria[locale]}>
     <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
@@ -92,6 +132,9 @@ const rows = [
 </section>
 
 <script>
+  import { emitSignal } from '../lib/site-signals';
+  import { OWNER_FALLBACK_OFFSET_MIN, overlap, overlapLine, parseGmtOffset } from '../lib/tz-overlap';
+
   // Bundled, so it is evaluated once per ClientRouter session; the buttons
   // are re-queried on every astro:page-load because a soft navigation swaps
   // in new DOM. dataset.bound stops a double listener if the same node ever
@@ -151,6 +194,7 @@ const rows = [
         if (!value) return;
 
         const copied = await copyText(value);
+        emitSignal('shortlist:copy', { copied });
         if (copied) button.dataset.copied = 'true';
         if (note) note.textContent = (copied ? note.dataset.copiedText : note.dataset.failedText) ?? '';
         window.clearTimeout(timer);
@@ -162,7 +206,62 @@ const rows = [
     });
   };
 
-  document.addEventListener('astro:page-load', init);
+  // --- Live time-zone line -------------------------------------------------
+
+  const ownerOffset = (timeZone: string, at: Date): number => {
+    try {
+      const label = new Intl.DateTimeFormat('en-US', { timeZone, timeZoneName: 'longOffset' })
+        .formatToParts(at)
+        .find((part) => part.type === 'timeZoneName')?.value;
+      return (label ? parseGmtOffset(label) : null) ?? OWNER_FALLBACK_OFFSET_MIN;
+    } catch {
+      return OWNER_FALLBACK_OFFSET_MIN;
+    }
+  };
+
+  let clockTimer: number | undefined;
+
+  const paintOverlap = () => {
+    const now = new Date();
+    document.querySelectorAll<HTMLElement>('[data-tz-overlap]').forEach((node) => {
+      const locale = node.dataset.tzLocale === 'ru' ? 'ru' : 'en';
+      const timeZone = node.dataset.tzOwner ?? 'Asia/Yekaterinburg';
+      let clock: string;
+      try {
+        clock = new Intl.DateTimeFormat(locale === 'ru' ? 'ru-RU' : 'en-GB', {
+          timeZone,
+          hour: '2-digit',
+          minute: '2-digit',
+        }).format(now);
+      } catch {
+        return;
+      }
+      // getTimezoneOffset() is minutes WEST of UTC; the lib wants east.
+      const result = overlap(-now.getTimezoneOffset(), ownerOffset(timeZone, now));
+      node.textContent = overlapLine(locale, result, clock);
+      node.hidden = false;
+    });
+  };
+
+  // Once a minute, and only while the tab is visible: a hidden tab has
+  // nobody reading the clock.
+  const startClock = () => {
+    window.clearInterval(clockTimer);
+    if (!document.querySelector('[data-tz-overlap]')) return;
+    paintOverlap();
+    clockTimer = window.setInterval(() => {
+      if (document.visibilityState === 'visible') paintOverlap();
+    }, 60_000);
+  };
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && document.querySelector('[data-tz-overlap]')) paintOverlap();
+  });
+
+  document.addEventListener('astro:page-load', () => {
+    init();
+    startClock();
+  });
 </script>
 
 <style>
@@ -177,6 +276,106 @@ const rows = [
     .status-section {
       scroll-margin-top: 0;
     }
+  }
+
+  .status-banner {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0 0 1rem;
+    padding: 0.7rem 0.95rem;
+    border: 1px solid color-mix(in oklab, var(--accent) 30%, var(--border));
+    border-radius: 0.65rem;
+    background: color-mix(in oklab, var(--surface) 90%, var(--accent) 10%);
+    color: var(--accent-text);
+    font-size: 0.92rem;
+    font-weight: 500;
+  }
+
+  .status-banner-dot {
+    width: 8px;
+    height: 8px;
+    flex: none;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .status-tz {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.88rem;
+    color: color-mix(in oklab, var(--foreground) 68%, transparent);
+  }
+
+  .status-tz[hidden] {
+    display: none;
+  }
+
+  .status-incidents {
+    margin-top: 1.4rem;
+  }
+
+  .status-incidents-title {
+    margin: 0 0 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: color-mix(in oklab, var(--foreground) 60%, transparent);
+  }
+
+  .status-incident {
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 0.65rem;
+  }
+
+  .status-incident-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.75rem;
+    margin: 0;
+    font-size: 0.95rem;
+  }
+
+  .status-incident-head time {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: color-mix(in oklab, var(--foreground) 60%, transparent);
+  }
+
+  .status-incident-head strong {
+    font-weight: 600;
+  }
+
+  .status-incident-updates {
+    display: grid;
+    gap: 0.35rem;
+    margin: 0.6rem 0 0;
+  }
+
+  .status-incident-updates > div {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15rem 0.6rem;
+    font-size: 0.92rem;
+    line-height: 1.45;
+  }
+
+  .status-incident-updates dt {
+    font-weight: 600;
+    color: var(--accent-text);
+  }
+
+  .status-incident-updates dt::after {
+    content: ':';
+  }
+
+  .status-incident-updates dd {
+    margin: 0;
+    color: var(--foreground);
   }
 
   .status-grid {

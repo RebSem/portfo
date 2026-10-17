@@ -1,0 +1,159 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { caseHref } from '../data/cv';
+import { telegramUrl } from '../data/site-content';
+
+// GitHub Pages serves this one file for every missing path, /ru/... included,
+// so both languages are in the markup and the inline script below keeps the
+// one that matches the URL. Without JS both stay visible, which is still a
+// correct page. The joke is about roadmaps, never about the layoff.
+const copy = {
+  en: {
+    title: "This page isn't on the roadmap.",
+    body: 'Maybe a typo, maybe an old link. Try one of these:',
+    home: 'Home',
+    case: 'Zvonobot AI case',
+    telegram: 'Message me on Telegram',
+    note: "While you're here: I'm looking for a Product Manager role and can start right away.",
+  },
+  ru: {
+    title: 'Этой страницы нет в роадмапе.',
+    body: 'Возможно, опечатка или старая ссылка. Всё важное в один клик:',
+    home: 'На главную',
+    case: 'Кейс Zvonobot AI',
+    telegram: 'Написать в Telegram',
+    note: 'Раз уж вы здесь: ищу роль продакт-менеджера и могу выйти сразу.',
+  },
+} as const;
+
+const blocks = [
+  { locale: 'en' as const, home: '/' },
+  { locale: 'ru' as const, home: '/ru/' },
+];
+---
+
+<Layout title="Not found · Mikhail Semenov" description="Page not found." noIndex>
+  <main id="main-content" class="page-main nf">
+    <div class="nf-card">
+      {blocks.map(({ locale, home }) => (
+        <section class="nf-block" lang={locale} data-nf-locale={locale} aria-labelledby={`nf-title-${locale}`}>
+          <p class="about-eyebrow">404</p>
+          <h1 id={`nf-title-${locale}`}>{copy[locale].title}</h1>
+          <p class="nf-body">{copy[locale].body}</p>
+          <ul class="nf-links">
+            <li><a href={home}>{copy[locale].home}</a></li>
+            <li><a href={caseHref('zvonobot-ai', locale)}>{copy[locale].case}</a></li>
+            <li><a href={telegramUrl} target="_blank" rel="noreferrer">{copy[locale].telegram}</a></li>
+          </ul>
+          <p class="nf-note">
+            <span class="nf-dot" aria-hidden="true"></span>
+            {copy[locale].note}
+          </p>
+        </section>
+      ))}
+      {/* The pixel pug from the site's first design, finally given a job:
+          peeking over the top edge of the card. Decorative, static. */}
+      <img class="nf-pug" src="/pixel-pug-peek.svg" alt="" width="60" height="42" />
+    </div>
+
+    {/* data-astro-rerun: ClientRouter skips an inline script it has run
+        once, so without it a second soft visit to a 404 kept the language
+        picked on the first one. */}
+    <script is:inline data-astro-rerun>
+      (() => {
+        const ru = location.pathname === '/ru' || location.pathname.startsWith('/ru/');
+        const keep = ru ? 'ru' : 'en';
+        document.querySelectorAll('[data-nf-locale]').forEach((block) => {
+          block.hidden = block.getAttribute('data-nf-locale') !== keep;
+        });
+        document.documentElement.lang = keep;
+        document.documentElement.dataset.locale = keep;
+        if (ru) document.title = 'Не найдено · Михаил Семенов';
+      })();
+    </script>
+  </main>
+</Layout>
+
+<style>
+  .nf {
+    display: grid;
+    place-items: center;
+    min-height: 80vh;
+    padding-block: 3rem;
+  }
+
+  .nf-card {
+    position: relative;
+    width: min(100%, 36rem);
+    padding: 2rem 1.75rem 2.25rem;
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    background: var(--surface);
+  }
+
+  .nf-block + .nf-block {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .nf-block[hidden] + .nf-block {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  h1 {
+    margin-top: 0.6rem;
+    font-size: clamp(1.6rem, 3vw + 0.6rem, 2.2rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+  }
+
+  .nf-body {
+    margin-top: 0.9rem;
+    color: color-mix(in oklab, var(--foreground) 72%, transparent);
+  }
+
+  .nf-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-weight: 500;
+  }
+
+  .nf-note {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-top: 1.4rem;
+    font-size: 0.9rem;
+    color: var(--accent-text);
+  }
+
+  .nf-dot {
+    width: 6px;
+    height: 6px;
+    flex: none;
+    border-radius: 50%;
+    background: currentColor;
+    transform: translateY(-0.1em);
+  }
+
+  /* Sits on the top edge of the card, head over the border. The SVG's
+     head ends at row 11 of 14, so the image is lifted by 11/14 of its
+     height, not all of it, or it floats with a gap above the card. */
+  .nf-pug {
+    position: absolute;
+    top: 0;
+    right: 1.75rem;
+    width: 60px;
+    height: auto;
+    image-rendering: pixelated;
+    transform: translateY(-78.5%);
+  }
+</style>

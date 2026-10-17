@@ -177,6 +177,8 @@ is git-ignored; `.env.example` is the template.
   navigation and `llms.txt`; `/cv` keeps `noindex,follow`.
 - Analytics stays storage-free and anonymous: `persistence: 'memory'`, no `identify()`,
   no session replay. The only device write is the owner's `?me=1` opt-out flag.
+  UI code never imports posthog: it emits `rebsem:signal`, and only names and values
+  allow-listed in `src/lib/site-signals.ts` are recorded.
   Visitor classification lives in `src/lib/visitor-signals.ts` and must stay pure.
 - `print.css` and the PDF-related comments in it encode ATS lessons (see
   `scripts/cv/README.md`); don't "clean them up".

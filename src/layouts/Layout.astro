@@ -4,6 +4,7 @@ import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 import '../styles/print.css';
 import Analytics from '../components/Analytics.astro';
+import TabNudge from '../components/TabNudge.astro';
 import themeImagesScriptUrl from '../scripts/theme-images.js?url';
 
 interface Props {
@@ -145,6 +146,7 @@ const hreflangRu = lang === 'ru' ? canonicalUrl : alternateUrl;
   <body id="top">
     <ClientRouter fallback="swap" />
     <slot />
+    <TabNudge />
     <script is:inline type="module" src={themeImagesScriptUrl}></script>
   </body>
 </html>

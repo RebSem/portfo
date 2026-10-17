@@ -46,6 +46,7 @@ Russian lives under `/ru`.
 | `/api/github/{profile,repos,contributions}.json` | Static JSON, generated at build time |
 | `/sitemap.xml`, `/robots.txt` | Generated |
 | `/llms.txt` | Hand-maintained, in `public/` |
+| `/404.html` | Served by GitHub Pages for any missing path; one file, picks EN or RU from the URL |
 
 ## Layout
 
@@ -150,7 +151,11 @@ buttons. So every event carries `visitor_kind`:
 still fires on open and is mostly scanners. `page:summary` closes every page
 view with seconds actually on screen, scroll depth and the sections seen. The
 `?src=` outreach tag now rides on the whole visit, and heatmaps (click, mouse
-and scroll coordinates) are on. Classification lives in
+and scroll coordinates) are on. Small UI modules report through a DOM event
+instead of importing the SDK (`rebsem:signal`, allow-listed in
+[`src/lib/site-signals.ts`](src/lib/site-signals.ts)): `shortlist:copy` from the
+home status block and `tab:return` when a visitor comes back to a tab that showed
+the away title. Classification lives in
 [`src/lib/visitor-signals.ts`](src/lib/visitor-signals.ts) with its tests;
 nothing in it is stored or precise enough to recognise anyone.
 

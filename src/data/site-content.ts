@@ -410,6 +410,24 @@ export const uiCopy = {
     status: {
       eyebrow: { ru: 'Статус', en: 'Status' },
       title: { ru: 'Сразу о главном', en: 'Before you ask' },
+      // The one joke on the page, in the form a product person knows from
+      // every SaaS: a status page. The plain heading above carries the
+      // meaning for anyone who does not read it as a joke. No uptime
+      // percentages and no "Product judgment: operational": one line of
+      // wit, then facts.
+      banner: { ru: 'Все системы работают штатно', en: 'All systems operational' },
+      incidentsTitle: { ru: 'Прошлые инциденты', en: 'Past incidents' },
+      incidentDate: { ru: 'Октябрь 2026', en: 'Oct 2026' },
+      incidentTitle: { ru: 'Позицию в Zvonobot сократили', en: 'Position cut at Zvonobot' },
+      // Facts only: the date, what happened, and the one line of wit. No
+      // "not the product" clause: on the line that gives the reason for the
+      // search it read as defensive, and as a claim about another company.
+      incidentUpdates: [
+        {
+          label: { ru: 'Решение', en: 'Resolution' },
+          text: { ru: 'ждёт вашего сообщения.', en: 'pending your message.' },
+        },
+      ],
       roleLabel: { ru: 'Ищу', en: 'Looking for' },
       role: {
         ru: 'Роль Product Manager или Product Owner: B2B SaaS, AI и LLM-продукты, платежи и биллинг.',
