@@ -58,13 +58,43 @@ export function isCvPath(pathname: string): boolean {
  * not a short plain slug is dropped rather than recorded.
  */
 export function outreachTag(search: string): string | null {
-  const raw = new URLSearchParams(search).get('src');
-  if (!raw) return null;
+  return cleanKey(new URLSearchParams(search).get('src'));
+}
 
-  // Rejected rather than truncated when it is too long: cutting to a fixed
-  // length would collapse two different long tags into one identical value,
-  // which is a worse failure for attribution than simply not recording it.
+/**
+ * A short plain slug, or null. The one sanitizer for every value that ends
+ * up in an analytics property from a query string or a data attribute.
+ *
+ * Rejected rather than truncated when it is too long: cutting to a fixed
+ * length would collapse two different long tags into one identical value,
+ * which is a worse failure for attribution than simply not recording it.
+ */
+export function cleanKey(raw: string | null | undefined): string | null {
+  if (!raw) return null;
   const cleaned = raw.trim().toLowerCase();
   if (cleaned.length > 40) return null;
   return /^[a-z0-9][a-z0-9._-]*$/.test(cleaned) ? cleaned : null;
+}
+
+/**
+ * The href recorded for a contact click.
+ *
+ * A mailto with a prefilled subject and body (the home status block has one)
+ * would otherwise land in `link_href` as a long percent-encoded template that
+ * differs by locale and changes with every copy edit. The address is what
+ * identifies the channel; whether the template was used is a flag.
+ */
+export function contactHref(url: URL): { href: string; prefilled: boolean } {
+  if (url.protocol !== 'mailto:') return { href: url.href, prefilled: false };
+  const params = new URLSearchParams(url.search);
+  let address = url.pathname;
+  try {
+    address = decodeURIComponent(address);
+  } catch {
+    // A malformed escape is still an address worth counting as-is.
+  }
+  return {
+    href: `mailto:${address.toLowerCase()}`,
+    prefilled: params.has('subject') || params.has('body'),
+  };
 }

@@ -12,8 +12,8 @@ export const projects: ProjectItem[] = [
       en: 'Voice AI-agent platform for B2B (Prof-IT)',
     },
     summary: {
-      ru: 'Направление группы Prof-IT, которое я запустил осенью 2025 с нуля и за которое отвечаю целиком: продукт, прайсинг, вывод на рынок. Multi-tenant SaaS-кабинет поверх telephony-инфраструктуры: клиенты собирают и публикуют голосовых AI-агентов для исходящих звонков, от продаж до реактивации и опросов.',
-      en: 'A Prof-IT product line I launched from zero in the fall of 2025 and own end to end: product, pricing, go-to-market. A multi-tenant SaaS console on top of telephony infrastructure: clients assemble and publish voice AI agents for outbound calls, from sales to reactivation and surveys.',
+      ru: 'Направление группы Prof-IT, которое я запустил осенью 2025 с нуля и за которое отвечал целиком до октября 2026: продукт, прайсинг, вывод на рынок. Multi-tenant SaaS-кабинет поверх telephony-инфраструктуры: клиенты собирают и публикуют голосовых AI-агентов для исходящих звонков, от продаж до реактивации и опросов.',
+      en: 'A Prof-IT product line I launched from zero in the fall of 2025 and owned end to end until October 2026: product, pricing, go-to-market. A multi-tenant SaaS console on top of telephony infrastructure: clients assemble and publish voice AI agents for outbound calls, from sales to reactivation and surveys.',
     },
     stack: ['React 19', 'TypeScript', 'Vite', 'Flask', 'PostgreSQL', 'Redis', 'LLM orchestration'],
     visibility: 'private',
@@ -54,8 +54,8 @@ export const projects: ProjectItem[] = [
       en: 'Internal voice AI analytics dashboard at Prof-IT',
     },
     summary: {
-      ru: 'Внутренний продукт Prof-IT: личный кабинет с аналитикой и дашбордами по работе голосовых AI-агентов. AI сегментирует звонки и подсвечивает то, что требует внимания. Продукт на мне.',
-      en: 'Internal Prof-IT product: a personal cabinet with analytics and dashboards for voice AI agents. AI segments calls and surfaces what needs human attention. I own the product.',
+      ru: 'Внутренний продукт Prof-IT: личный кабинет с аналитикой и дашбордами по работе голосовых AI-агентов. AI сегментирует звонки и подсвечивает то, что требует внимания. Продукт был на мне.',
+      en: 'Internal Prof-IT product: a client dashboard with analytics for voice AI agents. AI segments calls and surfaces what needs human attention. I owned the product.',
     },
     stack: ['LLM call analytics', 'Internal product', 'Prof-IT'],
     visibility: 'private',

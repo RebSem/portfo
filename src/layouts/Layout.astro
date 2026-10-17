@@ -45,10 +45,16 @@ const lang = Astro.currentLocale ?? 'en';
 const image = imageProp ?? `/og/home-${lang}.png`;
 const siteUrl = Astro.site ?? new URL(Astro.url.origin);
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).toString();
-const imageUrl = image.startsWith('http://') || image.startsWith('https://') ? image : new URL(image, siteUrl).toString();
 // Only the generated cards have known dimensions (1200x630, the size
 // Telegram, LinkedIn and X all crop to); other images stay unsized.
 const isOgCard = image.startsWith('/og/');
+// Versioned so a preview service that cached the old card by its URL fetches
+// the new one. Bump when scripts/og/build-og.mjs changes what the cards say
+// (2026-10: the job-search status line).
+const OG_CARD_VERSION = '2026-10';
+const imageUrl = image.startsWith('http://') || image.startsWith('https://')
+  ? image
+  : new URL(isOgCard ? `${image}?v=${OG_CARD_VERSION}` : image, siteUrl).toString();
 const robotsContent = noIndex
   ? (followLinks ? 'noindex,follow' : 'noindex,nofollow')
   : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1';
