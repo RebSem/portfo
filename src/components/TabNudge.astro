@@ -1,0 +1,59 @@
+---
+// The away title for background tabs (copy and rationale in
+// src/lib/tab-nudge.ts). Rendered once from Layout.astro.
+---
+
+<script>
+  import { awayTitle } from '../lib/tab-nudge';
+  import { emitSignal, hiddenBucket } from '../lib/site-signals';
+
+  // Bundled, so this runs once per ClientRouter session and the listener is
+  // bound once on `document`, which survives soft navigations.
+  //
+  // Only after the page has been seen: a tab opened in the background, or a
+  // mail scanner that never shows the page, keeps its real title. Automation
+  // is skipped too, which keeps the headless resume export out of it.
+  let seen = document.visibilityState === 'visible';
+  let savedTitle: string | null = null;
+  let shownAway: string | null = null;
+  let hiddenAt = 0;
+  let reportedThisPage = false;
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      if (!seen || navigator.webdriver) return;
+      const away = awayTitle(document.documentElement.lang);
+      if (document.title === away) return;
+      savedTitle = document.title;
+      shownAway = away;
+      hiddenAt = Date.now();
+      document.title = away;
+      return;
+    }
+
+    seen = true;
+    if (savedTitle === null) return;
+    // Restore only what this script changed: if anything else set the title
+    // meanwhile, that title wins.
+    if (document.title === shownAway) document.title = savedTitle;
+    savedTitle = null;
+    shownAway = null;
+    if (!reportedThisPage) {
+      reportedThisPage = true;
+      emitSignal('tab:return', { hidden_bucket: hiddenBucket(Date.now() - hiddenAt) });
+    }
+  });
+
+  // A link clicked just before switching away can finish loading while the
+  // tab is hidden: the swap brings in the new page's <title>. Remember that
+  // one as the title to restore and keep the away title up.
+  document.addEventListener('astro:after-swap', () => {
+    if (savedTitle === null || document.visibilityState !== 'hidden' || !shownAway) return;
+    savedTitle = document.title;
+    document.title = shownAway;
+  });
+
+  document.addEventListener('astro:page-load', () => {
+    reportedThisPage = false;
+  });
+</script>

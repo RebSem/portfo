@@ -24,6 +24,7 @@ import {
   projectDestination,
   projectSlugFromPath,
 } from '../lib/analytics-links';
+import { SIGNAL_EVENT, sanitizeSignal } from '../lib/site-signals';
 import {
   EngagementTracker,
   classifyBrowser,
@@ -39,6 +40,7 @@ interface AnalyticsState {
   clicksBound: boolean;
   cvViewsBound: boolean;
   engagementBound: boolean;
+  signalsBound: boolean;
 }
 
 declare global {
@@ -52,6 +54,7 @@ const state: AnalyticsState = window.__portfolioAnalyticsState ?? {
   clicksBound: false,
   cvViewsBound: false,
   engagementBound: false,
+  signalsBound: false,
 };
 
 /**
@@ -200,6 +203,24 @@ export function initAnalytics(token: string, host?: string): void {
   bindClickTracking();
   bindCvViewTracking();
   bindEngagementTracking();
+  bindSignalTracking();
+}
+
+/**
+ * Named events announced by UI modules (see src/lib/site-signals.ts). The UI
+ * never imports posthog; this listener records only the allow-listed signal
+ * names and property values. Signals fired before analytics finished loading
+ * are lost on purpose: there is no queue and nothing is stored.
+ */
+function bindSignalTracking(): void {
+  if (state.signalsBound) return;
+  state.signalsBound = true;
+
+  document.addEventListener(SIGNAL_EVENT, (event) => {
+    const signal = sanitizeSignal((event as CustomEvent<unknown>).detail);
+    if (!signal) return;
+    posthog.capture(signal.name, { ...baseProps(), ...signal.props });
+  });
 }
 
 /**
