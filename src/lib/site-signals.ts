@@ -16,8 +16,6 @@ export type HiddenBucket = 'under-1m' | '1-10m' | 'over-10m';
 type Validator = (value: unknown) => boolean;
 
 const SIGNALS = {
-  // The status block's "Copy for your shortlist": whether the copy worked.
-  'shortlist:copy': { copied: (value: unknown) => typeof value === 'boolean' },
   // First return to a tab after the away title was shown, bucketed. A
   // human coming back after 1-10 minutes is someone comparing candidates.
   'tab:return': {

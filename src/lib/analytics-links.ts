@@ -33,7 +33,10 @@ export function contactChannel(url: URL): ContactChannel | null {
 
 /** '/projects/foo' and '/ru/projects/foo' both yield 'foo'. Anything else is null. */
 export function projectSlugFromPath(pathname: string): string | null {
-  const match = pathname.match(/^\/(?:ru\/)?projects\/([^/]+)\/?$/);
+  // No dots in a slug: a case screenshot (/projects/x-light.webp) is a file,
+  // and counting its zoom link as a project click filled the metric with
+  // image names.
+  const match = pathname.match(/^\/(?:ru\/)?projects\/([^/.]+)\/?$/);
   return match ? match[1] ?? null : null;
 }
 
@@ -79,7 +82,7 @@ export function cleanKey(raw: string | null | undefined): string | null {
 /**
  * The href recorded for a contact click.
  *
- * A mailto with a prefilled subject and body (the home status block has one)
+ * A mailto with a prefilled subject and body (the case-page contact line has one)
  * would otherwise land in `link_href` as a long percent-encoded template that
  * differs by locale and changes with every copy edit. The address is what
  * identifies the channel; whether the template was used is a flag.

@@ -4,10 +4,6 @@ import { AWAY_TITLE, awayTitle } from '../src/lib/tab-nudge';
 
 describe('sanitizeSignal', () => {
   it('passes allowed signals with allowed values only', () => {
-    expect(sanitizeSignal({ name: 'shortlist:copy', props: { copied: true } })).toEqual({
-      name: 'shortlist:copy',
-      props: { copied: true },
-    });
     expect(sanitizeSignal({ name: 'tab:return', props: { hidden_bucket: '1-10m' } })).toEqual({
       name: 'tab:return',
       props: { hidden_bucket: '1-10m' },
@@ -20,17 +16,17 @@ describe('sanitizeSignal', () => {
     expect(sanitizeSignal(null)).toBeNull();
     expect(sanitizeSignal('shortlist:copy')).toBeNull();
     expect(
-      sanitizeSignal({ name: 'shortlist:copy', props: { copied: 'yes', text: 'pasted text' } }),
-    ).toEqual({ name: 'shortlist:copy', props: {} });
+      sanitizeSignal({ name: 'tab:return', props: { hidden_bucket: '1-10m', text: 'pasted text' } }),
+    ).toEqual({ name: 'tab:return', props: { hidden_bucket: '1-10m' } });
     expect(
       sanitizeSignal({
-        name: 'shortlist:copy',
+        name: 'tab:return',
         props: { constructor: 'secret@mail.com', toString: { a: 1 }, hasOwnProperty: 1, valueOf: 2 },
       }),
-    ).toEqual({ name: 'shortlist:copy', props: {} });
+    ).toEqual({ name: 'tab:return', props: {} });
     expect(
-      sanitizeSignal({ name: 'shortlist:copy', props: JSON.parse('{"__proto__": 1, "copied": true}') }),
-    ).toEqual({ name: 'shortlist:copy', props: { copied: true } });
+      sanitizeSignal({ name: 'tab:return', props: JSON.parse('{"__proto__": 1, "hidden_bucket": "over-10m"}') }),
+    ).toEqual({ name: 'tab:return', props: { hidden_bucket: 'over-10m' } });
     expect(sanitizeSignal({ name: 'tab:return', props: { hidden_bucket: 123456 } })).toEqual({
       name: 'tab:return',
       props: {},

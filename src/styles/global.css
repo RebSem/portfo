@@ -12,6 +12,9 @@ html[data-theme='light'] {
      too). --focus-ring: solid, 5.3:1 (needs 3:1). */
   --accent-text: #006e49;
   --focus-ring: #00744c;
+  /* Small secondary text (labels, captions, meta). 64% clears WCAG AA
+     4.5:1 on both page and surface in the light theme; 55-58% did not. */
+  --text-muted: color-mix(in oklab, var(--foreground) 64%, transparent);
   --muted: #e6e6e6;
   --border: #e2e3dd;
   --surface: #fdfdfb;
@@ -522,7 +525,6 @@ html[data-theme='dark'] .theme-icon-sun {
 .page-main > section:nth-of-type(3) { transition-delay: 90ms; }
 .page-main > section:nth-of-type(4) { transition-delay: 135ms; }
 
-.about-section,
 .section-block,
 .blog-index {
   display: grid;
@@ -543,7 +545,6 @@ html[data-theme='dark'] .theme-icon-sun {
   color: color-mix(in oklab, var(--foreground) 60%, transparent);
 }
 
-.about-section h1,
 .blog-index h1,
 .post-head h1 {
   font-size: clamp(2.4rem, 5.5vw, 3.6rem);
@@ -552,7 +553,6 @@ html[data-theme='dark'] .theme-icon-sun {
   line-height: 1.05;
 }
 
-.about-section h2,
 .section-block h2 {
   margin-top: 0.5rem;
   font-size: clamp(1.5rem, 3vw, 2rem);
@@ -566,91 +566,8 @@ html[data-theme='dark'] .theme-icon-sun {
   gap: 0.45rem;
 }
 
-.about-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
-  gap: 3rem;
-  align-items: start;
-  margin-top: 1.5rem;
-}
-
-.about-image-wrap {
-  position: sticky;
-  top: 2rem;
-  align-self: start;
-}
-
-.about-copy {
-  display: grid;
-  gap: 2rem;
-  min-width: 0;
-}
-
-/* After the photo-anchored intro (blocks 01-02), the page reflows to one
-   centered measure: no reserved 320px rail running empty beside the rest. */
-.about-flow {
-  width: 100%;
-  max-width: var(--container-narrow);
-  margin-inline: auto;
-  display: grid;
-  gap: 2rem;
-  margin-top: 0.5rem;
-}
-
 /* The junction between the two lists draws one hairline, not two: block 02
    keeps its :last-child bottom rule suppressed, block 03's top border rules. */
-.about-grid .about-block:last-child {
-  border-bottom: 0;
-}
-
-.about-flow p {
-  max-width: 62ch;
-  color: color-mix(in oklab, var(--foreground) 82%, transparent);
-}
-
-.about-intro {
-  max-width: 56ch;
-  font-size: 1.15rem;
-  line-height: 1.5;
-  color: color-mix(in oklab, var(--foreground) 80%, transparent);
-}
-
-.about-copy p {
-  max-width: 62ch;
-  color: color-mix(in oklab, var(--foreground) 82%, transparent);
-}
-
-.about-blocks {
-  display: grid;
-  gap: 0;
-}
-
-.about-block {
-  display: grid;
-  gap: 0.55rem;
-  padding: 1.6rem 0;
-  border-top: 1px solid var(--border);
-}
-
-.about-block:last-child {
-  border-bottom: 1px solid var(--border);
-}
-
-.about-block-eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--accent-text);
-}
-
-.about-block-title {
-  font-size: clamp(1.15rem, 2.2vw, 1.4rem);
-  font-weight: 600;
-  letter-spacing: -0.015em;
-  line-height: 1.25;
-  margin-bottom: 0.2rem;
-}
 
 .about-bullets {
   margin: 0.4rem 0 0;
@@ -679,20 +596,6 @@ html[data-theme='dark'] .theme-icon-sun {
 }
 
 /* Core skills — visible for human scan, source for JSON-LD knowsAbout. */
-.about-skills {
-  display: grid;
-  gap: 0.55rem;
-  padding: 1.6rem 0;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-
-.about-skills-note {
-  font-size: 0.95rem;
-  line-height: 1.5;
-  max-width: 60ch;
-  color: color-mix(in oklab, var(--foreground) 72%, transparent);
-}
 
 .skill-groups {
   display: grid;
@@ -752,29 +655,6 @@ html[data-theme='dark'] .theme-icon-sun {
   }
 }
 
-.about-cta-card {
-  display: grid;
-  gap: 1.1rem;
-  padding: 1.6rem;
-  border-radius: 1.25rem;
-  border: 1px solid color-mix(in oklab, var(--accent) 22%, var(--border));
-  background:
-    linear-gradient(160deg,
-      color-mix(in oklab, var(--accent) 9%, var(--surface)) 0%,
-      var(--surface) 70%);
-  box-shadow:
-    0 24px 50px -28px color-mix(in oklab, var(--accent) 35%, transparent),
-    inset 0 1px 0 color-mix(in oklab, white 12%, transparent);
-}
-
-.about-cta-eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--accent-text);
-}
-
 .about-cta-headline {
   font-family: var(--font-sans);
   font-size: 1.35rem;
@@ -789,32 +669,6 @@ html[data-theme='dark'] .theme-icon-sun {
   line-height: 1.55;
   max-width: 52ch;
   color: color-mix(in oklab, var(--foreground) 72%, transparent);
-}
-
-.about-cta-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 0.4rem;
-}
-
-.about-image-wrap {
-  border-radius: 1.5rem;
-  border: 1px solid var(--border);
-  box-shadow:
-    0 24px 50px -28px color-mix(in oklab, var(--foreground) 35%, transparent),
-    inset 0 1px 0 color-mix(in oklab, white 18%, transparent);
-  overflow: hidden;
-}
-
-.about-image-wrap img {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-  border-radius: inherit;
 }
 
 .cta-button {
@@ -893,31 +747,6 @@ html[data-theme='dark'] .theme-icon-sun {
   transform: scale(0.98);
 }
 
-.github-activity-head {
-  gap: 0.65rem;
-  align-items: end;
-  justify-content: space-between;
-}
-
-@media (min-width: 720px) {
-  .github-activity-head {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  .github-activity-head > div {
-    flex: 1 1 60%;
-  }
-
-  .github-activity-head > p {
-    flex: 0 0 auto;
-    max-width: 38ch;
-    text-align: right;
-    color: color-mix(in oklab, var(--foreground) 70%, transparent);
-    font-size: 0.92rem;
-  }
-}
-
 .github-inline {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -974,65 +803,19 @@ html[data-theme='dark'] .theme-icon-sun {
   }
 }
 
-.github-activity-card {
-  display: grid;
-  gap: 1rem;
-  padding: 1rem;
-  border: 1px solid var(--border);
-  border-radius: 1.15rem;
-  background:
-    linear-gradient(145deg, color-mix(in oklab, var(--surface) 86%, white 14%), color-mix(in oklab, var(--background-alt) 92%, var(--accent-soft) 8%));
-  box-shadow: 0 14px 30px -28px rgba(17, 24, 39, 0.45);
-}
-
-.github-activity-copy {
-  display: grid;
-  gap: 0.45rem;
-  padding-top: 0.2rem;
-  border-top: 1px solid color-mix(in oklab, var(--border) 82%, transparent);
-}
-
-.github-activity-copy p {
-  color: color-mix(in oklab, var(--foreground) 84%, transparent);
-}
-
 .github-heatmap {
   padding: 0.15rem 0 0;
   display: grid;
   gap: 0.85rem;
 }
 
-.heatmap-topline {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-}
-
-.heatmap-topline strong {
-  font-size: 1.5rem;
-  line-height: 1;
-}
-
-.github-meta {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5rem 1rem;
-}
-
-.github-profile-link,
-.github-snapshot-note {
+.github-profile-link {
   font-size: 0.82rem;
 }
 
 .github-profile-link {
   font-weight: 600;
   text-decoration-style: solid;
-}
-
-.github-snapshot-note {
-  color: color-mix(in oklab, var(--foreground) 74%, transparent);
 }
 
 .contribution-grid {
@@ -1153,420 +936,8 @@ html[data-theme='dark'] .theme-icon-sun {
   display: none !important;
 }
 
-.projects-list {
-  display: grid;
-  gap: 1rem;
-}
-
-.projects-tier {
-  display: grid;
-  gap: 1.2rem;
-  margin-top: 1.6rem;
-}
-
-.projects-tier-head {
-  display: grid;
-  gap: 0.35rem;
-}
-
-.projects-tier-head h3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-}
-
-.projects-tier-head .tier-eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: color-mix(in oklab, var(--foreground) 60%, transparent);
-}
-
-.projects-tier-head p {
-  font-size: 0.95rem;
-  color: color-mix(in oklab, var(--foreground) 75%, transparent);
-  max-width: 62ch;
-}
-
-.projects-led-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(420px, 100%), 1fr));
-  gap: 1.1rem;
-}
-
-.projects-pet-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
-  gap: 0.85rem;
-}
-
-.project-card-pet {
-  border: 1px solid var(--border);
-  border-radius: 0.95rem;
-  background: color-mix(in oklab, var(--surface) 60%, transparent);
-  padding: 1.1rem 1.1rem 1.2rem;
-  display: grid;
-  gap: 0.55rem;
-  position: relative;
-  transition:
-    border-color var(--dur-fast) var(--ease-out-strong),
-    background-color var(--dur-fast) var(--ease-out-strong),
-    transform var(--dur-base) var(--ease-out-strong);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .project-card-pet:hover {
-    border-color: color-mix(in oklab, var(--accent) 45%, var(--border));
-    background: color-mix(in oklab, var(--surface) 85%, var(--accent) 4%);
-    transform: translateY(-2px);
-  }
-}
-
-.project-card-pet h4 {
-  margin: 0;
-  font-size: 0.98rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-
-.project-card-pet h4 a {
-  text-decoration: none;
-  color: inherit;
-}
-
-.project-card-pet h4 a::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .project-card-pet h4 a:hover {
-    color: var(--accent-text);
-  }
-}
-
-.project-card-pet .pet-type {
-  font-size: 0.84rem;
-  color: color-mix(in oklab, var(--foreground) 76%, transparent);
-  line-height: 1.4;
-}
-
-.project-card-pet .pet-stack {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  line-height: 1.45;
-  letter-spacing: 0.01em;
-  /* >=68% keeps this 11px line above the 4.5:1 AA contrast threshold in light theme. */
-  color: color-mix(in oklab, var(--foreground) 68%, transparent);
-  margin-top: 0.15rem;
-}
-
-/* "What this proves" line — turns a pet project into a signal, not a hobby. */
-.project-card-pet .pet-proof {
-  font-size: 0.82rem;
-  line-height: 1.45;
-  color: color-mix(in oklab, var(--foreground) 80%, transparent);
-  padding-top: 0.5rem;
-  border-top: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
-}
-
-.project-card-pet .pet-proof-label {
-  display: inline-block;
-  margin-right: 0.4rem;
-  font-family: var(--font-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--accent-text);
-}
-
-.project-card-pet .pet-ship-time {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-family: var(--font-mono);
-  font-size: 0.66rem;
-  line-height: 1;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--accent-text);
-  width: fit-content;
-}
-
-.pet-repo-link {
-  position: relative;
-  z-index: 2;
-  font-family: var(--font-mono);
-  font-size: 0.74rem;
-  color: color-mix(in oklab, var(--foreground) 65%, transparent);
-  text-decoration: none;
-  letter-spacing: 0.02em;
-  border-bottom: 1px solid color-mix(in oklab, var(--foreground) 25%, transparent);
-  padding-bottom: 1px;
-  width: fit-content;
-  transition: color var(--dur-fast) var(--ease-out-strong), border-color var(--dur-fast) var(--ease-out-strong);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .pet-repo-link:hover {
-    color: var(--accent-text);
-    border-color: var(--accent);
-  }
-}
-
-.projects-empty {
-  padding: 0.2rem 0;
-  color: color-mix(in oklab, var(--foreground) 78%, transparent);
-}
-
-.project-card {
-  border: 1px solid var(--border);
-  border-radius: 1.25rem;
-  background:
-    linear-gradient(180deg, color-mix(in oklab, var(--surface) 82%, white 18%), color-mix(in oklab, var(--surface) 96%, var(--background) 4%));
-  box-shadow: var(--shadow-card);
-  padding: 1.4rem 1.4rem 1.5rem;
-  display: grid;
-  gap: 0.85rem;
-  transition:
-    box-shadow var(--dur-base) var(--ease-out-strong),
-    border-color var(--dur-base) var(--ease-out-strong),
-    transform var(--dur-base) var(--ease-out-strong);
-  position: relative;
-  overflow: hidden;
-}
-
-/* Hover is opt-in by device — touch devices fire :hover on tap and the
-   state would "stick" after the user lifts their finger. */
-@media (hover: hover) and (pointer: fine) {
-  .project-card:hover {
-    border-color: color-mix(in oklab, var(--accent) 55%, var(--border));
-    box-shadow: 0 18px 36px -24px color-mix(in oklab, var(--accent) 30%, rgba(17, 24, 39, 0.35));
-  }
-}
-
-/* Accent top-line kept as the single hover signal (no translateY, no shadow stacking) */
-.project-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  opacity: 0;
-  transition: opacity var(--dur-base) var(--ease-out-strong);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .project-card:hover::before {
-    opacity: 0.6;
-  }
-}
-
-.project-card-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-
-.project-card h3 {
-  font-size: 1rem;
-  line-height: 1.2;
-  transition: color 0.2s ease;
-}
-
-.project-card h3 a {
-  text-decoration: none;
-  color: inherit;
-  display: block;
-}
-
-/* Stretched link pattern */
-.project-card h3 a::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-}
-
-.project-card h3 a:hover {
-  color: var(--accent-text);
-}
-
-.project-card:has(h3 a:hover) {
-  border-color: var(--accent);
-}
-
-.project-link {
-  position: relative;
-  z-index: 2;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  height: 2.2rem;
-  padding: 0 0.95rem;
-  line-height: 1;
-  border-radius: 0.65rem;
-  background: color-mix(in oklab, var(--surface) 80%, white 20%);
-  border: 1px solid var(--border);
-  color: var(--foreground);
-  font-size: 0.82rem;
-  font-weight: 500;
-  text-decoration: none;
-  transition:
-    background-color var(--dur-fast) var(--ease-out-strong),
-    border-color var(--dur-fast) var(--ease-out-strong),
-    color var(--dur-fast) var(--ease-out-strong),
-    transform var(--dur-press) var(--ease-out-strong);
-}
-
-.project-link svg {
-  width: 0.95rem;
-  height: 0.95rem;
-  display: block;
-  flex-shrink: 0;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .project-link:hover {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #0a1812;
-  }
-}
-
-.project-link:active {
-  transform: scale(0.96);
-}
-
-.project-link[data-details-link] {
-  background: transparent;
-  border-color: transparent;
-  padding-left: 0;
-  padding-right: 0;
-  font-weight: 600;
-  color: var(--accent-text);
-}
-
-.project-link[data-details-link] svg {
-  transition: transform var(--dur-base) var(--ease-out-strong);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .project-link[data-details-link]:hover {
-    background: transparent;
-    color: color-mix(in oklab, var(--accent) 80%, black 20%);
-  }
-
-  .project-link[data-details-link]:hover svg {
-    transform: translateX(3px);
-  }
-}
-
 /* Primary action: this product is live, so the visit-the-product link
    carries the accent fill instead of reading as just another ghost button. */
-.project-link-primary {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #0a1812;
-  font-weight: 600;
-  box-shadow: 0 14px 30px -16px color-mix(in oklab, var(--accent) 70%, transparent);
-}
-
-.project-link-primary svg {
-  transition: transform var(--dur-base) var(--ease-out-strong);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .project-link-primary:hover {
-    background: var(--accent-strong);
-    border-color: var(--accent-strong);
-    color: #0a1812;
-  }
-
-  .project-link-primary:hover svg {
-    transform: translate(2px, -2px);
-  }
-}
-
-.project-visibility {
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  height: 1.6rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 0 0.65rem;
-  font-family: var(--font-mono);
-  font-size: 0.66rem;
-  line-height: 1;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: color-mix(in oklab, var(--foreground) 65%, transparent);
-  white-space: nowrap;
-}
-
-.project-meta {
-  display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 0.55rem;
-}
-
-.project-meta strong {
-  font-family: var(--font-mono);
-  font-size: 0.66rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: color-mix(in oklab, var(--foreground) 60%, transparent);
-}
-
-.project-meta span {
-  font-size: 0.92rem;
-  color: color-mix(in oklab, var(--foreground) 82%, transparent);
-}
-
-.project-live-facts {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-  gap: 0.5rem;
-}
-
-.project-fact-chip {
-  margin: 0;
-  padding: 0.7rem 0.8rem;
-  display: grid;
-  gap: 0.25rem;
-  border: 1px solid var(--border);
-  border-radius: 0.85rem;
-  background: color-mix(in oklab, var(--surface) 82%, white 18%);
-}
-
-.project-fact-chip span {
-  font-family: var(--font-mono);
-  font-size: 0.64rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: color-mix(in oklab, var(--foreground) 60%, transparent);
-}
-
-.project-fact-chip strong {
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
-  font-weight: 500;
-  line-height: 1.2;
-  letter-spacing: -0.005em;
-  color: var(--foreground);
-  font-variant-numeric: tabular-nums;
-}
 
 .stack-list {
   list-style: none;
@@ -1590,13 +961,6 @@ html[data-theme='dark'] .theme-icon-sun {
   letter-spacing: 0.01em;
   color: color-mix(in oklab, var(--foreground) 78%, transparent);
   white-space: nowrap;
-}
-
-.project-links {
-  margin: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
 }
 
 .blog-empty {
@@ -1672,15 +1036,17 @@ html[data-theme='dark'] .theme-icon-sun {
   color: color-mix(in oklab, var(--foreground) 74%, transparent);
 }
 
+/* Role and timeline as one light line under the lead: the result itself
+   is the first section of every case, so the header no longer repeats it
+   in a boxed card. */
 .project-quick-facts {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin: 2rem 0;
-  padding: 1.5rem;
-  background: color-mix(in oklab, var(--surface) 50%, transparent);
-  border: 1px solid var(--border);
-  border-radius: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.9rem 2.5rem;
+  margin: 0.5rem 0 0;
+  padding: 1rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
 .fact-item {
@@ -1690,83 +1056,35 @@ html[data-theme='dark'] .theme-icon-sun {
 }
 
 .fact-label {
-  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: color-mix(in oklab, var(--foreground) 60%, transparent);
-  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  font-weight: 500;
 }
 
 .fact-value {
-  font-size: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
   color: var(--foreground);
   font-weight: 500;
 }
 
-.impact-fact {
-  grid-column: 1 / -1;
-  padding-top: 1rem;
-  border-top: 1px solid var(--border);
-}
-
-/* Featured cards need to read as featured at first glance:
-   accent left rail + a deeper accent-tinted shadow do the work the
-   subtle gradient alone couldn't.
-   padding-left compensates the 3px (vs 1px on regular cards) so inner
-   content stays aligned across featured and non-featured cards. */
-/* Same reasoning as .featured-case: the green rule, the green wash and the
-   green halo all went. A flagship card now reads as flagship because it sits
-   on a surface and casts a neutral shadow, not because it glows. */
-.project-card-featured {
-  border-color: var(--border);
-  background: var(--surface);
-  box-shadow:
-    0 1px 2px color-mix(in oklab, var(--foreground) 5%, transparent),
-    0 20px 40px -30px color-mix(in oklab, var(--foreground) 20%, transparent);
-}
-
-[data-theme='dark'] .project-card-featured {
-  background: color-mix(in oklab, var(--surface) 92%, var(--background) 8%);
-  box-shadow:
-    inset 0 1px 0 color-mix(in oklab, white 3%, transparent),
-    0 22px 44px -32px rgb(0 0 0 / 0.5);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .project-card-featured:hover {
-    border-color: color-mix(in oklab, var(--foreground) 18%, var(--border));
+@media (max-width: 640px) {
+  .prose > h2:first-child {
+    margin-top: 0.75rem;
+    padding-top: 1rem;
   }
 }
 
-.pulse-dot {
-  width: 6px;
-  height: 6px;
-  background-color: var(--accent);
-  border-radius: 50%;
-  position: relative;
-  flex-shrink: 0;
+/* Keywords at the end of a case, after the story they summarise. */
+.case-tags {
+  margin-top: 2rem;
 }
 
 /* Pulse intentionally slow + sparse — the dot still reads as "alive"
    without stealing attention 60 times a minute. */
-.pulse-dot::after {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  border-radius: 50%;
-  background-color: var(--accent);
-  opacity: 0.6;
-  animation: pulse 6s var(--ease-out-strong) infinite;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); opacity: 0; }
-  10% { transform: scale(1.05); opacity: 0.55; }
-  60%, 100% { transform: scale(2.2); opacity: 0; }
-}
 
 .prose {
   display: grid;
@@ -1901,25 +1219,6 @@ html[data-theme='dark'] .theme-icon-sun {
   text-underline-offset: 3px;
 }
 
-@media (max-width: 980px) {
-  .about-grid {
-    grid-template-columns: 1fr;
-    gap: 1.6rem;
-  }
-
-  /* Once the photo rail is gone all six blocks share one full-width measure;
-     a still-capped centered column would jag 50-90px right of blocks 01-02. */
-  .about-flow {
-    max-width: none;
-  }
-
-  .about-image-wrap {
-    position: static;
-    max-width: 320px;
-    margin-inline: auto;
-  }
-}
-
 @media (max-width: 720px) {
   /* The gh terminal is a nice desktop detail and two phone screens of noise
      for someone hiring a product manager. */
@@ -2036,20 +1335,6 @@ html[data-theme='dark'] .theme-icon-sun {
     position: absolute;
     inset: -6px;
   }
-
-  .project-links {
-    width: 100%;
-  }
-
-  .project-link {
-    flex: 1 1 auto;
-    justify-content: center;
-  }
-
-  .project-card-head {
-    align-items: flex-start;
-    flex-direction: column;
-  }
 }
 
 /* Below this the RU labels no longer fit beside the brand even at 0.78rem;
@@ -2081,17 +1366,10 @@ html[data-theme='dark'] .theme-icon-sun {
   .theme-toggle,
   .theme-icon,
   .social-link,
-  .project-card,
-  .project-card::before,
-  .project-link,
   .brand,
   .main-nav-link,
   .cta-button,
-  .header-pdf,
-  .featured-case,
-  .featured-case-cta,
-  .project-card-pet,
-  .pet-repo-link {
+  .header-pdf {
     transition: none;
   }
 
@@ -2103,7 +1381,6 @@ html[data-theme='dark'] .theme-icon-sun {
   .locale-toggle:active,
   .theme-toggle:active,
   .social-link:active,
-  .project-link:active,
   .brand:active,
   .main-nav-link:active,
   .social-link:hover,
@@ -2119,11 +1396,6 @@ html[data-theme='dark'] .theme-icon-sun {
     filter: none;
   }
 
-  .pulse-dot::after {
-    animation: none;
-    opacity: 0;
-  }
-
   .contribution-grid {
     clip-path: none;
   }
@@ -2134,419 +1406,6 @@ html[data-theme='dark'] .theme-icon-sun {
 
   .contribution-cell:hover {
     transform: none;
-  }
-}
-
-/* ============================================================
-   Featured case (Zvonobot AI) — flagship work-led card.
-   Asymmetric 2-col split, accent top-rail, browser-chrome frame,
-   theme-aware screenshot (light/dark swap).
-   ============================================================ */
-/*
- * Flagship block. Deliberately no accent glow, no tinted gradient and no
- * coloured top rule: a green halo around a card is the single most reliable
- * tell of machine-generated UI, and it was doing the job that content should
- * do. Prominence now comes from size, a real surface, and a shadow tinted to
- * the page's own hue rather than to the brand colour. The only green left is
- * the live-status pill and the links, which is where it means something.
- */
-.featured-case {
-  position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.25fr);
-  gap: 2.2rem;
-  margin-bottom: 1.6rem;
-  padding: 2rem 2.1rem 2.1rem;
-  border: 1px solid var(--border);
-  border-radius: 1.75rem;
-  background: var(--surface);
-  box-shadow:
-    0 1px 2px color-mix(in oklab, var(--foreground) 5%, transparent),
-    0 24px 48px -32px color-mix(in oklab, var(--foreground) 22%, transparent);
-  isolation: isolate;
-  overflow: hidden;
-  transition:
-    box-shadow var(--dur-base) var(--ease-out-strong),
-    border-color var(--dur-base) var(--ease-out-strong),
-    transform var(--dur-base) var(--ease-out-strong);
-}
-
-[data-theme='dark'] .featured-case {
-  background: color-mix(in oklab, var(--surface) 92%, var(--background) 8%);
-  box-shadow:
-    inset 0 1px 0 color-mix(in oklab, white 4%, transparent),
-    0 28px 56px -34px rgb(0 0 0 / 0.55);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .featured-case:hover {
-    border-color: color-mix(in oklab, var(--foreground) 18%, var(--border));
-  }
-
-  .featured-case:hover .featured-case-frame {
-    transform: translateY(-2px);
-  }
-}
-
-.featured-case-copy {
-  display: grid;
-  align-content: start;
-  gap: 0.95rem;
-  min-width: 0;
-}
-
-.featured-case-head {
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  flex-wrap: wrap;
-}
-
-.featured-case-eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: color-mix(in oklab, var(--accent) 85%, var(--foreground));
-}
-
-.featured-case-live {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  height: 1.6rem;
-  padding: 0 0.7rem;
-  background: color-mix(in oklab, var(--accent) 14%, transparent);
-  border: 1px solid color-mix(in oklab, var(--accent) 32%, transparent);
-  color: color-mix(in oklab, var(--accent) 85%, var(--foreground));
-  border-radius: 999px;
-  font-family: var(--font-mono);
-  font-size: 0.66rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.featured-case-title {
-  font-size: 1.55rem;
-  line-height: 1.1;
-  letter-spacing: -0.015em;
-  font-weight: 600;
-  margin: 0.15rem 0 0;
-}
-
-.featured-case-title a {
-  color: inherit;
-  text-decoration: none;
-  background-image: linear-gradient(var(--accent), var(--accent));
-  background-repeat: no-repeat;
-  background-size: 0 1px;
-  background-position: 0 100%;
-  transition: background-size var(--dur-base) var(--ease-out-strong);
-}
-
-.featured-case-title a:hover,
-.featured-case:hover .featured-case-title a {
-  background-size: 100% 1px;
-}
-
-.featured-case-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  margin-top: 0.4rem;
-  padding: 0.6rem 0.95rem;
-  border-radius: 0.6rem;
-  background: var(--foreground);
-  color: var(--background);
-  font-size: 0.85rem;
-  font-weight: 500;
-  text-decoration: none;
-  width: fit-content;
-  transition:
-    transform var(--dur-fast) var(--ease-out-strong),
-    background var(--dur-fast) var(--ease-out-strong);
-}
-
-.featured-case-cta:hover {
-  transform: translateY(-1px);
-  background: color-mix(in oklab, var(--foreground) 92%, var(--accent) 8%);
-}
-
-.featured-case-cta svg {
-  transition: transform var(--dur-fast) var(--ease-out-strong);
-}
-
-.featured-case-cta:hover svg {
-  transform: translateX(2px);
-}
-
-.featured-case-type {
-  font-size: 0.95rem;
-  color: color-mix(in oklab, var(--foreground) 70%, var(--muted) 30%);
-  margin: 0;
-}
-
-.featured-case-role {
-  font-family: var(--font-mono);
-  font-size: 0.73rem;
-  letter-spacing: 0.02em;
-  color: color-mix(in oklab, var(--foreground) 62%, transparent);
-  margin: 0.3rem 0 0;
-}
-
-.featured-case-kpis {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem 0.45rem;
-  padding: 0;
-  margin: 0.4rem 0 0;
-}
-
-.featured-case-kpi {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.35rem 0.7rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: color-mix(in oklab, var(--surface) 70%, transparent);
-  font-size: 0.78rem;
-  color: var(--foreground);
-  white-space: nowrap;
-}
-
-.featured-case-kpi svg {
-  width: 12px;
-  height: 12px;
-  color: var(--accent-text);
-  flex: 0 0 auto;
-}
-
-.featured-case-summary {
-  font-size: 0.96rem;
-  line-height: 1.55;
-  color: var(--foreground);
-  margin: 0.4rem 0 0;
-  max-width: 60ch;
-}
-
-.featured-case-highlights {
-  margin-top: 0.4rem;
-  padding: 1.05rem 1.15rem;
-  border-radius: 0.95rem;
-  border: 1px solid color-mix(in oklab, var(--border) 75%, var(--accent) 12%);
-  background: color-mix(in oklab, var(--surface) 92%, var(--accent) 3%);
-}
-
-[data-theme='dark'] .featured-case-highlights {
-  background: color-mix(in oklab, var(--surface) 60%, var(--background) 40%);
-  border-color: color-mix(in oklab, var(--border) 50%, var(--accent) 18%);
-}
-
-.featured-case-highlights-title {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: color-mix(in oklab, var(--accent) 70%, var(--foreground));
-  margin: 0 0 0.65rem;
-}
-
-.featured-case-highlights ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  gap: 0.45rem;
-}
-
-.featured-case-highlights li {
-  position: relative;
-  padding-left: 1.05rem;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: var(--foreground);
-}
-
-.featured-case-highlights li::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0.6rem;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--accent);
-}
-
-.featured-case-stack {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  padding: 0;
-  margin: 0.3rem 0 0;
-}
-
-.featured-case-stack li {
-  font-family: var(--font-mono);
-  font-size: 0.73rem;
-  letter-spacing: 0.02em;
-  padding: 0.32rem 0.58rem;
-  border-radius: 0.4rem;
-  background: color-mix(in oklab, var(--surface) 90%, var(--accent) 4%);
-  border: 1px solid color-mix(in oklab, var(--border) 70%, var(--accent) 20%);
-  color: color-mix(in oklab, var(--foreground) 78%, var(--muted) 22%);
-}
-
-[data-theme='dark'] .featured-case-stack li {
-  background: color-mix(in oklab, var(--surface) 65%, var(--accent) 8%);
-  border-color: color-mix(in oklab, var(--border) 55%, var(--accent) 25%);
-  color: color-mix(in oklab, var(--foreground) 80%, var(--muted) 20%);
-}
-
-/* Right column — browser-chrome framed screenshot */
-.featured-case-visual {
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-  min-width: 0;
-  align-self: stretch;
-  justify-content: center;
-}
-
-.featured-case-frame {
-  margin: 0;
-  border-radius: 0.9rem;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  overflow: hidden;
-  box-shadow:
-    0 22px 44px -22px color-mix(in oklab, var(--foreground) 35%, transparent),
-    inset 0 1px 0 color-mix(in oklab, var(--surface) 60%, white 40%);
-  transition: transform var(--dur-base) var(--ease-out-strong);
-  will-change: transform;
-}
-
-[data-theme='dark'] .featured-case-frame {
-  box-shadow:
-    0 24px 50px -22px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 color-mix(in oklab, white 3%, transparent);
-}
-
-.featured-case-frame-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.55rem 0.8rem;
-  background: color-mix(in oklab, var(--surface) 70%, var(--background) 30%);
-  border-bottom: 1px solid var(--border);
-}
-
-.featured-case-frame-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: color-mix(in oklab, var(--muted) 50%, transparent);
-}
-
-.featured-case-frame-dot:nth-child(1) {
-  background: #ff5f57;
-}
-.featured-case-frame-dot:nth-child(2) {
-  background: #febc2e;
-}
-.featured-case-frame-dot:nth-child(3) {
-  background: #28c840;
-}
-
-.featured-case-frame-url {
-  margin-left: 0.65rem;
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.02em;
-  color: var(--muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.featured-case-frame-image {
-  display: block;
-  margin: 0;
-  line-height: 0;
-}
-
-/* One <img> per shot; theme-images.js swaps src on [data-theme] change,
-   so only the active variant ever downloads (was twin light+dark imgs). */
-.featured-case-shot {
-  display: block;
-  width: 100%;
-  height: auto;
-  background: var(--surface);
-}
-
-/* NDA note as an intentional badge, not faint floating text. A lock glyph +
-   pill border give it a clear "this is a disclaimer" read with real contrast. */
-.featured-case-caption {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  align-self: flex-end;
-  margin-left: auto;
-  padding: 0.32rem 0.65rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: color-mix(in oklab, var(--surface) 70%, transparent);
-  font-family: var(--font-mono);
-  font-size: 0.64rem;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  line-height: 1;
-  color: color-mix(in oklab, var(--foreground) 62%, transparent);
-}
-
-.featured-case-caption::before {
-  content: '';
-  width: 11px;
-  height: 11px;
-  flex: 0 0 auto;
-  background-color: currentColor;
-  -webkit-mask: var(--icon-lock) center / contain no-repeat;
-  mask: var(--icon-lock) center / contain no-repeat;
-}
-
-/* Mobile collapse — single column, screenshot on top of copy */
-@media (max-width: 860px) {
-  .featured-case {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 1.4rem;
-    padding: 1.4rem 1.3rem 1.5rem;
-    border-radius: 1.25rem;
-  }
-
-  .featured-case-visual {
-    order: -1;
-  }
-
-  .featured-case-title {
-    font-size: 1.35rem;
-  }
-
-  .featured-case-frame-url {
-    display: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .featured-case,
-  .featured-case-frame {
-    transition: none;
   }
 }
 
@@ -2608,6 +1467,176 @@ html[data-theme='dark'] .theme-icon-sun {
   letter-spacing: 0.04em;
   color: color-mix(in oklab, var(--foreground) 60%, transparent);
   text-align: center;
+}
+
+/* The frame is a link to the full-size shot (lightbox with JS, new tab
+   without). It keeps the frame's look; only the cursor says it zooms. */
+a.project-shot-zoom {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+  cursor: zoom-in;
+  transition: transform var(--dur-fast) var(--ease-out-strong);
+}
+
+a.project-shot-zoom:focus-visible {
+  outline: 2px solid var(--focus-ring, var(--accent));
+  outline-offset: 3px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  a.project-shot-zoom:hover {
+    transform: translateY(-2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  a.project-shot-zoom {
+    transition: none;
+    transform: none;
+  }
+}
+
+.shot-lightbox {
+  width: min(96vw, 1600px);
+  max-width: none;
+  max-height: 92vh;
+  margin: auto;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  background: var(--surface);
+  overflow: auto;
+}
+
+.shot-lightbox::backdrop {
+  background: color-mix(in oklab, #0c0d0e 72%, transparent);
+}
+
+.shot-lightbox-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+}
+
+.shot-lightbox-close {
+  position: sticky;
+  top: 0.6rem;
+  float: right;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  margin: 0.6rem 0.6rem -3rem 0;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--surface) 92%, transparent);
+  color: var(--foreground);
+  cursor: pointer;
+}
+
+.shot-lightbox-close svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+/* Collapsible depth on case pages: the result and the product sit open at
+   the top, the long story (task, decisions, stack) waits behind a summary
+   line, so a recruiter skims in a minute and an engineer can still dig. */
+.prose details {
+  margin-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.prose details:last-of-type {
+  border-bottom: 1px solid var(--border);
+}
+
+.prose details + details {
+  margin-top: 0;
+}
+
+.prose summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 0;
+  font-weight: 600;
+  font-size: 1.02rem;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  list-style: none;
+}
+
+.prose summary::-webkit-details-marker {
+  display: none;
+}
+
+.prose summary::after {
+  content: '';
+  flex: none;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-right: 1.6px solid currentColor;
+  border-bottom: 1.6px solid currentColor;
+  transform: translateY(-25%) rotate(45deg);
+  opacity: 0.6;
+  transition: transform var(--dur-fast) var(--ease-out-strong);
+}
+
+.prose details[open] > summary::after {
+  transform: translateY(15%) rotate(225deg);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .prose summary:hover {
+    color: var(--accent-text);
+  }
+}
+
+.prose details > summary + * {
+  margin-top: 0.25rem;
+}
+
+.prose details > * + * {
+  margin-top: 1rem;
+}
+
+.prose details > * + h3 {
+  margin-top: 1.75rem;
+}
+
+.prose details > :last-child {
+  margin-bottom: 1.25rem;
+}
+
+/* A printed or PDF-saved case keeps the collapsed sections. */
+@media print {
+  .prose details::details-content {
+    content-visibility: visible;
+  }
+}
+
+/* A readable measure for case text: at 1440 the prose used to run the full
+   container, 150-170 characters a line, which is what made even short
+   sections look like walls. Screenshots, the grid and the live-product box
+   keep the full width. */
+.post-lead,
+.prose > p,
+.prose > ul,
+.prose > ol,
+.prose details > :is(p, ul, ol, h3) {
+  max-width: 46rem;
+}
+
+.post-lead {
+  font-size: clamp(1.05rem, 0.5vw + 0.9rem, 1.2rem);
+  line-height: 1.55;
+  color: color-mix(in oklab, var(--foreground) 80%, transparent);
+  text-wrap: pretty;
 }
 
 /* ============================================================
@@ -2726,11 +1755,6 @@ html[data-theme='dark'] .theme-icon-sun {
   flex: none;
 }
 
-.repo-cta .repo-cta-meta {
-  color: color-mix(in oklab, var(--foreground) 60%, transparent);
-  font-weight: 500;
-}
-
 @media (hover: hover) and (pointer: fine) {
   .repo-cta:hover {
     background: color-mix(in oklab, var(--accent) 20%, var(--surface));
@@ -2816,7 +1840,6 @@ html[data-theme='dark'] .theme-icon-sun {
   border: 1px solid var(--border);
   color: color-mix(in oklab, var(--foreground) 90%, var(--accent) 10%);
 }
-
 
 /* ============================================================
    Agent ops — the signature "I run a team of AI agents" section.

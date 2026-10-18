@@ -23,8 +23,8 @@ The repository is **public**. Treat every commit as permanent and world-readable
 - Since 2026-10-18 there is no current employer: the Zvonobot (Prof-IT Group) role
   ended in October 2026 (the position was cut) and the owner is actively looking,
   available to start immediately. `src/data/cv.ts` (`endDate`, `cvAvailability`,
-  `cvWorkFormat`) is the source; the home "Before you ask" block
-  (`StatusBoard.astro`), About, the case studies, JSON-LD, llms.txt and the OG cards
+  `cvWorkFormat`) is the source; the facts row under the home
+  hero (`HomeHero.astro`), About, the case studies, JSON-LD, llms.txt and the OG cards
   all say the same. Present tense about that role is a bug.
 - Content status: 7 published project case studies per locale (`tubedrop` is
   `draft: true`); one published blog post pair (`welcome`), the `tubedrop` post pair is
@@ -209,7 +209,9 @@ is git-ignored; `.env.example` is the template.
 - 2026-10-07: `cv:vacancy` command for per-vacancy resumes under `/cv/<slug>/` (#59).
 - 2026-10-18: open to work. The Zvonobot role is dated Feb 2022 - Oct 2026, the resume and
   the site say "available now, no notice period", the home "What I do now" block became
-  the "Before you ask" status block.
+  the "Before you ask" status block (folded into a one-line facts row under the hero on
+  2026-10-19, with the home redesign: product shot in the hero, results-first projects,
+  results-first case studies with collapsible depth).
 
 ## Gotchas
 

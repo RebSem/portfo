@@ -1,20 +1,29 @@
 ---
 projectId: "cursivo"
 title: "Cursivo — AI-CRM for car rental businesses"
-description: "I lead it as the product manager: AI client scoring, fleet economics, sales-funnel automation. The product is in development."
-role: "Product Manager / Product Engineer"
-timeline: "In active development, not publicly launched yet"
-impact: "In development: no public launch and no users yet"
+description: "My own product: an AI CRM for car rental companies with client scoring, fleet economics and sales funnel automation. In development."
+role: "Product owner of my own product"
+timeline: "In development"
+impact: "No public launch and no users yet"
 lang: "en"
 tags: ["Product", "AI", "CRM", "Next.js"]
 draft: false
 ---
 
-## Cursivo: AI-CRM for car rental businesses
+## Result
 
-[cursivo.xyz](https://cursivo.xyz) is my own product, which I lead from product logic to UI and release. The idea is to close a specific operational pain car rental companies have: when deals and fleet economics live in Excel and WhatsApp, and decisions are made by gut feel.
+- **A working system in development**, which I am taking to a public launch. No users yet.
+- **Sales funnel, client scoring, fleet economics and AI suggestions in one workflow**, instead of Excel and WhatsApp.
+- **I own it from idea to release**: problem framing, product logic, data model, AI layer and interface.
 
-## The class of problem
+## What it is
+
+[cursivo.xyz](https://cursivo.xyz) is a CRM with an AI layer for car rental companies. It is built for operators whose deals and fleet economics live in Excel and WhatsApp, and whose decisions are made by gut feel. It is my own product.
+
+<details>
+<summary>The problem and the decision</summary>
+
+### The problem
 
 Car rental is an operationally heavy business: leads, documents, client screening, maintenance, downtime, seasonality. Without an end-to-end system the owner can't see:
 
@@ -22,21 +31,29 @@ Car rental is an operationally heavy business: leads, documents, client screenin
 - which clients carry anomalous risk (documents, history, behavior);
 - which car is already running at a loss once downtime and service are factored in.
 
-All three usually get patched manually or not at all. Cursivo wraps them into one workflow.
+All three usually get patched by hand or not at all.
 
-## What's inside
+### The decision
 
-- **End-to-end sales funnel.** Time-to-reply, stage conversion, and bottlenecks, without a separate BI tool or spreadsheet.
-- **AI client and document scoring.** We structure incoming data and surface risk before the car leaves the lot.
-- **Fleet unit economics.** Per-car profitability accounting for downtime, seasonality, and operating costs.
+Put all three into one workflow and have the AI suggest actions instead of producing reports. The bet behind it: in rental the winner isn't the operator with the most cars, it's the one who makes the right call fastest. Cursivo turns scattered data into a management decision.
+
+</details>
+
+<details>
+<summary>How the product works</summary>
+
+- **End-to-end sales funnel.** Time-to-reply, stage conversion and bottlenecks, without a separate BI tool or spreadsheet.
+- **AI client and document scoring.** Incoming data gets structured, and risk is flagged before the car leaves the lot.
+- **Fleet unit economics.** Per-car profitability, accounting for downtime, seasonality and operating costs.
 - **AI suggestions for action, not reports.** Concrete recommendations on pricing, retiring a model, or rebalancing manager workload.
 
-## Stack
+</details>
 
-Next.js (App Router), TypeScript, Prisma + PostgreSQL, OpenAI API, Linear for backlog management.
+<details>
+<summary>Under the hood</summary>
 
-I can build a product end-to-end: problem framing, data model, AI layer, interface. The product is in development: a working system I am taking to a public launch, not portfolio decoration.
+Next.js (App Router), TypeScript, Prisma + PostgreSQL, OpenAI API. The backlog lives in Linear.
 
-Product screenshots are kept private for now; happy to share in a private conversation under NDA.
+</details>
 
-> **Product vision:** In rental the winner isn't the operator with the most cars; it's the one who makes the right call fastest. Cursivo turns scattered data into a management decision.
+Product screenshots are private for now; happy to show them in a private conversation under NDA.
