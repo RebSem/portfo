@@ -1,26 +1,17 @@
 ---
 import { getCollection } from 'astro:content';
 import AgentOps from '../../components/AgentOps.astro';
-import FeaturedCase from '../../components/FeaturedCase.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import HomeHero from '../../components/HomeHero.astro';
-import StatusBoard from '../../components/StatusBoard.astro';
-import { projects } from '../../data/projects';
+import HomeProjects from '../../components/HomeProjects.astro';
 import {
   buildPersonSchema,
   githubUsername,
   heroDisplayName,
-  uiCopy,
 } from '../../data/site-content';
 import Layout from '../../layouts/Layout.astro';
 
-const visibleProjects = projects.filter((project) => !project.placeholder);
-const featuredCaseProject = visibleProjects.find((p) => p.id === 'zvonobot-ai');
-const workLedProjects = visibleProjects.filter((p) => p.tier === 'work-led' && p.id !== 'zvonobot-ai');
-const petProjects = visibleProjects
-  .filter((p) => p.tier === 'pet')
-  .sort((a, b) => (a.petOrder ?? 99) - (b.petOrder ?? 99));
 const projectEntries = await getCollection('projects', ({ data }) => !data.draft && data.lang === 'ru');
 
 const zvonobotEntry = projectEntries.find((e) => e.data.projectId === 'zvonobot-ai');
@@ -42,163 +33,7 @@ const personSchema = buildPersonSchema('https://rebsem.ru/ru');
   <main id="main-content" class="page-main" data-github-username={githubUsername}>
     <HomeHero locale="ru" caseHref={zvonobotCaseHref} />
 
-    <StatusBoard locale="ru" />
-
-    <section id="projects" class="section-block" aria-labelledby="projects-title">
-      <div class="section-head">
-        <p class="about-eyebrow">{uiCopy.projects.title.ru}</p>
-        <h2 id="projects-title">Выбранные работы</h2>
-        <p>{uiCopy.projects.subtitle.ru}</p>
-      </div>
-
-      <div class="projects-tier">
-        <div class="projects-tier-head">
-          <span class="tier-eyebrow">{uiCopy.projects.workLedEyebrow.ru}</span>
-          <h3>{uiCopy.projects.workLedTitle.ru}</h3>
-          <p>{uiCopy.projects.workLedNote.ru}</p>
-        </div>
-
-        {featuredCaseProject && (() => {
-          const fEntry = projectEntries.find((e) => e.data.projectId === featuredCaseProject.id);
-          return (
-            <FeaturedCase
-              project={featuredCaseProject}
-              locale="ru"
-              screenshotLight="/projects/zvonobot-dashboard-light.png"
-              screenshotDark="/projects/zvonobot-dashboard-dark.png"
-              caseHref={fEntry ? `/ru/projects/${fEntry.slug}/` : undefined}
-            />
-          );
-        })()}
-
-        <div class="projects-led-grid">
-          {workLedProjects.map((project) => {
-            const entry = projectEntries.find(e => e.data.projectId === project.id);
-            return (
-              <article
-                class:list={["project-card", project.id === 'cursivo' && "project-card-featured"]}
-                data-github-repo={project.githubRepo}
-              >
-                <div class="project-card-head">
-                  {entry ? (
-                    <h3><a href={`/ru/projects/${entry.slug}/`}>{project.title.ru}</a></h3>
-                  ) : (
-                    <h3>{project.title.ru}</h3>
-                  )}
-                  {project.id === 'obrabot' && (
-                    <span class="project-visibility">Внутренний продукт Prof-IT</span>
-                  )}
-                </div>
-
-                <p>{project.summary.ru}</p>
-                <p class="project-meta">
-                  <strong>Тип</strong>
-                  <span>{project.appType.ru}</span>
-                </p>
-                {project.githubRepo && (
-                  <div class="project-live-facts" aria-label="Актуальные данные репозитория GitHub">
-                    <p class="project-fact-chip">
-                      <span>Язык</span>
-                      <strong data-github-language>{project.stack[0]}</strong>
-                    </p>
-                    <p class="project-fact-chip">
-                      <span>Звезды</span>
-                      <strong data-github-stars>0</strong>
-                    </p>
-                    <p class="project-fact-chip">
-                      <span>Последний push</span>
-                      <strong data-github-updated>Синхронизация…</strong>
-                    </p>
-                  </div>
-                )}
-                <ul class="stack-list" aria-label="Технологии проекта">
-                  {project.stack.map((item) => (<li>{item}</li>))}
-                </ul>
-                <p class="project-links">
-                  {entry && (
-                    <a
-                      class="project-link"
-                      href={`/ru/projects/${entry.slug}`}
-                      data-details-link
-                    >
-                      Подробнее
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14m-7-7 7 7-7 7"/></svg>
-                    </a>
-                  )}
-                  {project.demoUrl && project.id === 'cursivo' && (
-                    <a class="project-link project-link-primary" href={project.demoUrl} target="_blank" rel="noreferrer">
-                      Открыть cursivo.xyz
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
-                    </a>
-                  )}
-                  {project.demoUrl && project.id !== 'cursivo' && (
-                    <a class="project-link" href={project.demoUrl} target="_blank" rel="noreferrer">
-                      Демо
-                    </a>
-                  )}
-                  {project.repoUrl && (
-                    <a
-                      class="project-link"
-                      href={project.repoUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      data-github-repo-link={project.githubRepo ? '' : undefined}
-                    >
-                      Репозиторий
-                    </a>
-                  )}
-                </p>
-              </article>
-            );
-          })}
-        </div>
-      </div>
-
-      <div class="projects-tier">
-        <div class="projects-tier-head">
-          <span class="tier-eyebrow">{uiCopy.projects.petEyebrow.ru}</span>
-          <h3>{uiCopy.projects.petTitle.ru}</h3>
-          <p>{uiCopy.projects.petNote.ru}</p>
-        </div>
-
-        <div class="projects-pet-grid">
-          {petProjects.map((project) => {
-            const entry = projectEntries.find(e => e.data.projectId === project.id);
-            return (
-              <article
-                class="project-card-pet"
-                data-github-repo={project.githubRepo}
-              >
-                {project.shipTime && (
-                  <span class="pet-ship-time">
-                    <span class="pulse-dot"></span>
-                    {project.shipTime.ru}
-                  </span>
-                )}
-                {entry ? (
-                  <h4><a href={`/ru/projects/${entry.slug}/`}>{project.title.ru}</a></h4>
-                ) : (
-                  <h4>{project.title.ru}</h4>
-                )}
-                <p class="pet-type">{project.appType.ru}</p>
-                {project.proof && (
-                  <p class="pet-proof">
-                    <span class="pet-proof-label">Доказывает</span>
-                    {project.proof.ru}
-                  </p>
-                )}
-                <p class="pet-stack">{project.stack.join(' · ')}</p>
-                {project.repoUrl && (
-                  <a class="pet-repo-link" href={project.repoUrl} target="_blank" rel="noreferrer">
-                    github →
-                  </a>
-                )}
-              </article>
-            );
-          })}
-        </div>
-      </div>
-    </section>
+    <HomeProjects locale="ru" />
 
     <AgentOps locale="ru" />
   </main>

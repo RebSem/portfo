@@ -1,0 +1,350 @@
+---
+import { Image } from 'astro:assets';
+import heroImage from '../assets/main-hero.jpg';
+import {
+  aboutBlocks,
+  githubUsername,
+  heroDisplayName,
+  heroSubtitle,
+  skillGroups,
+  skillItemText,
+  telegramUrl,
+  uiCopy,
+} from '../data/site-content';
+import type { Locale } from '../types/content';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const copy = {
+  eyebrow: { ru: 'Обо мне', en: 'About' },
+  portraitAlt: { ru: 'Портрет Михаила Семенова', en: `Portrait of ${heroDisplayName.en}` },
+  ctaEyebrow: { ru: 'Связаться', en: 'Get in touch' },
+  ctaHeadline: {
+    ru: 'Ищу роль продакт-менеджера в B2B SaaS, платежах или AI-продуктах. Готов выйти сразу.',
+    en: 'Looking for a Product Manager role in B2B SaaS, payments or AI products. Available now.',
+  },
+  ctaSub: {
+    ru: 'Расскажите про продукт и задачу. Скажу честно, подхожу ли я и где AI реально даст результат.',
+    en: 'Tell me about the product and the problem. I will tell you honestly whether I am the right person for it, and where AI would actually move the needle.',
+  },
+  githubLabel: { ru: 'GitHub · за год', en: 'GitHub · last year' },
+  githubUnit: { ru: 'вкладов', en: 'contributions' },
+  heatmapAria: { ru: 'График активности GitHub', en: 'GitHub activity graph' },
+  heatmapHint: {
+    ru: 'Наведите на ячейку, чтобы увидеть дату и число вкладов.',
+    en: 'Hover a cell to see the exact date and number of contributions.',
+  },
+  githubError: {
+    ru: 'Не удалось загрузить GitHub-данные. Попробуйте обновить страницу позже.',
+    en: 'Unable to load GitHub data. Please refresh later.',
+  },
+} as const;
+---
+
+{/*
+  One layout for both locales. The photo used to sit in a 320px rail beside
+  blocks 01-02 only, so those two started 80px to the right of every block
+  after them. Now the photo belongs to the page header, next to the intro,
+  and every block below shares one grid: label column on the left, text on
+  the right, the same edges all the way down.
+*/}
+<section class="about" aria-labelledby="about-title">
+  <header class="about-head">
+    <div class="about-head-copy">
+      <p class="about-eyebrow">{copy.eyebrow[locale]}</p>
+      <h1 id="about-title">{heroDisplayName[locale]}</h1>
+      <p class="about-lead">{heroSubtitle[locale]}</p>
+      <ul class="about-facts">
+        {uiCopy.home.facts.map((fact) => (
+          <li><span class="about-facts-label">{fact.label[locale]}</span> {fact.value[locale]}</li>
+        ))}
+      </ul>
+    </div>
+    <div class="about-portrait">
+      <Image src={heroImage} width={480} height={600} loading="eager" alt={copy.portraitAlt[locale]} />
+    </div>
+  </header>
+
+  <div class="about-rows">
+    {aboutBlocks.map((block) => (
+      <article class="about-row">
+        <div class="about-row-label">
+          <p class="about-row-eyebrow">{block.eyebrow[locale]}</p>
+        </div>
+        <div class="about-row-body">
+          <h2 class="about-row-title">{block.title[locale]}</h2>
+          {block.body.map((para) => <p>{para[locale]}</p>)}
+          {block.bullets && (
+            <ul class="about-bullets">
+              {block.bullets.map((item) => <li>{item[locale]}</li>)}
+            </ul>
+          )}
+        </div>
+      </article>
+    ))}
+
+    <section class="about-row" aria-labelledby="about-skills-title">
+      <div class="about-row-label">
+        <p class="about-row-eyebrow">{uiCopy.about.skillsEyebrow[locale]}</p>
+      </div>
+      <div class="about-row-body">
+        <h2 id="about-skills-title" class="about-row-title">{uiCopy.about.skillsTitle[locale]}</h2>
+        <div class="skill-groups">
+          {skillGroups.map((group) => (
+            <div class="skill-group">
+              <p class="skill-group-label">{group.label[locale]}</p>
+              <ul class="skill-chips" aria-label={group.label[locale]}>
+                {group.items.map((item) => <li class="skill-chip">{skillItemText(item, locale)}</li>)}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="about-cta">
+    <div>
+      <p class="about-row-eyebrow">{copy.ctaEyebrow[locale]}</p>
+      <p class="about-cta-headline">{copy.ctaHeadline[locale]}</p>
+      <p class="about-cta-sub">{copy.ctaSub[locale]}</p>
+    </div>
+    <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 11l16 -8l-4 18l-5 -4l-3 3l1 -5l8 -7" />
+      </svg>
+      {uiCopy.home.heroCtaPrimary[locale]}
+    </a>
+  </div>
+</section>
+
+{/* Moved here from the home page. A commit calendar on the front page of a
+    product manager's site read as "engineer" before anything else; beside
+    "how I validate ideas" it is context, not the headline. The ids are what
+    src/scripts/github-activity.js fills in. */}
+<section class="section-block github-band" aria-labelledby="github-title">
+  <div class="github-inline">
+    <div class="github-inline-meta">
+      <span class="label">{copy.githubLabel[locale]}</span>
+      <strong id="contributions-total">0</strong>
+      <span class="label" id="github-title">{copy.githubUnit[locale]}</span>
+      <a class="github-profile-link link" href={`https://github.com/${githubUsername}`} target="_blank" rel="noreferrer">
+        github.com/{githubUsername}
+      </a>
+    </div>
+
+    <div class="github-heatmap">
+      <div id="contribution-grid" class="contribution-grid" role="group" aria-label={copy.heatmapAria[locale]}></div>
+
+      <div class="heatmap-legend" aria-hidden="true">
+        <span>0</span>
+        <div class="legend-level level-0"></div>
+        <div class="legend-level level-1"></div>
+        <div class="legend-level level-2"></div>
+        <div class="legend-level level-3"></div>
+        <div class="legend-level level-4"></div>
+        <span>max</span>
+      </div>
+
+      <p
+        id="contribution-tooltip"
+        class="contribution-tooltip"
+        data-hint-ru={copy.heatmapHint.ru}
+        data-hint-en={copy.heatmapHint.en}
+      >
+        {copy.heatmapHint[locale]}
+      </p>
+
+      <p id="github-error" class="github-error hidden">{copy.githubError[locale]}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about {
+    padding-top: clamp(2rem, 4.5vw, 3.5rem);
+  }
+
+  .about-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 16rem);
+    align-items: end;
+    gap: clamp(1.75rem, 4vw, 4rem);
+    padding-bottom: clamp(1.75rem, 3vw, 2.5rem);
+  }
+
+  .about-head h1 {
+    margin-top: 0.6rem;
+    font-size: clamp(2.4rem, 5vw, 3.6rem);
+    font-weight: 600;
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+  }
+
+  .about-lead {
+    margin-top: 1rem;
+    max-width: 40rem;
+    font-size: clamp(1.05rem, 0.5vw + 0.9rem, 1.2rem);
+    line-height: 1.55;
+    color: color-mix(in oklab, var(--foreground) 80%, transparent);
+  }
+
+  .about-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .about-facts li {
+    padding: 0.35rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    font-size: 0.85rem;
+    color: var(--foreground);
+  }
+
+  .about-facts-label {
+    color: var(--text-muted);
+  }
+
+  .about-portrait {
+    justify-self: end;
+    width: 100%;
+  }
+
+  .about-portrait :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: 1rem;
+    border: 1px solid var(--border);
+  }
+
+  /* --- Rows: one grid for every block ---------------------------------- */
+
+  .about-rows {
+    border-top: 1px solid var(--border);
+  }
+
+  .about-row {
+    display: grid;
+    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+    gap: 0.75rem clamp(1.5rem, 4vw, 4rem);
+    padding: clamp(1.4rem, 2.5vw, 2rem) 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .about-row-eyebrow {
+    margin: 0;
+    padding-top: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent-text);
+  }
+
+  .about-row-body {
+    display: grid;
+    gap: 0.6rem;
+    max-width: 44rem;
+  }
+
+  .about-row-title {
+    margin: 0;
+    font-size: clamp(1.2rem, 1.6vw + 0.5rem, 1.5rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+
+  .about-row-body p {
+    margin: 0;
+    line-height: 1.6;
+    color: color-mix(in oklab, var(--foreground) 82%, transparent);
+  }
+
+  .about-row-body .skill-groups {
+    margin-top: 0.4rem;
+  }
+
+  /* --- CTA -------------------------------------------------------------- */
+
+  .about-cta {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1.25rem 2.5rem;
+    margin-top: clamp(1.75rem, 3vw, 2.5rem);
+    padding: clamp(1.4rem, 3vw, 2rem);
+    border: 1px solid color-mix(in oklab, var(--accent) 24%, var(--border));
+    border-radius: 1rem;
+    background:
+      radial-gradient(120% 140% at 0% 0%, color-mix(in oklab, var(--accent) 7%, transparent), transparent 60%),
+      var(--surface);
+  }
+
+  .about-cta-headline {
+    margin: 0.5rem 0 0;
+    max-width: 40rem;
+    font-size: clamp(1.1rem, 1vw + 0.8rem, 1.3rem);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.3;
+  }
+
+  .about-cta-sub {
+    margin: 0.5rem 0 0;
+    max-width: 40rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: color-mix(in oklab, var(--foreground) 72%, transparent);
+  }
+
+  @media (max-width: 860px) {
+    .about-row {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .about-row-eyebrow {
+      padding-top: 0;
+    }
+
+    .about-cta {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .about-cta .cta-button {
+      justify-self: start;
+    }
+  }
+
+  /* Phones: the portrait shrinks to a small square next to nothing, above
+     the name, so the intro is on the first screen. */
+  @media (max-width: 640px) {
+    .about-head {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .about-portrait {
+      grid-row: 1;
+      justify-self: start;
+      width: 7.5rem;
+    }
+
+    .about-portrait :global(img) {
+      aspect-ratio: 1;
+      border-radius: 0.9rem;
+    }
+  }
+</style>

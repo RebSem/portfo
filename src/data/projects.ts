@@ -8,12 +8,12 @@ export const projects: ProjectItem[] = [
       en: 'Zvonobot AI',
     },
     appType: {
-      ru: 'Платформа voice AI-агентов для B2B (Prof-IT)',
+      ru: 'Платформа голосовых AI-агентов для B2B (Prof-IT)',
       en: 'Voice AI-agent platform for B2B (Prof-IT)',
     },
     summary: {
-      ru: 'Направление группы Prof-IT, которое я запустил осенью 2025 с нуля и за которое отвечал целиком до октября 2026: продукт, прайсинг, вывод на рынок. Multi-tenant SaaS-кабинет поверх telephony-инфраструктуры: клиенты собирают и публикуют голосовых AI-агентов для исходящих звонков, от продаж до реактивации и опросов.',
-      en: 'A Prof-IT product line I launched from zero in the fall of 2025 and owned end to end until October 2026: product, pricing, go-to-market. A multi-tenant SaaS console on top of telephony infrastructure: clients assemble and publish voice AI agents for outbound calls, from sales to reactivation and surveys.',
+      ru: 'Голосовые AI-агенты для исходящих звонков: клиент сам собирает агента, загружает базу и запускает обзвон.',
+      en: 'Voice AI agents for outbound calls: a client builds the agent, uploads a contact base and starts the campaign.',
     },
     stack: ['React 19', 'TypeScript', 'Vite', 'Flask', 'PostgreSQL', 'Redis', 'LLM orchestration'],
     visibility: 'private',
@@ -32,8 +32,8 @@ export const projects: ProjectItem[] = [
       en: 'AI-powered car rental CRM',
     },
     summary: {
-      ru: 'Личный продукт, за который отвечаю от продуктовой логики до релиза. CRM для автопрокатов закрывает весь цикл: автопарк и его загрузка, бронирования и договоры, клиентская база. AI берёт на себя рутину: распознаёт и проверяет документы клиента, считает скоринг и риск по сделке, подсказывает менеджеру следующий шаг. Цель в том, чтобы небольшой прокат работал как сеть, без раздувания штата.',
-      en: 'A personal product I own from product logic to release. A CRM for car rental businesses covering the full cycle: fleet and utilization, bookings and contracts, customer base. AI handles the busywork: it reads and verifies client documents, scores deal risk, and suggests the next step to the manager. The goal: let a small rental operate like a chain, without growing headcount.',
+      ru: 'CRM для автопрокатов: AI читает документы клиента, считает риск по сделке и подсказывает менеджеру следующий шаг. Мой собственный продукт.',
+      en: 'A CRM for car rental: AI reads client documents, scores deal risk and suggests the manager’s next step. My own product.',
     },
     // Product tags, not the framework list: technologies live on the case
     // page, where they prove a decision.
@@ -54,8 +54,8 @@ export const projects: ProjectItem[] = [
       en: 'Internal voice AI analytics dashboard at Prof-IT',
     },
     summary: {
-      ru: 'Внутренний продукт Prof-IT: личный кабинет с аналитикой и дашбордами по работе голосовых AI-агентов. AI сегментирует звонки и подсвечивает то, что требует внимания. Продукт был на мне.',
-      en: 'Internal Prof-IT product: a client dashboard with analytics for voice AI agents. AI segments calls and surfaces what needs human attention. I owned the product.',
+      ru: 'Аналитика звонков голосовых AI-агентов: LLM разбирает разговоры и подсвечивает те, что требуют внимания. Вёл продукт до октября 2026.',
+      en: 'Call analytics for voice AI agents: an LLM sorts the conversations and flags the ones that need a human. I ran the product until October 2026.',
     },
     stack: ['LLM call analytics', 'Internal product', 'Prof-IT'],
     visibility: 'private',
@@ -79,7 +79,7 @@ export const projects: ProjectItem[] = [
     stack: ['Python', 'Telegram Bot API', 'CSV/XLSX', 'p1sms API'],
     visibility: 'private',
     tier: 'pet',
-    shipTime: { ru: '~2 дня', en: '~2 days' },
+    shipTime: { ru: '1 день', en: '1 day' },
     petOrder: 1,
     proof: {
       ru: 'AI/ops в реальном workflow: убирает ручную чистку баз перед обзвонами, ускоряет подготовку данных для команды.',
@@ -117,7 +117,7 @@ export const projects: ProjectItem[] = [
       en: 'Slopiq',
     },
     appType: {
-      ru: 'iOS-приложение для ski/snowboard сессий',
+      ru: 'iOS-приложение для катания на лыжах и сноуборде',
       en: 'iOS app for ski and snowboard sessions',
     },
     summary: {
@@ -155,7 +155,7 @@ export const projects: ProjectItem[] = [
     demoUrl: 'https://rebsem.ru',
     featured: true,
     tier: 'pet',
-    shipTime: { ru: '~2 дня', en: '~2 days' },
+    shipTime: { ru: '3 дня', en: '3 days' },
     petOrder: 5,
     proof: {
       ru: 'Этот самый сайт: единственный публичный репозиторий, агент-native поддержка через PR. Доказательство подхода в действии.',

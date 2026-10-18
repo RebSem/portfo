@@ -495,7 +495,8 @@ function baseProps(): Record<string, string> {
  * bare closest('article') matched there too and handed every link in a post the
  * slug of the first case study the prose happened to link to.
  */
-const CARD_SELECTOR = 'article.project-card, article.project-card-pet, article.featured-case';
+// Project cards on the home page (HomeProjects.astro).
+const CARD_SELECTOR = '[data-project-card]';
 
 function projectSlugFromCard(anchor: HTMLAnchorElement): string | null {
   const card = anchor.closest(CARD_SELECTOR);
@@ -562,7 +563,7 @@ function bindClickTracking(): void {
     // longer compete for the same click.
     const channel = contactChannel(url);
     if (channel) {
-      // Where the link sits (hero, status block, footer): the same Telegram
+      // Where the link sits (hero, case page, footer): the same Telegram
       // link appears in all three, and page_path alone cannot tell them apart.
       const placement = cleanKey(
         anchor.closest<HTMLElement>('[data-analytics-placement]')?.dataset.analyticsPlacement,

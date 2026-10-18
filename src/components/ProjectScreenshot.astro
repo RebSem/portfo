@@ -5,9 +5,14 @@ interface Props {
   darkSrc: string;
   alt: string;
   caption?: string;
+  /** Rendered width hint. Inside a ShotGrid a shot is about half the column,
+      so the grid usages pass a smaller value and DPR-2 screens stop
+      downloading the 2x file for a thumbnail. */
+  sizes?: string;
 }
 
-const { lightSrc, darkSrc, alt, caption } = Astro.props;
+const { lightSrc, darkSrc, alt, caption, sizes = '(max-width: 980px) 100vw, 880px' } = Astro.props;
+const zoomLabel = `${alt}${Astro.currentLocale === 'ru' ? '. Открыть крупно' : '. Open full size'}`;
 
 /**
  * The PNGs stay in the repo as the source; scripts/webp-shots.mjs writes a
@@ -21,7 +26,9 @@ const srcset = (png: string) => `${webp1x(png)} 1440w, ${webp(png)} 2880w`;
 ---
 
 <figure class="project-shot">
-  <div class="project-shot-frame">
+  {/* A link to the full-size image, so a shot shrunk into a grid can still be
+      read: with JS it opens in the lightbox below, without JS in a new tab. */}
+  <a class="project-shot-frame project-shot-zoom" href={webp(lightSrc)} target="_blank" rel="noopener" aria-label={zoomLabel}>
     <div class="project-shot-bar" aria-hidden="true">
       <span class="project-shot-dot"></span>
       <span class="project-shot-dot"></span>
@@ -32,7 +39,7 @@ const srcset = (png: string) => `${webp1x(png)} 1440w, ${webp(png)} 2880w`;
     <img
       src={webp1x(lightSrc)}
       srcset={srcset(lightSrc)}
-      sizes="(max-width: 980px) 100vw, 880px"
+      sizes={sizes}
       data-light-src={webp1x(lightSrc)}
       data-dark-src={webp1x(darkSrc)}
       data-light-srcset={srcset(lightSrc)}
@@ -44,6 +51,60 @@ const srcset = (png: string) => `${webp1x(png)} 1440w, ${webp(png)} 2880w`;
       width="1440"
       height="900"
     />
-  </div>
+  </a>
   {caption && <figcaption class="project-shot-caption">{caption}</figcaption>}
 </figure>
+
+<script>
+  // One lightbox for every case screenshot. Bundled, so it runs once per
+  // ClientRouter session; the click listener sits on `document`, which
+  // survives swaps, and the dialog is created on demand because <body> does
+  // not. Native <dialog>: Esc closes it and focus returns on its own.
+  const LIGHTBOX = 'shot-lightbox';
+
+  const lightbox = (): HTMLDialogElement => {
+    let dialog = document.getElementById(LIGHTBOX) as HTMLDialogElement | null;
+    if (dialog) return dialog;
+    dialog = document.createElement('dialog');
+    dialog.id = LIGHTBOX;
+    dialog.className = LIGHTBOX;
+    const close = document.createElement('button');
+    close.type = 'button';
+    close.className = `${LIGHTBOX}-close`;
+    close.setAttribute('aria-label', document.documentElement.lang === 'ru' ? 'Закрыть' : 'Close');
+    close.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+    close.addEventListener('click', () => dialog?.close());
+    const image = document.createElement('img');
+    image.className = `${LIGHTBOX}-img`;
+    image.alt = '';
+    dialog.append(close, image);
+    // A click on the backdrop lands on the dialog itself, not on its content.
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog?.close();
+    });
+    document.body.append(dialog);
+    return dialog;
+  };
+
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const link = target.closest<HTMLAnchorElement>('a.project-shot-zoom');
+    if (!link || event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
+    const thumb = link.querySelector('img');
+    if (!thumb || typeof HTMLDialogElement !== 'function') return;
+    event.preventDefault();
+    const dialog = lightbox();
+    const image = dialog.querySelector<HTMLImageElement>(`.${LIGHTBOX}-img`);
+    if (!image) return;
+    // The 2x WebP of whichever theme is showing (theme-images.js keeps the
+    // thumbnail's src on the active theme).
+    // Clear first: otherwise the previous shot stays visible until the next
+    // one has downloaded.
+    image.removeAttribute('src');
+    image.src = (thumb.currentSrc || thumb.src).replace(/-1440\.webp$/, '.webp');
+    image.alt = thumb.alt;
+    dialog.setAttribute('aria-label', thumb.alt);
+    dialog.showModal();
+  });
+</script>

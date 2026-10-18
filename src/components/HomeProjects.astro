@@ -1,0 +1,449 @@
+---
+import { getCollection } from 'astro:content';
+import { projects } from '../data/projects';
+import { uiCopy } from '../data/site-content';
+import type { Locale } from '../types/content';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = uiCopy.projects;
+const isRu = locale === 'ru';
+
+// One component for both home pages: the two used to carry 150 lines of
+// identical markup each, and every copy change had to be made twice.
+const entries = await getCollection('projects', ({ data }) => !data.draft && data.lang === locale);
+const caseHrefFor = (id: string): string | undefined => {
+  const entry = entries.find((e) => e.data.projectId === id);
+  if (!entry) return undefined;
+  return isRu ? `/ru/projects/${entry.slug}/` : `/projects/${entry.slug}/`;
+};
+
+const visible = projects.filter((p) => !p.placeholder);
+const featured = visible.find((p) => p.id === 'zvonobot-ai');
+const workLed = visible.filter((p) => p.tier === 'work-led' && p.id !== 'zvonobot-ai');
+const pets = visible
+  .filter((p) => p.tier === 'pet')
+  .sort((a, b) => (a.petOrder ?? 99) - (b.petOrder ?? 99));
+
+const statusFor = (id: string) =>
+  copy.statusLabel[id as keyof typeof copy.statusLabel]?.[locale];
+
+const arrow = '<path d="M5 12h14m-7-7 7 7-7 7"/>';
+const external = '<path d="M7 17 17 7M9 7h8v8"/>';
+---
+
+{/*
+  data-project-card marks each card for analytics (projectSlugFromCard in
+  src/scripts/analytics.ts): a click anywhere in it is attributed to the
+  project through its case link.
+*/}
+<section id="projects" class="section-block hp" aria-labelledby="projects-title">
+  <div class="section-head">
+    <p class="about-eyebrow">{copy.title[locale]}</p>
+    <h2 id="projects-title">{copy.heading[locale]}</h2>
+  </div>
+
+  {featured && (
+    <article class="hp-featured" data-project-card>
+      <div class="hp-featured-main">
+        <p class="hp-meta">
+          <span>{copy.featuredEyebrow[locale]}</span>
+          <span class="hp-live"><span class="hp-live-dot" aria-hidden="true"></span>{copy.featuredLiveBadge[locale]}</span>
+        </p>
+        <h3 class="hp-featured-title">
+          {caseHrefFor(featured.id) ? <a href={caseHrefFor(featured.id)}>{featured.title[locale]}</a> : featured.title[locale]}
+        </h3>
+        <p class="hp-featured-summary">{featured.summary[locale]}</p>
+        <p class="hp-featured-role">{copy.featuredRole[locale]}</p>
+        {caseHrefFor(featured.id) && (
+          <a class="cta-button cta-secondary hp-featured-cta" href={caseHrefFor(featured.id)}>
+            {copy.caseLink[locale]}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} />
+          </a>
+        )}
+      </div>
+      <ul class="hp-results">
+        {copy.featuredResults.map((result) => (
+          <li>
+            <span class="hp-result-value">{result.value[locale]}</span>
+            <span class="hp-result-label">{result.label[locale]}</span>
+          </li>
+        ))}
+      </ul>
+    </article>
+  )}
+
+  <div class="hp-group">
+    <h3 class="hp-group-title">{copy.workTitle[locale]}</h3>
+    <div class="hp-cards">
+      {workLed.map((project) => {
+        const href = caseHrefFor(project.id);
+        return (
+          <article class="hp-card" data-project-card>
+            <div class="hp-card-head">
+              <h4>{href ? <a href={href}>{project.title[locale]}</a> : project.title[locale]}</h4>
+              {statusFor(project.id) && <span class="hp-chip">{statusFor(project.id)}</span>}
+            </div>
+            <p class="hp-card-summary">{project.summary[locale]}</p>
+            <p class="hp-card-links">
+              {href && (
+                <a href={href}>
+                  {copy.caseShort[locale]}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} />
+                </a>
+              )}
+              {project.demoUrl && project.id === 'cursivo' && (
+                <a href={project.demoUrl} target="_blank" rel="noreferrer">
+                  cursivo.xyz
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={external} />
+                </a>
+              )}
+            </p>
+          </article>
+        );
+      })}
+    </div>
+  </div>
+
+  <div class="hp-group">
+    <h3 class="hp-group-title">{copy.petTitle[locale]}</h3>
+    <ul class="hp-pets">
+      {pets.map((project) => {
+        const href = caseHrefFor(project.id);
+        return (
+          <li>
+            <article class="hp-pet" data-project-card>
+              <h4 class="hp-pet-name">{href ? <a href={href}>{project.title[locale]}</a> : project.title[locale]}</h4>
+              <p class="hp-pet-type">{project.appType[locale]}</p>
+              {project.shipTime && <p class="hp-pet-time">{project.shipTime[locale]}</p>}
+              {project.repoUrl ? (
+                <a class="hp-pet-repo" href={project.repoUrl} target="_blank" rel="noreferrer">
+                  GitHub
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={external} />
+                </a>
+              ) : <span class="hp-pet-repo" aria-hidden="true"></span>}
+            </article>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .hp-featured {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: clamp(1.75rem, 4vw, 3.5rem);
+    align-items: center;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    border: 1px solid color-mix(in oklab, var(--accent) 22%, var(--border));
+    border-radius: 1.1rem;
+    background:
+      radial-gradient(120% 140% at 0% 0%, color-mix(in oklab, var(--accent) 7%, transparent), transparent 60%),
+      var(--surface);
+  }
+
+  .hp-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.9rem;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-text);
+  }
+
+  .hp-live {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--surface) 80%, var(--accent) 20%);
+  }
+
+  .hp-live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .hp-featured-title {
+    margin: 0.85rem 0 0;
+    font-size: clamp(1.6rem, 2.4vw + 0.6rem, 2.2rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  .hp-featured-title a,
+  .hp-card h4 a,
+  .hp-pet-name a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .hp-featured-title a:hover,
+    .hp-card h4 a:hover,
+    .hp-pet-name a:hover {
+      color: var(--accent-text);
+    }
+  }
+
+  .hp-featured-summary {
+    margin: 0.75rem 0 0;
+    max-width: 38rem;
+    font-size: 1.02rem;
+    line-height: 1.55;
+    color: color-mix(in oklab, var(--foreground) 80%, transparent);
+  }
+
+  .hp-featured-role {
+    margin: 0.6rem 0 0;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+  }
+
+  .hp-featured-cta {
+    margin-top: 1.4rem;
+  }
+
+  .hp-results {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .hp-results li {
+    display: grid;
+    grid-template-columns: 5.25rem minmax(0, 1fr);
+    align-items: baseline;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .hp-results li:last-child {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hp-result-value {
+    font-size: 1.75rem;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--accent-text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .hp-result-label {
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: var(--foreground);
+  }
+
+  /* --- Groups ---------------------------------------------------------- */
+
+  .hp-group {
+    margin-top: clamp(2rem, 4vw, 2.75rem);
+  }
+
+  .hp-group-title {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .hp-cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 0.9rem;
+  }
+
+  .hp-card {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 0.6rem;
+    padding: 1.25rem 1.35rem;
+    border: 1px solid var(--border);
+    border-radius: 0.95rem;
+    background: var(--surface);
+    transition: border-color var(--dur-fast) var(--ease-out-strong);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .hp-card:hover {
+      border-color: color-mix(in oklab, var(--accent) 35%, var(--border));
+    }
+  }
+
+  .hp-card-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+  }
+
+  .hp-card h4 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .hp-chip {
+    padding: 0.2rem 0.55rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .hp-card-summary {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: color-mix(in oklab, var(--foreground) 78%, transparent);
+  }
+
+  .hp-card-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    margin: 0.25rem 0 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .hp-card-links a,
+  .hp-pet-repo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: var(--accent-text);
+    text-decoration: none;
+  }
+
+  .hp-card-links svg,
+  .hp-pet-repo svg {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .hp-card-links a:hover,
+    a.hp-pet-repo:hover {
+      text-decoration: underline;
+      text-underline-offset: 0.25em;
+    }
+  }
+
+  /* --- Side projects: a list, not four equal cards -------------------- */
+
+  .hp-pets {
+    margin: 0.75rem 0 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--border);
+  }
+
+  .hp-pet {
+    display: grid;
+    grid-template-columns: minmax(7rem, 0.9fr) minmax(0, 2.4fr) 5rem 5rem;
+    align-items: baseline;
+    gap: 0.4rem 1.5rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hp-pet-name {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .hp-pet-type {
+    margin: 0;
+    font-size: 0.93rem;
+    color: color-mix(in oklab, var(--foreground) 75%, transparent);
+  }
+
+  .hp-pet-time {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .hp-pet-repo {
+    justify-self: end;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
+  @media (max-width: 900px) {
+    .hp-featured {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 720px) {
+    .hp-cards {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hp-pet {
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 0.25rem 1rem;
+    }
+
+    .hp-pet-type {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+
+    .hp-pet-time {
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: end;
+    }
+
+    .hp-pet-repo {
+      grid-column: 1 / -1;
+      grid-row: 3;
+      justify-self: start;
+    }
+
+    .hp-pet-repo:empty {
+      display: none;
+    }
+
+    .hp-results li {
+      grid-template-columns: 4.5rem minmax(0, 1fr);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hp-card {
+      transition: none;
+    }
+  }
+</style>

@@ -84,7 +84,7 @@ const breadcrumbSchema = {
         <p class="post-lead">{entry.data.description}</p>
       </header>
 
-      {(entry.data.role || entry.data.timeline || entry.data.impact || entry.data.repoUrl) && (
+      {(entry.data.role || entry.data.timeline || entry.data.repoUrl) && (
         <div class="project-quick-facts">
           {entry.data.role && (
             <div class="fact-item">
@@ -108,28 +108,23 @@ const breadcrumbSchema = {
               </span>
             </div>
           )}
-          {entry.data.impact && (
-            <div class="fact-item impact-fact">
-              <span class="fact-label">Результат</span>
-              <span class="fact-value">{entry.data.impact}</span>
-            </div>
-          )}
         </div>
       )}
 
-      {entry.data.tags.length > 0 && (
-        <ul class="stack-list" aria-label="Технологии проекта">
-          {entry.data.tags.map((tag) => (
-            <li>{tag}</li>
-          ))}
-        </ul>
-      )}
 
       <CaseAvailability locale="ru" />
 
       <div class="prose">
         <Content />
       </div>
+
+      {entry.data.tags.length > 0 && (
+        <ul class="stack-list case-tags" aria-label="Технологии проекта">
+          {entry.data.tags.map((tag) => (
+            <li>{tag}</li>
+          ))}
+        </ul>
+      )}
     </article>
   </main>
 

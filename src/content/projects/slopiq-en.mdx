@@ -1,32 +1,42 @@
 ---
 projectId: "Slopiq"
 title: "Slopiq — iOS app for ski and snowboard sessions"
-description: "Run tracking, weather, session history, AI assistant. Personal SwiftUI project, shipped in a week."
-role: "Product Engineer / iOS"
+description: "iOS app for ski and snowboard days: run tracking, weather, session history and an AI assistant. A personal SwiftUI project built in a week."
+role: "Product owner; built it myself with AI coding agents"
 timeline: "1 week"
-impact: "Idea → working build on device in 7 days"
+impact: "Idea to a working build on device in 7 days"
 lang: "en"
 tags: ["SwiftUI", "iOS", "AI Assistant", "Weather API"]
 draft: false
 ---
 
-## Slopiq: a digital companion on the slope
+## Result
 
-Slopiq is a pet project I built for myself to play with SwiftUI and ship a native iOS app for winter sports. The goal was to go from idea to a running build I can launch on my own iPhone on the slope in one week.
+- **7 days from idea to a working build** I can launch on my own iPhone on the slope.
+- **Runs and lifts split automatically**: no manual mode switching.
+- **AI assistant for the slope**: wax advice for the current weather, a daily summary, safety notes.
+- **Hyperlocal weather**: Open-Meteo forecast by coordinates and altitude.
 
-## The class of problem
+## What it is
 
-Existing trackers are either UI-heavy (gloves + frost don't mix with small buttons), or limited to raw speed numbers, or ignore the weather at a specific altitude.
+Slopiq is a native iOS app for skiers and snowboarders: run tracking, weather and session history. The interface is made for gloves and cold: large controls, high contrast, minimal gestures. A pet project I built for myself to play with SwiftUI.
 
-## What's inside
+<details>
+<summary>The problem and the decision</summary>
 
-- **UI built for gloves and cold.** Large controls, high contrast, minimal gestures.
-- **Automatic run/lift split.** No manual mode switching.
-- **AI assistant.** Wax recommendation for current weather, daily summary, safety notes.
-- **Hyperlocal weather.** Open-Meteo by coordinates and altitude.
+Existing trackers fall short in one of three ways:
 
-## Stack
+- too much interface: small buttons don't mix with gloves and frost;
+- nothing beyond raw speed numbers;
+- no weather for a specific altitude.
+
+Slopiq answers each one: a glove-friendly interface, an AI assistant on top of the numbers, and weather by coordinates and altitude.
+
+</details>
+
+<details>
+<summary>Under the hood</summary>
 
 SwiftUI, CoreLocation, Open-Meteo API, OpenAI / YandexGPT.
 
-I'm not tied to a single stack. Native iOS means SwiftUI, web means Next.js, automation means Python. I pick the stack for the problem, not for personal comfort.
+</details>
