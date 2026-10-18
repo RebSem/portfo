@@ -1,5 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
+import CaseAvailability from '../../../components/CaseAvailability.astro';
 import SiteFooter from '../../../components/SiteFooter.astro';
 import SiteHeader from '../../../components/SiteHeader.astro';
 import { githubUsername, heroDisplayName, linkedinUrl, telegramUrl } from '../../../data/site-content';
@@ -123,6 +124,8 @@ const breadcrumbSchema = {
           ))}
         </ul>
       )}
+
+      <CaseAvailability locale="ru" />
 
       <div class="prose">
         <Content />

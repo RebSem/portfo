@@ -1,0 +1,78 @@
+---
+import { telegramUrl, uiCopy } from '../data/site-content';
+import { buildIntroMailto } from '../lib/shortlist';
+import type { Locale } from '../types/content';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const copy = uiCopy.caseAvailability;
+---
+
+{/*
+  The availability line, repeated on every case study right under the quick
+  facts. In the October 2026 analytics, the visitors who actually read a
+  case went from it straight into the live Zvonobot cabinet and did not
+  reach the footer, the only other place on the page with a way to write.
+  The case is where interest peaks, so the next step has to be visible
+  there, not thousands of pixels further down. data-analytics-placement
+  attributes the clicks to it.
+*/}
+<p class="case-availability" data-analytics-placement="case">
+  <span class="case-availability-status">
+    <span class="case-availability-dot" aria-hidden="true"></span>
+    {uiCopy.home.heroStatus[locale]}
+  </span>
+  <span class="case-availability-links">
+    <a href={telegramUrl} target="_blank" rel="noreferrer">{copy.telegram[locale]}</a>
+    <a href={buildIntroMailto(locale)}>{copy.email[locale]}</a>
+  </span>
+</p>
+
+<style>
+  .case-availability {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1.25rem;
+    margin: 1.4rem 0 0;
+    padding: 0.7rem 0.95rem;
+    border: 1px solid color-mix(in oklab, var(--accent) 30%, var(--border));
+    border-radius: 0.65rem;
+    background: color-mix(in oklab, var(--surface) 90%, var(--accent) 10%);
+    font-size: 0.92rem;
+    line-height: 1.4;
+  }
+
+  .case-availability-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: var(--accent-text);
+    font-weight: 500;
+  }
+
+  .case-availability-dot {
+    width: 7px;
+    height: 7px;
+    flex: none;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .case-availability-links {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    font-weight: 500;
+  }
+
+  @media print {
+    .case-availability {
+      display: none;
+    }
+  }
+</style>

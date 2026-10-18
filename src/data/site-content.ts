@@ -628,6 +628,12 @@ export const uiCopy = {
     langEn: { ru: 'Английский', en: 'English' },
     tagsAria: { ru: 'Теги статьи', en: 'Post tags' },
   },
+  // The contact line under a case study's quick facts (CaseAvailability.astro).
+  // The status text itself is uiCopy.home.heroStatus, so the two never drift.
+  caseAvailability: {
+    telegram: { ru: 'Написать в Telegram', en: 'Message on Telegram' },
+    email: { ru: 'Письмо с готовой темой', en: 'Email, subject prefilled' },
+  },
   footer: {
     defaultNote: {
       ru: 'Ищу роль продакт-менеджера, готов выйти сразу.',
