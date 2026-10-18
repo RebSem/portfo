@@ -153,9 +153,8 @@ view with seconds actually on screen, scroll depth and the sections seen. The
 `?src=` outreach tag now rides on the whole visit, and heatmaps (click, mouse
 and scroll coordinates) are on. Small UI modules report through a DOM event
 instead of importing the SDK (`rebsem:signal`, allow-listed in
-[`src/lib/site-signals.ts`](src/lib/site-signals.ts)): `shortlist:copy` from the
-home status block and `tab:return` when a visitor comes back to a tab that showed
-the away title. Classification lives in
+[`src/lib/site-signals.ts`](src/lib/site-signals.ts)): `tab:return` when a visitor
+comes back to a tab that showed the away title. Classification lives in
 [`src/lib/visitor-signals.ts`](src/lib/visitor-signals.ts) with its tests;
 nothing in it is stored or precise enough to recognise anyone.
 

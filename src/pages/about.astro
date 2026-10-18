@@ -1,28 +1,16 @@
 ---
-import { Image } from 'astro:assets';
+import AboutContent from '../components/AboutContent.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import {
-  aboutBlocks,
   buildPersonSchema,
   githubUsername,
-  heroDisplayName,
   heroFallbackName,
-  heroSubtitle,
-  skillGroups,
-  skillItemText,
-  telegramUrl,
-  uiCopy,
 } from '../data/site-content';
 import Layout from '../layouts/Layout.astro';
 import githubScriptUrl from '../scripts/github-activity.js?url';
-import heroImage from '../assets/main-hero.jpg';
 
 const avatarUrl = `https://avatars.githubusercontent.com/${githubUsername}?size=560`;
-// The photo column only has content beside the first two blocks; the rest of
-// the page reflows to a single centered measure (no empty 320px rail).
-const gridBlocks = aboutBlocks.slice(0, 2);
-const flowBlocks = aboutBlocks.slice(2);
 const personEntity = buildPersonSchema('https://rebsem.ru/about');
 personEntity.image = avatarUrl;
 const aboutSchema = {
@@ -46,149 +34,8 @@ const aboutSchema = {
 
   <SiteHeader active="about" />
 
-  <main
-    id="main-content"
-    class="page-main"
-  >
-    <section class="about-section" aria-labelledby="about-title">
-      <p class="about-eyebrow">About</p>
-
-      <h1 id="about-title">
-        <span id="hero-name">{heroDisplayName.en}</span>
-      </h1>
-
-      <p class="about-intro">{heroSubtitle.en}</p>
-
-      <div class="about-grid">
-        <div class="about-image-wrap">
-          <Image
-            id="hero-avatar"
-            src={heroImage}
-            width={560}
-            height={700}
-            loading="eager"
-            alt={`Portrait of ${heroDisplayName.en}`}
-          />
-        </div>
-
-        <div class="about-copy">
-          <div class="about-blocks">
-            {gridBlocks.map((block) => (
-              <article class="about-block">
-                <p class="about-block-eyebrow">{block.eyebrow.en}</p>
-                <h2 class="about-block-title">{block.title.en}</h2>
-                {block.body.map((para) => (<p>{para.en}</p>))}
-                {block.bullets && (
-                  <ul class="about-bullets">
-                    {block.bullets.map((item) => (<li>{item.en}</li>))}
-                  </ul>
-                )}
-              </article>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div class="about-flow">
-        <div class="about-blocks">
-          {flowBlocks.map((block) => (
-            <article class="about-block">
-              <p class="about-block-eyebrow">{block.eyebrow.en}</p>
-              <h2 class="about-block-title">{block.title.en}</h2>
-              {block.body.map((para) => (<p>{para.en}</p>))}
-              {block.bullets && (
-                <ul class="about-bullets">
-                  {block.bullets.map((item) => (<li>{item.en}</li>))}
-                </ul>
-              )}
-            </article>
-          ))}
-        </div>
-
-        <section class="about-skills" aria-labelledby="about-skills-title">
-            <p class="about-block-eyebrow">{uiCopy.about.skillsEyebrow.en}</p>
-            <h2 id="about-skills-title" class="about-block-title">{uiCopy.about.skillsTitle.en}</h2>
-            <p class="about-skills-note">{uiCopy.about.skillsNote.en}</p>
-            <div class="skill-groups">
-              {skillGroups.map((group) => (
-                <div class="skill-group">
-                  <p class="skill-group-label">{group.label.en}</p>
-                  <ul class="skill-chips" aria-label={group.label.en}>
-                    {group.items.map((item) => (<li class="skill-chip">{skillItemText(item, 'en')}</li>))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </section>
-
-        <div class="about-cta-card">
-          <p class="about-cta-eyebrow">Get in touch</p>
-          <p class="about-cta-headline">Looking for a Product Manager role in B2B SaaS, payments or AI products. Available now.</p>
-          <p class="about-cta-sub">Tell me about the product and the problem. I will tell you honestly whether I am the right person for it, and where AI would actually move the needle.</p>
-          <div class="about-cta-row">
-            <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M4 11l16 -8l-4 18l-5 -4l-3 3l1 -5l8 -7"/>
-              </svg>
-              {uiCopy.home.heroCtaPrimary.en}
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    {/* Moved here from the home page. A commit calendar on the front page of a
-        product manager's site read as "engineer" before anything else; beside
-        "how I validate ideas" it is context, not the headline. */}
-    <section class="section-block github-band" aria-labelledby="github-title">
-      <div class="github-inline">
-        <div class="github-inline-meta">
-          <span class="label">GitHub · last year</span>
-          <strong id="contributions-total">0</strong>
-          <span class="label" id="github-title">contributions</span>
-          <a
-            class="github-profile-link link"
-            href={`https://github.com/${githubUsername}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            github.com/{githubUsername}
-          </a>
-        </div>
-
-        <div class="github-heatmap">
-          <div
-            id="contribution-grid"
-            class="contribution-grid"
-            role="group"
-            aria-label="GitHub activity graph"
-          ></div>
-
-          <div class="heatmap-legend" aria-hidden="true">
-            <span>0</span>
-            <div class="legend-level level-0"></div>
-            <div class="legend-level level-1"></div>
-            <div class="legend-level level-2"></div>
-            <div class="legend-level level-3"></div>
-            <div class="legend-level level-4"></div>
-            <span>max</span>
-          </div>
-
-          <p
-            id="contribution-tooltip"
-            class="contribution-tooltip"
-            data-hint-ru="Наведите на ячейку, чтобы увидеть дату и число вкладов."
-            data-hint-en="Hover a cell to see the exact date and number of contributions."
-          >
-            Hover a cell to see the exact date and number of contributions.
-          </p>
-
-          <p id="github-error" class="github-error hidden">
-            Unable to load GitHub data. Please refresh later.
-          </p>
-        </div>
-      </div>
-    </section>
+  <main id="main-content" class="page-main">
+    <AboutContent locale="en" />
   </main>
 
   <SiteFooter />

@@ -101,6 +101,8 @@ describe('projectSlugFromPath', () => {
     expect(projectSlugFromPath('/about')).toBeNull();
     expect(projectSlugFromPath('/projects')).toBeNull();
     expect(projectSlugFromPath('/blog/some-post/')).toBeNull();
+    expect(projectSlugFromPath('/projects/zvonobot-agent-light.webp')).toBeNull();
+    expect(projectSlugFromPath('/ru/projects/obrabot-prompts-dark.webp')).toBeNull();
     expect(projectSlugFromPath('/projects/a/b')).toBeNull();
   });
 });

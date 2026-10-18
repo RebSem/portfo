@@ -1,32 +1,43 @@
 ---
 projectId: "portfo"
 title: "Portfo — this site"
-description: "Hiring-facing site: Astro 5, RU/EN on physical routes, GitHub heatmap from the API, structured data, open source."
-role: "Product Engineer"
-timeline: "3 days and ongoing iteration"
-impact: "Single hiring entry point with an open GitHub trail"
+description: "The site you are reading: a bilingual hiring site on Astro with live GitHub data. Open source."
+role: "Product owner; built it myself with AI coding agents"
+timeline: "3 days, then ongoing iteration"
+impact: "One hiring entry point with an open GitHub trail"
 lang: "en"
 tags: ["Astro 5", "TypeScript", "GitHub API", "SEO"]
 draft: false
 ---
 
-## Portfo: the site as a product
+## Result
 
-This site is my proof-of-work and the only public repo among the projects shown. I built it myself and keep iterating on the copy, the cases, and the architecture.
+- **3 days to the first version**, then ongoing iteration on the copy, the cases and the architecture.
+- **Open source**: the only public repo among the projects shown, [RebSem/portfo](https://github.com/RebSem/portfo).
+- **Stays current on its own**: GitHub activity and repo data refresh on every build.
+- **Maintained through PRs**: AI agents write the changes, I review and merge them.
 
-## The class of problem
+## What it is
 
-Most portfolios go stale in a month: GitHub activity doesn't update, SEO is broken, projects are a list of names without context. I wanted a site that stays current on its own and gives a hiring manager enough depth to see how I think without opening 10 different links.
+The site you are reading: my portfolio and the single entry point for hiring. It is made for a hiring manager who wants to see how I think without opening 10 different links.
 
-## What's inside
+<details>
+<summary>The problem and the decision</summary>
 
-- **Bilingual on physical routes.** `/ru/` and `/en/` are fully indexable, not JS-swapped content.
-- **Live GitHub activity.** GitHub API with build-time cache, the heatmap and repo metadata refresh on every build.
-- **Structured cases.** MDX lets cases be product pages, not markdown blobs.
-- **Structured data.** JSON-LD for Person and ProfilePage, sitemap, robots, llms.txt.
+Most portfolios go stale within a month: GitHub activity stops updating, SEO is broken, projects are a list of names without context. What I did instead:
 
-## Stack
+- **A physical route per language.** English at `/`, Russian at `/ru/`, both fully indexable, no JS content swap.
+- **GitHub data at build time.** The API, behind a build-time cache, feeds the heatmap and repo metadata.
+- **Cases as product pages.** MDX instead of markdown blobs.
+- **Structured data.** JSON-LD for Person and ProfilePage, plus robots.
+
+</details>
+
+<details>
+<summary>Under the hood</summary>
 
 Astro 5, TypeScript, MDX, GitHub Actions, GitHub Pages.
 
-The site is itself the case study. The repo is open: [RebSem/portfo](https://github.com/RebSem/portfo). You can see how I structure data, separate content from logic, and organize CI/CD. If something on the site raises a question, most answers are in the repository.
+The site is itself the case study: the repo shows how I structure data, separate content from logic and organize CI/CD. Most questions about the site are answered in the code.
+
+</details>

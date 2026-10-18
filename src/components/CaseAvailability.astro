@@ -1,6 +1,6 @@
 ---
 import { telegramUrl, uiCopy } from '../data/site-content';
-import { buildIntroMailto } from '../lib/shortlist';
+import { buildIntroMailto } from '../lib/intro-mail';
 import type { Locale } from '../types/content';
 
 interface Props {
@@ -38,7 +38,7 @@ const copy = uiCopy.caseAvailability;
     align-items: center;
     justify-content: space-between;
     gap: 0.5rem 1.25rem;
-    margin: 1.4rem 0 0;
+    margin: 0;
     padding: 0.7rem 0.95rem;
     border: 1px solid color-mix(in oklab, var(--accent) 30%, var(--border));
     border-radius: 0.65rem;

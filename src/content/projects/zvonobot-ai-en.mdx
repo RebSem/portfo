@@ -1,10 +1,10 @@
 ---
 projectId: "zvonobot-ai"
 title: "Zvonobot AI: voice AI-agent platform for B2B"
-description: "Multi-tenant SaaS console for outbound voice AI agents. Launched the line from zero in the fall of 2025 inside Prof-IT: 80 paying B2B customers and 500,000+ minutes of live conversations in under a year. It's live, so you can open it and register."
+description: "Voice AI agents for B2B outbound calls, a line I launched from zero inside Prof-IT in the fall of 2025: 80 paying customers in under a year. The console is live and open for signup."
 role: "Product manager of the line, fall 2025 to October 2026: product, pricing, go-to-market"
-timeline: "Hypothesis test in fall 2025, in-house platform from 2026, my role until October 2026"
-impact: "80 paying B2B customers in under a year · 500,000+ minutes of live conversations in production"
+timeline: "White-label test in fall 2025, in-house platform from 2026"
+impact: "80 paying B2B customers and 500,000+ minutes of live calls in under a year"
 cover: "/projects/zvonobot-dashboard-light.png"
 draft: false
 lang: "en"
@@ -13,124 +13,137 @@ tags: ["Voice AI agents", "LLM orchestration", "B2B SaaS", "Per-second billing",
 
 import ProjectScreenshot from '../../components/ProjectScreenshot.astro';
 import LiveCabinetButton from '../../components/LiveCabinetButton.astro';
+import ShotGrid from '../../components/ShotGrid.astro';
 
-## Zvonobot AI: a voice AI-agent line launched from zero
-
-Zvonobot AI is a product line I launched inside the Prof-IT group in the fall of 2025 and owned end to end until October 2026: product, pricing, go-to-market. Clients assemble a voice AI agent, give it a prompt and a base of contacts, and run outbound campaigns: sales, onboarding, reactivation, surveys. A team of four engineers shipped it; the product decisions were mine.
-
-In under a year: **80 paying B2B customers, 500,000+ minutes of live conversations in production**, a sales team that grew from 4 to 15 to sell the line.
-
-<ProjectScreenshot
-  lightSrc="/projects/zvonobot-dashboard-light.png"
-  darkSrc="/projects/zvonobot-dashboard-dark.png"
-  alt="Zvonobot AI client dashboard: KPIs for leads, conversion and cost per lead, a lead funnel, and a daily call timeline (demo data)"
-  caption="Client dashboard · demo account · real client cabinets under NDA"
-/>
-
-## The task
-
-Fall 2025. Zvonobot is a mature outbound-calling platform: robots that dial contact bases with pre-recorded scripts. LLMs had just learned to hold a real conversation, and it was clear that recorded scripts would only get us so far, and that someone would eat the category with live agents if we did not. The question was not whether to build voice AI, but how to find out fast and cheaply whether our customers would pay for it.
-
-What made outbound worth automating for a mid-market B2B team, in four lines:
-
-- Headcount does not scale linearly: a 30-60 seat outbound team is brutal to hire, train and keep.
-- Speed-to-call decides the funnel: a lead called within minutes converts far better than one called tomorrow, and humans are not on every shift.
-- Quality is uneven: two operators, one script, two conversations, and no cheap way to audit what was actually said.
-- Lifecycle calls (onboarding nudges, reactivation, NPS, payment reminders) are cheap value each and huge volume together, which a human team cannot justify.
-
-## The decision
-
-Rather than build a platform first, we went to market on a **white-label voice AI platform in a few weeks**. That put a real product in front of real customers at almost no engineering cost and answered the only question that mattered: do they pay, and do they come back.
-
-They did. On warm lead lists the AI agents consistently outperformed the legacy robocalls on conversion to the target action, and the first customers renewed. With those numbers, not with a deck, I made the case to build an in-house platform: per-call-type margins and repeat payments showed where the white-label economics capped us and what owning the stack would return.
-
-## The result
+## Result
 
 - **80 paying B2B customers** in under a year from launch.
 - **500,000+ minutes** of live conversations in production.
 - **30% of the line's revenue** came from repeat payments.
 - **Average customer spend grew 30%** after the AI plans launched.
-- **The sales team grew from 4 to 15** to sell the line; pricing and per-call-type margins were mine.
+- **The sales team grew from 4 to 15** to sell the line.
+
+## What it is
+
+Zvonobot AI is a console where a B2B client builds a voice AI agent, gives it a prompt and a contact base, and runs outbound campaigns: sales, onboarding, reactivation, surveys. A team of four engineers built it; the product decisions were mine.
 
 <LiveCabinetButton
   href="https://lk2.ai-zvonki.ru"
   eyebrow="Live in production"
-  title="The cabinet is live, open it and try it yourself"
-  body="This isn't a prototype. Open the client cabinet, register in a minute, and assemble your own voice agent: the same product paying customers run every day."
-  cta="Open the cabinet"
+  title="The console is live, open it and try it yourself"
+  body="Not a prototype. Register in a minute and build your own voice agent in the same console paying customers use every day."
+  cta="Open the console"
   urlLabel="lk2.ai-zvonki.ru"
   secondaryHref="https://zvonobot.ru/ai-agent"
   secondaryLabel="Product landing: zvonobot.ru/ai-agent"
 />
 
-## How the product works
-
-The Zvonobot AI cabinet is the surface clients live in. It bundles agent assembly, dialing, billing and analytics into a single role-aware console.
-
-- **Signup without friction.** Email, password, phone, and the client is in. The phone is verified inside the cabinet before the first call, not as a gate on the door; there is one-tap Yandex ID login too.
-- **Agent builder.** Pick a voice, model and language, drop in a structured prompt, attach a contact base and a phone number, and have a working outbound agent in minutes.
-- **Campaigns.** A campaign is "this agent calls this base from this number". Pause, resume, retry, switch carriers without leaving the page.
-- **Call history with masked numbers.** Every call lands with status, outcome, duration, cost and a recording; numbers are masked, so the cabinet is safe to demo and audit.
-- **A client never goes negative mid-campaign.** A campaign holds its estimated cost up front, settles the real cost after every call, and releases the hold if it stops early.
-- **No call gets stuck and every minute is billed once.** Webhooks get lost; a background poller reconciles every non-terminal call against the provider every 60 seconds and settles the wallet.
-- **Post-call analytics.** After every call an LLM breaks the conversation into an outcome, a sentiment and custom parameters, and all of it rolls up into the dashboard: outcomes ranked by frequency, the sentiment split, the hours when people actually answer.
-- **Four roles, one codebase.** Super-admin, manager, client owner, accountant, each with its own scope and views.
-
 <ProjectScreenshot
-  lightSrc="/projects/zvonobot-campaigns-light.png"
-  darkSrc="/projects/zvonobot-campaigns-dark.png"
-  alt="Zvonobot AI campaigns list: named outbound campaigns with status, contacts dialed, spend, and creation date (demo data)"
-  caption="Campaigns: status, contacts dialed, and spend per campaign · demo data"
+  lightSrc="/projects/zvonobot-dashboard-light.png"
+  darkSrc="/projects/zvonobot-dashboard-dark.png"
+  alt="Zvonobot AI client dashboard: KPIs for leads, conversion and cost per lead, a lead funnel, and a daily call timeline (demo data)"
+  caption="Client dashboard · demo account"
 />
 
-<ProjectScreenshot
-  lightSrc="/projects/zvonobot-calls-light.png"
-  darkSrc="/projects/zvonobot-calls-dark.png"
-  alt="Zvonobot AI call history table with masked phone numbers, statuses, outcomes, and per-call cost (demo data)"
-  caption="Call history: masked numbers, statuses, and per-call cost · demo data"
-/>
+<ShotGrid>
 
 <ProjectScreenshot
-  lightSrc="/projects/zvonobot-analytics-light.png"
-  darkSrc="/projects/zvonobot-analytics-dark.png"
-  alt="Zvonobot AI analytics page: call-outcomes bar chart, sentiment pie chart, and hourly activity (demo data)"
-  caption="Analytics: outcomes, sentiment, and hourly activity, all from post-call analysis · demo data"
-/>
-
-<ProjectScreenshot
+    sizes="(max-width: 760px) 100vw, 600px"
   lightSrc="/projects/zvonobot-agent-light.png"
   darkSrc="/projects/zvonobot-agent-dark.png"
   alt="Zvonobot AI agent page: name, 'approved' status, voice/model/language pickers, the prompt script, the opening line, and a post-call parameters panel (demo data)"
-  caption="Agent builder: voice, model, prompt, opening line, and post-call parameters · demo agent"
+  caption="Agent builder · demo agent"
 />
 
-### Under the hood
+<ProjectScreenshot
+    sizes="(max-width: 760px) 100vw, 600px"
+  lightSrc="/projects/zvonobot-campaigns-light.png"
+  darkSrc="/projects/zvonobot-campaigns-dark.png"
+  alt="Zvonobot AI campaigns list: named outbound campaigns with status, contacts dialed, spend, and creation date (demo data)"
+  caption="Campaigns and spend · demo data"
+/>
 
-The stack is intentionally boring at the edges so the interesting work can happen in the middle.
+<ProjectScreenshot
+    sizes="(max-width: 760px) 100vw, 600px"
+  lightSrc="/projects/zvonobot-calls-light.png"
+  darkSrc="/projects/zvonobot-calls-dark.png"
+  alt="Zvonobot AI call history table with masked phone numbers, statuses, outcomes, and per-call cost (demo data)"
+  caption="Call history, numbers masked · demo data"
+/>
 
-- **Frontend:** React 19 + TypeScript + Vite, vanilla CSS with strict design tokens, `data-theme="dark"` swap, role-aware sidebar.
+<ProjectScreenshot
+    sizes="(max-width: 760px) 100vw, 600px"
+  lightSrc="/projects/zvonobot-analytics-light.png"
+  darkSrc="/projects/zvonobot-analytics-dark.png"
+  alt="Zvonobot AI analytics page: call-outcomes bar chart, sentiment pie chart, and hourly activity (demo data)"
+  caption="Post-call analytics · demo data"
+/>
+
+</ShotGrid>
+
+<details>
+<summary>The problem and the decision</summary>
+
+### The problem
+
+Fall 2025. Zvonobot was a mature outbound calling platform: robots dialing contact bases with pre-recorded scripts. LLMs had just learned to hold a real conversation. Recorded scripts would only get us so far, and if we did not build live agents, someone else would take the category. The question was not whether to build voice AI, but how to find out fast and cheaply whether our customers would pay for it.
+
+Why outbound is worth automating for a mid-market B2B team:
+
+- Headcount does not scale linearly: a 30 to 60 seat outbound team is hard to hire, train and keep.
+- Speed-to-call decides the funnel: a lead called within minutes converts far better than one called tomorrow, and people are not on every shift.
+- Quality is uneven: two operators, one script, two different conversations, and no cheap way to audit what was actually said.
+- Lifecycle calls (onboarding nudges, reactivation, NPS, payment reminders) are cheap one by one and huge in volume together, more than a human team can justify.
+
+### The decision
+
+Instead of building a platform first, we went to market on a **white-label voice AI platform in a few weeks**. That put a real product in front of real customers at almost no engineering cost and answered the only question that mattered: do they pay, and do they come back.
+
+They did. On warm lead lists the AI agents consistently beat the legacy robocalls on conversion to the target action, and the first customers renewed. With those numbers, not with a deck, I made the case for an in-house platform: per-call-type margins and repeat payments showed where white-label economics capped us and what owning the stack would return.
+
+</details>
+
+<details>
+<summary>How the product works</summary>
+
+One console for every role: agent assembly, dialing, billing and analytics.
+
+- **Signup without friction.** Email, password, phone, and the client is in. The phone is verified inside the console before the first call, not at the door; Yandex ID login works too.
+- **Agent builder.** Voice, model, language, a structured prompt, a contact base and a phone number: a working outbound agent in minutes.
+- **Campaigns.** A campaign is "this agent calls this base from this number". Pause, resume, retry, switch carriers without leaving the page.
+- **Call history.** Every call lands with status, outcome, duration, cost and a recording. Numbers are masked, so the console is safe to demo and audit.
+- **A client never goes negative mid-campaign.** A campaign holds its estimated cost up front, settles the real cost after every call and releases the hold if it stops early.
+- **No call gets stuck, every minute is billed once.** A background poller reconciles every unfinished call with the provider every 60 seconds and settles the wallet.
+- **Post-call analytics.** An LLM breaks each conversation into an outcome, a sentiment and custom parameters. The dashboard ranks outcomes by frequency and shows the sentiment split and the hours when people actually answer.
+- **Four roles, one codebase.** Super-admin, manager, client owner, accountant, each with its own scope and views.
+
+</details>
+
+<details>
+<summary>Under the hood</summary>
+
+- **Frontend:** React 19 + TypeScript + Vite, vanilla CSS with strict design tokens, `data-theme="dark"` swap, a sidebar that adapts to the role.
 - **Backend:** Flask modular monolith, SQLAlchemy + Alembic, PostgreSQL for state, Redis for jobs.
-- **Voice + LLM:** dialog orchestration on top of a voice provider's execution layer; agent voice, ASR, TTS and the LLM behind the conversation are configurable per agent.
-- **Telephony:** SIP trunk for Russian numbers, with operator detection via HLR lookup so a number is known to be reachable before it is dialed.
+- **Voice + LLM:** dialog orchestration on top of a voice provider's execution layer; voice, ASR, TTS and the LLM are configurable per agent.
+- **Telephony:** SIP trunk for Russian numbers, operator detection via HLR lookup, so a number is known to be reachable before it is dialed.
 
-Three product decisions with engineering consequences, which I would defend again:
+### Three product decisions I would defend again
 
 1. **Reconcile, do not trust webhooks.** Providers drop lifecycle events. The 60-second poller is what makes "every minute billed exactly once" a fact rather than a hope.
-2. **Hold, then settle.** Estimated cost held on campaign start, real cost settled per call, row-locked so two concurrent calls cannot both spend the last ten rubles.
-3. **Ingest that survives real CSVs.** Client bases arrive as `+7 (982)…`, `8982…`, numbers in the wrong column. Everything normalizes to a canonical form, deduplicates and gets an operator lookup, and flaky carrier routes are dropped by default. This started as the `bazabot` side project and was promoted into the product when every campaign turned out to need it.
+2. **Hold, then settle.** Estimated cost is held at campaign start and the real cost is settled per call, with a row lock so two concurrent calls cannot spend the same remaining balance.
+3. **Ingest that survives real CSVs.** Client bases arrive as `+7 (982)…`, `8982…`, numbers in the wrong column. Everything normalizes to a canonical form, deduplicates and gets an operator lookup, and flaky carrier routes are dropped by default. This started as my `bazabot` side project and moved into the product when every campaign turned out to need it.
 
-## How I worked on it
+</details>
 
-I owned the line: what got built, what it cost, whom we sold it to and at what margin. A team of four engineers shipped it. Specs, prioritization and review were mine, and when a hypothesis needed a working answer faster than a sprint, I prototyped it myself with AI coding agents (Claude Code, Codex) and handed the learning, not the code, to the team.
+<details>
+<summary>How I worked</summary>
 
-In practice:
+I owned the line: what got built, what it cost, whom we sold it to, pricing and per-call-type margins. Specs, priorities and review were mine. When a hypothesis needed a working answer faster than a sprint, I prototyped it myself with AI coding agents (Claude Code, Codex) and handed the team the learning, not the code.
 
-- The loop is **hypothesis → smallest surface → live customers → decision**, in days, not quarters. White-label first was that loop applied to the whole line.
-- Boring infrastructure is a feature: holds, reconciliation, idempotency, masked PII decide whether a SaaS feels stable or fragile, and I treat them as product work.
-- Pick the smallest stable surface and grow it. The cabinet started with one role and one report; today it carries four roles, billing, an agent builder, analytics and a real call pipeline.
+- The loop: **hypothesis → smallest surface → live customers → decision**, in days, not quarters. White-label first was that loop applied to the whole line.
+- Boring infrastructure is product work: holds, reconciliation, idempotency and masked personal data decide whether a SaaS feels stable or fragile.
+- Start with the smallest stable surface and grow it. The console started with one role and one report; now it has four roles, billing, an agent builder, analytics and a real call pipeline.
 
-## What you can touch, and what's under NDA
+</details>
 
-The cabinet is **open**: you can [register yourself](https://lk2.ai-zvonki.ru) and assemble an agent. The screenshots above come from the live product on a demo account: the organization, the agent and the calls are generated and anonymised, which is what makes them safe to show.
-
-What stays behind NDA is the specifics: real client names, their prompts and contact bases, the voice provider the product runs on top of, and the money. Everything described above is real, but those details are summarised. Happy to walk through any of it on a call.
+Screenshots come from the live product on a demo account with generated, anonymised data. Under NDA: client names, their prompts and bases, the voice provider and the money.
