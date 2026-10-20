@@ -15,7 +15,7 @@ import Layout from '../../layouts/Layout.astro';
 const projectEntries = await getCollection('projects', ({ data }) => !data.draft && data.lang === 'ru');
 
 const zvonobotEntry = projectEntries.find((e) => e.data.projectId === 'zvonobot-ai');
-const zvonobotCaseHref = zvonobotEntry ? `/ru/projects/${zvonobotEntry.slug}/` : `/ru/#projects`;
+const zvonobotCaseHref = zvonobotEntry ? `/ru/projects/${zvonobotEntry.id}/` : `/ru/#projects`;
 
 const personSchema = buildPersonSchema('https://rebsem.ru/ru');
 ---

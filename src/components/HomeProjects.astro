@@ -18,7 +18,7 @@ const entries = await getCollection('projects', ({ data }) => !data.draft && dat
 const caseHrefFor = (id: string): string | undefined => {
   const entry = entries.find((e) => e.data.projectId === id);
   if (!entry) return undefined;
-  return isRu ? `/ru/projects/${entry.slug}/` : `/projects/${entry.slug}/`;
+  return isRu ? `/ru/projects/${entry.id}/` : `/projects/${entry.id}/`;
 };
 
 const visible = projects.filter((p) => !p.placeholder);

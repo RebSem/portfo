@@ -9,6 +9,9 @@
     "type": "git",
     "url": "https://github.com/RebSem/portfo.git"
   },
+  "engines": {
+    "node": ">=22.22.0"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -25,16 +28,16 @@
     "shots:webp": "node scripts/webp-shots.mjs"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.4",
+    "@astrojs/check": "^0.9.11",
     "@types/node": "^22.15.30",
-    "docx": "^9.7.1",
-    "tsx": "^4.23.12",
+    "docx": "^9.13.0",
+    "tsx": "^4.23.15",
     "typescript": "^5.9.3",
-    "vitest": "^3.2.4"
+    "vitest": "^5.0.5"
   },
   "dependencies": {
-    "@astrojs/mdx": "^4.3.13",
-    "astro": "^5.17.1",
+    "@astrojs/mdx": "^8.1.0",
+    "astro": "^7.4.1",
     "posthog-js": "^1.404.1"
   }
 }
