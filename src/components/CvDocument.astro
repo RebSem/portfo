@@ -136,9 +136,10 @@ const sectionIds = [
       </p>
       {/* `phone` is undefined in every public build. It only resolves in the
           local, git-ignored build that produces the ATS-form exports.
-          nowrap is load-bearing: when the number wrapped at its hyphen, the
-          PDF text layer came out as "+7 900 000-0000", one digit group short
-          of a number anyone could dial. */}
+          nowrap is load-bearing: when the number wrapped at a hyphen, the PDF
+          text layer dropped it, so "+7 900 000-00-00" read back as
+          "+7 900 000-0000" and parsers misread the number. Never put a real
+          number in this comment: the repository is public. */}
       <p class="cv-location">
         <span set:html={nb(cvLocationLine[locale])} />
         {phone && <> · <span class="cv-phone">{phone}</span></>}

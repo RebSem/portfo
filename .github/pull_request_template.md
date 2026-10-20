@@ -9,7 +9,7 @@
 
 ## Validation
 
-- [ ] `npm run validate` (typecheck, tests, build, link check)
+- [ ] `npm run validate` (typecheck, build, tests, link check)
 
 ## Route checks
 
