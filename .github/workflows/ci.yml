@@ -26,13 +26,15 @@ jobs:
       - name: Typecheck
         run: npm run check
 
-      - name: Tests
-        run: npm test
-
+      # Build before the tests: the suites that read dist/ (including "leaks no
+      # phone number into the deployed site") skip themselves without a build.
       - name: Build
         run: npm run build
         env:
           GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Tests
+        run: npm test
 
       - name: Internal link check
         run: npm run link-check

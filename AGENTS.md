@@ -15,7 +15,9 @@ The repository is **public**. Treat every commit as permanent and world-readable
 
 ## Current state
 
-- Default branch: `main` (the only remote branch as of 2026-10-11). No open PRs.
+- Default branch: `main` (the only remote branch as of 2026-10-21). Its history was
+  rewritten on 2026-10-21 to purge personal data (see History), so every commit SHA
+  from before that date changed.
 - Version: `package.json` says `0.0.1` and is not bumped; there are no git tags. The
   deployed state is whatever is on `main`.
 - Last meaningful activity: 2026-10-07, per-vacancy resume publishing (#59); before
@@ -31,11 +33,6 @@ The repository is **public**. Treat every commit as permanent and world-readable
   a draft. The blog is **unlisted** since 2026-08-18: kept at its URLs, absent from the
   sitemap and navigation. `/cv` and `/ru/cv` are unlisted too (`noindex,follow`).
 - Known gaps:
-  - In CI and in `npm run validate`, tests run **before** the build, so the 6 tests in
-    the `cv build output` suite of `tests/cv.test.ts` (including "leaks no phone number
-    into the deployed site") are skipped on a clean checkout. They only run when a
-    `dist/` from an earlier build exists. The comment in that test file says the
-    opposite. See Gotchas.
   - `scripts/update-github-stats.mjs` is not referenced by any npm script or workflow.
   - `scripts/webp-shots.mjs` imports `sharp`, which is not a direct dependency (it is
     present in `node_modules` only transitively, via Astro).
@@ -100,7 +97,7 @@ Node 22 (`.nvmrc`; CI uses 22), npm 10.
 | Unit tests | `npm test` (`vitest run`) |
 | Build | `npm run build` → `dist/` |
 | Link check | `npm run link-check` (needs `dist/`) |
-| Everything CI runs | `npm run validate` (check → test → build → link-check) |
+| Everything CI runs | `npm run validate` (check → build → test → link-check) |
 | Preview build | `npm run preview` |
 | New blog pair | `npm run new:post -- my-slug --title-ru "Заголовок" --title-en "Title"` |
 | Regenerate resume files | `npm run build && npm run cv:export` (needs Google Chrome) |
@@ -108,11 +105,10 @@ Node 22 (`.nvmrc`; CI uses 22), npm 10.
 | OG cards | `npm run og:build` (macOS Chrome path is hard-coded in the script) |
 | WebP screenshots | `npm run shots:webp` |
 
-Verified on 2026-10-11 in a fresh clone (Node 22.22, npm 10.9): `npm ci`,
-`npm run validate` (0 errors/warnings/hints, 58 tests passed + 6 skipped, build OK,
-link check passed for 26 HTML files), then `npm test` again with `dist/` present
-(64/64 passed). Not run: `cv:export`, `cv:vacancy`, `og:build`, `shots:webp`, `dev`,
-`preview`.
+Verified on 2026-10-21 (Node 22.22, npm 10.9): `npm ci`, `npm run validate`
+(0 errors/warnings/hints, build OK, 80/80 tests including the `dist/` suites, link
+check passed for 27 HTML files). Not run: `cv:export`, `cv:vacancy`, `og:build`,
+`shots:webp`, `dev`, `preview`.
 
 ## Configuration
 
@@ -134,8 +130,16 @@ is git-ignored; `.env.example` is the template.
 
 - `deploy.yml`: on push to `main` (and manual dispatch) → `npm ci` → `npm run build` →
   `npm run link-check` → upload `dist/` → GitHub Pages, custom domain via `public/CNAME`.
-- `ci.yml`: on every pull request and push to `main` → check, test, build, link check.
+- `ci.yml`: on every pull request and push to `main` → check, build, test, link check.
+  The build comes first so the suites that read `dist/` run in CI. `main` requires a PR
+  and the `validate` check, admins included.
 - No staging environment; a merge to `main` is a production release.
+- `rebsem.ru` is a verified Pages domain of the `RebSem` account (TXT
+  `_github-pages-challenge-RebSem`), which blocks domain takeover. The domain sends no
+  mail: SPF `v=spf1 -all` and DMARC `p=reject` at REG.RU (2026-10-21).
+- Repository security: secret scanning with push protection, Dependabot alerts and
+  private vulnerability reporting are on. No deploy keys; the only Actions secret is
+  `PUBLIC_ANALYTICS_KEY`.
 - Until 2026-07-26 the repo also carried a Docker/Apache/systemd self-hosting path; it
   was removed (#46) because the site was on GitHub Pages throughout.
 
@@ -146,7 +150,8 @@ is git-ignored; `.env.example` is the template.
   carry the PR number, e.g. `feat: ... (#59)`. Bodies explain the why in prose.
   Agent co-authorship trailers are used.
 - Branches: short-lived `feat/…`, `fix/…`, `docs/…`, `claude/…` branches, PR into
-  `main`, squash merge, never force-push `main` (see `docs/workflow.md`).
+  `main`, squash merge, never force-push `main` (see `docs/workflow.md`). The one
+  exception was the 2026-10-21 privacy purge (see History).
 - Every page exists in both locales: change EN and RU together. English is the
   default (unprefixed), Russian lives under `/ru`.
 - No UI framework: Astro components plus small vanilla modules in `src/scripts/`.
@@ -162,8 +167,12 @@ is git-ignored; `.env.example` is the template.
 
 - **No phone number anywhere in the repository or on the public site.** Git history on
   a public repo is permanent. The phone variant of the resume is built only into the
-  git-ignored `private-exports/` (and a temporary `dist-private/`). Tests scan
-  `public/cv/**` and `dist/` for phone-shaped strings.
+  git-ignored `private-exports/` (and a temporary `dist-private/`). Never write a real
+  number into a code comment, a commit message or PR text either: those are public too.
+  `tests/repo-hygiene.test.ts` scans every tracked file (text, PDF, DOCX) for
+  phone-shaped strings; `tests/cv.test.ts` scans `public/cv/**` and `dist/`.
+- **Photos go in without location data.** Strip EXIF before committing a camera
+  original; `tests/repo-hygiene.test.ts` fails on GPS tags in any tracked image.
 - **Nothing from `private/`, `private-exports/`, `dist-private/`, `scripts/cv/_archive/`
   is ever committed.** No personal strategy notes in the public repo.
 - `src/data/cv.ts` is the single source of career facts. Its header comment lists the
@@ -212,14 +221,22 @@ is git-ignored; `.env.example` is the template.
   the "Before you ask" status block (folded into a one-line facts row under the hero on
   2026-10-19, with the home redesign: product shot in the hero, results-first projects,
   results-first case studies with collapsible depth).
+- 2026-10-21: privacy purge after an audit of the public repo. The owner's phone number
+  sat in a code comment, the CV pipeline README, two commit messages and an old resume
+  PDF at the repo root (Feb-Jun 2026); the 2026 hero photo carried GPS EXIF; two personal
+  positioning audits were in `docs/`. History was rewritten with `git filter-repo` and
+  `main` force-pushed once (old tip `af11c41`). Stale self-hosting secrets and deploy
+  keys were deleted, secret scanning turned on, `tests/repo-hygiene.test.ts` added and CI
+  reordered to build before testing. Old PR refs and dangling commits on GitHub keep the
+  old objects until GitHub Support purges them.
 
 ## Gotchas
 
-- **Dist-dependent tests are skipped in CI.** `validate` and `ci.yml` run tests before
-  the build, so `describeBuilt` in `tests/cv.test.ts` skips 6 tests on a clean checkout.
-  To really run them locally: `npm run build && npm test`.
-- `npm test` alone also depends on stale `dist/` contents if a `dist/` exists: rebuild
-  first when checking resume or robots behaviour.
+- **Clones made before 2026-10-21 carry the pre-purge history**, phone number included.
+  Re-clone (or reset to `origin/main` and delete old branches); never push old branches.
+- Without a `dist/`, `npm test` skips the `cv build output` suite; `validate` builds
+  first. `npm test` against a stale `dist/` tests stale output: rebuild first when
+  checking resume or robots behaviour.
 - PDFs are printed from a local preview server; relative links in them would point at
   `127.0.0.1`. Links in the resume must be absolute (a test inflates PDF streams to check).
 - Chrome rasterizes `mix-blend-mode` in print (a 9 MB PDF), letter-spacing splits

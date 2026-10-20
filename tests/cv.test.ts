@@ -32,8 +32,8 @@ const PROJECT_CONTENT = path.resolve('src/content/projects');
 
 /**
  * Anything that reads dist/ only runs when a build is present. `npm run
- * validate` builds before the tests in CI; a bare `npm test` should not fail
- * for the absence of a build directory.
+ * validate` and CI build before the tests, so these run there; a bare
+ * `npm test` without a build skips them instead of failing.
  */
 const hasDist = existsSync(path.join(DIST, 'cv', 'index.html'));
 const describeBuilt = hasDist ? describe : describe.skip;

@@ -15,7 +15,7 @@
     "check": "astro check",
     "test": "vitest run",
     "link-check": "node scripts/link-check.mjs",
-    "validate": "npm run check && npm test && npm run build && npm run link-check",
+    "validate": "npm run check && npm run build && npm test && npm run link-check",
     "preview": "astro preview",
     "astro": "astro",
     "new:post": "node scripts/new-post.mjs",
