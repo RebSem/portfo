@@ -20,6 +20,11 @@ jobs:
           node-version: 22
           cache: npm
 
+      # pdftotext lets the PDF checks run (no phone number inside a resume or any
+      # tracked PDF, a readable text layer); without it those tests skip.
+      - name: Install pdftotext
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+
       - name: Install dependencies
         run: npm ci
 
