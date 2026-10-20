@@ -1,7 +1,14 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
+import { glob } from 'astro/loaders';
+import { z } from 'astro/zod';
 
+// Astro 6+ dropped legacy `type: 'content'` collections: without a loader a
+// collection is silently empty and every case study and post vanishes from the
+// build. The glob loader's `id` is the old slug (`<name>-en`, `<name>-ru`), so
+// pages use `entry.id` and the URLs stay the same. Files starting with `_` are
+// skipped, as before.
 const blog = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/blog' }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
@@ -16,7 +23,7 @@ const blog = defineCollection({
 });
 
 const projects = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/[^_]*.{md,mdx}', base: './src/content/projects' }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
@@ -25,8 +32,8 @@ const projects = defineCollection({
     role: z.string().optional(),
     timeline: z.string().optional(),
     impact: z.string().optional(),
-    repoUrl: z.string().url().optional(),
-    demoUrl: z.string().url().optional(),
+    repoUrl: z.url().optional(),
+    demoUrl: z.url().optional(),
     draft: z.boolean().default(false),
     cover: z.string().optional(),
     tags: z.array(z.string()).default([]),

@@ -28,7 +28,7 @@ export const GET: APIRoute = async () => {
   const projectEntries = projects
     .map((project) => {
       const prefix = project.data.lang === 'ru' ? '/ru' : '';
-      const loc = `${SITE_URL}${prefix}/projects/${project.slug}/`;
+      const loc = `${SITE_URL}${prefix}/projects/${project.id}/`;
       return `<url><loc>${escapeXml(loc)}</loc></url>`;
     })
     .join('');

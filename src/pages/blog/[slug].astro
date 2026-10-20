@@ -8,7 +8,7 @@ import Layout from '../../layouts/Layout.astro';
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft && data.lang === 'en');
   return posts.map((post) => ({
-    params: { slug: post.slug },
+    params: { slug: post.id },
   }));
 }
 
@@ -23,7 +23,7 @@ const translationPairPosts = await getCollection(
   'blog',
   ({ data }) => !data.draft && data.translationKey === post.data.translationKey,
 );
-const ruSlug = translationPairPosts.find((entry) => entry.data.lang === 'ru')?.slug;
+const ruSlug = translationPairPosts.find((entry) => entry.data.lang === 'ru')?.id;
 
 const { Content } = await render(post);
 
@@ -46,8 +46,8 @@ const articleSchema = {
   image: pageImage.startsWith('http://') || pageImage.startsWith('https://')
     ? pageImage
     : `https://rebsem.ru${pageImage}`,
-  url: `https://rebsem.ru/blog/${post.slug}`,
-  mainEntityOfPage: `https://rebsem.ru/blog/${post.slug}`,
+  url: `https://rebsem.ru/blog/${post.id}`,
+  mainEntityOfPage: `https://rebsem.ru/blog/${post.id}`,
   author: {
     '@type': 'Person',
     name: heroDisplayName.en,
@@ -66,7 +66,7 @@ const breadcrumbSchema = {
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://rebsem.ru/' },
     { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://rebsem.ru/blog' },
-    { '@type': 'ListItem', position: 3, name: post.data.title, item: `https://rebsem.ru/blog/${post.slug}` },
+    { '@type': 'ListItem', position: 3, name: post.data.title, item: `https://rebsem.ru/blog/${post.id}` },
   ],
 };
 ---

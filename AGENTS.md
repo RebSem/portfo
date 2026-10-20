@@ -43,7 +43,8 @@ The repository is **public**. Treat every commit as permanent and world-readable
 
 ```
 astro.config.mjs        site URL, i18n (en default unprefixed, ru under /ru), self-hosted
-                        fonts (experimental.fonts), /projects -> /#projects redirects
+                        fonts (top-level `fonts`), /projects -> /#projects redirects,
+                        compressHTML and the Vite CSS target (see Gotchas)
 src/
   pages/                file routes; ru/ mirrors the root. cv.astro, cv.txt.ts (resume),
                         sitemap.xml.ts, robots.txt.ts, api/github/*.json.ts (build-time JSON)
@@ -51,7 +52,7 @@ src/
   components/           Astro components (HomeHero, CvDocument, FeaturedCase, Analytics, ...)
   content/blog/         MDX posts, RU/EN pairs linked by translationKey
   content/projects/     MDX case studies, one file per locale (<id>-en.mdx / <id>-ru.mdx)
-  content.config.ts     zod schemas for both collections
+  content.config.ts     glob loaders + zod schemas for both collections (entry.id = slug)
   data/cv.ts            single source of truth for career facts and the resume (RU+EN);
                         its header comment lists the content rules
   data/site-content.ts  site copy; imports from cv.ts, never the other way round
@@ -87,7 +88,9 @@ phone number), `scripts/cv/_archive/`, `.claude/`. Never commit anything from th
 
 ## Commands
 
-Node 22 (`.nvmrc`; CI uses 22), npm 10.
+Node 22.22 or newer (`.nvmrc`, `engines`; Astro 7 exits on older Node 22), npm 10. CI and
+deploy ask for `node-version: 22` and get the runner's cached 22.x (22.23 in October 2026);
+if a runner image ever ships an older 22.x, switch both to `node-version-file: .nvmrc`.
 
 | Task | Command |
 |---|---|
@@ -229,6 +232,11 @@ is git-ignored; `.env.example` is the template.
   keys were deleted, secret scanning turned on, `tests/repo-hygiene.test.ts` added and CI
   reordered to build before testing. Old PR refs and dangling commits on GitHub keep the
   old objects until GitHub Support purges them.
+- 2026-10-21: dependencies upgraded to Astro 7.4, `@astrojs/mdx` 8 and Vitest 5 (content
+  layer loaders, top-level `fonts`, `compressHTML: true`, a Vite CSS target); `npm audit`
+  went from 28 advisories (3 critical) to 0. `posthog-js` stays on 1.404: from 1.423 its
+  `respect_dnt` also honours Global Privacy Control and the lazy chunk grows by ~80 KB,
+  an analytics change that needs the owner.
 
 ## Gotchas
 
@@ -249,8 +257,21 @@ is git-ignored; `.env.example` is the template.
   fetch the new image.
 - `cv:vacancy` must pass `DATA_DIR` to the tracker renderer (it does); without it the
   renderer writes into the real tracker `out/`.
-- `astro.config.mjs` uses `experimental.fonts`; Newsreader is a local woff2 on purpose
-  (the Google provider drops the optical-size axis).
+- `astro.config.mjs` configures fonts via the top-level `fonts` key (stable since
+  Astro 6); Newsreader is a local woff2 on purpose (the Google provider drops the
+  optical-size axis).
+- Astro 7 specifics in `astro.config.mjs` are load-bearing. `compressHTML: true` keeps
+  the spaces between inline elements on separate lines (the 7.x default `'jsx'` glues
+  words together in the hero, footer and the `/cv` text that becomes the PDF).
+  `vite.build.cssTarget` stops Lightning CSS from dropping `-webkit-backdrop-filter`
+  and rewriting `max-width` media queries to range syntax.
+- A content collection without a `loader` builds as empty with exit 0 and only a
+  warning. `tests/content-validation.test.ts` checks that every published MDX file
+  got its page and sitemap entry (runs when `dist/` exists).
+- When an AI agent is detected, Astro 7 starts `astro dev` / `astro preview` detached
+  (lock file in `.astro/`). Any non-empty `ASTRO_DEV_BACKGROUND`
+  (`ASTRO_PREVIEW_BACKGROUND`) keeps it in the foreground. A second dev server in the
+  same checkout errors out instead of taking another port; `--ignore-lock` allows it.
 - Telegram links use `telegram.me`, not `t.me` (the `t.me` domain was in serverHold
   from 2026-07-13; see #42 and the comment in `src/data/cv.ts`).
 - Without `GITHUB_TOKEN` the build uses unauthenticated GitHub API calls (60 req/h) and
