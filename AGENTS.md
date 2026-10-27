@@ -140,7 +140,8 @@ is git-ignored; `.env.example` is the template.
 
 ## Deploy & release
 
-- `deploy.yml`: on push to `main` (and manual dispatch) → `npm ci` → `npm run build` →
+- `deploy.yml`: on push to `main`, nightly at 02:00 UTC (keeps the build-time GitHub
+  activity fresh) and on manual dispatch → `npm ci` → `npm run build` →
   `npm run link-check` → upload `dist/` → GitHub Pages, custom domain via `public/CNAME`.
 - `ci.yml`: on every pull request and push to `main` → check, build, test, link check.
   The build comes first so the suites that read `dist/` run in CI. `main` requires a PR
