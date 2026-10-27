@@ -15,7 +15,7 @@ Status: in production at rebsem.ru. Coding agents start at [`AGENTS.md`](AGENTS.
 
 | | |
 |---|---|
-| Framework | Astro 5, `output: 'static'` |
+| Framework | Astro 7, `output: 'static'` |
 | Content | MDX via `astro:content`, schema-validated collections |
 | Language | TypeScript (`astro/tsconfigs/strict`) |
 | Fonts | Self-hosted, built by Astro's font pipeline |
@@ -71,7 +71,8 @@ browser environment.
 
 ## Development
 
-Node 22 and npm 10 (CI pins the same major).
+Node 22.22 or newer and npm 10 (Astro 7 refuses to run on older Node 22
+releases; CI pins the same major).
 
 ```bash
 npm install
