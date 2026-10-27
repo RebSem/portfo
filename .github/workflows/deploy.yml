@@ -5,6 +5,11 @@ on:
     branches:
       - main
   workflow_dispatch:
+  # The GitHub activity on the site (contribution grid, PR counter) is fetched
+  # at build time, so without a push it goes stale. A nightly rebuild of main
+  # keeps it current: 02:00 UTC is 07:00 in Perm (GMT+5).
+  schedule:
+    - cron: '0 2 * * *'
 
 concurrency:
   group: pages
