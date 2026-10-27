@@ -11,98 +11,66 @@ interface Props {
 const { locale, caseHref } = Astro.props;
 const copy = uiCopy.home;
 
-// The product itself on the right: the hero claims "I launch B2B and AI
-// products", and the live Zvonobot AI cabinet is the proof, so it fills the
-// half of a wide screen that used to stay empty. WebP variants and the theme
-// swap follow the same scheme as ProjectScreenshot (theme-images.js).
-const shotLight = '/projects/zvonobot-dashboard-light.png';
-const shotDark = '/projects/zvonobot-dashboard-dark.png';
-const shot1x = (png: string) => png.replace(/\.png$/, '-1440.webp');
-const shotSet = (png: string) => `${shot1x(png)} 1440w, ${png.replace(/\.png$/, '.webp')} 2880w`;
+// The standfirst is balanced, and a balanced line happily breaks a compound
+// word at its hyphen ("B2B-" / "клиентов"). Same fix as nb() in
+// CvDocument.astro: hyphenated tokens go in a nowrap span, the text itself
+// is untouched.
+const HYPHENATED = /[\p{L}\p{N}]-[\p{L}\p{N}]/u;
+const chunks = (value: string) => value.split(/(\s+)/);
 ---
 
+{/*
+  One column again, set like a magazine opener: byline, a headline that
+  carries the page on its own, the standfirst, the one action. The product
+  screenshot that shared this screen from 2026-10-19 is gone: at a glance
+  it read as decoration to the people this page is for, and the claim
+  needs the room more than the picture did. The results it stood for sit
+  right below, in the band (HomeResults.astro).
+
+  Nothing in the opener is hidden at load: the headline is the page's LCP
+  element and paints with the first frame, the status and the facts too.
+  The only motion is the hairlines drawing in (.ed-draw in global.css).
+*/}
 <section class="home-intro" aria-labelledby="home-title" data-analytics-placement="hero">
-  <div class="hero-grid">
-    <div class="hero-copy">
-      <p class="hero-identity">
-        <span>{heroDisplayName[locale]}</span>
-        <span class="hero-identity-divider" aria-hidden="true">/</span>
-        <span class="hero-role">Product Manager</span>
-      </p>
+  <p class="hero-identity">
+    <span>{heroDisplayName[locale]}</span>
+    <span class="hero-identity-divider" aria-hidden="true">/</span>
+    <span class="hero-role">Product Manager</span>
+  </p>
 
-      <h1 id="home-title">
-        <span>{copy.title[locale]}</span>
-        <span class="hero-focus">{copy.titleFocus[locale]}</span>
-      </h1>
+  <h1 id="home-title">
+    <span>{copy.title[locale]}</span>
+    <span class="hero-focus">{copy.titleFocus[locale]}</span>
+  </h1>
 
-      <p class="hero-proof">
-        {copy.proofIntro[locale]}
-        <strong>{copy.proofResult[locale]}</strong>
-      </p>
+  <p class="hero-proof">
+    {chunks(copy.proofIntro[locale]).map((c) => (HYPHENATED.test(c) ? <span class="nb">{c}</span> : c))}
+    <strong>{chunks(copy.proofResult[locale]).map((c) => (HYPHENATED.test(c) ? <span class="nb">{c}</span> : c))}</strong>
+  </p>
 
-      <div class="hero-cta-row">
-        <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M4 11l16 -8l-4 18l-5 -4l-3 3l1 -5l8 -7" />
-          </svg>
-          {copy.heroCtaPrimary[locale]}
-        </a>
-        <a class="cta-button cta-secondary" href={caseHref} aria-label={copy.heroCaseLabel[locale]}>
-          {copy.heroCtaSecondary[locale]}
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M5 12h14" /><path d="M13 6l6 6l-6 6" />
-          </svg>
-        </a>
-      </div>
-    </div>
-
-    {/* One tab stop per destination: "See the case" right beside it goes to
-        the same page, so the picture is mouse and touch only. */}
-    <a class="hero-shot" href={caseHref} aria-label={copy.heroCaseLabel[locale]} tabindex="-1">
-      <span class="hero-shot-frame">
-        <span class="hero-shot-bar" aria-hidden="true">
-          <span class="hero-shot-dot"></span>
-          <span class="hero-shot-dot"></span>
-          <span class="hero-shot-dot"></span>
-        </span>
-        {/* No src in the markup: the inline script below picks the theme's
-            file before the preload scanner can fetch the light one, so a
-            dark-theme visit downloads one image, not two, and never flashes
-            the light dashboard. ClientRouter visits are filled by
-            theme-images.js on astro:page-load. */}
-        <img
-          sizes="(max-width: 900px) min(calc(100vw - 2rem), 40rem), 600px"
-          data-light-src={shot1x(shotLight)}
-          data-dark-src={shot1x(shotDark)}
-          data-light-srcset={shotSet(shotLight)}
-          data-dark-srcset={shotSet(shotDark)}
-          alt={uiCopy.projects.featuredScreenshotAlt[locale]}
-          width="1440"
-          height="900"
-          loading="eager"
-          decoding="async"
-          fetchpriority="high"
-        />
-        <script is:inline data-astro-rerun>
-          (function (img) {
-            if (!img) return;
-            var dark = document.documentElement.getAttribute('data-theme') === 'dark';
-            img.srcset = img.getAttribute(dark ? 'data-dark-srcset' : 'data-light-srcset');
-            img.src = img.getAttribute(dark ? 'data-dark-src' : 'data-light-src');
-          })(document.querySelector('.hero-shot img'));
-        </script>
-        <noscript>
-          <img src={shot1x(shotLight)} srcset={shotSet(shotLight)} sizes="600px" alt="" width="1440" height="900" />
-        </noscript>
-      </span>
-      <span class="hero-shot-caption">{copy.heroShotCaption[locale]}</span>
+  {/* The ways to write sit with the actions: Telegram as the button, the
+      profiles and the email as quiet icons after it. On phones the icons
+      drop out here (the footer has them) so the first screen stays short. */}
+  <div class="hero-cta-row">
+    <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 11l16 -8l-4 18l-5 -4l-3 3l1 -5l8 -7" />
+      </svg>
+      {copy.heroCtaPrimary[locale]}
     </a>
+    <a class="cta-button cta-secondary" href={caseHref} aria-label={copy.heroCaseLabel[locale]}>
+      {copy.heroCtaSecondary[locale]}
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M5 12h14" /><path d="M13 6l6 6l-6 6" />
+      </svg>
+    </a>
+    <SocialLinks className="social-links hero-social-links" hideTelegram label={copy.heroSocialAria[locale]} />
   </div>
 
-  {/* The status block used to be a whole section under the hero. Four facts
-      in one line answer the same screening questions without a second
-      heading, and the Telegram button right above is the one action. */}
-  <div class="hero-facts">
+  {/* The availability line: the status as a badge in the rail, the four
+      facts a recruiter screens on beside it. The status dot is static on
+      purpose. */}
+  <div class="hero-facts ed-row ed-draw">
     <p class="hero-status">
       <span class="hero-status-dot" aria-hidden="true"></span>
       {copy.heroStatusShort[locale]}
@@ -115,50 +83,48 @@ const shotSet = (png: string) => `${shot1x(png)} 1440w, ${png.replace(/\.png$/, 
         </div>
       ))}
     </dl>
-    <SocialLinks className="social-links hero-social-links" hideTelegram label={copy.heroSocialAria[locale]} />
   </div>
 </section>
 
 <style>
+  /* The opener's vertical rhythm follows the viewport height as well as
+     the width, so the results band under it clears the fold on a 13-inch
+     laptop (about 1440x780 of usable page) and still breathes at 900px. */
   .home-intro {
-    padding-block: clamp(2rem, 4.5vw, 3.75rem) 0.5rem;
-  }
-
-  .hero-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-    align-items: center;
-    gap: clamp(2rem, 4vw, 4rem);
+    padding-top: clamp(1.75rem, 5.5vh, 4.25rem);
   }
 
   .hero-identity {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
-    gap: 0.4rem 0.75rem;
-    font-size: 0.95rem;
+    gap: 0.35rem 0.7rem;
+    font-size: 1rem;
     font-weight: 500;
     line-height: 1.5;
   }
 
   .hero-identity-divider {
-    color: color-mix(in oklab, var(--foreground) 35%, var(--background-alt));
+    color: color-mix(in oklab, var(--foreground) 30%, var(--background-alt));
     font-weight: 400;
   }
 
   .hero-role {
-    color: color-mix(in oklab, var(--foreground) 65%, var(--background-alt));
+    color: color-mix(in oklab, var(--foreground) 64%, var(--background-alt));
     font-weight: 400;
   }
 
-  /* Smaller than the one-column hero had it (5rem): the line now shares the
-     width with the product shot and no longer has to fill the screen alone. */
+  /* The headline sets the scale for the page. Sized in vw below ~960px so
+     both lines hold in both locales down to a 360px phone ("Запускаю и
+     развиваю" is the longest line), in vh on short laptop screens, and
+     capped at 5.6rem. A touch under semibold with slightly looser
+     tracking: at this size 600 and -0.05em read dense. */
   h1 {
-    margin-top: 1.35rem;
-    font-size: clamp(2.125rem, 2.9vw + 0.65rem, 3.6rem);
-    font-weight: 600;
-    letter-spacing: -0.045em;
-    line-height: 1.06;
+    margin-top: clamp(1rem, 2.4vh, 1.75rem);
+    font-size: clamp(1.875rem, min(9.1vw, 11.6vh), 5.6rem);
+    font-weight: 580;
+    letter-spacing: -0.046em;
+    line-height: 0.99;
   }
 
   h1 > span {
@@ -170,153 +136,102 @@ const shotSet = (png: string) => `${shot1x(png)} 1440w, ${png.replace(/\.png$/, 
   }
 
   .hero-proof {
-    margin-top: 1.5rem;
-    max-width: 38rem;
-    font-size: clamp(1.0625rem, 0.5vw + 0.9rem, 1.2rem);
-    line-height: 1.55;
-    color: color-mix(in oklab, var(--foreground) 70%, var(--background-alt));
+    margin-top: clamp(1.25rem, 3vh, 2rem);
+    max-width: 40rem;
+    font-size: clamp(1.0625rem, 0.55vw + 0.88rem, 1.3rem);
+    line-height: 1.5;
+    letter-spacing: -0.008em;
+    color: color-mix(in oklab, var(--foreground) 68%, var(--background-alt));
     text-wrap: balance;
   }
 
+  /* Balance leaves "80 платящих" alone on a phone line once the compound
+     word is held together; the result line only needs a decent last line. */
   .hero-proof strong {
     display: block;
     color: var(--foreground);
     font-weight: 500;
+    text-wrap: pretty;
+  }
+
+  .nb {
+    white-space: nowrap;
   }
 
   .hero-cta-row {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.6rem;
-    margin-top: 1.75rem;
+    gap: 0.65rem;
+    margin-top: clamp(1.5rem, 3.4vh, 2.25rem);
   }
 
   .hero-cta-row .cta-button {
-    min-height: 3rem;
+    min-height: 3.1rem;
     height: auto;
-    padding: 0.9rem 1.3rem;
+    padding: 0.9rem 1.35rem;
     border-radius: 0.8rem;
     line-height: 1.2;
   }
 
-  /* --- Product shot ---------------------------------------------------- */
-
-  .hero-shot {
-    display: grid;
-    gap: 0.65rem;
-    color: inherit;
-    text-decoration: none;
+  .hero-cta-row :global(.hero-social-links) {
+    gap: 0;
+    margin-left: 0.6rem;
   }
 
-  .hero-shot-frame {
-    display: block;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    border-radius: 0.95rem;
-    background: var(--surface);
-    box-shadow:
-      0 30px 60px -32px color-mix(in oklab, var(--foreground) 38%, transparent),
-      inset 0 1px 0 color-mix(in oklab, var(--surface) 60%, white 40%);
-    transition: transform var(--dur-base) var(--ease-out-strong);
+  .hero-cta-row :global(.social-link) {
+    width: 2.75rem;
+    height: 2.75rem;
+    color: color-mix(in oklab, var(--foreground) 66%, transparent);
   }
 
-  :global([data-theme='dark']) .hero-shot-frame {
-    box-shadow:
-      0 30px 60px -28px rgba(0, 0, 0, 0.6),
-      inset 0 1px 0 color-mix(in oklab, white 3%, transparent);
+  .hero-cta-row :global(.social-link svg) {
+    width: 20px;
+    height: 20px;
   }
 
-  .hero-shot-bar {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.55rem 0.8rem;
-    background: color-mix(in oklab, var(--surface) 70%, var(--background) 30%);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .hero-shot-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: color-mix(in oklab, var(--foreground) 18%, transparent);
-  }
-
-  .hero-shot img {
-    display: block;
-    width: 100%;
-    height: auto;
-    background: var(--surface);
-  }
-
-  .hero-shot-caption {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.04em;
-    text-align: center;
-    color: var(--text-muted);
-    transition: color var(--dur-fast) var(--ease-out-strong);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .hero-shot:hover .hero-shot-frame {
-      transform: translateY(-3px);
-    }
-
-    .hero-shot:hover .hero-shot-caption {
-      color: var(--accent-text);
-    }
-  }
-
-  .hero-shot:focus-visible {
-    outline: none;
-  }
-
-  .hero-shot:focus-visible .hero-shot-frame {
-    outline: 2px solid var(--focus-ring);
-    outline-offset: 3px;
-  }
-
-  /* --- Facts row ------------------------------------------------------- */
+  /* --- Availability line ----------------------------------------------- */
 
   .hero-facts {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
-    gap: 1rem 2rem;
-    margin-top: clamp(2.25rem, 4vw, 3.25rem);
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--border);
+    margin-top: clamp(2rem, 5.5vh, 3.75rem);
+    padding-bottom: clamp(1.1rem, 2.2vh, 1.4rem);
   }
 
+  /* The first thing a recruiter checks, so it reads as a badge, not a line
+     of text: a tinted pill with a static dot. */
   .hero-status {
     display: inline-flex;
     align-items: center;
+    justify-self: start;
     gap: 0.5rem;
     margin: 0;
-    padding: 0.4rem 0.8rem;
-    border: 1px solid color-mix(in oklab, var(--accent) 32%, var(--border));
+    padding: 0.38rem 0.85rem 0.38rem 0.7rem;
+    border: 1px solid color-mix(in oklab, var(--accent) 34%, transparent);
     border-radius: 999px;
-    background: color-mix(in oklab, var(--surface) 88%, var(--accent) 12%);
+    background: color-mix(in oklab, var(--accent) 11%, transparent);
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.005em;
     color: var(--accent-text);
-    font-size: 0.85rem;
-    font-weight: 500;
     white-space: nowrap;
   }
 
   .hero-status-dot {
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
     flex: none;
     border-radius: 50%;
     background: currentColor;
   }
 
+  /* One line of four facts on a laptop, each as wide as its value, spread
+     over the column; a 2x2 grid once the column is too narrow for that. */
   .hero-facts-list {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0.5rem 1.75rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.9rem 2rem;
     margin: 0;
   }
 
@@ -324,108 +239,50 @@ const shotSet = (png: string) => `${shot1x(png)} 1440w, ${png.replace(/\.png$/, 
     display: grid;
     align-content: start;
     gap: 0.2rem;
+    min-width: 0;
   }
 
   .hero-facts-list dt {
     font-family: var(--font-mono);
-    font-size: 0.66rem;
-    letter-spacing: 0.06em;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    line-height: 1.35;
     text-transform: uppercase;
     color: var(--text-muted);
   }
 
   .hero-facts-list dd {
     margin: 0;
-    font-size: 0.88rem;
-    line-height: 1.35;
+    font-size: 0.925rem;
+    line-height: 1.4;
     color: var(--foreground);
   }
 
-  .hero-facts :global(.hero-social-links) {
-    gap: 0.1rem;
-    margin: 0 -0.55rem 0 0;
-  }
-
-  .hero-facts :global(.social-link) {
-    width: 2.6rem;
-    height: 2.6rem;
-    border-radius: 0.7rem;
-  }
-
   @media (max-width: 1180px) {
-    .hero-facts {
-      grid-template-columns: auto minmax(0, 1fr);
-    }
-
-    .hero-facts :global(.hero-social-links) {
-      display: none;
-    }
-  }
-
-  /* Below 900px one column. The facts come before the shot: they answer
-     the screening questions, the shot is decoration at this width, and on
-     a phone it pushed "Open to work" below the first screen. */
-  @media (max-width: 900px) {
-    .home-intro {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .hero-grid {
-      display: contents;
-    }
-
-    .hero-facts {
-      order: 1;
-    }
-
-    .hero-shot {
-      order: 2;
-      width: 100%;
-      max-width: 40rem;
-      margin-top: 2rem;
-      align-self: center;
-    }
-
-    h1 {
-      font-size: clamp(2.125rem, 5.2vw + 0.5rem, 3.6rem);
-    }
-  }
-
-  /* Phones: a 1440px dashboard shrunk to 340px is unreadable texture, and the
-     featured case follows right away. */
-  @media (max-width: 640px) {
-    .hero-shot {
-      display: none;
-    }
-  }
-
-  @media (max-width: 860px) {
-    .hero-facts {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 0.9rem;
-    }
-
-    .hero-status {
-      justify-self: start;
-    }
-
     .hero-facts-list {
+      display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.85rem 1.25rem;
+      gap: 0.85rem 1.5rem;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .hero-facts {
+      align-items: start;
     }
   }
 
   @media (max-width: 720px) {
+    .home-intro {
+      padding-top: 0.6rem;
+    }
+
     h1 {
-      max-width: 100%;
-      margin-top: 1.1rem;
-      letter-spacing: -0.04em;
-      line-height: 1.12;
+      margin-top: 0.85rem;
     }
 
     .hero-proof {
-      margin-top: 1.2rem;
+      margin-top: 1.15rem;
     }
 
     .hero-cta-row {
@@ -433,8 +290,20 @@ const shotSet = (png: string) => `${shot1x(png)} 1440w, ${png.replace(/\.png$/, 
     }
 
     .hero-cta-row .cta-button {
-      padding-inline: 0.75rem;
-      font-size: 0.875rem;
+      padding-inline: 0.8rem;
+      font-size: 0.9rem;
+    }
+
+    .hero-cta-row :global(.hero-social-links) {
+      display: none;
+    }
+
+    .hero-facts {
+      margin-top: 1.75rem;
+    }
+
+    .hero-facts-list {
+      gap: 0.75rem 1.25rem;
     }
   }
 
@@ -447,22 +316,11 @@ const shotSet = (png: string) => `${shot1x(png)} 1440w, ${png.replace(/\.png$/, 
   @media (max-width: 360px) {
     .hero-identity {
       gap: 0.25rem 0.5rem;
-      font-size: 0.8125rem;
+      font-size: 0.875rem;
     }
 
     .hero-cta-row .cta-button {
       font-size: 0.8125rem;
-    }
-
-    .hero-facts-list {
-      grid-template-columns: minmax(0, 1fr);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .hero-shot-frame,
-    .hero-shot-caption {
-      transition: none;
     }
   }
 </style>

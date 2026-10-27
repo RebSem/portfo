@@ -20,60 +20,72 @@ try {
 }
 
 const repoSlug = `${githubUsername}/portfo`;
+
+// The eyebrow reads "How I test hypotheses fast · Claude Code & Codex". In
+// the narrow rail it is set as a label plus a context line, like the
+// results band, instead of wrapping with the dot at the start of a line.
+const [eyebrowLabel, eyebrowContext] = c.eyebrow[locale].split(' · ');
 const mergedPrsUrl = `https://github.com/${repoSlug}/pulls?q=is%3Apr+is%3Amerged`;
 ---
 
-<section class="section-block agent-ops" aria-labelledby="agent-ops-title" data-agent-repo={repoSlug}>
-  <div class="section-head">
-    <p class="about-eyebrow">{c.eyebrow[locale]}</p>
-    <h2 id="agent-ops-title">{c.title[locale]}</h2>
-    <p class="agent-ops-lead">{c.lead[locale]}</p>
-  </div>
+<section class="ed-section agent-ops" aria-labelledby="agent-ops-title" data-agent-repo={repoSlug}>
+  <div class="ed-row ed-mark">
+    <div>
+      <p class="ed-label">{eyebrowLabel}</p>
+      {eyebrowContext && <p class="ed-context">{eyebrowContext}</p>}
+    </div>
+    <div class="agent-ops-body">
+      <div class="agent-ops-head">
+        <h2 id="agent-ops-title" class="ed-h2">{c.title[locale]}</h2>
+        <p class="agent-ops-lead">{c.lead[locale]}</p>
+      </div>
 
-  <div class="agent-ops-grid">
-    <ol class="agent-steps">
-      {c.steps.map((step) => (
-        <li class="agent-step">
-          <span class="agent-step-num" aria-hidden="true">{step.k}</span>
-          <div class="agent-step-copy">
-            <h3>{step.title[locale]}</h3>
-            <p>{step.body[locale]}</p>
+      <div class="agent-ops-grid">
+        <ol class="agent-steps">
+          {c.steps.map((step) => (
+            <li class="agent-step">
+              <span class="agent-step-num" aria-hidden="true">{step.k}</span>
+              <div class="agent-step-copy">
+                <h3>{step.title[locale]}</h3>
+                <p>{step.body[locale]}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+
+        <aside class="agent-terminal" aria-label={c.terminalAria[locale]}>
+          <div class="agent-terminal-bar" aria-hidden="true">
+            <span class="agent-terminal-dot"></span>
+            <span class="agent-terminal-dot"></span>
+            <span class="agent-terminal-dot"></span>
+            <span class="agent-terminal-title">agent ops: {repoSlug}</span>
           </div>
-        </li>
-      ))}
-    </ol>
-
-    <aside class="agent-terminal" aria-label={c.terminalAria[locale]}>
-      <div class="agent-terminal-bar" aria-hidden="true">
-        <span class="agent-terminal-dot"></span>
-        <span class="agent-terminal-dot"></span>
-        <span class="agent-terminal-dot"></span>
-        <span class="agent-terminal-title">agent ops: {repoSlug}</span>
-      </div>
-      <div class="agent-terminal-body">
-        <p class="t-cmd">gh pr list --state merged</p>
-        <p class="t-out">
-          <strong class="t-num" data-agent-pr-count>31</strong>
-          <span>{c.receiptPrs[locale]}</span>
-        </p>
-        <p class="t-link">
-          <a href={mergedPrsUrl} target="_blank" rel="noreferrer">{c.receiptPrsLink[locale]} ↗</a>
-        </p>
-
-        {commitHash && (
-          <>
-            <p class="t-cmd">git rev-parse --short HEAD</p>
+          <div class="agent-terminal-body">
+            <p class="t-cmd">gh pr list --state merged</p>
             <p class="t-out">
-              <strong class="t-num">{commitHash}</strong>
-              <span>{c.receiptDeployNote[locale]}</span>
+              <strong class="t-num" data-agent-pr-count>31</strong>
+              <span>{c.receiptPrs[locale]}</span>
             </p>
-          </>
-        )}
+            <p class="t-link">
+              <a href={mergedPrsUrl} target="_blank" rel="noreferrer">{c.receiptPrsLink[locale]} ↗</a>
+            </p>
 
-        <p class="t-cmd">whoami</p>
-        <p class="t-out t-whoami">agent-native product manager<span class="t-caret" aria-hidden="true"></span></p>
+            {commitHash && (
+              <>
+                <p class="t-cmd">git rev-parse --short HEAD</p>
+                <p class="t-out">
+                  <strong class="t-num">{commitHash}</strong>
+                  <span>{c.receiptDeployNote[locale]}</span>
+                </p>
+              </>
+            )}
+
+            <p class="t-cmd">whoami</p>
+            <p class="t-out t-whoami">agent-native product manager<span class="t-caret" aria-hidden="true"></span></p>
+          </div>
+        </aside>
       </div>
-    </aside>
+    </div>
   </div>
 </section>
 

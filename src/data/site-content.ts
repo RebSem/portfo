@@ -409,10 +409,11 @@ export const uiCopy = {
         value: { ru: 'B2, рабочий', en: 'B2, daily at work' },
       },
     ],
-    heroShotCaption: {
-      ru: 'Zvonobot AI · кабинет клиента · демо-данные',
-      en: 'Zvonobot AI · client console · demo data',
-    },
+    // The results band right under the hero (HomeResults.astro): a section
+    // label and its context, nothing more. The numbers themselves are
+    // uiCopy.projects.featuredResults, so the band and the case never drift.
+    resultsTitle: { ru: 'Результаты', en: 'Results' },
+    resultsContext: { ru: 'Zvonobot AI, 2025-2026', en: 'Zvonobot AI, 2025-2026' },
     postsTitle: { ru: 'Свежие статьи', en: 'Recent posts' },
     postsSubtitle: {
       ru: 'Заметки о продуктовой логике, delivery-процессах и практическом использовании AI.',
@@ -497,13 +498,14 @@ export const uiCopy = {
       en: 'Live in production',
     },
     featuredRole: {
-      ru: 'Продукт, прайсинг, вывод на рынок · запустил с нуля осенью 2025, вёл до октября 2026',
-      en: 'Product, pricing, go-to-market · launched from zero in fall 2025, ran it until October 2026',
+      ru: 'Продукт, прайсинг, вывод на рынок\u00a0· запустил с нуля осенью 2025, вёл до октября 2026',
+      en: 'Product, pricing, go-to-market\u00a0· launched from zero in fall 2025, ran it until October 2026',
     },
-    // Results, not features: three numbers a reader keeps. The modest size is
-    // deliberate (Mikhail rejected display-size figures on /cv), and the
-    // set stays inside the home-page rules: no minutes, no revenue share,
-    // no sales headcount as a headline (that is the sales director's number).
+    // Results, not features: three numbers a reader keeps, shown in the band
+    // right under the hero. The modest size is deliberate (Mikhail rejected
+    // display-size figures on /cv), and the set stays inside the home-page
+    // rules: no minutes, no revenue share, no sales headcount as a headline
+    // (that is the sales director's number).
     featuredResults: [
       {
         value: { ru: '80', en: '80' },
@@ -518,10 +520,6 @@ export const uiCopy = {
         label: { ru: 'выручки направления давали повторные оплаты', en: 'of the line’s revenue came from repeat payments' },
       },
     ],
-    featuredScreenshotAlt: {
-      ru: 'Скриншот клиентского дашборда Zvonobot AI с моковыми демо-данными',
-      en: 'Zvonobot AI client dashboard screenshot with mock demo data',
-    },
     caseLink: { ru: 'Открыть кейс', en: 'Read the case' },
     caseShort: { ru: 'Кейс', en: 'Case' },
     workTitle: { ru: 'Работа и свой продукт', en: 'Work and my own product' },
@@ -567,6 +565,10 @@ export const uiCopy = {
       en: 'Social links',
     },
     eyebrow: { ru: 'Контакт', en: 'Contact' },
+    // The home page ends on this question, set in the headline's type as a
+    // bookend to the H1, with the pitch below as its subline
+    // (SiteFooter.astro, closing). Other pages keep the pitch alone.
+    closingTitle: { ru: 'Нужен продакт-менеджер?', en: 'Hiring a product manager?' },
     pitch: {
       ru: 'Напишите, если ищете продакта в B2B SaaS, платежи или AI-продукты.',
       en: 'Write me if you are hiring a product manager for B2B SaaS, payments or AI products.',
