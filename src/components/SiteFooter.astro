@@ -28,7 +28,7 @@ const note = locale === 'ru' ? noteRu : noteEn;
 const prefix = locale === 'ru' ? '/ru' : '';
 
 // Word by word, so a line can only break between words: left to the
-// browser, "Ищете продакт-менеджера?" splits at its hyphen.
+// browser, "Нужен продакт-менеджер?" splits at its hyphen.
 const closingWords = uiCopy.footer.closingTitle[locale].split(' ');
 ---
 

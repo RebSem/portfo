@@ -498,8 +498,8 @@ export const uiCopy = {
       en: 'Live in production',
     },
     featuredRole: {
-      ru: 'Продукт, прайсинг, вывод на рынок · запустил с нуля осенью 2025, вёл до октября 2026',
-      en: 'Product, pricing, go-to-market · launched from zero in fall 2025, ran it until October 2026',
+      ru: 'Продукт, прайсинг, вывод на рынок\u00a0· запустил с нуля осенью 2025, вёл до октября 2026',
+      en: 'Product, pricing, go-to-market\u00a0· launched from zero in fall 2025, ran it until October 2026',
     },
     // Results, not features: three numbers a reader keeps, shown in the band
     // right under the hero. The modest size is deliberate (Mikhail rejected
@@ -568,7 +568,7 @@ export const uiCopy = {
     // The home page ends on this question, set in the headline's type as a
     // bookend to the H1, with the pitch below as its subline
     // (SiteFooter.astro, closing). Other pages keep the pitch alone.
-    closingTitle: { ru: 'Ищете продакт-менеджера?', en: 'Hiring a product manager?' },
+    closingTitle: { ru: 'Нужен продакт-менеджер?', en: 'Hiring a product manager?' },
     pitch: {
       ru: 'Напишите, если ищете продакта в B2B SaaS, платежи или AI-продукты.',
       en: 'Write me if you are hiring a product manager for B2B SaaS, payments or AI products.',

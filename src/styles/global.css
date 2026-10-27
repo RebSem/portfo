@@ -718,9 +718,12 @@ html[data-theme='dark'] .theme-icon-sun {
     0 10px 24px -16px color-mix(in oklab, var(--foreground) 80%, transparent);
 }
 
-/* The generic a:focus-visible rule above recolours link text green, which on
-   the dark filled button drops the label to 1.6:1. Keep the fill/label pair;
-   the focus ring already marks the focus. */
+/* The generic a:hover/a:focus-visible rule above recolours link text green,
+   which on the dark filled button drops the label to 1.6:1. Keep the
+   fill/label pair; the focus ring already marks the focus. :hover matters on
+   touch screens too: a tap leaves it applied, and the fine-pointer fill below
+   never kicks in there. */
+.cta-primary:hover,
 .cta-primary:focus-visible {
   color: var(--background);
 }
