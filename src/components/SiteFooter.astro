@@ -1,15 +1,23 @@
 ---
 import SocialLinks from './SocialLinks.astro';
-import { siteRepoUrl, uiCopy } from '../data/site-content';
+import { siteRepoUrl, telegramUrl, uiCopy } from '../data/site-content';
 
 interface Props {
   noteRu?: string;
   noteEn?: string;
+  /**
+   * The home page ends here, so its footer is the closing call to action:
+   * the pitch set large, with the Telegram button. Other pages end with
+   * their own call to action (About, the case studies) and keep the pitch
+   * at reading size.
+   */
+  closing?: boolean;
 }
 
 const {
   noteRu = uiCopy.footer.defaultNote.ru,
   noteEn = uiCopy.footer.defaultNote.en,
+  closing = false,
 } = Astro.props;
 
 const locale = Astro.currentLocale === 'ru' ? 'ru' : 'en';
@@ -17,26 +25,38 @@ const note = locale === 'ru' ? noteRu : noteEn;
 const prefix = locale === 'ru' ? '/ru' : '';
 ---
 
-<footer class="site-footer" data-analytics-placement="footer">
-  <div class="divider-wrap" aria-hidden="true">
-    <hr class="divider" />
-  </div>
-
+<footer class:list={['site-footer', { 'site-footer-closing': closing }]} data-analytics-placement="footer">
   <div class="footer-inner">
-    <p class="footer-eyebrow">{uiCopy.footer.eyebrow[locale]}</p>
-    <p class="footer-pitch">{uiCopy.footer.pitch[locale]}</p>
-    <SocialLinks />
-    <p class="footer-note">{note}</p>
+    <div class="footer-main ed-row ed-mark">
+      <p class="footer-eyebrow ed-label">{uiCopy.footer.eyebrow[locale]}</p>
+      <div class="footer-body">
+        <p class="footer-pitch">{uiCopy.footer.pitch[locale]}</p>
+        <div class="footer-actions">
+          {closing && (
+            <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M4 11l16 -8l-4 18l-5 -4l-3 3l1 -5l8 -7" />
+              </svg>
+              {uiCopy.home.heroCtaPrimary[locale]}
+            </a>
+          )}
+          <SocialLinks hideTelegram={closing} />
+        </div>
+        <p class="footer-note">{note}</p>
+      </div>
+    </div>
 
-    <nav class="footer-nav" aria-label={uiCopy.footer.navAria[locale]}>
-      <a href={`${prefix}/`}>{uiCopy.nav.home[locale]}</a>
-      <a href={`${prefix}/about`}>{uiCopy.nav.about[locale]}</a>
-      <a href="#top">{uiCopy.footer.backToTop[locale]}</a>
-    </nav>
+    <div class="footer-bottom">
+      <nav class="footer-nav" aria-label={uiCopy.footer.navAria[locale]}>
+        <a href={`${prefix}/`}>{uiCopy.nav.home[locale]}</a>
+        <a href={`${prefix}/about`}>{uiCopy.nav.about[locale]}</a>
+        <a href="#top">{uiCopy.footer.backToTop[locale]}</a>
+      </nav>
 
-    <p class="footer-craft">
-      {uiCopy.footer.craft[locale]}
-      <a href={siteRepoUrl} target="_blank" rel="noreferrer">{uiCopy.footer.craftSource[locale]}</a>.
-    </p>
+      <p class="footer-craft">
+        {uiCopy.footer.craft[locale]}
+        <a href={siteRepoUrl} target="_blank" rel="noreferrer">{uiCopy.footer.craftSource[locale]}</a>.
+      </p>
+    </div>
   </div>
 </footer>

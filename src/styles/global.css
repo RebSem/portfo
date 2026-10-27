@@ -45,6 +45,15 @@ html[data-theme='light'] {
   --dur-fast: 160ms;
   --dur-base: 220ms;
   --dur-reveal: 700ms;
+
+  /* Editorial grid of the home page (see "Editorial system" below): the
+     label rail, the gutter beside it, the space between sections and the
+     hairline that opens each one. Rail and gutter match the About rows
+     (AboutContent.astro), so both pages and the footer share one grid. */
+  --ed-rail: 15rem;
+  --ed-gutter: clamp(1.5rem, 4vw, 4rem);
+  --ed-section-gap: clamp(4.5rem, 8vw, 7rem);
+  --ed-rule: color-mix(in oklab, var(--foreground) 16%, transparent);
 }
 
 html[data-theme='dark'] {
@@ -1101,38 +1110,71 @@ html[data-theme='dark'] .theme-icon-sun {
 
 .site-footer {
   width: 100%;
-  padding-top: 0.35rem;
-  padding-bottom: 2.4rem;
+  padding-top: clamp(1.5rem, 4vw, 3.25rem);
+  padding-bottom: 2.25rem;
 }
 
-/* Composed footer: a single centered column — eyebrow, pitch, social icons,
-   note. Contact details live in the icons; no duplicate text links. */
+/* The footer sits on the same editorial grid as the home page: "Contact" in
+   the rail; the pitch, the ways to write and the availability note in the
+   column; the nav and the build credit on a quiet line underneath. Contact
+   details live in the icons, no duplicate text links. */
 .footer-inner {
   display: grid;
-  justify-items: center;
-  text-align: center;
-  gap: 0.7rem;
-  padding-top: 2rem;
+  gap: clamp(2.5rem, 5vw, 3.75rem);
 }
 
-.footer-eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--accent-text);
+.footer-body {
+  display: grid;
+  justify-items: start;
+  gap: 0.9rem;
 }
 
 .footer-pitch {
-  max-width: 44ch;
-  font-size: 1.02rem;
-  line-height: 1.55;
-  color: color-mix(in oklab, var(--foreground) 82%, transparent);
+  max-width: 36em;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  color: color-mix(in oklab, var(--foreground) 86%, transparent);
+  text-wrap: pretty;
 }
 
-.footer-inner .social-links {
-  justify-content: center;
-  margin-top: 0.2rem;
+/* Home: the page ends on the pitch set as a closing line, then the action. */
+.site-footer-closing .footer-pitch {
+  max-width: 21em;
+  font-size: clamp(1.6rem, 1.9vw + 0.95rem, 2.5rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.12;
+  color: var(--foreground);
+  text-wrap: balance;
+}
+
+.footer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+}
+
+.site-footer-closing .footer-actions {
+  margin-top: 0.85rem;
+}
+
+.site-footer-closing .footer-actions .cta-button {
+  min-height: 3.1rem;
+  height: auto;
+  padding: 0.9rem 1.35rem;
+  border-radius: 0.8rem;
+  line-height: 1.2;
+}
+
+.footer-actions .social-links {
+  justify-content: flex-start;
+  gap: 0.1rem;
+  margin-left: -0.6rem;
+}
+
+.site-footer-closing .footer-actions .social-links {
+  margin-left: 0;
 }
 
 .social-links {
@@ -1177,9 +1219,19 @@ html[data-theme='dark'] .theme-icon-sun {
 
 .footer-note {
   margin: 0;
-  text-align: center;
-  font-size: 0.82rem;
-  color: color-mix(in oklab, var(--foreground) 76%, transparent);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: color-mix(in oklab, var(--foreground) 74%, transparent);
+}
+
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem 2rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--border);
 }
 
 /* Footer nav: on phones the header un-pins, so the end of a long page needs
@@ -1187,13 +1239,11 @@ html[data-theme='dark'] .theme-icon-sun {
 .footer-nav {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
   gap: 0.4rem 1.4rem;
-  margin-top: 0.3rem;
 }
 
 .footer-nav a {
-  font-size: 0.88rem;
+  font-size: 0.875rem;
   color: color-mix(in oklab, var(--foreground) 72%, transparent);
   text-decoration: none;
 }
@@ -1207,11 +1257,10 @@ html[data-theme='dark'] .theme-icon-sun {
 
 /* Build credit: the quiet one-line flex. The site itself is the work sample. */
 .footer-craft {
-  margin: 0.4rem 0 0;
-  text-align: center;
-  font-size: 0.78rem;
+  margin: 0;
+  font-size: 0.8rem;
   line-height: 1.5;
-  color: color-mix(in oklab, var(--foreground) 62%, transparent);
+  color: var(--text-muted);
 }
 
 .footer-craft a {
@@ -1849,19 +1898,24 @@ a.project-shot-zoom:focus-visible {
    in both themes — it is an artifact, like a screenshot, not a
    page background.
    ============================================================ */
+.agent-ops-head {
+  display: grid;
+  gap: 1rem;
+}
+
 .agent-ops-lead {
-  max-width: 62ch;
-  font-size: 1.02rem;
+  max-width: 60ch;
+  font-size: 1.04rem;
   line-height: 1.6;
   color: color-mix(in oklab, var(--foreground) 78%, transparent);
 }
 
 .agent-ops-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-  gap: 2.4rem;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+  gap: clamp(1.75rem, 3vw, 2.75rem);
   align-items: start;
-  margin-top: 0.6rem;
+  margin-top: clamp(1.75rem, 3vw, 2.5rem);
 }
 
 .agent-steps {
@@ -1874,20 +1928,25 @@ a.project-shot-zoom:focus-visible {
 
 .agent-step {
   display: grid;
-  grid-template-columns: 2.6rem minmax(0, 1fr);
+  grid-template-columns: 2.4rem minmax(0, 1fr);
   gap: 0.9rem;
   padding: 1.05rem 0;
   border-top: 1px solid var(--border);
 }
 
+.agent-step:first-child {
+  padding-top: 0.2rem;
+  border-top: 0;
+}
+
 .agent-step:last-child {
-  border-bottom: 1px solid var(--border);
+  padding-bottom: 0;
 }
 
 .agent-step-num {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
   padding-top: 0.3rem;
   color: var(--accent-text);
 }
@@ -1914,17 +1973,24 @@ a.project-shot-zoom:focus-visible {
   --term-fg: #cdd6d0;
   --term-dim: #79877f;
   --term-accent: #3ddc97;
-  border-radius: 1.1rem;
-  border: 1px solid color-mix(in oklab, var(--accent) 20%, var(--border));
+  /* A quiet frame in the page's hairline language: a neutral edge and a
+     soft, low shadow instead of the green glow, so the window sits on the
+     page like a plate in a magazine rather than floating over it. */
+  border-radius: 0.85rem;
+  border: 1px solid color-mix(in oklab, var(--foreground) 22%, transparent);
   background: var(--term-bg);
   overflow: hidden;
   box-shadow:
-    0 30px 60px -30px color-mix(in oklab, var(--accent) 28%, rgb(0 0 0 / 0.55)),
+    0 1px 2px rgb(0 0 0 / 0.08),
+    0 22px 44px -30px rgb(0 0 0 / 0.42),
     inset 0 1px 0 rgb(255 255 255 / 0.06);
 }
 
 [data-theme='dark'] .agent-terminal {
-  border-color: color-mix(in oklab, var(--accent) 28%, var(--border));
+  border-color: rgb(255 255 255 / 0.1);
+  box-shadow:
+    0 22px 44px -30px rgb(0 0 0 / 0.7),
+    inset 0 1px 0 rgb(255 255 255 / 0.05);
 }
 
 .agent-terminal-bar {
@@ -2046,6 +2112,112 @@ a.project-shot-zoom:focus-visible {
   .agent-ops-grid {
     grid-template-columns: 1fr;
     gap: 1.6rem;
+  }
+}
+
+/* ============================================================
+   Editorial system (home page).
+
+   One grid for every block under the hero: a narrow label rail on the
+   left, the content column on the right, each row opened by a hairline.
+   The left edge never moves, so the eye runs down one line: name,
+   headline, status, results, projects, contact. Below 900px the rail
+   folds into a label above its content.
+   ============================================================ */
+.ed-section {
+  margin-top: var(--ed-section-gap);
+}
+
+.ed-row {
+  display: grid;
+  grid-template-columns: var(--ed-rail) minmax(0, 1fr);
+  column-gap: var(--ed-gutter);
+  row-gap: 0.85rem;
+  padding-top: clamp(1.2rem, 1.8vw, 1.5rem);
+  border-top: 1px solid var(--ed-rule);
+}
+
+/* A section opens with the mark the case studies put over each H2
+   (.prose h2::before): a short accent segment at the start of the rule.
+   Rows inside a section keep the plain rule. */
+.ed-mark {
+  position: relative;
+}
+
+.ed-mark::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 36px;
+  height: 1px;
+  background: var(--accent);
+}
+
+.ed-label {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  line-height: 1.6;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* An optional line under a rail label: what the row is about, in plain
+   type ("Zvonobot AI, 2025-2026", "Claude Code & Codex"). */
+.ed-context {
+  margin: 0.15rem 0 0;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: color-mix(in oklab, var(--foreground) 74%, transparent);
+}
+
+.ed-h2 {
+  font-size: clamp(1.75rem, 1.6vw + 1.1rem, 2.5rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+@media (max-width: 900px) {
+  .ed-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* The page's only motion: the opener rises into place once, top to bottom,
+   ~70ms apart. Keyframes rather than the @starting-style transition the
+   other pages use, because the stagger runs inside one section. The home
+   sections opt out of that transition so nothing moves twice. */
+.page-main > section.home-intro,
+.page-main > section.ed-section {
+  transition: none;
+}
+
+@keyframes ed-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.85rem);
+  }
+}
+
+.ed-rise {
+  animation: ed-rise 760ms var(--ease-out-strong) both;
+}
+
+.ed-rise-1 { animation-delay: 60ms; }
+.ed-rise-2 { animation-delay: 120ms; }
+.ed-rise-3 { animation-delay: 190ms; }
+.ed-rise-4 { animation-delay: 260ms; }
+.ed-rise-5 { animation-delay: 330ms; }
+.ed-rise-6 { animation-delay: 400ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ed-rise {
+    animation: none;
   }
 }
 

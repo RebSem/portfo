@@ -5,6 +5,7 @@ import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import HomeHero from '../components/HomeHero.astro';
 import HomeProjects from '../components/HomeProjects.astro';
+import HomeResults from '../components/HomeResults.astro';
 import {
   buildPersonSchema,
   githubUsername,
@@ -32,11 +33,12 @@ const personSchema = buildPersonSchema('https://rebsem.ru/');
 
   <main id="main-content" class="page-main" data-github-username={githubUsername}>
     <HomeHero locale="en" caseHref={zvonobotCaseHref} />
+    <HomeResults locale="en" />
 
     <HomeProjects locale="en" />
 
     <AgentOps locale="en" />
   </main>
 
-  <SiteFooter />
+  <SiteFooter closing />
 </Layout>

@@ -1,0 +1,120 @@
+---
+import { uiCopy } from '../data/site-content';
+import type { Locale } from '../types/content';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const results = uiCopy.projects.featuredResults;
+
+// Balanced labels must not break "B2B-клиентов" or "AI-тарифов" at the
+// hyphen: same nowrap-span fix as the hero standfirst and nb() on /cv.
+const HYPHENATED = /[\p{L}\p{N}]-[\p{L}\p{N}]/u;
+const chunks = (value: string) => value.split(/(\s+)/);
+---
+
+{/*
+  The flagship's three results, moved up from the Zvonobot card to close
+  the opener: the hero makes the claim, this band is the evidence, before
+  any scrolling on a laptop. Modest figures between hairlines, not tiles.
+  aria-labelledby gives analytics its section key ("results").
+*/}
+<section class="home-results ed-row ed-mark ed-rise ed-rise-6" aria-labelledby="results-title">
+  <div class="home-results-rail">
+    <h2 id="results-title" class="ed-label">{uiCopy.home.resultsTitle[locale]}</h2>
+    <p class="ed-context">{uiCopy.home.resultsContext[locale]}</p>
+  </div>
+  <ul class="home-results-list">
+    {results.map((result) => (
+      <li>
+        <span class="home-result-value">{result.value[locale]}</span>
+        <span class="home-result-label">
+          {chunks(result.label[locale]).map((c) => (HYPHENATED.test(c) ? <span class="nb">{c}</span> : c))}
+        </span>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  /* Opened by its hairline like every row, never closed: the next section's
+     rule ends it, so the page never stacks two lines with a gap between. */
+
+  .home-results-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .home-results-list li {
+    display: grid;
+    align-content: start;
+    gap: 0.55rem;
+    padding-inline: clamp(1rem, 2vw, 1.75rem);
+    border-left: 1px solid var(--border);
+  }
+
+  .home-results-list li:first-child {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .nb {
+    white-space: nowrap;
+  }
+
+  .home-result-value {
+    font-size: clamp(2rem, 1.4vw + 1.2rem, 2.5rem);
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    color: var(--accent-text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .home-result-label {
+    max-width: 26ch;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    color: color-mix(in oklab, var(--foreground) 78%, transparent);
+    text-wrap: balance;
+  }
+
+  /* Phones: one result per row, the figure in a fixed column so the three
+     labels start on one vertical line. */
+  @media (max-width: 720px) {
+    .home-results-list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .home-results-list li {
+      grid-template-columns: 4.75rem minmax(0, 1fr);
+      align-items: baseline;
+      gap: 1rem;
+      padding: 0.85rem 0;
+      border-left: 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .home-results-list li:first-child {
+      padding-top: 0.2rem;
+      border-top: 0;
+    }
+
+    .home-results-list li:last-child {
+      padding-bottom: 0;
+    }
+
+    .home-result-value {
+      font-size: 1.75rem;
+    }
+
+    .home-result-label {
+      max-width: none;
+    }
+  }
+</style>
