@@ -472,4 +472,18 @@ const external = '<path d="M7 17 17 7M9 7h8v8"/>';
       display: none;
     }
   }
+
+  /* The global reduce block (global.css) stops .cta-button presses, but these
+     scoped rules outrank it: no arrow slide, no press scale. The card's
+     border-colour change stays, colour transitions are allowed. */
+  @media (prefers-reduced-motion: reduce) {
+    .hp-featured-cta svg {
+      transition: none;
+    }
+
+    .hp-featured-cta:active,
+    .hp-featured-cta:hover svg {
+      transform: none;
+    }
+  }
 </style>
