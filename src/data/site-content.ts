@@ -565,6 +565,10 @@ export const uiCopy = {
       en: 'Social links',
     },
     eyebrow: { ru: 'Контакт', en: 'Contact' },
+    // The home page ends on this question, set in the headline's type as a
+    // bookend to the H1, with the pitch below as its subline
+    // (SiteFooter.astro, closing). Other pages keep the pitch alone.
+    closingTitle: { ru: 'Ищете продакт-менеджера?', en: 'Hiring a product manager?' },
     pitch: {
       ru: 'Напишите, если ищете продакта в B2B SaaS, платежи или AI-продукты.',
       en: 'Write me if you are hiring a product manager for B2B SaaS, payments or AI products.',

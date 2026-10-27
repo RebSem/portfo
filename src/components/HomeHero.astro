@@ -26,25 +26,32 @@ const chunks = (value: string) => value.split(/(\s+)/);
   it read as decoration to the people this page is for, and the claim
   needs the room more than the picture did. The results it stood for sit
   right below, in the band (HomeResults.astro).
+
+  Nothing in the opener is hidden at load: the headline is the page's LCP
+  element and paints with the first frame, the status and the facts too.
+  The only motion is the hairlines drawing in (.ed-draw in global.css).
 */}
 <section class="home-intro" aria-labelledby="home-title" data-analytics-placement="hero">
-  <p class="hero-identity ed-rise">
+  <p class="hero-identity">
     <span>{heroDisplayName[locale]}</span>
     <span class="hero-identity-divider" aria-hidden="true">/</span>
     <span class="hero-role">Product Manager</span>
   </p>
 
   <h1 id="home-title">
-    <span class="ed-rise ed-rise-1">{copy.title[locale]}</span>
-    <span class="hero-focus ed-rise ed-rise-2">{copy.titleFocus[locale]}</span>
+    <span>{copy.title[locale]}</span>
+    <span class="hero-focus">{copy.titleFocus[locale]}</span>
   </h1>
 
-  <p class="hero-proof ed-rise ed-rise-3">
+  <p class="hero-proof">
     {chunks(copy.proofIntro[locale]).map((c) => (HYPHENATED.test(c) ? <span class="nb">{c}</span> : c))}
     <strong>{chunks(copy.proofResult[locale]).map((c) => (HYPHENATED.test(c) ? <span class="nb">{c}</span> : c))}</strong>
   </p>
 
-  <div class="hero-cta-row ed-rise ed-rise-4">
+  {/* The ways to write sit with the actions: Telegram as the button, the
+      profiles and the email as quiet icons after it. On phones the icons
+      drop out here (the footer has them) so the first screen stays short. */}
+  <div class="hero-cta-row">
     <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M4 11l16 -8l-4 18l-5 -4l-3 3l1 -5l8 -7" />
@@ -57,32 +64,34 @@ const chunks = (value: string) => value.split(/(\s+)/);
         <path d="M5 12h14" /><path d="M13 6l6 6l-6 6" />
       </svg>
     </a>
+    <SocialLinks className="social-links hero-social-links" hideTelegram label={copy.heroSocialAria[locale]} />
   </div>
 
-  {/* The availability line: the status in the rail, the four facts a
-      recruiter screens on beside it. The status dot is static on purpose. */}
-  <div class="hero-facts ed-row ed-rise ed-rise-5">
+  {/* The availability line: the status as a badge in the rail, the four
+      facts a recruiter screens on beside it. The status dot is static on
+      purpose. */}
+  <div class="hero-facts ed-row ed-draw">
     <p class="hero-status">
       <span class="hero-status-dot" aria-hidden="true"></span>
       {copy.heroStatusShort[locale]}
     </p>
-    <div class="hero-facts-body">
-      <dl class="hero-facts-list">
-        {copy.facts.map((fact) => (
-          <div>
-            <dt>{fact.label[locale]}</dt>
-            <dd>{fact.value[locale]}</dd>
-          </div>
-        ))}
-      </dl>
-      <SocialLinks className="social-links hero-social-links" hideTelegram label={copy.heroSocialAria[locale]} />
-    </div>
+    <dl class="hero-facts-list">
+      {copy.facts.map((fact) => (
+        <div>
+          <dt>{fact.label[locale]}</dt>
+          <dd>{fact.value[locale]}</dd>
+        </div>
+      ))}
+    </dl>
   </div>
 </section>
 
 <style>
+  /* The opener's vertical rhythm follows the viewport height as well as
+     the width, so the results band under it clears the fold on a 13-inch
+     laptop (about 1440x780 of usable page) and still breathes at 900px. */
   .home-intro {
-    padding-top: clamp(2.25rem, 6.5vh, 4.75rem);
+    padding-top: clamp(1.75rem, 5.5vh, 4.25rem);
   }
 
   .hero-identity {
@@ -101,18 +110,20 @@ const chunks = (value: string) => value.split(/(\s+)/);
   }
 
   .hero-role {
-    color: color-mix(in oklab, var(--foreground) 62%, var(--background-alt));
+    color: color-mix(in oklab, var(--foreground) 64%, var(--background-alt));
     font-weight: 400;
   }
 
   /* The headline sets the scale for the page. Sized in vw below ~960px so
      both lines hold in both locales down to a 360px phone ("Запускаю и
-     развиваю" is the longest line); capped at 5.6rem on wide screens. */
+     развиваю" is the longest line), in vh on short laptop screens, and
+     capped at 5.6rem. A touch under semibold with slightly looser
+     tracking: at this size 600 and -0.05em read dense. */
   h1 {
-    margin-top: clamp(1.1rem, 2.2vw, 1.9rem);
-    font-size: clamp(1.875rem, 9.1vw, 5.6rem);
-    font-weight: 600;
-    letter-spacing: -0.052em;
+    margin-top: clamp(1rem, 2.4vh, 1.75rem);
+    font-size: clamp(1.875rem, min(9.1vw, 11.6vh), 5.6rem);
+    font-weight: 580;
+    letter-spacing: -0.046em;
     line-height: 0.99;
   }
 
@@ -125,12 +136,12 @@ const chunks = (value: string) => value.split(/(\s+)/);
   }
 
   .hero-proof {
-    margin-top: clamp(1.4rem, 2.6vw, 2.15rem);
+    margin-top: clamp(1.25rem, 3vh, 2rem);
     max-width: 40rem;
     font-size: clamp(1.0625rem, 0.55vw + 0.88rem, 1.3rem);
     line-height: 1.5;
     letter-spacing: -0.008em;
-    color: color-mix(in oklab, var(--foreground) 66%, var(--background-alt));
+    color: color-mix(in oklab, var(--foreground) 68%, var(--background-alt));
     text-wrap: balance;
   }
 
@@ -152,7 +163,7 @@ const chunks = (value: string) => value.split(/(\s+)/);
     flex-wrap: wrap;
     align-items: center;
     gap: 0.65rem;
-    margin-top: clamp(1.6rem, 2.8vw, 2.35rem);
+    margin-top: clamp(1.5rem, 3.4vh, 2.25rem);
   }
 
   .hero-cta-row .cta-button {
@@ -163,60 +174,77 @@ const chunks = (value: string) => value.split(/(\s+)/);
     line-height: 1.2;
   }
 
+  .hero-cta-row :global(.hero-social-links) {
+    gap: 0;
+    margin-left: 0.6rem;
+  }
+
+  .hero-cta-row :global(.social-link) {
+    width: 2.75rem;
+    height: 2.75rem;
+    color: color-mix(in oklab, var(--foreground) 66%, transparent);
+  }
+
+  .hero-cta-row :global(.social-link svg) {
+    width: 20px;
+    height: 20px;
+  }
+
   /* --- Availability line ----------------------------------------------- */
 
   .hero-facts {
-    margin-top: clamp(2.5rem, 5.2vw, 4.25rem);
-    padding-bottom: clamp(1.2rem, 1.8vw, 1.5rem);
+    align-items: center;
+    margin-top: clamp(2rem, 5.5vh, 3.75rem);
+    padding-bottom: clamp(1.1rem, 2.2vh, 1.4rem);
   }
 
+  /* The first thing a recruiter checks, so it reads as a badge, not a line
+     of text: a tinted pill with a static dot. */
   .hero-status {
     display: inline-flex;
     align-items: center;
-    align-self: start;
-    gap: 0.55rem;
+    justify-self: start;
+    gap: 0.5rem;
     margin: 0;
-    font-size: 0.95rem;
-    font-weight: 500;
-    line-height: 1.35;
+    padding: 0.38rem 0.85rem 0.38rem 0.7rem;
+    border: 1px solid color-mix(in oklab, var(--accent) 34%, transparent);
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--accent) 11%, transparent);
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.005em;
     color: var(--accent-text);
+    white-space: nowrap;
   }
 
-  /* The halo is static: it marks the status without pulsing. The margin
-     keeps its outer edge on the page's left line, not past it. */
   .hero-status-dot {
     width: 7px;
     height: 7px;
     flex: none;
-    margin-left: 4px;
     border-radius: 50%;
     background: currentColor;
-    box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 16%, transparent);
   }
 
-  .hero-facts-body {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: start;
-    gap: 1rem 2rem;
-  }
-
+  /* One line of four facts on a laptop, each as wide as its value, spread
+     over the column; a 2x2 grid once the column is too narrow for that. */
   .hero-facts-list {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0.9rem 1.75rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.9rem 2rem;
     margin: 0;
   }
 
   .hero-facts-list div {
     display: grid;
     align-content: start;
-    gap: 0.25rem;
+    gap: 0.2rem;
+    min-width: 0;
   }
 
   .hero-facts-list dt {
     font-family: var(--font-mono);
-    font-size: 0.66rem;
+    font-size: 0.68rem;
     letter-spacing: 0.08em;
     line-height: 1.35;
     text-transform: uppercase;
@@ -225,34 +253,22 @@ const chunks = (value: string) => value.split(/(\s+)/);
 
   .hero-facts-list dd {
     margin: 0;
-    font-size: 0.9rem;
+    font-size: 0.925rem;
     line-height: 1.4;
     color: var(--foreground);
   }
 
-  .hero-facts :global(.hero-social-links) {
-    gap: 0;
-    margin: -0.55rem -0.6rem 0 0;
-  }
-
-  .hero-facts :global(.social-link) {
-    width: 2.5rem;
-    height: 2.5rem;
-    color: color-mix(in oklab, var(--foreground) 70%, transparent);
-  }
-
-  .hero-facts :global(.social-link svg) {
-    width: 20px;
-    height: 20px;
-  }
-
   @media (max-width: 1180px) {
-    .hero-facts-body {
-      grid-template-columns: minmax(0, 1fr);
+    .hero-facts-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.85rem 1.5rem;
     }
+  }
 
-    .hero-facts :global(.hero-social-links) {
-      display: none;
+  @media (max-width: 900px) {
+    .hero-facts {
+      align-items: start;
     }
   }
 
@@ -261,14 +277,33 @@ const chunks = (value: string) => value.split(/(\s+)/);
       padding-top: 0.6rem;
     }
 
-    .hero-facts-list {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.85rem 1.25rem;
+    h1 {
+      margin-top: 0.85rem;
+    }
+
+    .hero-proof {
+      margin-top: 1.15rem;
+    }
+
+    .hero-cta-row {
+      margin-top: 1.4rem;
     }
 
     .hero-cta-row .cta-button {
       padding-inline: 0.8rem;
       font-size: 0.9rem;
+    }
+
+    .hero-cta-row :global(.hero-social-links) {
+      display: none;
+    }
+
+    .hero-facts {
+      margin-top: 1.75rem;
+    }
+
+    .hero-facts-list {
+      gap: 0.75rem 1.25rem;
     }
   }
 
@@ -286,10 +321,6 @@ const chunks = (value: string) => value.split(/(\s+)/);
 
     .hero-cta-row .cta-button {
       font-size: 0.8125rem;
-    }
-
-    .hero-facts-list {
-      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>

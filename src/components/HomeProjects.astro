@@ -39,7 +39,8 @@ const external = '<path d="M7 17 17 7M9 7h8v8"/>';
   A section front in three rows on the editorial grid: the lead story
   (the flagship), the two work products, then side projects as briefs.
   Its results moved up into the band under the hero, so the lead is the
-  story and the way into the case. data-project-card marks each card for
+  story and the way into the case: the one tinted surface on the page, a
+  larger title, and the strongest secondary button. data-project-card marks each card for
   analytics (projectSlugFromCard in src/scripts/analytics.ts): a click
   anywhere in it is attributed to the project through its case link.
 */}
@@ -51,21 +52,25 @@ const external = '<path d="M7 17 17 7M9 7h8v8"/>';
 
       {featured && (
         <article class="hp-featured" data-project-card>
-          <p class="hp-meta">
-            <span>{copy.featuredEyebrow[locale]}</span>
-            <span class="hp-live"><span class="hp-live-dot" aria-hidden="true"></span>{copy.featuredLiveBadge[locale]}</span>
-          </p>
-          <h3 class="hp-featured-title">
-            {caseHrefFor(featured.id) ? <a href={caseHrefFor(featured.id)}>{featured.title[locale]}</a> : featured.title[locale]}
-          </h3>
-          <p class="hp-featured-summary">{featured.summary[locale]}</p>
-          <p class="hp-featured-role">{copy.featuredRole[locale]}</p>
-          {caseHrefFor(featured.id) && (
-            <a class="cta-button cta-secondary hp-featured-cta" href={caseHrefFor(featured.id)}>
-              {copy.caseLink[locale]}
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} />
-            </a>
-          )}
+          <div class="hp-featured-head">
+            <p class="hp-meta">
+              <span>{copy.featuredEyebrow[locale]}</span>
+              <span class="hp-live"><span class="hp-live-dot" aria-hidden="true"></span>{copy.featuredLiveBadge[locale]}</span>
+            </p>
+            <h3 class="hp-featured-title">
+              {caseHrefFor(featured.id) ? <a href={caseHrefFor(featured.id)}>{featured.title[locale]}</a> : featured.title[locale]}
+            </h3>
+            <p class="hp-featured-role">{copy.featuredRole[locale]}</p>
+          </div>
+          <div class="hp-featured-body">
+            <p class="hp-featured-summary">{featured.summary[locale]}</p>
+            {caseHrefFor(featured.id) && (
+              <a class="cta-button hp-featured-cta" href={caseHrefFor(featured.id)}>
+                {copy.caseLink[locale]}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={arrow} />
+              </a>
+            )}
+          </div>
         </article>
       )}
     </div>
@@ -133,13 +138,28 @@ const external = '<path d="M7 17 17 7M9 7h8v8"/>';
 
   .hp-lead {
     display: grid;
-    gap: clamp(1.75rem, 3vw, 2.5rem);
+    gap: clamp(1.5rem, 2.6vw, 2.25rem);
+    padding-bottom: clamp(2.25rem, 4vw, 3.25rem);
   }
 
+  /* The lead story outranks the rows under it: name and role on the left,
+     what it is and the way in on the right, on a faint accent surface. */
   .hp-featured {
     display: grid;
-    justify-items: start;
-    padding-bottom: clamp(2.25rem, 4vw, 3.25rem);
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+    align-items: start;
+    gap: 1.25rem clamp(1.75rem, 4vw, 3.5rem);
+    padding: clamp(1.4rem, 2.8vw, 2.4rem);
+    border: 1px solid color-mix(in oklab, var(--accent) 22%, var(--border));
+    border-radius: 1.1rem;
+    background: color-mix(in oklab, var(--accent) 5%, var(--surface));
+    transition: border-color var(--dur-fast) var(--ease-out-strong);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .hp-featured:hover {
+      border-color: color-mix(in oklab, var(--accent) 42%, var(--border));
+    }
   }
 
   .hp-meta {
@@ -152,7 +172,7 @@ const external = '<path d="M7 17 17 7M9 7h8v8"/>';
     font-size: 0.7rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: color-mix(in oklab, var(--foreground) 70%, transparent);
   }
 
   .hp-live {
@@ -170,11 +190,11 @@ const external = '<path d="M7 17 17 7M9 7h8v8"/>';
   }
 
   .hp-featured-title {
-    margin: 0.7rem 0 0;
-    font-size: clamp(1.5rem, 1.2vw + 1.05rem, 2rem);
+    margin: 0.75rem 0 0;
+    font-size: clamp(1.75rem, 1.8vw + 1.05rem, 2.6rem);
     font-weight: 600;
-    letter-spacing: -0.035em;
-    line-height: 1.1;
+    letter-spacing: -0.04em;
+    line-height: 1.05;
   }
 
   .hp-featured-title a,
@@ -192,25 +212,62 @@ const external = '<path d="M7 17 17 7M9 7h8v8"/>';
     }
   }
 
-  .hp-featured-summary {
-    margin: 0.7rem 0 0;
-    max-width: 40rem;
-    font-size: clamp(1.02rem, 0.3vw + 0.95rem, 1.125rem);
-    line-height: 1.55;
-    color: color-mix(in oklab, var(--foreground) 82%, transparent);
-    text-wrap: pretty;
-  }
-
   .hp-featured-role {
-    margin: 0.55rem 0 0;
-    max-width: 40rem;
+    margin: 0.8rem 0 0;
+    max-width: 30rem;
     font-size: 0.9rem;
     line-height: 1.5;
     color: var(--text-muted);
+    text-wrap: balance;
   }
 
+  .hp-featured-body {
+    display: grid;
+    justify-items: start;
+    gap: 1.35rem;
+    padding-top: 0.15rem;
+  }
+
+  .hp-featured-summary {
+    margin: 0;
+    max-width: 36rem;
+    font-size: clamp(1.04rem, 0.3vw + 0.96rem, 1.15rem);
+    line-height: 1.55;
+    color: color-mix(in oklab, var(--foreground) 84%, transparent);
+    text-wrap: pretty;
+  }
+
+  /* The strongest secondary action on the page: accent-outlined, so it
+     reads as the way into the case without competing with the dark
+     Telegram button. */
   .hp-featured-cta {
-    margin-top: 1.4rem;
+    min-height: 3rem;
+    height: auto;
+    padding: 0.85rem 1.25rem;
+    border-color: color-mix(in oklab, var(--accent-text) 55%, transparent);
+    background: color-mix(in oklab, var(--accent) 9%, transparent);
+    color: var(--accent-text);
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .hp-featured-cta svg {
+    transition: transform var(--dur-fast) var(--ease-out-strong);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .hp-featured-cta:hover {
+      border-color: var(--accent-text);
+      background: color-mix(in oklab, var(--accent) 16%, transparent);
+    }
+
+    .hp-featured-cta:hover svg {
+      transform: translateX(3px);
+    }
+  }
+
+  .hp-featured-cta:active {
+    transform: scale(0.98);
   }
 
   /* --- Groups ---------------------------------------------------------- */
@@ -357,7 +414,22 @@ const external = '<path d="M7 17 17 7M9 7h8v8"/>';
     font-weight: 500;
   }
 
+  @media (max-width: 960px) {
+    .hp-featured {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
   @media (max-width: 720px) {
+    .hp-featured {
+      padding: 1.25rem 1.15rem 1.35rem;
+      border-radius: 0.95rem;
+    }
+
+    .hp-featured-cta {
+      width: 100%;
+    }
+
     .hp-cards {
       grid-template-columns: minmax(0, 1fr);
     }

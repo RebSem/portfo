@@ -25,9 +25,18 @@ The repository is **public**. Treat every commit as permanent and world-readable
 - Since 2026-10-18 there is no current employer: the Zvonobot (Prof-IT Group) role
   ended in October 2026 (the position was cut) and the owner is actively looking,
   available to start immediately. `src/data/cv.ts` (`endDate`, `cvAvailability`,
-  `cvWorkFormat`) is the source; the facts row under the home
-  hero (`HomeHero.astro`), About, the case studies, JSON-LD, llms.txt and the OG cards
-  all say the same. Present tense about that role is a bug.
+  `cvWorkFormat`) is the source; the availability line under the home
+  hero (`HomeHero.astro`), the closing of the home footer, About, the case studies,
+  JSON-LD, llms.txt and the OG cards all say the same. Present tense about that role is
+  a bug.
+- Home page (since 2026-10-27): one-column editorial layout, **no picture in the hero**
+  (the owner asked to drop the product screenshot; do not bring it back). Byline, a
+  Geist H1 (never the Newsreader serif), standfirst, Telegram + case buttons, an
+  "Open to work" pill with the four facts, then the results band (`HomeResults.astro`,
+  80 / +30% / 30%) on the first laptop screen. Everything below sits on one label rail
+  (`.ed-row` in `global.css`, the same grid as the About rows); the home footer is the
+  closing call to action (`SiteFooter closing`). Nothing in the opener starts hidden:
+  the only motion is the hairlines drawing in, so the H1 stays the LCP element.
 - Content status: 7 published project case studies per locale (`tubedrop` is
   `draft: true`); one published blog post pair (`welcome`), the `tubedrop` post pair is
   a draft. The blog is **unlisted** since 2026-08-18: kept at its URLs, absent from the
@@ -237,6 +246,14 @@ is git-ignored; `.env.example` is the template.
   went from 28 advisories (3 critical) to 0. `posthog-js` stays on 1.404: from 1.423 its
   `respect_dnt` also honours Global Privacy Control and the lazy chunk grows by ~80 KB,
   an analytics change that needs the owner.
+- 2026-10-27: home redesign without the hero screenshot (the 2026-10-19 product shot read
+  as decoration to recruiters, and the owner preferred the earlier one-column hero). One
+  editorial grid; the flagship results moved up from the Zvonobot card into a band
+  under the hero; the Zvonobot card became the one tinted lead card; the home ends on
+  "Hiring a product manager?" with Telegram and Email buttons and the status line. New
+  structural copy: `home.resultsTitle`, `home.resultsContext`, `footer.closingTitle`;
+  `heroShotCaption` and `featuredScreenshotAlt` were removed. The dashboard screenshots
+  stay in the Zvonobot case study.
 
 ## Gotchas
 
