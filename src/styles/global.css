@@ -96,6 +96,21 @@ html {
   scrollbar-gutter: stable;
 }
 
+/* Fragment targets (skip link, #projects, /cv anchors) must land below the
+   sticky header. On phones the header is static, except on the resume where
+   it stays pinned for the PDF button, so only that case needs the offset. */
+@media (min-width: 721px) {
+  html {
+    scroll-padding-top: 5.25rem;
+  }
+}
+
+@media (max-width: 720px) {
+  html:has(.header-pdf) {
+    scroll-padding-top: 4.5rem;
+  }
+}
+
 body {
   background:
     radial-gradient(1400px 600px at 8% -8%, var(--accent-soft), transparent 65%),
