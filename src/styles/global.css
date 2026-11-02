@@ -1376,16 +1376,6 @@ html[data-theme='dark'] .theme-icon-sun {
 }
 
 @media (max-width: 720px) {
-  /* The gh terminal is a nice desktop detail and two phone screens of noise
-     for someone hiring a product manager. */
-  .agent-terminal {
-    display: none;
-  }
-
-  .agent-ops-grid {
-    grid-template-columns: 1fr;
-  }
-
   /* The wrapped 2-3 row header would eat too much of a phone viewport
      if it stayed pinned - let it scroll away on small screens. */
   .site-header {
@@ -1994,12 +1984,10 @@ a.project-shot-zoom:focus-visible {
 }
 
 /* ============================================================
-   Agent ops — the signature "I run a team of AI agents" section.
-   Left: the operator loop (spec → build → review → prod).
-   Right: a real terminal with live, verifiable receipts from the
-   site's own public repo. The terminal keeps its own dark surface
-   in both themes — it is an artifact, like a screenshot, not a
-   page background.
+   Agent ops: how I work with AI agents, as three steps, then the live
+   proof as two plain receipt lines from the site's own repo. The proof
+   sits in the page's own type, like the results band, not in a dark
+   window: no shell commands, no traffic-light dots.
    ============================================================ */
 .agent-ops-head {
   display: grid;
@@ -2013,17 +2001,9 @@ a.project-shot-zoom:focus-visible {
   color: color-mix(in oklab, var(--foreground) 78%, transparent);
 }
 
-.agent-ops-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
-  gap: clamp(1.75rem, 3vw, 2.75rem);
-  align-items: start;
-  margin-top: clamp(1.75rem, 3vw, 2.5rem);
-}
-
 .agent-steps {
   list-style: none;
-  margin: 0;
+  margin: clamp(1.75rem, 3vw, 2.5rem) 0 0;
   padding: 0;
   display: grid;
   gap: 0;
@@ -2069,142 +2049,48 @@ a.project-shot-zoom:focus-visible {
   color: color-mix(in oklab, var(--foreground) 75%, transparent);
 }
 
-.agent-terminal {
-  /* Fixed terminal palette — deliberately NOT theme tokens: a terminal
-     window is dark in real life, in both site themes. */
-  --term-bg: #0f1412;
-  --term-fg: #cdd6d0;
-  --term-dim: #79877f;
-  --term-accent: #3ddc97;
-  /* A quiet frame in the page's hairline language: a neutral edge and a
-     soft, low shadow instead of the green glow, so the window sits on the
-     page like a plate in a magazine rather than floating over it. */
-  border-radius: 0.85rem;
-  border: 1px solid color-mix(in oklab, var(--foreground) 22%, transparent);
-  background: var(--term-bg);
-  overflow: hidden;
-  box-shadow:
-    0 1px 2px rgb(0 0 0 / 0.08),
-    0 22px 44px -30px rgb(0 0 0 / 0.42),
-    inset 0 1px 0 rgb(255 255 255 / 0.06);
-}
-
-[data-theme='dark'] .agent-terminal {
-  border-color: rgb(255 255 255 / 0.1);
-  box-shadow:
-    0 22px 44px -30px rgb(0 0 0 / 0.7),
-    inset 0 1px 0 rgb(255 255 255 / 0.05);
-}
-
-.agent-terminal-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.6rem 0.9rem;
-  background: rgb(255 255 255 / 0.04);
-  border-bottom: 1px solid rgb(255 255 255 / 0.07);
-}
-
-.agent-terminal-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-
-.agent-terminal-dot:nth-child(1) { background: #ff5f57; }
-.agent-terminal-dot:nth-child(2) { background: #febc2e; }
-.agent-terminal-dot:nth-child(3) { background: #28c840; }
-
-.agent-terminal-title {
-  margin-left: 0.55rem;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.04em;
-  color: var(--term-dim);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.agent-terminal-body {
-  padding: 1.15rem 1.25rem 1.35rem;
+.agent-receipts {
+  list-style: none;
+  margin: clamp(1.25rem, 2.4vw, 2rem) 0 0;
+  padding: 0;
   display: grid;
-  gap: 0.4rem;
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
+}
+
+.agent-receipt {
+  padding: 0.95rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.agent-receipt:last-child {
+  padding-bottom: 0;
+}
+
+.agent-receipt-line {
+  max-width: 60ch;
+  font-size: 1rem;
   line-height: 1.55;
-  color: var(--term-fg);
+  color: color-mix(in oklab, var(--foreground) 78%, transparent);
 }
 
-.t-cmd {
-  color: var(--term-dim);
-}
-
-.t-cmd::before {
-  content: '$ ';
-  color: var(--term-accent);
-}
-
-.t-cmd + .t-cmd,
-.t-out + .t-cmd,
-.t-link + .t-cmd {
-  margin-top: 0.7rem;
-}
-
-.t-out {
-  display: flex;
-  align-items: baseline;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-}
-
-.t-num {
-  font-size: 1.45rem;
+/* A modest figure: a step above body size, in the accent the results band
+   uses. Not a display number. */
+.agent-receipt-value {
+  font-size: 1.15rem;
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: #ffffff;
+  color: var(--accent-text);
   font-variant-numeric: tabular-nums;
 }
 
-.t-out span {
-  max-width: 46ch;
+.agent-receipt-sep {
+  color: color-mix(in oklab, var(--foreground) 45%, transparent);
 }
 
-.t-link a {
-  font-size: 0.74rem;
-  color: var(--term-accent);
-  text-decoration: none;
-  border-bottom: 1px solid color-mix(in oklab, var(--term-accent) 40%, transparent);
-  padding-bottom: 1px;
-  transition: border-color var(--dur-fast) var(--ease-out-strong);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .t-link a:hover {
-    color: var(--term-accent);
-    border-color: var(--term-accent);
-  }
-}
-
-.t-whoami {
-  color: var(--term-accent);
-  font-weight: 500;
-}
-
-.t-caret {
+.agent-receipt-link {
   display: inline-block;
-  width: 0.55em;
-  height: 1.05em;
-  margin-left: 0.35em;
-  background: var(--term-accent);
-  vertical-align: text-bottom;
-}
-
-@media (max-width: 860px) {
-  .agent-ops-grid {
-    grid-template-columns: 1fr;
-    gap: 1.6rem;
-  }
+  margin-top: 0.4rem;
+  font-size: 0.875rem;
+  color: var(--accent-text);
 }
 
 /* ============================================================

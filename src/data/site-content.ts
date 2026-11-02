@@ -323,13 +323,14 @@ export const agentOps = {
       body: { ru: 'Каждый дифф читаю сам, мерджу только то, что готов защищать. Смердженный PR уезжает в прод.', en: 'I read every diff myself and merge only what I can defend. A merged PR deploys to production.' },
     },
   ] satisfies AgentOpsStep[],
-  terminalAria: { ru: 'Живые данные о PR этого репозитория', en: 'Live pull-request stats for this repository' },
+  // The proof is two plain lines with build-time figures, not a terminal
+  // window: a dark box on a light page read as "developer" to a recruiter.
   receiptPrs: {
-    ru: 'PR смерджено в этом репозитории, написаны агентами и проверены мной',
-    en: 'merged PRs on this repo, agent-written and reviewed by me',
+    ru: 'PR в этом репозитории: написаны агентами, каждый прочитан и смерджен мной',
+    en: 'merged PRs on this repo: agent-written, each one read and merged by me',
   },
   receiptPrsLink: { ru: 'смотреть PR на GitHub', en: 'see the PRs on GitHub' },
-  receiptDeployNote: { ru: 'этот самый деплой собран из PR, написанного агентом', en: 'this very deploy shipped from an agent-written PR' },
+  receiptDeployNote: { ru: 'этот деплой собран из такого PR', en: 'this deploy shipped from one of them' },
 } as const;
 
 export const uiCopy = {
