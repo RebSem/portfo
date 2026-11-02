@@ -244,14 +244,17 @@ const copy = {
     border-bottom: 1px solid var(--border);
   }
 
+  /* Row labels take the footer's rail-label tone (.ed-label in global.css),
+     so "Contact" and the About rows read as one system. Green stays with the
+     status, the results and the links. */
   .about-row-eyebrow {
     margin: 0;
     padding-top: 0.35rem;
     font-family: var(--font-mono);
     font-size: 0.72rem;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--accent-text);
+    color: color-mix(in oklab, var(--foreground) 70%, transparent);
   }
 
   .about-row-body {

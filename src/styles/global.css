@@ -1121,6 +1121,12 @@ html[data-theme='dark'] .theme-icon-sun {
   gap: clamp(2.5rem, 5vw, 3.75rem);
 }
 
+/* Pages without the rail (SiteFooter's `rail` prop): the label stacks above
+   the column on the page's own left edge instead of opening a second one. */
+.site-footer-norail .footer-main {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .footer-body {
   display: grid;
   justify-items: start;
