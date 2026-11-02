@@ -150,16 +150,6 @@ export const aboutBlocks: AboutBlock[] = [
       { ru: 'Возможность вести задачу целиком, а не быть звеном в цепочке согласований', en: 'Owning a problem from start to finish, not being one step in an approval chain' },
     ],
   },
-  {
-    eyebrow: { ru: '06 · Где буду полезен меньше', en: '06 · Where I’m a weaker fit' },
-    title: { ru: 'Честно про anti-fit', en: 'An honest anti-fit' },
-    body: [],
-    bullets: [
-      { ru: 'Чисто исследовательский ML/data science без продуктового слоя', en: 'Pure research ML or data science with no product layer on top' },
-      { ru: 'Продукт, где AI добавляют «для галочки»', en: 'Products that add AI as a checkbox' },
-      { ru: 'Роли с живыми переговорами на английском на C-уровне (письменно и async комфортно)', en: 'Roles needing live C-level negotiation in English (written and async are comfortable)' },
-    ],
-  },
 ];
 
 /**
