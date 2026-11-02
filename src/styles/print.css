@@ -105,19 +105,27 @@
     display: block !important;
   }
 
+  /* Products restates the experience bullets and their numbers, so on paper it
+     is length without a new fact. The /cv page keeps it. */
+  .cv-screen-only {
+    display: none !important;
+  }
+
   /* Links get their destination spelled out: on paper an anchor is a dead end
-     otherwise. mailto is skipped because the address is already the link text. */
+     otherwise. mailto is skipped because the address is already the link text.
+     A " · " separator, not brackets: pdftotext read "Case study(https://...)"
+     as one token, and the URL stopped being a word of its own. */
   .cv-doc a {
     color: inherit;
     text-decoration: underline;
   }
 
   .cv-doc a[href^='/']::after {
-    content: ' (rebsem.ru' attr(href) ')';
+    content: ' · rebsem.ru' attr(href);
   }
 
   .cv-doc a[href^='http']::after {
-    content: ' (' attr(href) ')';
+    content: ' · ' attr(href);
   }
 
   .cv-doc a::after {
@@ -126,14 +134,12 @@
     word-break: break-word;
   }
 
-  /* Not expanded: mailto (the address is already the link text) and links
-     inside experience bullets. Every product named in a bullet appears again
-     in the Products section with its URL spelled out, so expanding it twice
-     only pushes the resume onto another page. */
+  /* Not expanded: mailto (the address is already the link text). Experience
+     bullet links are expanded, because they are the only case-study links left
+     on paper now that Products is screen-only. */
   /* The attribute selector is load-bearing: without it these lose on
      specificity to the two expansion rules above and the URLs come back. */
   .cv-doc a[href^='mailto:']::after,
-  .cv-bullets a[href]::after,
   /* The header contact line already IS the address; appending the URL after
      each one would print every address twice. */
   .cv-contacts a[href]::after {
@@ -176,6 +182,9 @@
     margin-top: 0.35rem;
   }
 
+  /* !important because the component's scoped rules (class plus
+     data-astro-cid) outrank these bare classes. Without it the bullets printed
+     at screen size (15.2px) and the resume ran to four pages. */
   .cv-location,
   .cv-lead,
   .cv-bullets li,
@@ -183,8 +192,8 @@
   .cv-product-summary,
   .cv-product-proof,
   .cv-role-context {
-    font-size: 9.5pt;
-    line-height: 1.38;
+    font-size: 9.5pt !important;
+    line-height: 1.38 !important;
   }
 
   .cv-section {

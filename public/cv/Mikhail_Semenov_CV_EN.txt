@@ -4,13 +4,13 @@ Open to work · can start immediately, no notice period
 Perm, Russia (GMT+5) · Remote · Open to relocation (Cyprus, EU, UAE) · Telegram @Michael_Semenov · perk77331@gmail.com · rebsem.ru · linkedin.com/in/mikhail-semenovv · github.com/RebSem
 
 SUMMARY
-Product manager with an engineering background, 4.5 years in B2B SaaS. Launched a voice AI agent line from zero to 80 paying customers, 500,000+ minutes in production and ~10% of group revenue in under a year. Led a product team of 4 engineers and owned pricing, unit economics and new line launches. Looking for my next product role and can start immediately.
+Product manager, 4.5 years in B2B SaaS. Launched a voice AI agent line from scratch to 80 paying customers, 500,000+ minutes in production and ~10% of group revenue in under a year. Owned pricing, unit economics and new line launches; priorities, specs and acceptance for a team of 4 engineers were mine. Started as a developer, so I speak engineering. Looking for my next product role and can start immediately.
 
 NUMBERS
 - ~10% of group revenue came from a line launched from zero in a year
 - 80 paying B2B customers
 - 500,000+ minutes of conversations in production
-- +30% average customer spend after the new plans launched
+- +30% average spend: customers on AI agents vs the scripted robot
 - 30% of line revenue came from repeat purchases
 - 130+ countries: the group CPaaS products, bulk calls and SMS
 
@@ -22,7 +22,7 @@ Zvonobot is a B2B call automation platform: voice bots and AI agents for lead ge
 Zvonobot AI (Oct 2025 - Oct 2026)
 - ~10% of group revenue in under a year: 80 paying B2B customers and 500,000+ minutes of live conversations in production by August 2026. Repeat purchases brought 30% of the line revenue.
 - From zero to market in weeks: launched Zvonobot AI, the voice AI agent line, on a white-label platform and proved demand with live customers. Then made the case, with numbers, for an in-house, more flexible platform and started moving the line onto it.
-- +30% in average customer spend after the AI plans launched: customers on AI agents versus customers on the legacy linear IVR robot. AI agents consistently outperform the scripted robots on conversion to the target action on warm lead lists, which became the basis for pricing.
+- +30% in average customer spend: customers on AI agents versus customers on the legacy linear IVR robot. On warm lead lists, AI agents beat the legacy robots on conversion to the target action in our tests, which became the basis for pricing.
 - The full product suite of the line: agent and script builder, LLM call analytics (outcome, sentiment, custom post-call fields), per-second billing plans by cost component (LLM, ASR, TTS), balance hold at campaign start.
 - A product team of 4 engineers: engineering reported to the tech lead, while priorities, specs and acceptance were mine. Set quarterly OKRs for the line and defended them with leadership.
 - The sales team grew from 4 to 15 people to sell the line: I ran go-to-market with stakeholders in sales, support and finance, and trained sales and support on the product weekly. Owned pricing, plans, per-call-type margins and the product's unit economics.
@@ -47,7 +47,7 @@ Roles: Product Manager, Product Owner
 Product: product strategy and roadmap, discovery, customer interviews, metrics and product analytics, unit economics (LTV, CAC, retention and churn, average spend), pricing and monetization, A/B experiments, hypothesis validation, go-to-market, OKRs, stakeholder management, B2B SaaS, CRM
 AI and LLM: generative AI (GenAI), voice AI agents, conversational AI, LLM orchestration, prompt engineering, RAG, LLM evals, ASR, TTS, contact centers, SIP telephony
 Delivery: PRDs and specs, decomposition, acceptance criteria, reviews, release cycle, working with engineers and sales, fast hypothesis validation, 0 to 1
-Tools: Jira, YouTrack, Notion, Confluence, Figma, Miro, Yandex Metrica, PostHog
+Tools: Jira, Confluence, Figma, Yandex Metrica, PostHog
 AI tools: Claude Code, Codex, prototyping with AI agents
 Technical: SQL, Python, TypeScript, REST, integrations, telephony (SIP)
 
@@ -57,7 +57,7 @@ A Product Manager or Product Owner role on a product team. Domains where my expe
 EDUCATION, LANGUAGES, FORMAT
 Education: Perm State University, 2022.
 Languages: Russian: native. English: B2, working correspondence and documentation daily, confident on work calls.
-Work format: Remote from Perm (GMT+5), open to relocation (Cyprus, EU, UAE), available for business travel. Full-time or contract (self-employed), invoices in USD, EUR or USDT, can start immediately.
+Work format: Remote from Perm (GMT+5), open to relocation (Cyprus, EU, UAE), available for business travel. Full-time, or contract as a self-employed contractor or via an EOR, invoices in USD or EUR, can start immediately.
 
 CONTACT
 Telegram: https://telegram.me/Michael_Semenov
