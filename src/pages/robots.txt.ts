@@ -6,6 +6,8 @@ export const GET: APIRoute = async () => {
   const body = [
     'User-agent: *',
     'Allow: /',
+    // Per-vacancy resumes live under /cv/<slug>/; keep them out of search.
+    'Disallow: /cv/*/',
     '',
     `Sitemap: ${SITE_URL}/sitemap.xml`,
     '',

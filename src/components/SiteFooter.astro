@@ -7,20 +7,27 @@ interface Props {
   noteRu?: string;
   noteEn?: string;
   /**
-   * The home page ends here, so its footer is the closing call to action:
-   * one question set in the headline's type as a bookend to the H1, the
-   * pitch under it, Telegram and Email as buttons, a quiet Resume link
-   * after them, and the status line again for the reader who scrolled to
-   * the end. Other pages end with their own call to action (About, the
-   * case studies) and keep the pitch at reading size.
+   * The home page and the case studies end here, so their footer is the
+   * closing call to action: one question in the headline's type, the pitch
+   * under it, Telegram and Email as buttons, a quiet Resume link after them,
+   * and the status line again for the reader who scrolled to the end. The
+   * case studies end on the next case first (CaseNext.astro). About ends on
+   * its own call to action and keeps the pitch at reading size.
    */
   closing?: boolean;
+  /**
+   * The label rail is the editorial grid of the home page and the About rows.
+   * Pages whose text starts at the container edge (the case studies) turn it
+   * off, so the footer's column lines up with the page text above it.
+   */
+  rail?: boolean;
 }
 
 const {
   noteRu = uiCopy.footer.defaultNote.ru,
   noteEn = uiCopy.footer.defaultNote.en,
   closing = false,
+  rail = true,
 } = Astro.props;
 
 const locale = Astro.currentLocale === 'ru' ? 'ru' : 'en';
@@ -32,7 +39,7 @@ const prefix = locale === 'ru' ? '/ru' : '';
 const closingWords = uiCopy.footer.closingTitle[locale].split(' ');
 ---
 
-<footer class:list={['site-footer', { 'site-footer-closing': closing }]} data-analytics-placement="footer">
+<footer class:list={['site-footer', { 'site-footer-closing': closing, 'site-footer-norail': !rail }]} data-analytics-placement="footer">
   <div class="footer-inner">
     <div class="footer-main ed-row ed-mark">
       <p class="footer-eyebrow ed-label">{uiCopy.footer.eyebrow[locale]}</p>
@@ -85,7 +92,7 @@ const closingWords = uiCopy.footer.closingTitle[locale].split(' ');
     <div class="footer-bottom">
       <nav class="footer-nav" aria-label={uiCopy.footer.navAria[locale]}>
         <a href={`${prefix}/`}>{uiCopy.nav.home[locale]}</a>
-        <a href={`${prefix}/about`}>{uiCopy.nav.about[locale]}</a>
+        <a href={`${prefix}/about/`}>{uiCopy.nav.about[locale]}</a>
         <a href="#top">{uiCopy.footer.backToTop[locale]}</a>
       </nav>
 

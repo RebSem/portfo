@@ -21,7 +21,7 @@ interface Props {
    */
   followLinks?: boolean;
   schema?: Record<string, unknown> | Array<Record<string, unknown>>;
-  /** Path of this page in the other locale, e.g. '/ru/about' — emits hreflang alternates. */
+  /** Path of this page in the other locale, e.g. '/ru/about/'. Emits hreflang alternates. */
   alternate?: string;
 }
 
@@ -116,7 +116,6 @@ const hreflangRu = lang === 'ru' ? canonicalUrl : alternateUrl;
     <Font cssVariable="--font-geist" preload />
     <Font cssVariable="--font-geist-mono" preload />
     <Font cssVariable="--font-newsreader" />
-    <link rel="dns-prefetch" href="https://api.github.com" />
     <meta name="description" content={description} />
     <meta name="robots" content={robotsContent} />
     <meta name="author" content="Mikhail Semenov" />

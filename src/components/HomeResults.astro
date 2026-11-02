@@ -9,7 +9,7 @@ interface Props {
 const { locale } = Astro.props;
 const results = uiCopy.projects.featuredResults;
 
-// Balanced labels must not break "B2B-клиентов" or "AI-тарифов" at the
+// Balanced labels must not break "B2B-клиентов" or "AI-агентах" at the
 // hyphen: same nowrap-span fix as the hero standfirst and nb() on /cv.
 const HYPHENATED = /[\p{L}\p{N}]-[\p{L}\p{N}]/u;
 const chunks = (value: string) => value.split(/(\s+)/);

@@ -96,6 +96,21 @@ html {
   scrollbar-gutter: stable;
 }
 
+/* Fragment targets (skip link, #projects, /cv anchors) must land below the
+   sticky header. On phones the header is static, except on the resume where
+   it stays pinned for the PDF button, so only that case needs the offset. */
+@media (min-width: 721px) {
+  html {
+    scroll-padding-top: 5.25rem;
+  }
+}
+
+@media (max-width: 720px) {
+  html:has(.header-pdf) {
+    scroll-padding-top: 4.5rem;
+  }
+}
+
 body {
   background:
     radial-gradient(1400px 600px at 8% -8%, var(--accent-soft), transparent 65%),
@@ -513,26 +528,6 @@ html[data-theme='dark'] .theme-icon-sun {
   padding-top: 1.85rem;
   padding-bottom: 3.25rem;
 }
-
-/* Interruptible enter: transitions retarget cleanly if the user
-   navigates mid-animation (keyframes restart from zero, which feels janky).
-   Stagger applied consistently to the first 4 sections, ~45ms apart. */
-.page-main > section {
-  opacity: 1;
-  transform: translateY(0);
-  transition:
-    opacity 280ms var(--ease-out-strong),
-    transform 280ms var(--ease-out-strong);
-
-  @starting-style {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-}
-
-.page-main > section:nth-of-type(2) { transition-delay: 45ms; }
-.page-main > section:nth-of-type(3) { transition-delay: 90ms; }
-.page-main > section:nth-of-type(4) { transition-delay: 135ms; }
 
 .section-block,
 .blog-index {
@@ -1090,9 +1085,35 @@ html[data-theme='dark'] .theme-icon-sun {
   }
 }
 
-/* Keywords at the end of a case, after the story they summarise. */
+/* Back to the project list: a quiet text link, not a button. */
+.case-back {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+/* Keywords at the end of a case, after the story they summarise: one quiet
+   line with dots between them, not chips. Each tag is one unit, so a line
+   can break between tags and never inside one. */
 .case-tags {
-  margin-top: 2rem;
+  list-style: none;
+  margin: 2rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.case-tags li {
+  white-space: nowrap;
+}
+
+.case-tags li:not(:last-child)::after {
+  content: '·';
+  margin: 0 0.5em;
 }
 
 /* Pulse intentionally slow + sparse — the dot still reads as "alive"
@@ -1126,6 +1147,12 @@ html[data-theme='dark'] .theme-icon-sun {
   gap: clamp(2.5rem, 5vw, 3.75rem);
 }
 
+/* Pages without the rail (SiteFooter's `rail` prop): the label stacks above
+   the column on the page's own left edge instead of opening a second one. */
+.site-footer-norail .footer-main {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .footer-body {
   display: grid;
   justify-items: start;
@@ -1153,9 +1180,9 @@ html[data-theme='dark'] .theme-icon-sun {
   margin-left: -0.6rem;
 }
 
-/* Home: the page ends on one question set in the headline's type, a size
-   under it so the two do not compete, then the pitch, the two ways to
-   write and the status line once more. */
+/* Home and case studies: the page ends on one question set in the headline's
+   type, a size under it so the two do not compete, then the pitch, the two
+   ways to write and the status line once more. */
 .site-footer-closing .footer-main {
   row-gap: 1.25rem;
 }
@@ -1367,16 +1394,6 @@ html[data-theme='dark'] .theme-icon-sun {
 }
 
 @media (max-width: 720px) {
-  /* The gh terminal is a nice desktop detail and two phone screens of noise
-     for someone hiring a product manager. */
-  .agent-terminal {
-    display: none;
-  }
-
-  .agent-ops-grid {
-    grid-template-columns: 1fr;
-  }
-
   /* The wrapped 2-3 row header would eat too much of a phone viewport
      if it stayed pinned - let it scroll away on small screens. */
   .site-header {
@@ -1498,16 +1515,8 @@ html[data-theme='dark'] .theme-icon-sun {
     scroll-behavior: auto;
   }
 
-  /* Drop the @starting-style entrance, hover lifts and press scales,
-     pulse, and the theme-icon blur — keep colour/opacity transitions
-     since they aid comprehension. */
-  .page-main > section,
-  .page-main > section:nth-of-type(n) {
-    transition: none;
-    opacity: 1;
-    transform: none;
-  }
-
+  /* Drop hover lifts and press scales, pulse, and the theme-icon blur —
+     keep colour/opacity transitions since they aid comprehension. */
   .skip-link,
   .locale-toggle,
   .theme-toggle,
@@ -1517,6 +1526,10 @@ html[data-theme='dark'] .theme-icon-sun {
   .main-nav-link,
   .cta-button,
   .header-pdf {
+    transition: none;
+  }
+
+  .main-nav-link::after {
     transition: none;
   }
 
@@ -1989,12 +2002,10 @@ a.project-shot-zoom:focus-visible {
 }
 
 /* ============================================================
-   Agent ops — the signature "I run a team of AI agents" section.
-   Left: the operator loop (spec → build → review → prod).
-   Right: a real terminal with live, verifiable receipts from the
-   site's own public repo. The terminal keeps its own dark surface
-   in both themes — it is an artifact, like a screenshot, not a
-   page background.
+   Agent ops: how I work with AI agents, as three steps, then the live
+   proof as two plain receipt lines from the site's own repo. The proof
+   sits in the page's own type, like the results band, not in a dark
+   window: no shell commands, no traffic-light dots.
    ============================================================ */
 .agent-ops-head {
   display: grid;
@@ -2008,17 +2019,9 @@ a.project-shot-zoom:focus-visible {
   color: color-mix(in oklab, var(--foreground) 78%, transparent);
 }
 
-.agent-ops-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
-  gap: clamp(1.75rem, 3vw, 2.75rem);
-  align-items: start;
-  margin-top: clamp(1.75rem, 3vw, 2.5rem);
-}
-
 .agent-steps {
   list-style: none;
-  margin: 0;
+  margin: clamp(1.75rem, 3vw, 2.5rem) 0 0;
   padding: 0;
   display: grid;
   gap: 0;
@@ -2064,153 +2067,48 @@ a.project-shot-zoom:focus-visible {
   color: color-mix(in oklab, var(--foreground) 75%, transparent);
 }
 
-.agent-terminal {
-  /* Fixed terminal palette — deliberately NOT theme tokens: a terminal
-     window is dark in real life, in both site themes. */
-  --term-bg: #0f1412;
-  --term-fg: #cdd6d0;
-  --term-dim: #79877f;
-  --term-accent: #3ddc97;
-  /* A quiet frame in the page's hairline language: a neutral edge and a
-     soft, low shadow instead of the green glow, so the window sits on the
-     page like a plate in a magazine rather than floating over it. */
-  border-radius: 0.85rem;
-  border: 1px solid color-mix(in oklab, var(--foreground) 22%, transparent);
-  background: var(--term-bg);
-  overflow: hidden;
-  box-shadow:
-    0 1px 2px rgb(0 0 0 / 0.08),
-    0 22px 44px -30px rgb(0 0 0 / 0.42),
-    inset 0 1px 0 rgb(255 255 255 / 0.06);
-}
-
-[data-theme='dark'] .agent-terminal {
-  border-color: rgb(255 255 255 / 0.1);
-  box-shadow:
-    0 22px 44px -30px rgb(0 0 0 / 0.7),
-    inset 0 1px 0 rgb(255 255 255 / 0.05);
-}
-
-.agent-terminal-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.6rem 0.9rem;
-  background: rgb(255 255 255 / 0.04);
-  border-bottom: 1px solid rgb(255 255 255 / 0.07);
-}
-
-.agent-terminal-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-
-.agent-terminal-dot:nth-child(1) { background: #ff5f57; }
-.agent-terminal-dot:nth-child(2) { background: #febc2e; }
-.agent-terminal-dot:nth-child(3) { background: #28c840; }
-
-.agent-terminal-title {
-  margin-left: 0.55rem;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.04em;
-  color: var(--term-dim);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.agent-terminal-body {
-  padding: 1.15rem 1.25rem 1.35rem;
+.agent-receipts {
+  list-style: none;
+  margin: clamp(1.25rem, 2.4vw, 2rem) 0 0;
+  padding: 0;
   display: grid;
-  gap: 0.4rem;
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
+}
+
+.agent-receipt {
+  padding: 0.95rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.agent-receipt:last-child {
+  padding-bottom: 0;
+}
+
+.agent-receipt-line {
+  max-width: 60ch;
+  font-size: 1rem;
   line-height: 1.55;
-  color: var(--term-fg);
+  color: color-mix(in oklab, var(--foreground) 78%, transparent);
 }
 
-.t-cmd {
-  color: var(--term-dim);
-}
-
-.t-cmd::before {
-  content: '$ ';
-  color: var(--term-accent);
-}
-
-.t-cmd + .t-cmd,
-.t-out + .t-cmd,
-.t-link + .t-cmd {
-  margin-top: 0.7rem;
-}
-
-.t-out {
-  display: flex;
-  align-items: baseline;
-  gap: 0.6rem;
-  flex-wrap: wrap;
-}
-
-.t-num {
-  font-size: 1.45rem;
+/* A modest figure: a step above body size, in the accent the results band
+   uses. Not a display number. */
+.agent-receipt-value {
+  font-size: 1.15rem;
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: #ffffff;
+  color: var(--accent-text);
   font-variant-numeric: tabular-nums;
 }
 
-.t-out span {
-  max-width: 46ch;
+.agent-receipt-sep {
+  color: color-mix(in oklab, var(--foreground) 45%, transparent);
 }
 
-.t-link a {
-  font-size: 0.74rem;
-  color: var(--term-accent);
-  text-decoration: none;
-  border-bottom: 1px solid color-mix(in oklab, var(--term-accent) 40%, transparent);
-  padding-bottom: 1px;
-  transition: border-color var(--dur-fast) var(--ease-out-strong);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .t-link a:hover {
-    color: var(--term-accent);
-    border-color: var(--term-accent);
-  }
-}
-
-.t-whoami {
-  color: var(--term-accent);
-  font-weight: 500;
-}
-
-.t-caret {
+.agent-receipt-link {
   display: inline-block;
-  width: 0.55em;
-  height: 1.05em;
-  margin-left: 0.35em;
-  background: var(--term-accent);
-  vertical-align: text-bottom;
-  animation: caret-blink 1.2s steps(1) infinite;
-}
-
-@keyframes caret-blink {
-  50% { opacity: 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .t-caret {
-    animation: none;
-  }
-}
-
-@media (max-width: 860px) {
-  .agent-ops-grid {
-    grid-template-columns: 1fr;
-    gap: 1.6rem;
-  }
+  margin-top: 0.4rem;
+  font-size: 0.875rem;
+  color: var(--accent-text);
 }
 
 /* ============================================================
@@ -2292,9 +2190,8 @@ a.project-shot-zoom:focus-visible {
    in from the left once, the results rule a beat after the facts rule.
    Only the rules move. Every word and figure is on screen from the first
    frame: the H1 is the LCP element, and a capture at t=0 (a preview bot,
-   a slow phone) still gets the whole opener. The home sections opt out of
-   the @starting-style fade the other pages use, so nothing on this page
-   starts invisible. */
+   a slow phone) still gets the whole opener. The home sections keep no
+   transition at all, so nothing on this page starts invisible. */
 .page-main > section.home-intro,
 .page-main > section.home-results,
 .page-main > section.ed-section {

@@ -11,12 +11,12 @@ import Layout from '../../layouts/Layout.astro';
 import githubScriptUrl from '../../scripts/github-activity.js?url';
 
 const avatarUrl = `https://avatars.githubusercontent.com/${githubUsername}?size=560`;
-const personEntity = buildPersonSchema('https://rebsem.ru/ru/about');
+const personEntity = buildPersonSchema('https://rebsem.ru/ru/about/');
 personEntity.image = avatarUrl;
 const aboutSchema = {
   '@context': 'https://schema.org',
   '@type': 'ProfilePage',
-  url: 'https://rebsem.ru/ru/about',
+  url: 'https://rebsem.ru/ru/about/',
   name: `${heroDisplayName.ru} - Обо мне`,
   inLanguage: 'ru',
   mainEntity: personEntity,
@@ -28,7 +28,7 @@ const aboutSchema = {
   image="/og/about-ru.png"
   description="Продакт-менеджер в B2B SaaS и AI: как запускаю продукты с нуля, веду прайсинг и вывод на рынок, работаю с инженерами. Ищу работу. Удалённо, GMT+5."
   schema={aboutSchema}
-  alternate="/about"
+  alternate="/about/"
 >
   <a id="skip-to-content" href="#main-content" class="skip-link">Перейти к содержимому</a>
 

@@ -502,7 +502,9 @@ describe('cv download files', () => {
 
       // Section headings: letter-spacing once split SUMMARY into "S U MMARY".
       for (const key of CV_SECTION_KEYS) {
-        if (key === 'contact') continue; // Folded into the header line in print.
+        // Contact is folded into the header line in print; Products is
+        // screen-only (print.css .cv-screen-only) and stays on /cv.
+        if (key === 'contact' || key === 'products') continue;
         const heading = CV_SECTION_TITLES[key][locale].toUpperCase();
         expect(extracted, `${file} lost the ${heading} heading`).toContain(heading);
       }

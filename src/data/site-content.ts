@@ -16,8 +16,8 @@ import {
 export { email, githubUsername, linkedinUrl, siteRepoUrl, telegramUrl };
 
 export const homePath = '/';
-export const aboutPath = '/about';
-export const blogPath = '/blog';
+export const aboutPath = '/about/';
+export const blogPath = '/blog/';
 
 export const heroFallbackName = 'Mikhail Semenov';
 export const heroDisplayName: LocalizedText = {
@@ -314,13 +314,14 @@ export const agentOps = {
       body: { ru: 'Каждый дифф читаю сам, мерджу только то, что готов защищать. Смердженный PR уезжает в прод.', en: 'I read every diff myself and merge only what I can defend. A merged PR deploys to production.' },
     },
   ] satisfies AgentOpsStep[],
-  terminalAria: { ru: 'Живые данные о PR этого репозитория', en: 'Live pull-request stats for this repository' },
+  // The proof is two plain lines with build-time figures, not a terminal
+  // window: a dark box on a light page read as "developer" to a recruiter.
   receiptPrs: {
-    ru: 'PR смерджено в этом репозитории, написаны агентами и проверены мной',
-    en: 'merged PRs on this repo, agent-written and reviewed by me',
+    ru: 'PR в этом репозитории: написаны агентами, каждый прочитан и смерджен мной',
+    en: 'merged PRs on this repo: agent-written, each one read and merged by me',
   },
   receiptPrsLink: { ru: 'смотреть PR на GitHub', en: 'see the PRs on GitHub' },
-  receiptDeployNote: { ru: 'этот самый деплой собран из PR, написанного агентом', en: 'this very deploy shipped from an agent-written PR' },
+  receiptDeployNote: { ru: 'этот деплой собран из такого PR', en: 'this deploy shipped from one of them' },
 } as const;
 
 // The year the product work started, read from the Zvonobot role in cv.ts so
@@ -518,7 +519,7 @@ export const uiCopy = {
       },
       {
         value: { ru: '+30%', en: '+30%' },
-        label: { ru: 'к среднему чеку после запуска AI-тарифов', en: 'average customer spend after the AI plans launched' },
+        label: { ru: 'выше средний чек на AI-агентах, чем на классическом роботе', en: 'higher average spend on AI agents than on our scripted robot' },
       },
       {
         value: { ru: '30%', en: '30%' },
@@ -555,6 +556,10 @@ export const uiCopy = {
   caseAvailability: {
     telegram: { ru: 'Написать в Telegram', en: 'Message on Telegram' },
     email: { ru: 'Почта', en: 'Email' },
+  },
+  // The label over the next case, after a case study's last section (CaseNext.astro).
+  caseNext: {
+    label: { ru: 'Следующий кейс', en: 'Next case' },
   },
   footer: {
     defaultNote: {

@@ -73,6 +73,14 @@ export default defineConfig({
     '/projects': '/#projects',
     '/ru/projects': '/ru/#projects',
   },
+  // The default strategy is hover, which a phone does not fire until the tap
+  // itself, so the first frame of the next page waited for the fetch. Viewport
+  // prefetches each link as it scrolls into view. On data saver or 2G Astro
+  // prefetches on touchstart instead.
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: 'viewport',
+  },
   integrations: [mdx()],
   vite: {
     build: {
