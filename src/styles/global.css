@@ -1085,9 +1085,35 @@ html[data-theme='dark'] .theme-icon-sun {
   }
 }
 
-/* Keywords at the end of a case, after the story they summarise. */
+/* Back to the project list: a quiet text link, not a button. */
+.case-back {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+/* Keywords at the end of a case, after the story they summarise: one quiet
+   line with dots between them, not chips. Each tag is one unit, so a line
+   can break between tags and never inside one. */
 .case-tags {
-  margin-top: 2rem;
+  list-style: none;
+  margin: 2rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.case-tags li {
+  white-space: nowrap;
+}
+
+.case-tags li:not(:last-child)::after {
+  content: '·';
+  margin: 0 0.5em;
 }
 
 /* Pulse intentionally slow + sparse — the dot still reads as "alive"
@@ -1154,9 +1180,9 @@ html[data-theme='dark'] .theme-icon-sun {
   margin-left: -0.6rem;
 }
 
-/* Home: the page ends on one question set in the headline's type, a size
-   under it so the two do not compete, then the pitch, the two ways to
-   write and the status line once more. */
+/* Home and case studies: the page ends on one question set in the headline's
+   type, a size under it so the two do not compete, then the pitch, the two
+   ways to write and the status line once more. */
 .site-footer-closing .footer-main {
   row-gap: 1.25rem;
 }

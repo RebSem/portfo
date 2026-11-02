@@ -7,12 +7,12 @@ interface Props {
   noteRu?: string;
   noteEn?: string;
   /**
-   * The home page ends here, so its footer is the closing call to action:
-   * one question set in the headline's type as a bookend to the H1, the
-   * pitch under it, Telegram and Email as buttons, and the status line
-   * again for the reader who scrolled to the end. Other pages end with
-   * their own call to action (About, the case studies) and keep the pitch
-   * at reading size.
+   * The home page and the case studies end here, so their footer is the
+   * closing call to action: one question in the headline's type, the pitch
+   * under it, Telegram and Email as buttons, and the status line again for
+   * the reader who scrolled to the end. The case studies end on the next
+   * case first (CaseNext.astro). About ends on its own call to action and
+   * keeps the pitch at reading size.
    */
   closing?: boolean;
   /**

@@ -551,6 +551,10 @@ export const uiCopy = {
     telegram: { ru: 'Написать в Telegram', en: 'Message on Telegram' },
     email: { ru: 'Почта', en: 'Email' },
   },
+  // The label over the next case, after a case study's last section (CaseNext.astro).
+  caseNext: {
+    label: { ru: 'Следующий кейс', en: 'Next case' },
+  },
   footer: {
     defaultNote: {
       ru: 'Ищу роль продакт-менеджера, готов выйти сразу.',

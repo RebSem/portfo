@@ -1,9 +1,12 @@
 ---
 import { getCollection, render } from 'astro:content';
 import CaseAvailability from '../../../components/CaseAvailability.astro';
+import CaseNext from '../../../components/CaseNext.astro';
 import SiteFooter from '../../../components/SiteFooter.astro';
 import SiteHeader from '../../../components/SiteHeader.astro';
+import { projects } from '../../../data/projects';
 import { githubUsername, heroDisplayName, linkedinUrl, telegramUrl } from '../../../data/site-content';
+import { nextCaseProjectId } from '../../../lib/case-order';
 import Layout from '../../../layouts/Layout.astro';
 
 export async function getStaticPaths() {
@@ -20,6 +23,11 @@ const { Content } = await render(entry);
 // Find English version for switcher
 const allProjects = await getCollection('projects', ({ data }) => !data.draft);
 const enSlug = allProjects.find((p) => p.data.projectId === entry.data.projectId && p.data.lang === 'en')?.id;
+
+// The next case in the loop (src/lib/case-order.ts), in this locale.
+const nextId = nextCaseProjectId(entry.data.projectId);
+const nextEntry = allProjects.find((p) => p.data.projectId === nextId && p.data.lang === 'ru');
+const nextProject = projects.find((p) => p.id === nextId);
 
 const pageImage = entry.data.cover ?? '/og/home-ru.png';
 const projectSchema = {
@@ -76,7 +84,7 @@ const breadcrumbSchema = {
   >
     <article class="post-shell">
       <p>
-        <a href="/ru/">← На главную</a>
+        <a class="case-back" href="/ru/#projects">← Все проекты</a>
       </p>
 
       <header class="post-head">
@@ -119,14 +127,23 @@ const breadcrumbSchema = {
       </div>
 
       {entry.data.tags.length > 0 && (
-        <ul class="stack-list case-tags" aria-label="Технологии проекта">
+        <ul class="case-tags" aria-label="Технологии проекта">
           {entry.data.tags.map((tag) => (
             <li>{tag}</li>
           ))}
         </ul>
       )}
     </article>
+
+    {nextEntry && nextProject && (
+      <CaseNext
+        locale="ru"
+        href={`/ru/projects/${nextEntry.id}/`}
+        title={nextProject.title.ru}
+        summary={nextProject.summary.ru}
+      />
+    )}
   </main>
 
-  <SiteFooter rail={false} />
+  <SiteFooter closing rail={false} />
 </Layout>
