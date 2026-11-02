@@ -119,22 +119,6 @@ One console for every role: agent assembly, dialing, billing and analytics.
 </details>
 
 <details>
-<summary>Under the hood</summary>
-
-- **Frontend:** React 19 + TypeScript + Vite, vanilla CSS with strict design tokens, `data-theme="dark"` swap, a sidebar that adapts to the role.
-- **Backend:** Flask modular monolith, SQLAlchemy + Alembic, PostgreSQL for state, Redis for jobs.
-- **Voice + LLM:** dialog orchestration on top of a voice provider's execution layer; voice, ASR, TTS and the LLM are configurable per agent.
-- **Telephony:** SIP trunk for Russian numbers, operator detection via HLR lookup, so a number is known to be reachable before it is dialed.
-
-### Three product decisions I would defend again
-
-1. **Reconcile, do not trust webhooks.** Providers drop lifecycle events. The 60-second poller is what makes "every minute billed exactly once" a fact rather than a hope.
-2. **Hold, then settle.** Estimated cost is held at campaign start and the real cost is settled per call, with a row lock so two concurrent calls cannot spend the same remaining balance.
-3. **Ingest that survives real CSVs.** Client bases arrive as `+7 (982)…`, `8982…`, numbers in the wrong column. Everything normalizes to a canonical form, deduplicates and gets an operator lookup, and flaky carrier routes are dropped by default. This started as my `bazabot` side project and moved into the product when every campaign turned out to need it.
-
-</details>
-
-<details>
 <summary>My part and the team’s</summary>
 
 I owned the line: what got built, what it cost, whom we sold it to, pricing and per-call-type margins. Specs, priorities and review were mine. When a hypothesis needed a working answer faster than a sprint, I prototyped it myself with AI coding agents (Claude Code, Codex) and handed the team the learning, not the code.
@@ -146,5 +130,7 @@ I ran go-to-market with sales, support and finance and trained them on the produ
 - Start with the smallest stable surface and grow it. The console started with one role and one report; by October 2026 it had four roles, billing, an agent builder, analytics and a real call pipeline.
 
 </details>
+
+Built on our own stack by a team of four engineers; happy to walk through the architecture in an interview.
 
 Screenshots come from the live product on a demo account with generated, anonymised data. Under NDA: client names, their prompts and bases, the voice provider and the money.

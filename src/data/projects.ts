@@ -35,8 +35,7 @@ export const projects: ProjectItem[] = [
       ru: 'CRM для автопрокатов: AI читает документы клиента, считает риск по сделке и подсказывает менеджеру следующий шаг. Мой собственный продукт.',
       en: 'A CRM for car rental: AI reads client documents, scores deal risk and suggests the manager’s next step. My own product.',
     },
-    // Product tags, not the framework list: technologies live on the case
-    // page, where they prove a decision.
+    // Product tags, not a framework list: the case pages carry no tech stack.
     stack: ['AI CRM', 'Car rental', 'In development'],
     visibility: 'private',
     featured: true,
