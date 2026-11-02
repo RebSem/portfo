@@ -370,8 +370,9 @@ export const uiCopy = {
       ru: 'Ищу работу · готов выйти сразу',
       en: 'Open to work · available now',
     },
-    // Same wording as the meta description, /cv and About: the stance is
-    // "open to", not a bare noun, in both locales.
+    // Same wording as /cv and About: the stance is "open to", not a bare
+    // noun, in both locales. The meta descriptions leave relocation out to
+    // stay under 160 characters.
     workFormat: {
       ru: 'Удалённо · GMT+5 · открыт к релокации',
       en: 'Remote · GMT+5 · open to relocation',

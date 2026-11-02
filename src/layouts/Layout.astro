@@ -50,12 +50,13 @@ const canonicalUrl = new URL(Astro.url.pathname, siteUrl).toString();
 // Only the generated cards have known dimensions (1200x630, the size
 // Telegram, LinkedIn and X all crop to); other images stay unsized.
 const isOgCard = image.startsWith('/og/');
-// The card is the same on every page of a locale, so its alt text describes
-// the card rather than the page title. Same copy as the card itself.
+// The home, About and resume cards say the same thing in a locale, so their
+// alt text describes the card rather than the page title. Same copy as the
+// card itself. A case card carries the case's own title, so it keeps the title.
 const ogCardAlt = lang === 'ru'
   ? 'Михаил Семенов: ищу работу, 80 платящих B2B-клиентов'
   : 'Mikhail Semenov: open to work, 80 paying B2B customers';
-const imageAlt = isOgCard ? ogCardAlt : title;
+const imageAlt = isOgCard && !image.startsWith('/og/case-') ? ogCardAlt : title;
 // Versioned so a preview service that cached the old card by its URL fetches
 // the new one. Bump when scripts/og/build-og.mjs changes what the cards say
 // (2026-10: the job-search status line; 2026-11-03: the new card layout).
