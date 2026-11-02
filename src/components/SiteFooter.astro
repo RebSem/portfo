@@ -9,10 +9,10 @@ interface Props {
   /**
    * The home page and the case studies end here, so their footer is the
    * closing call to action: one question in the headline's type, the pitch
-   * under it, Telegram and Email as buttons, and the status line again for
-   * the reader who scrolled to the end. The case studies end on the next
-   * case first (CaseNext.astro). About ends on its own call to action and
-   * keeps the pitch at reading size.
+   * under it, Telegram and Email as buttons, a quiet Resume link after them,
+   * and the status line again for the reader who scrolled to the end. The
+   * case studies end on the next case first (CaseNext.astro). About ends on
+   * its own call to action and keeps the pitch at reading size.
    */
   closing?: boolean;
   /**
@@ -66,6 +66,7 @@ const closingWords = uiCopy.footer.closingTitle[locale].split(' ');
                 </svg>
                 {uiCopy.caseAvailability.email[locale]}
               </a>
+              <a class="footer-cv" href={`${prefix}/cv/`} rel="nofollow">{uiCopy.footer.resume[locale]}</a>
               <SocialLinks hideTelegram hideEmail />
             </div>
             <p class="footer-status">

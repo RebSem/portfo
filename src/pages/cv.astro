@@ -1,7 +1,7 @@
 ---
 import CvDocument from '../components/CvDocument.astro';
 import SiteHeader from '../components/SiteHeader.astro';
-import { buildEmploymentSchema, cvFileBaseName, cvName, cvSummary } from '../data/cv';
+import { buildEmploymentSchema, cvFileBaseName, cvName } from '../data/cv';
 import { buildPersonSchema } from '../data/site-content';
 import Layout from '../layouts/Layout.astro';
 import cvScriptUrl from '../scripts/cv.js?url';
@@ -15,9 +15,11 @@ const docxHref = `/cv/${cvFileBaseName.en}.docx`;
 const txtHref = '/cv.txt';
 
 // Unlisted, not secret: this page carries `noindex, follow` and is absent from
-// the sitemap, llms.txt, the menu and the footer, so it is only reachable by a
-// link Mikhail hands out. `follow` is deliberate, an LLM screener given the
-// link has to be able to reach the case studies it cites.
+// the sitemap, llms.txt and the menu. Its only public links are the quiet
+// "Resume" text links (nofollow) after Email on the home page and in the case
+// availability strip, and the PDF, DOCX and TXT downloads are nofollow too.
+// `follow` is deliberate, an LLM screener given the link has to be able to
+// reach the case studies it cites.
 const personEntity = buildPersonSchema(pageUrl);
 // Employment history, so an LLM screener handed this link can answer
 // "where did they work and when" from the structured data alone.
@@ -35,7 +37,7 @@ const cvSchema = {
 <Layout
   title={`${cvName.en} - CV`}
   image="/og/cv-en.png"
-  description={cvSummary.en}
+  description="Resume: product manager in B2B SaaS and AI. A voice AI agent line from scratch to 80 paying B2B customers in under a year. Open to work now. PDF, DOCX, TXT."
   noIndex
   followLinks
   schema={cvSchema}

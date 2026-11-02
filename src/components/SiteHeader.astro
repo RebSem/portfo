@@ -104,7 +104,7 @@ const toggleUrl = localeToggleUrl ?? localeToggleByActive[active];
       )}
 
       {isCv && pdfHref && (
-        <a class="header-pdf" href={pdfHref} download data-astro-prefetch="false">
+        <a class="header-pdf" href={pdfHref} download rel="nofollow" data-astro-prefetch="false">
           {pdfLabel}
         </a>
       )}

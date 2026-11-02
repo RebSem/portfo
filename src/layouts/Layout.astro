@@ -41,18 +41,26 @@ const {
 const lang = Astro.currentLocale ?? 'en';
 // The link-preview card. It used to fall back to the About portrait, which is
 // the wrong image for a recruiter's Telegram or LinkedIn preview: they see the
-// card before they see the site, so it carries the name, the role line and the
-// one number, in the site's own style. Rendered by scripts/og/build-og.mjs.
+// card before they see the site, so it carries the name and the role, the
+// headline and the proof line, in the site's own style. Rendered by
+// scripts/og/build-og.mjs.
 const image = imageProp ?? `/og/home-${lang}.png`;
 const siteUrl = Astro.site ?? new URL(Astro.url.origin);
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).toString();
 // Only the generated cards have known dimensions (1200x630, the size
 // Telegram, LinkedIn and X all crop to); other images stay unsized.
 const isOgCard = image.startsWith('/og/');
+// The home, About and resume cards say the same thing in a locale, so their
+// alt text describes the card rather than the page title. Same copy as the
+// card itself. A case card carries the case's own title, so it keeps the title.
+const ogCardAlt = lang === 'ru'
+  ? 'Михаил Семенов: ищу работу, 80 платящих B2B-клиентов'
+  : 'Mikhail Semenov: open to work, 80 paying B2B customers';
+const imageAlt = isOgCard && !image.startsWith('/og/case-') ? ogCardAlt : title;
 // Versioned so a preview service that cached the old card by its URL fetches
 // the new one. Bump when scripts/og/build-og.mjs changes what the cards say
-// (2026-10: the job-search status line).
-const OG_CARD_VERSION = '2026-10';
+// (2026-10: the job-search status line; 2026-11-03: the new card layout).
+const OG_CARD_VERSION = '2026-11-03';
 const imageUrl = image.startsWith('http://') || image.startsWith('https://')
   ? image
   : new URL(isOgCard ? `${image}?v=${OG_CARD_VERSION}` : image, siteUrl).toString();
@@ -127,13 +135,13 @@ const hreflangRu = lang === 'ru' ? canonicalUrl : alternateUrl;
     <meta property="og:image" content={imageUrl} />
     {isOgCard && <meta property="og:image:width" content="1200" />}
     {isOgCard && <meta property="og:image:height" content="630" />}
-    <meta property="og:image:alt" content={title} />
+    <meta property="og:image:alt" content={imageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:url" content={canonicalUrl} />
     <meta name="twitter:image" content={imageUrl} />
-    <meta name="twitter:image:alt" content={title} />
+    <meta name="twitter:image:alt" content={imageAlt} />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />

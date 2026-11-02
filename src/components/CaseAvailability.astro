@@ -9,6 +9,7 @@ interface Props {
 
 const { locale } = Astro.props;
 const copy = uiCopy.caseAvailability;
+const prefix = locale === 'ru' ? '/ru' : '';
 ---
 
 {/*
@@ -18,7 +19,8 @@ const copy = uiCopy.caseAvailability;
   reach the footer, the only other place on the page with a way to write.
   The case is where interest peaks, so the next step has to be visible
   there, not thousands of pixels further down. data-analytics-placement
-  attributes the clicks to it.
+  attributes the clicks to it. The resume comes third: a reader who has
+  just read a case is the one most likely to ask for the CV.
 */}
 <p class="case-availability" data-analytics-placement="case">
   <span class="case-availability-status">
@@ -28,6 +30,7 @@ const copy = uiCopy.caseAvailability;
   <span class="case-availability-links">
     <a href={telegramUrl} target="_blank" rel="noreferrer">{copy.telegram[locale]}</a>
     <a href={buildIntroMailto(locale)}>{copy.email[locale]}</a>
+    <a href={`${prefix}/cv/`} rel="nofollow">{uiCopy.footer.resume[locale]}</a>
   </span>
 </p>
 

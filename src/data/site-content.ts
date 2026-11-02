@@ -1,5 +1,6 @@
 import type { Locale, LocalizedText } from '../types/content';
 import {
+  cvExperience,
   cvMetric,
   email,
   githubUsername,
@@ -147,16 +148,6 @@ export const aboutBlocks: AboutBlock[] = [
       { ru: 'Короткий цикл от идеи до проверки', en: 'A short loop from idea to validation' },
       { ru: 'Продуктовая логика поверх AI, а не AI ради AI', en: 'Product logic on top of AI, not AI for its own sake' },
       { ru: 'Возможность вести задачу целиком, а не быть звеном в цепочке согласований', en: 'Owning a problem from start to finish, not being one step in an approval chain' },
-    ],
-  },
-  {
-    eyebrow: { ru: '06 · Где буду полезен меньше', en: '06 · Where I’m a weaker fit' },
-    title: { ru: 'Честно про anti-fit', en: 'An honest anti-fit' },
-    body: [],
-    bullets: [
-      { ru: 'Чисто исследовательский ML/data science без продуктового слоя', en: 'Pure research ML or data science with no product layer on top' },
-      { ru: 'Продукт, где AI добавляют «для галочки»', en: 'Products that add AI as a checkbox' },
-      { ru: 'Роли с живыми переговорами на английском на C-уровне (письменно и async комфортно)', en: 'Roles needing live C-level negotiation in English (written and async are comfortable)' },
     ],
   },
 ];
@@ -333,6 +324,13 @@ export const agentOps = {
   receiptDeployNote: { ru: 'этот деплой собран из такого PR', en: 'this deploy shipped from one of them' },
 } as const;
 
+// The year the product work started, read from the Zvonobot role in cv.ts so
+// the byline cannot drift from the resume. Throws at build time if that role
+// is renamed, the same way cvMetric() fails loudly.
+const zvonobotRole = cvExperience.find((role) => role.company.en.startsWith('Zvonobot'));
+if (!zvonobotRole) throw new Error('Zvonobot role not found in cvExperience');
+const productSinceYear = zvonobotRole.startDate.slice(0, 4);
+
 export const uiCopy = {
   nav: {
     home: { ru: 'Главная', en: 'Home' },
@@ -344,6 +342,12 @@ export const uiCopy = {
   home: {
     // The hero makes one claim and backs it with one result. Career numbers
     // stay owned by cv.ts; both locales render the same semantic component.
+    // The byline states how long the product work has run: a bare job title
+    // leaves a screener to guess the tenure.
+    heroRole: {
+      ru: `Product Manager с ${productSinceYear} года`,
+      en: `Product Manager since ${productSinceYear}`,
+    },
     title: {
       ru: 'Запускаю и развиваю',
       en: 'I launch and grow',
@@ -367,8 +371,9 @@ export const uiCopy = {
       ru: 'Ищу работу · готов выйти сразу',
       en: 'Open to work · available now',
     },
-    // Same wording as the meta description, /cv and About: the stance is
-    // "open to", not a bare noun, in both locales.
+    // Same wording as /cv and About: the stance is "open to", not a bare
+    // noun, in both locales. The meta descriptions leave relocation out to
+    // stay under 160 characters.
     workFormat: {
       ru: 'Удалённо · GMT+5 · открыт к релокации',
       en: 'Remote · GMT+5 · open to relocation',
@@ -577,6 +582,12 @@ export const uiCopy = {
     pitch: {
       ru: 'Напишите, если ищете продакта в B2B SaaS, платежи или AI-продукты.',
       en: 'Write me if you are hiring a product manager for B2B SaaS, payments or AI products.',
+    },
+    // The quiet text link to /cv after Email on the home closing and in the
+    // case availability strip. Not a button: the resume is a second step.
+    resume: {
+      ru: 'Резюме',
+      en: 'Resume',
     },
     navAria: {
       ru: 'Навигация в подвале',

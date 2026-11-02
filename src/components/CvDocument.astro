@@ -177,7 +177,7 @@ const sectionIds = [
       {/* The files opt out of prefetch: prefetchAll would otherwise pull the
           PDF, DOCX and TXT (up to 0.4 MB each) on every visit before a tap. */}
       <div class="cv-actions">
-        <a class="cta-button cta-primary" href={pdfHref} download data-astro-prefetch="false">{copy.downloadPdf[locale]}</a>
+        <a class="cta-button cta-primary" href={pdfHref} download rel="nofollow" data-astro-prefetch="false">{copy.downloadPdf[locale]}</a>
         <a class="cta-button cta-secondary" href={telegramUrl} rel="me noopener">{copy.writeTelegram[locale]}</a>
       </div>
 
@@ -189,8 +189,8 @@ const sectionIds = [
       */}
       <p class="cv-formats">
         {copy.alsoAvailable[locale]}
-        <a href={docxHref} download data-astro-prefetch="false">DOCX</a>
-        <a href={txtHref} target="_blank" rel="noopener" data-astro-prefetch="false">TXT</a>
+        <a href={docxHref} download rel="nofollow" data-astro-prefetch="false">DOCX</a>
+        <a href={txtHref} target="_blank" rel="nofollow noopener" data-astro-prefetch="false">TXT</a>
       </p>
     </header>
 

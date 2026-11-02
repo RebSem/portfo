@@ -234,10 +234,48 @@ describeBuilt('cv build output', () => {
     expect(readDist('llms.txt')).not.toMatch(/\/cv\b/);
   });
 
-  it('is not linked from the site chrome', () => {
-    // Unlisted means no inbound links, not just no sitemap entry.
-    for (const page of ['index.html', 'ru/index.html', 'about/index.html', 'ru/about/index.html']) {
+  it('is linked only from the quiet resume links, all nofollow', () => {
+    // Unlisted still means no sitemap entry, no menu and no llms.txt line.
+    // The one link after Email on each home page and the one in each case's
+    // availability strip are the only inbound links, and both are nofollow.
+    for (const page of ['about/index.html', 'ru/about/index.html']) {
       expect(readDist(page), `${page} links to the CV`).not.toMatch(/href="\/(ru\/)?cv/);
+    }
+
+    for (const [page, href] of [
+      ['index.html', '/cv/'],
+      ['ru/index.html', '/ru/cv/'],
+    ] as const) {
+      const links = readDist(page).match(new RegExp(`<a [^>]*href="${href}"[^>]*>`, 'g')) ?? [];
+      expect(links, `${page} resume links`).toHaveLength(1);
+      expect(links[0], `${page} resume link is not nofollow`).toMatch(/rel="nofollow"/);
+    }
+
+    for (const [base, href] of [
+      ['projects', '/cv/'],
+      ['ru/projects', '/ru/cv/'],
+    ] as const) {
+      const cases = readdirSync(path.join(DIST, base), { withFileTypes: true }).filter((entry) =>
+        entry.isDirectory(),
+      );
+      expect(cases.length, `${base} has no case studies`).toBeGreaterThan(3);
+      for (const entry of cases) {
+        const page = `${base}/${entry.name}/index.html`;
+        expect(readDist(page), `${page} has no nofollow resume link`).toMatch(
+          new RegExp(`<a [^>]*href="${href}"[^>]*rel="nofollow"`),
+        );
+      }
+    }
+  });
+
+  it('marks the resume downloads nofollow', () => {
+    // Files are not pages to rank, and the links should not pass equity to them.
+    for (const page of ['cv/index.html', 'ru/cv/index.html']) {
+      const downloads = readDist(page).match(/<a [^>]*href="[^"]*\.(?:pdf|docx|txt)"[^>]*>/g) ?? [];
+      expect(downloads.length, `${page} download links`).toBeGreaterThanOrEqual(4);
+      for (const tag of downloads) {
+        expect(tag, `${page} download link without nofollow`).toMatch(/rel="[^"]*nofollow/);
+      }
     }
   });
 
