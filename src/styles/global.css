@@ -514,26 +514,6 @@ html[data-theme='dark'] .theme-icon-sun {
   padding-bottom: 3.25rem;
 }
 
-/* Interruptible enter: transitions retarget cleanly if the user
-   navigates mid-animation (keyframes restart from zero, which feels janky).
-   Stagger applied consistently to the first 4 sections, ~45ms apart. */
-.page-main > section {
-  opacity: 1;
-  transform: translateY(0);
-  transition:
-    opacity 280ms var(--ease-out-strong),
-    transform 280ms var(--ease-out-strong);
-
-  @starting-style {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-}
-
-.page-main > section:nth-of-type(2) { transition-delay: 45ms; }
-.page-main > section:nth-of-type(3) { transition-delay: 90ms; }
-.page-main > section:nth-of-type(4) { transition-delay: 135ms; }
-
 .section-block,
 .blog-index {
   display: grid;
@@ -1480,16 +1460,8 @@ html[data-theme='dark'] .theme-icon-sun {
     scroll-behavior: auto;
   }
 
-  /* Drop the @starting-style entrance, hover lifts and press scales,
-     pulse, and the theme-icon blur — keep colour/opacity transitions
-     since they aid comprehension. */
-  .page-main > section,
-  .page-main > section:nth-of-type(n) {
-    transition: none;
-    opacity: 1;
-    transform: none;
-  }
-
+  /* Drop hover lifts and press scales, pulse, and the theme-icon blur —
+     keep colour/opacity transitions since they aid comprehension. */
   .skip-link,
   .locale-toggle,
   .theme-toggle,
@@ -2267,9 +2239,8 @@ a.project-shot-zoom:focus-visible {
    in from the left once, the results rule a beat after the facts rule.
    Only the rules move. Every word and figure is on screen from the first
    frame: the H1 is the LCP element, and a capture at t=0 (a preview bot,
-   a slow phone) still gets the whole opener. The home sections opt out of
-   the @starting-style fade the other pages use, so nothing on this page
-   starts invisible. */
+   a slow phone) still gets the whole opener. The home sections keep no
+   transition at all, so nothing on this page starts invisible. */
 .page-main > section.home-intro,
 .page-main > section.home-results,
 .page-main > section.ed-section {

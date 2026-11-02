@@ -584,30 +584,6 @@ const sectionIds = [
     scroll-margin-top: 5.5rem;
   }
 
-  /*
-   * Same entrance the rest of the site uses on .page-main > section, which the
-   * resume was missing because its sections sit inside .cv-doc rather than
-   * directly under .page-main. @starting-style rather than a keyframe on
-   * purpose: the resting state is the visible one, so if the browser does not
-   * support it, or a parser never renders at all, the text is simply there.
-   * Short and shallow, 280ms over 6px: a recruiter came to read, not to watch.
-   */
-  .cv-head,
-  .cv-doc > section {
-    transition:
-      opacity 280ms var(--ease-out-strong),
-      transform 280ms var(--ease-out-strong);
-
-    @starting-style {
-      opacity: 0;
-      transform: translateY(6px);
-    }
-  }
-
-  .cv-doc > section:nth-of-type(2) { transition-delay: 45ms; }
-  .cv-doc > section:nth-of-type(3) { transition-delay: 90ms; }
-  .cv-doc > section:nth-of-type(4) { transition-delay: 135ms; }
-
   .cv-section-title {
     margin: 0 0 0.9rem;
     padding-bottom: 0.5rem;
@@ -891,15 +867,6 @@ const sectionIds = [
   /* The resume's own motion was not covered by the site-wide reduce block,
      which only names elements that existed before this page. */
   @media (prefers-reduced-motion: reduce) {
-    .cv-head,
-    .cv-doc > section,
-    .cv-doc > section:nth-of-type(n) {
-      transition: none;
-      transition-delay: 0s;
-      opacity: 1;
-      transform: none;
-    }
-
     .cv-toc a,
     .cv-copy {
       transition: none;
