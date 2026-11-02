@@ -174,8 +174,10 @@ const sectionIds = [
       {/* Two actions, not three: download the file or start a conversation.
           The LinkedIn button duplicated the text link one line above and was
           the third competing call to action on the first screen. */}
+      {/* The files opt out of prefetch: prefetchAll would otherwise pull the
+          PDF, DOCX and TXT (up to 0.4 MB each) on every visit before a tap. */}
       <div class="cv-actions">
-        <a class="cta-button cta-primary" href={pdfHref} download>{copy.downloadPdf[locale]}</a>
+        <a class="cta-button cta-primary" href={pdfHref} download data-astro-prefetch="false">{copy.downloadPdf[locale]}</a>
         <a class="cta-button cta-secondary" href={telegramUrl} rel="me noopener">{copy.writeTelegram[locale]}</a>
       </div>
 
@@ -187,8 +189,8 @@ const sectionIds = [
       */}
       <p class="cv-formats">
         {copy.alsoAvailable[locale]}
-        <a href={docxHref} download>DOCX</a>
-        <a href={txtHref} target="_blank" rel="noopener">TXT</a>
+        <a href={docxHref} download data-astro-prefetch="false">DOCX</a>
+        <a href={txtHref} target="_blank" rel="noopener" data-astro-prefetch="false">TXT</a>
       </p>
     </header>
 
