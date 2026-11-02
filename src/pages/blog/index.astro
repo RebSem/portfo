@@ -11,7 +11,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft && data.lan
 const blogSchema = {
   '@context': 'https://schema.org',
   '@type': 'Blog',
-  url: 'https://rebsem.ru/blog',
+  url: 'https://rebsem.ru/blog/',
   name: `${heroFallbackName} Blog`,
   description: 'Writing about product thinking, delivery systems, engineering, and practical AI.',
   inLanguage: 'en',
@@ -22,7 +22,7 @@ const blogSchema = {
   title={`${heroFallbackName} - Blog`} 
   description="Writing on product thinking, delivery systems, engineering, and practical AI." 
   schema={blogSchema}
-  alternate="/ru/blog"
+  alternate="/ru/blog/"
 >
   <a id="skip-to-content" href="#main-content" class="skip-link">Skip to content</a>
 

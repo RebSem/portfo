@@ -1,0 +1,64 @@
+---
+import { uiCopy } from '../data/site-content';
+import type { Locale } from '../types/content';
+
+interface Props {
+  locale: Locale;
+  href: string;
+  title: string;
+  summary: string;
+}
+
+const { locale, href, title, summary } = Astro.props;
+---
+
+{/*
+  The next case, closing the story before the footer. A reader who finished
+  one case had only the footer's icons to go on, so the case ends by handing
+  over to the next one. The label stacks above the text, as the footer does
+  on case pages, so both start on the case column's left edge.
+*/}
+<section class="case-next ed-row ed-mark" aria-labelledby="case-next-label">
+  <p id="case-next-label" class="ed-label">{uiCopy.caseNext.label[locale]}</p>
+  <div class="case-next-body">
+    <p class="case-next-title">
+      <a href={href}>{title}<span aria-hidden="true"> →</span></a>
+    </p>
+    <p class="case-next-summary">{summary}</p>
+  </div>
+</section>
+
+<style>
+  /* Stacked, not on the editorial rail: the case column starts at the
+     container edge, and the rail would push this title about 300px right. */
+  .case-next {
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: clamp(2.5rem, 5vw, 3.5rem);
+  }
+
+  .case-next-body {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .case-next-title {
+    margin: 0;
+    font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .case-next-title a {
+    text-decoration: none;
+  }
+
+  .case-next-summary {
+    margin: 0;
+    max-width: 36em;
+    font-size: 1rem;
+    line-height: 1.55;
+    color: color-mix(in oklab, var(--foreground) 74%, transparent);
+    text-wrap: pretty;
+  }
+</style>

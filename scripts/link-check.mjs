@@ -94,14 +94,18 @@ const collectTargets = async () => {
 
 const extractLinks = (html) => {
   const values = [];
-  const attributePattern = /\b(?:href|src)=["']([^"'<>]+)["']/g;
+  const attributePattern = /\b(href|src)=["']([^"'<>]+)["']/g;
 
   for (const match of html.matchAll(attributePattern)) {
-    values.push(match[1]);
+    values.push({ attribute: match[1], value: match[2] });
   }
 
   return values;
 };
+
+// A page link has to end in '/'. Without it GitHub Pages answers with a 301
+// first, which is the extra round trip the tap waits on.
+const isPageLinkWithoutSlash = (pathname) => !path.extname(pathname) && !pathname.endsWith('/');
 
 const main = async () => {
   const { htmlFiles, htmlRoutes, assetTargets } = await collectTargets();
@@ -111,13 +115,15 @@ const main = async () => {
     const html = await readFile(file, 'utf8');
     const currentRoute = normalizeRoute(file);
 
-    for (const rawValue of extractLinks(html)) {
+    for (const { attribute, value: rawValue } of extractLinks(html)) {
       const value = stripHashAndQuery(rawValue);
       const pathname = toPathname(value, currentRoute);
       if (!pathname) continue;
 
       if (!resolveTarget(pathname, htmlRoutes, assetTargets)) {
         failures.push(`${currentRoute} -> ${rawValue}`);
+      } else if (attribute === 'href' && isPageLinkWithoutSlash(pathname)) {
+        failures.push(`${currentRoute} -> ${rawValue} (page link needs a trailing slash)`);
       }
     }
   }
