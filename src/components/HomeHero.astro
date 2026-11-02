@@ -35,7 +35,7 @@ const chunks = (value: string) => value.split(/(\s+)/);
   <p class="hero-identity">
     <span>{heroDisplayName[locale]}</span>
     <span class="hero-identity-divider" aria-hidden="true">/</span>
-    <span class="hero-role">Product Manager</span>
+    <span class="hero-role" lang={locale === 'ru' ? 'en' : undefined}>{copy.heroRole[locale]}</span>
   </p>
 
   <h1 id="home-title">

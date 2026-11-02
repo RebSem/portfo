@@ -1,5 +1,6 @@
 import type { Locale, LocalizedText } from '../types/content';
 import {
+  cvExperience,
   cvMetric,
   email,
   githubUsername,
@@ -332,6 +333,13 @@ export const agentOps = {
   receiptDeployNote: { ru: 'этот самый деплой собран из PR, написанного агентом', en: 'this very deploy shipped from an agent-written PR' },
 } as const;
 
+// The year the product work started, read from the Zvonobot role in cv.ts so
+// the byline cannot drift from the resume. Throws at build time if that role
+// is renamed, the same way cvMetric() fails loudly.
+const zvonobotRole = cvExperience.find((role) => role.company.en.startsWith('Zvonobot'));
+if (!zvonobotRole) throw new Error('Zvonobot role not found in cvExperience');
+const productSinceYear = zvonobotRole.startDate.slice(0, 4);
+
 export const uiCopy = {
   nav: {
     home: { ru: 'Главная', en: 'Home' },
@@ -343,6 +351,12 @@ export const uiCopy = {
   home: {
     // The hero makes one claim and backs it with one result. Career numbers
     // stay owned by cv.ts; both locales render the same semantic component.
+    // The byline states how long the product work has run: a bare job title
+    // leaves a screener to guess the tenure.
+    heroRole: {
+      ru: `Product Manager с ${productSinceYear} года`,
+      en: `Product Manager since ${productSinceYear}`,
+    },
     title: {
       ru: 'Запускаю и развиваю',
       en: 'I launch and grow',
