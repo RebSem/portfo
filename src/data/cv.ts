@@ -224,8 +224,8 @@ export const cvMetrics: CvMetric[] = [
     id: 'average-spend',
     value: { ru: '+30%', en: '+30%' },
     label: {
-      ru: 'средний чек после запуска новых тарифов',
-      en: 'average customer spend after the new plans launched',
+      ru: 'средний чек: клиенты на AI-агентах против классического робота',
+      en: 'average spend: customers on AI agents vs the scripted robot',
     },
   },
   {
@@ -308,8 +308,8 @@ export const cvExperience: CvExperienceRole[] = [
           ],
           [
             t(
-              '+30% к среднему чеку после запуска AI-тарифов: чек клиентов на AI-агентах против клиентов на классическом линейном IVR-роботе. Конверсия AI-агентов в целевое действие на тёплых базах стабильно выше линейных роботов, это стало основой прайсинга.',
-              '+30% in average customer spend after the AI plans launched: customers on AI agents versus customers on the legacy linear IVR robot. AI agents consistently outperform the scripted robots on conversion to the target action on warm lead lists, which became the basis for pricing.',
+              '+30% к среднему чеку: чек клиентов на AI-агентах против клиентов на классическом линейном IVR-роботе. На тёплых базах AI-агенты в наших тестах обходили линейных роботов по конверсии в целевое действие, это стало основой прайсинга.',
+              '+30% in average customer spend: customers on AI agents versus customers on the legacy linear IVR robot. On warm lead lists, AI agents beat the legacy robots on conversion to the target action in our tests, which became the basis for pricing.',
             ),
           ],
           [
