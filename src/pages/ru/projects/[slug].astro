@@ -31,7 +31,7 @@ const projectSchema = {
   image: pageImage.startsWith('http://') || pageImage.startsWith('https://')
     ? pageImage
     : `https://rebsem.ru${pageImage}`,
-  url: `https://rebsem.ru/ru/projects/${entry.id}`,
+  url: `https://rebsem.ru/ru/projects/${entry.id}/`,
   author: {
     '@type': 'Person',
     name: heroDisplayName.en,
@@ -48,8 +48,8 @@ const breadcrumbSchema = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://rebsem.ru/ru' },
-    { '@type': 'ListItem', position: 2, name: entry.data.title, item: `https://rebsem.ru/ru/projects/${entry.id}` },
+    { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://rebsem.ru/ru/' },
+    { '@type': 'ListItem', position: 2, name: entry.data.title, item: `https://rebsem.ru/ru/projects/${entry.id}/` },
   ],
 };
 ---
@@ -76,7 +76,7 @@ const breadcrumbSchema = {
   >
     <article class="post-shell">
       <p>
-        <a href="/ru">← На главную</a>
+        <a href="/ru/">← На главную</a>
       </p>
 
       <header class="post-head">

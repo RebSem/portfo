@@ -40,18 +40,20 @@ const stripSlash = (path: string) => path.replace(/\/+$/, '') || '/';
 const currentPath = stripSlash(Astro.url.pathname);
 const isCurrentPage = (path: string) => stripSlash(path) === currentPath;
 
+// Page links end in '/': GitHub Pages answers '/about' with a 301 to '/about/',
+// and on a phone that extra round trip is the wait before the page paints.
 const homePath = `${prefix}/`;
-const aboutPath = `${prefix}/about`;
-const blogPath = `${prefix}/blog`;
+const aboutPath = `${prefix}/about/`;
+const blogPath = `${prefix}/blog/`;
 
 // Locale toggle keeps the visitor on a matching page when the page exists in
 // both locales (home, about, blog index). Deep pages (single blog post, single
 // project) still need the per-slug logic in the inline script below.
 const localeToggleByActive: Record<typeof active, string> = {
-  home: isRu ? '/' : '/ru',
-  about: isRu ? '/about' : '/ru/about',
-  blog: isRu ? '/blog' : '/ru/blog',
-  cv: isRu ? '/cv' : '/ru/cv',
+  home: isRu ? '/' : '/ru/',
+  about: isRu ? '/about/' : '/ru/about/',
+  blog: isRu ? '/blog/' : '/ru/blog/',
+  cv: isRu ? '/cv/' : '/ru/cv/',
 };
 const toggleUrl = localeToggleUrl ?? localeToggleByActive[active];
 ---

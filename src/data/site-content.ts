@@ -15,8 +15,8 @@ import {
 export { email, githubUsername, linkedinUrl, siteRepoUrl, telegramUrl };
 
 export const homePath = '/';
-export const aboutPath = '/about';
-export const blogPath = '/blog';
+export const aboutPath = '/about/';
+export const blogPath = '/blog/';
 
 export const heroFallbackName = 'Mikhail Semenov';
 export const heroDisplayName: LocalizedText = {
