@@ -60,3 +60,11 @@ The repository PR template already includes the required checklist.
 - confirm GitHub Pages deploy succeeds
 - move the issue to review or done depending on whether manual verification is still needed
 - if manual QA is required, leave a short note with the exact routes to check
+
+## 7. Refresh link previews
+
+Telegram, LinkedIn and Facebook (WhatsApp reads Facebook's cache) keep the preview they fetched for a page address. A new `?v=` on the card does not reach a cached address, so after a change to a link-preview card (`npm run og:build`, `OG_CARD_VERSION` in `src/layouts/Layout.astro`) or to a page's title or description, ask each service to fetch the page again. Do this once the Pages deploy from `main` has finished:
+
+1. Telegram: send each address to `@WebpageBot`: `https://rebsem.ru/`, `https://rebsem.ru/ru/`, `https://rebsem.ru/about/`, `https://rebsem.ru/ru/about/`, `https://rebsem.ru/cv/`, `https://rebsem.ru/ru/cv/`, and both Zvonobot case studies, `https://rebsem.ru/projects/zvonobot-ai-en/` and `https://rebsem.ru/ru/projects/zvonobot-ai-ru/`.
+2. LinkedIn: run the same addresses through the Post Inspector at `https://www.linkedin.com/post-inspector/` and inspect each one again.
+3. Facebook: run the same addresses through the Sharing Debugger at `https://developers.facebook.com/tools/debug/` and choose "Scrape again" for each one.

@@ -1,18 +1,17 @@
 /**
- * Renders the link-preview cards (og:image) for the pages that used to fall
- * back to a photo. A recruiter sees this card in Telegram or LinkedIn before
- * they see the site, so it carries the same three things the hero does: the
- * name, the role line, and the one number. Since October 2026 it also carries
- * the job-search status, top right: the preview is often the only part of a
- * forwarded link anyone looks at, and "available now" is the deciding fact.
+ * Renders the link-preview cards (og:image) for the home, About and CV pages in
+ * both locales. A recruiter sees this card in Telegram or LinkedIn before they
+ * see the site, and a feed often shows only the card and the title, so the card
+ * carries what the home page leads with: the name and
+ * the role, the headline, the job-search status and the one proof point. It
+ * repeats the home page's copy and sets no display-size number, so it does not
+ * contradict the page it links to.
  *
  *   node scripts/og/build-og.mjs
  *
- * Writes public/og/{page}-{locale}.png at 1200x630 via headless Chrome. Fonts
- * come from the site's own assets: Newsreader italic from src/assets/fonts,
- * Geist and Geist Mono from Google (the same source astro.config.mjs uses).
- * Newsreader has no Cyrillic, so the Russian name is set in Geist; the
- * Latin name keeps the serif the site's brand mark uses.
+ * Writes public/og/{page}-{locale}.png at 1200x630 via headless Chrome. Geist
+ * and Geist Mono come from Google. Bump OG_CARD_VERSION in
+ * src/layouts/Layout.astro after a change here, so preview caches refetch.
  */
 import { mkdirSync, writeFileSync, statSync, rmSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
@@ -22,40 +21,51 @@ const ROOT = resolve(import.meta.dirname, '../..');
 const OUT = resolve(ROOT, 'public/og');
 const TMP = resolve(ROOT, 'node_modules/.cache/og');
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-const NEWSREADER = `file://${resolve(ROOT, 'src/assets/fonts/newsreader-italic-var-latin.woff2')}`;
 
 mkdirSync(OUT, { recursive: true });
 mkdirSync(TMP, { recursive: true });
 
+// The eyebrow is the only part that differs between pages: it says where the
+// link leads. Everything else is the same card for every page of a locale.
 const CARDS = [
-  { page: 'home', locale: 'en', eyebrow: 'rebsem.ru', role: 'Product Manager · B2B SaaS · Voice AI agents · LLM' },
-  { page: 'home', locale: 'ru', eyebrow: 'rebsem.ru', role: 'Product Manager · B2B SaaS · голосовые AI-агенты · LLM' },
-  { page: 'about', locale: 'en', eyebrow: 'rebsem.ru / about', role: 'Product Manager · B2B SaaS · Voice AI agents · LLM' },
-  { page: 'about', locale: 'ru', eyebrow: 'rebsem.ru / обо мне', role: 'Product Manager · B2B SaaS · голосовые AI-агенты · LLM' },
-  { page: 'cv', locale: 'en', eyebrow: 'rebsem.ru / cv', role: 'Product Manager · B2B SaaS · Voice AI agents · LLM' },
-  { page: 'cv', locale: 'ru', eyebrow: 'rebsem.ru / резюме', role: 'Product Manager · B2B SaaS · голосовые AI-агенты · LLM' },
+  { page: 'home', locale: 'en', eyebrow: 'rebsem.ru' },
+  { page: 'home', locale: 'ru', eyebrow: 'rebsem.ru' },
+  { page: 'about', locale: 'en', eyebrow: 'rebsem.ru / about' },
+  { page: 'about', locale: 'ru', eyebrow: 'rebsem.ru / обо мне' },
+  { page: 'cv', locale: 'en', eyebrow: 'rebsem.ru / cv' },
+  { page: 'cv', locale: 'ru', eyebrow: 'rebsem.ru / резюме' },
 ];
 
+// Kept in step by hand with the home hero (src/data/site-content.ts) and the
+// resume (src/data/cv.ts): this script runs outside Astro and cannot import them.
 const COPY = {
-  en: { name: 'Mikhail Semenov', status: 'Open to work · available now', number: '500,000+', unit: 'minutes', caption: 'of live voice-AI conversations in production · 80 paying B2B customers · launched from zero' },
-  ru: { name: 'Михаил Семенов', status: 'Ищу работу · готов выйти сразу', number: '500 000+', unit: 'минут', caption: 'живых разговоров голосовых AI-агентов в проде · 80 платящих B2B-клиентов · запуск с нуля' },
+  en: {
+    name: 'Mikhail Semenov · Product Manager since 2022',
+    headline: ['I launch and grow', 'B2B &amp; AI products.'],
+    status: 'Open to work · available now',
+    proof: '80 paying B2B customers in under a year · Remote, GMT+5',
+  },
+  ru: {
+    name: 'Михаил Семенов · Product Manager с 2022 года',
+    headline: ['Запускаю и развиваю', 'B2B и AI-продукты.'],
+    status: 'Ищу работу · готов выйти сразу',
+    proof: '80 платящих B2B-клиентов меньше чем за год · удалённо, GMT+5',
+  },
 };
 
-const html = ({ locale, eyebrow, role }) => {
+const html = ({ locale, eyebrow }) => {
   const c = COPY[locale];
-  const serifName = locale === 'en';
   return `<!doctype html><html lang="${locale}"><head><meta charset="utf-8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@500&display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@500&display=block" rel="stylesheet">
 <style>
-  @font-face { font-family: 'Newsreader'; font-style: italic; font-weight: 400 500; src: url('${NEWSREADER}') format('woff2'); }
   * { margin: 0; box-sizing: border-box; }
   html, body { width: 1200px; height: 630px; overflow: hidden; }
   body {
     background: #0c0d0e; color: #ececec; font-family: 'Geist', system-ui, sans-serif;
     position: relative;
     padding: 64px 72px 60px;
-    display: flex; flex-direction: column; justify-content: space-between;
+    display: flex; flex-direction: column;
     -webkit-font-smoothing: antialiased;
   }
   /* A single soft accent wash top-left, mirroring the site's body gradient. */
@@ -66,28 +76,23 @@ const html = ({ locale, eyebrow, role }) => {
   .top { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
   .status { display: inline-flex; align-items: center; gap: 12px; padding: 9px 20px 9px 16px; border: 1px solid rgba(45,214,146,0.38); border-radius: 999px; background: rgba(45,214,146,0.08); font-size: 22px; font-weight: 500; color: #2dd692; white-space: nowrap; }
   .status::before { content: ''; width: 10px; height: 10px; border-radius: 50%; background: #2dd692; }
-  .eyebrow { position: relative; font-family: 'Geist Mono', monospace; font-size: 20px; letter-spacing: 0.14em; text-transform: uppercase; color: #8b9096; }
-  .name { position: relative; margin-top: 18px; font-size: 96px; line-height: 1.02; letter-spacing: -0.02em; color: #ffffff; }
-  .name.serif { font-family: 'Newsreader', Georgia, serif; font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
-  .name.sans { font-family: 'Geist', sans-serif; font-weight: 600; }
-  .role { position: relative; margin-top: 22px; font-size: 30px; font-weight: 500; color: #c9cdd2; letter-spacing: -0.005em; }
-  .bottom { position: relative; display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; padding-top: 28px; border-top: 1px solid #25282b; }
-  .number { font-size: 74px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; color: #2dd692; white-space: nowrap; }
-  .number .unit { font-size: 30px; font-weight: 500; letter-spacing: 0; color: #ececec; margin-left: 12px; }
-  .caption { max-width: 560px; font-size: 21px; line-height: 1.4; color: #a4a9af; text-align: right; }
+  .eyebrow { font-family: 'Geist Mono', monospace; font-size: 20px; letter-spacing: 0.14em; text-transform: uppercase; color: #8b9096; }
+  .lead { position: relative; margin: auto 0 36px; }
+  .name { font-size: 32px; font-weight: 500; letter-spacing: -0.01em; color: #ececec; }
+  .headline { margin-top: 24px; font-size: 84px; font-weight: 580; line-height: 1.02; letter-spacing: -0.045em; color: #ffffff; }
+  .headline span { display: block; }
+  .headline .accent { color: #2dd692; }
+  .proof { position: relative; padding-top: 28px; border-top: 1px solid #25282b; font-size: 26px; line-height: 1.2; color: rgba(255,255,255,0.7); white-space: nowrap; }
 </style></head><body>
-  <div>
-    <div class="top">
-      <p class="eyebrow">${eyebrow}</p>
-      <p class="status">${c.status}</p>
-    </div>
-    <h1 class="name ${serifName ? 'serif' : 'sans'}">${c.name}</h1>
-    <p class="role">${role}</p>
+  <div class="top">
+    <p class="eyebrow">${eyebrow}</p>
+    <p class="status">${c.status}</p>
   </div>
-  <div class="bottom">
-    <p class="number">${c.number}<span class="unit">${c.unit}</span></p>
-    <p class="caption">${c.caption}</p>
+  <div class="lead">
+    <p class="name">${c.name}</p>
+    <h1 class="headline"><span>${c.headline[0]}</span><span class="accent">${c.headline[1]}</span></h1>
   </div>
+  <p class="proof">${c.proof}</p>
 </body></html>`;
 };
 
