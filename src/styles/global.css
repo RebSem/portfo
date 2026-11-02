@@ -1502,6 +1502,10 @@ html[data-theme='dark'] .theme-icon-sun {
     transition: none;
   }
 
+  .main-nav-link::after {
+    transition: none;
+  }
+
   .cta-button:active,
   .header-pdf:active {
     transform: none;
@@ -2175,17 +2179,6 @@ a.project-shot-zoom:focus-visible {
   margin-left: 0.35em;
   background: var(--term-accent);
   vertical-align: text-bottom;
-  animation: caret-blink 1.2s steps(1) infinite;
-}
-
-@keyframes caret-blink {
-  50% { opacity: 0; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .t-caret {
-    animation: none;
-  }
 }
 
 @media (max-width: 860px) {

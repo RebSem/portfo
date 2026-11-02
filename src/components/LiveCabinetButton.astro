@@ -100,18 +100,6 @@ const { href, eyebrow, title, body, cta, urlLabel, secondaryHref, secondaryLabel
     height: 7px;
     border-radius: 999px;
     background: var(--accent);
-    box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent) 55%, transparent);
-    animation: live-cabinet-pulse 2.4s ease-out infinite;
-  }
-
-  @keyframes live-cabinet-pulse {
-    0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent) 55%, transparent); }
-    70% { box-shadow: 0 0 0 7px transparent; }
-    100% { box-shadow: 0 0 0 0 transparent; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .live-cabinet__dot { animation: none; }
   }
 
   .live-cabinet__title {
