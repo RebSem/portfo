@@ -577,6 +577,12 @@ export const uiCopy = {
       ru: 'Напишите, если ищете продакта в B2B SaaS, платежи или AI-продукты.',
       en: 'Write me if you are hiring a product manager for B2B SaaS, payments or AI products.',
     },
+    // The quiet text link to /cv after Email on the home closing and in the
+    // case availability strip. Not a button: the resume is a second step.
+    resume: {
+      ru: 'Резюме',
+      en: 'Resume',
+    },
     navAria: {
       ru: 'Навигация в подвале',
       en: 'Footer navigation',

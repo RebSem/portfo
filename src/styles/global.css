@@ -1205,6 +1205,24 @@ html[data-theme='dark'] .theme-icon-sun {
   color: color-mix(in oklab, var(--foreground) 66%, transparent);
 }
 
+/* The resume: a quiet text link after Email, set like the footer nav and
+   as tall as the icon row beside it so it is easy to tap. */
+.site-footer-closing .footer-cv {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.65rem;
+  font-size: 0.875rem;
+  color: color-mix(in oklab, var(--foreground) 72%, transparent);
+  text-decoration: none;
+}
+
+.site-footer-closing .footer-cv:hover,
+.site-footer-closing .footer-cv:focus-visible {
+  color: var(--accent-text);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
 /* The status again, for the reader who scrolled to the end: the same
    wording as the hero, the dot static. */
 .footer-status {

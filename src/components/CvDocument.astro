@@ -175,7 +175,7 @@ const sectionIds = [
           The LinkedIn button duplicated the text link one line above and was
           the third competing call to action on the first screen. */}
       <div class="cv-actions">
-        <a class="cta-button cta-primary" href={pdfHref} download>{copy.downloadPdf[locale]}</a>
+        <a class="cta-button cta-primary" href={pdfHref} download rel="nofollow">{copy.downloadPdf[locale]}</a>
         <a class="cta-button cta-secondary" href={telegramUrl} rel="me noopener">{copy.writeTelegram[locale]}</a>
       </div>
 
@@ -187,8 +187,8 @@ const sectionIds = [
       */}
       <p class="cv-formats">
         {copy.alsoAvailable[locale]}
-        <a href={docxHref} download>DOCX</a>
-        <a href={txtHref} target="_blank" rel="noopener">TXT</a>
+        <a href={docxHref} download rel="nofollow">DOCX</a>
+        <a href={txtHref} target="_blank" rel="nofollow noopener">TXT</a>
       </p>
     </header>
 

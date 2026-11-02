@@ -102,7 +102,7 @@ const toggleUrl = localeToggleUrl ?? localeToggleByActive[active];
       )}
 
       {isCv && pdfHref && (
-        <a class="header-pdf" href={pdfHref} download>
+        <a class="header-pdf" href={pdfHref} download rel="nofollow">
           {pdfLabel}
         </a>
       )}
