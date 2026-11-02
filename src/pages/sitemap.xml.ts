@@ -16,7 +16,7 @@ export const GET: APIRoute = async () => {
 
   // The blog is unlisted: not maintained, not linked, kept at its URLs only
   // for anyone who already holds one.
-  const staticUrls = ['/', '/about', '/ru/', '/ru/about'];
+  const staticUrls = ['/', '/about/', '/ru/', '/ru/about/'];
 
   const staticEntries = staticUrls
     .map((path) => {

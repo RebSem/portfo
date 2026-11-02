@@ -15,7 +15,7 @@ export async function getStaticPaths() {
 const slug = Astro.params.slug ?? '';
 const post = await getEntry('blog', slug);
 if (!post || post.data.draft) {
-  return Astro.redirect('/ru/blog', 302);
+  return Astro.redirect('/ru/blog/', 302);
 }
 
 // Find English version for switcher
@@ -46,8 +46,8 @@ const articleSchema = {
   image: pageImage.startsWith('http://') || pageImage.startsWith('https://')
     ? pageImage
     : `https://rebsem.ru${pageImage}`,
-  url: `https://rebsem.ru/ru/blog/${post.id}`,
-  mainEntityOfPage: `https://rebsem.ru/ru/blog/${post.id}`,
+  url: `https://rebsem.ru/ru/blog/${post.id}/`,
+  mainEntityOfPage: `https://rebsem.ru/ru/blog/${post.id}/`,
   author: {
     '@type': 'Person',
     name: heroDisplayName.en,
@@ -64,9 +64,9 @@ const breadcrumbSchema = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://rebsem.ru/ru' },
-    { '@type': 'ListItem', position: 2, name: 'Блог', item: 'https://rebsem.ru/ru/blog' },
-    { '@type': 'ListItem', position: 3, name: post.data.title, item: `https://rebsem.ru/ru/blog/${post.id}` },
+    { '@type': 'ListItem', position: 1, name: 'Главная', item: 'https://rebsem.ru/ru/' },
+    { '@type': 'ListItem', position: 2, name: 'Блог', item: 'https://rebsem.ru/ru/blog/' },
+    { '@type': 'ListItem', position: 3, name: post.data.title, item: `https://rebsem.ru/ru/blog/${post.id}/` },
   ],
 };
 ---
@@ -94,7 +94,7 @@ const breadcrumbSchema = {
   >
     <article class="post-shell">
       <p>
-        <a href="/ru/blog">← Вернуться в блог</a>
+        <a href="/ru/blog/">← Вернуться в блог</a>
       </p>
 
       <header class="post-head">

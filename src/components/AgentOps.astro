@@ -1,5 +1,6 @@
 ---
 import { execSync } from 'node:child_process';
+import { getMergedPrCount } from '../lib/github';
 import { agentOps, githubUsername } from '../data/site-content';
 import type { Locale } from '../types/content';
 
@@ -26,9 +27,13 @@ const repoSlug = `${githubUsername}/portfo`;
 // results band, instead of wrapping with the dot at the start of a line.
 const [eyebrowLabel, eyebrowContext] = c.eyebrow[locale].split(' · ');
 const mergedPrsUrl = `https://github.com/${repoSlug}/pulls?q=is%3Apr+is%3Amerged`;
+
+// Fetched at build time from the same cache as the other GitHub data. Undefined
+// when GitHub is unreachable and nothing is cached; the receipt is then left out.
+const mergedPrCount = await getMergedPrCount(repoSlug);
 ---
 
-<section class="ed-section agent-ops" aria-labelledby="agent-ops-title" data-agent-repo={repoSlug}>
+<section class="ed-section agent-ops" aria-labelledby="agent-ops-title">
   <div class="ed-row ed-mark">
     <div>
       <p class="ed-label">{eyebrowLabel}</p>
@@ -40,87 +45,41 @@ const mergedPrsUrl = `https://github.com/${repoSlug}/pulls?q=is%3Apr+is%3Amerged
         <p class="agent-ops-lead">{c.lead[locale]}</p>
       </div>
 
-      <div class="agent-ops-grid">
-        <ol class="agent-steps">
-          {c.steps.map((step) => (
-            <li class="agent-step">
-              <span class="agent-step-num" aria-hidden="true">{step.k}</span>
-              <div class="agent-step-copy">
-                <h3>{step.title[locale]}</h3>
-                <p>{step.body[locale]}</p>
-              </div>
+      <ol class="agent-steps">
+        {c.steps.map((step) => (
+          <li class="agent-step">
+            <span class="agent-step-num" aria-hidden="true">{step.k}</span>
+            <div class="agent-step-copy">
+              <h3>{step.title[locale]}</h3>
+              <p>{step.body[locale]}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      {/*
+        The proof, as two receipt lines under the steps. The figure stays with
+        its dot and "PR" on one line through the no-break spaces.
+      */}
+      {(mergedPrCount !== undefined || commitHash) && (
+        <ul class="agent-receipts">
+          {mergedPrCount !== undefined && (
+            <li class="agent-receipt">
+              <p class="agent-receipt-line">
+                <strong class="agent-receipt-value">{mergedPrCount}</strong>&nbsp;<span class="agent-receipt-sep" aria-hidden="true">·</span>&nbsp;<span>{c.receiptPrs[locale]}</span>
+              </p>
+              <a class="agent-receipt-link" href={mergedPrsUrl} target="_blank" rel="noreferrer">{c.receiptPrsLink[locale]} ↗</a>
             </li>
-          ))}
-        </ol>
-
-        <aside class="agent-terminal" aria-label={c.terminalAria[locale]}>
-          <div class="agent-terminal-bar" aria-hidden="true">
-            <span class="agent-terminal-dot"></span>
-            <span class="agent-terminal-dot"></span>
-            <span class="agent-terminal-dot"></span>
-            <span class="agent-terminal-title">agent ops: {repoSlug}</span>
-          </div>
-          <div class="agent-terminal-body">
-            <p class="t-cmd">gh pr list --state merged</p>
-            <p class="t-out">
-              <strong class="t-num" data-agent-pr-count>31</strong>
-              <span>{c.receiptPrs[locale]}</span>
-            </p>
-            <p class="t-link">
-              <a href={mergedPrsUrl} target="_blank" rel="noreferrer">{c.receiptPrsLink[locale]} ↗</a>
-            </p>
-
-            {commitHash && (
-              <>
-                <p class="t-cmd">git rev-parse --short HEAD</p>
-                <p class="t-out">
-                  <strong class="t-num">{commitHash}</strong>
-                  <span>{c.receiptDeployNote[locale]}</span>
-                </p>
-              </>
-            )}
-
-            <p class="t-cmd">whoami</p>
-            <p class="t-out t-whoami">agent-native product manager<span class="t-caret" aria-hidden="true"></span></p>
-          </div>
-        </aside>
-      </div>
+          )}
+          {commitHash && (
+            <li class="agent-receipt">
+              <p class="agent-receipt-line">
+                <strong class="agent-receipt-value">{commitHash}</strong>&nbsp;<span class="agent-receipt-sep" aria-hidden="true">·</span>&nbsp;<span>{c.receiptDeployNote[locale]}</span>
+              </p>
+            </li>
+          )}
+        </ul>
+      )}
     </div>
   </div>
 </section>
-
-<script>
-  // Live-refresh the merged-PR count from the GitHub search API.
-  // The baked number stays as the fallback when the request fails
-  // (rate limit, offline) — never show an empty or broken value.
-  const refreshPrCount = async () => {
-    const section = document.querySelector('[data-agent-repo]');
-    if (!section) return;
-
-    const repo = section.getAttribute('data-agent-repo');
-    const nodes = document.querySelectorAll('[data-agent-pr-count]');
-    if (!repo || nodes.length === 0) return;
-
-    try {
-      const response = await fetch(
-        `https://api.github.com/search/issues?q=repo:${repo}+is:pr+is:merged&per_page=1`,
-        { headers: { Accept: 'application/vnd.github+json' } },
-      );
-      if (!response.ok) return;
-
-      const payload = await response.json();
-      if (typeof payload?.total_count === 'number' && payload.total_count > 0) {
-        nodes.forEach((node) => {
-          node.textContent = String(payload.total_count);
-        });
-      }
-    } catch {
-      // Keep the baked fallback.
-    }
-  };
-
-  // astro:page-load already fires on the initial load, so the old
-  // DOMContentLoaded/immediate fallback just ran this twice per cold load —
-  // costly here, because the search endpoint allows only 10 requests a minute.
-  document.addEventListener('astro:page-load', refreshPrCount);
-</script>

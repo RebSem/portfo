@@ -11,12 +11,12 @@ import Layout from '../layouts/Layout.astro';
 import githubScriptUrl from '../scripts/github-activity.js?url';
 
 const avatarUrl = `https://avatars.githubusercontent.com/${githubUsername}?size=560`;
-const personEntity = buildPersonSchema('https://rebsem.ru/about');
+const personEntity = buildPersonSchema('https://rebsem.ru/about/');
 personEntity.image = avatarUrl;
 const aboutSchema = {
   '@context': 'https://schema.org',
   '@type': 'ProfilePage',
-  url: 'https://rebsem.ru/about',
+  url: 'https://rebsem.ru/about/',
   name: `${heroFallbackName} - About`,
   inLanguage: 'en',
   mainEntity: personEntity,
@@ -28,7 +28,7 @@ const aboutSchema = {
   image="/og/about-en.png"
   description="Product manager in B2B SaaS. Launched a voice AI agent line from zero at Zvonobot (Prof-IT Group): 80 paying customers and 500,000+ minutes in production in under a year. How I work, where I add the most value, and the role I am looking for now. Available to start immediately. Remote, GMT+5, open to relocation."
   schema={aboutSchema}
-  alternate="/ru/about"
+  alternate="/ru/about/"
 >
   <a id="skip-to-content" href="#main-content" class="skip-link">Skip to content</a>
 

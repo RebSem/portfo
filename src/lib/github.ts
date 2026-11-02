@@ -1,6 +1,7 @@
 import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { parseGithubContributionsHtml } from './github-contributions-parser';
+import { parseMergedPrCount } from './github-pr-count-parser';
 import type { GithubContributionsResponse, GithubProfileResponse, GithubRepoResponse } from '../types/github';
 
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
@@ -17,11 +18,13 @@ interface PersistedCacheShape {
   profile?: Record<string, CacheEntry<GithubProfileResponse>>;
   repos?: Record<string, CacheEntry<GithubRepoResponse[]>>;
   contributions?: Record<string, CacheEntry<GithubContributionsResponse>>;
+  mergedPrCounts?: Record<string, CacheEntry<number>>;
 }
 
 const profileCache = new Map<string, CacheEntry<GithubProfileResponse>>();
 const reposCache = new Map<string, CacheEntry<GithubRepoResponse[]>>();
 const contributionsCache = new Map<string, CacheEntry<GithubContributionsResponse>>();
+const mergedPrCountCache = new Map<string, CacheEntry<number>>();
 
 let cacheLoaded = false;
 let cacheLoadPromise: Promise<void> | null = null;
@@ -82,6 +85,10 @@ const loadCacheFromDisk = async () => {
     for (const [key, entry] of readEntries<GithubContributionsResponse>(parsed.contributions)) {
       contributionsCache.set(key, entry);
     }
+
+    for (const [key, entry] of readEntries<number>(parsed.mergedPrCounts)) {
+      mergedPrCountCache.set(key, entry);
+    }
   } catch {
     // Cold start or malformed cache file should not fail requests.
   } finally {
@@ -104,6 +111,7 @@ const persistCacheToDisk = async () => {
     profile: Object.fromEntries(profileCache.entries()),
     repos: Object.fromEntries(reposCache.entries()),
     contributions: Object.fromEntries(contributionsCache.entries()),
+    mergedPrCounts: Object.fromEntries(mergedPrCountCache.entries()),
   };
 
   const directory = path.dirname(CACHE_FILE_PATH);
@@ -223,6 +231,23 @@ const fetchGithubContributions = async (username: string): Promise<GithubContrib
   return parseGithubContributionsHtml(html);
 };
 
+const fetchMergedPrCount = async (repo: string): Promise<number> => {
+  const response = await fetch(`https://api.github.com/search/issues?q=repo:${repo}+is:pr+is:merged&per_page=1`, {
+    headers: PROFILE_HEADERS,
+  });
+
+  if (!response.ok) {
+    throw new Error(`GitHub merged PR search failed with status ${response.status}`);
+  }
+
+  const count = parseMergedPrCount(await response.json());
+  if (count === undefined) {
+    throw new Error('Malformed merged PR search payload');
+  }
+
+  return count;
+};
+
 export const getGithubProfile = async (username: string): Promise<GithubProfileResponse> => {
   await ensureCacheLoaded();
 
@@ -268,5 +293,23 @@ export const getGithubContributions = async (username: string): Promise<GithubCo
     const stale = getStale(contributionsCache, username);
     if (stale) return stale;
     throw error;
+  }
+};
+
+// Unlike the getters above this never throws: the count is decoration on the
+// home page, so a missing number must not fail the build. Undefined means
+// neither a fresh fetch nor a cached copy was available.
+export const getMergedPrCount = async (repo: string): Promise<number | undefined> => {
+  await ensureCacheLoaded();
+
+  // 0 is a real count, so this cannot test truthiness the way the getters above do.
+  const cached = getFresh(mergedPrCountCache, repo);
+  if (cached !== undefined) return cached;
+
+  try {
+    const value = await fetchMergedPrCount(repo);
+    return setCache(mergedPrCountCache, repo, value);
+  } catch {
+    return getStale(mergedPrCountCache, repo);
   }
 };
