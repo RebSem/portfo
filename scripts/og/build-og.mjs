@@ -1,11 +1,12 @@
 /**
  * Renders the link-preview cards (og:image) for the home, About and CV pages in
- * both locales. A recruiter sees this card in Telegram or LinkedIn before they
- * see the site, and a feed often shows only the card and the title, so the card
- * carries what the home page leads with: the name and
- * the role, the headline, the job-search status and the one proof point. It
- * repeats the home page's copy and sets no display-size number, so it does not
- * contradict the page it links to.
+ * both locales, and for the Zvonobot AI case. A recruiter sees this card in
+ * Telegram or LinkedIn before they see the site, and a feed often shows only the
+ * card and the title, so the home card carries what the home page leads with:
+ * the name and the role, the headline, the job-search status and the one proof
+ * point. It repeats the home page's copy and sets no display-size number, so it
+ * does not contradict the page it links to. The case card uses the same
+ * template with the case's own copy.
  *
  *   node scripts/og/build-og.mjs
  *
@@ -25,17 +26,6 @@ const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 mkdirSync(OUT, { recursive: true });
 mkdirSync(TMP, { recursive: true });
 
-// The eyebrow is the only part that differs between pages: it says where the
-// link leads. Everything else is the same card for every page of a locale.
-const CARDS = [
-  { page: 'home', locale: 'en', eyebrow: 'rebsem.ru' },
-  { page: 'home', locale: 'ru', eyebrow: 'rebsem.ru' },
-  { page: 'about', locale: 'en', eyebrow: 'rebsem.ru / about' },
-  { page: 'about', locale: 'ru', eyebrow: 'rebsem.ru / обо мне' },
-  { page: 'cv', locale: 'en', eyebrow: 'rebsem.ru / cv' },
-  { page: 'cv', locale: 'ru', eyebrow: 'rebsem.ru / резюме' },
-];
-
 // Kept in step by hand with the home hero (src/data/site-content.ts) and the
 // resume (src/data/cv.ts): this script runs outside Astro and cannot import them.
 const COPY = {
@@ -53,8 +43,37 @@ const COPY = {
   },
 };
 
-const html = ({ locale, eyebrow }) => {
-  const c = COPY[locale];
+// The Zvonobot AI case card. Kept in step by hand with the case's description
+// and frontmatter (src/content/projects/zvonobot-ai-*.mdx). It has no status
+// pill: the case is about the product, not the job search.
+const CASE = {
+  en: {
+    name: 'Product, pricing, go-to-market · Mikhail Semenov',
+    headline: ['Zvonobot AI'],
+    proof: 'Voice AI agents for B2B · 80 paying customers in under a year',
+  },
+  ru: {
+    name: 'Продукт, прайсинг, вывод на рынок · Михаил Семенов',
+    headline: ['Zvonobot AI'],
+    proof: 'Голосовые AI-агенты для B2B · 80 платящих клиентов меньше чем за год',
+  },
+};
+
+// The eyebrow is the only part that differs between pages: it says where the
+// link leads. Everything else is the same card for every page of a locale.
+const CARDS = [
+  { page: 'home', locale: 'en', eyebrow: 'rebsem.ru' },
+  { page: 'home', locale: 'ru', eyebrow: 'rebsem.ru' },
+  { page: 'about', locale: 'en', eyebrow: 'rebsem.ru / about' },
+  { page: 'about', locale: 'ru', eyebrow: 'rebsem.ru / обо мне' },
+  { page: 'cv', locale: 'en', eyebrow: 'rebsem.ru / cv' },
+  { page: 'cv', locale: 'ru', eyebrow: 'rebsem.ru / резюме' },
+  { page: 'case-zvonobot-ai', locale: 'en', eyebrow: 'rebsem.ru / case', copy: CASE.en },
+  { page: 'case-zvonobot-ai', locale: 'ru', eyebrow: 'rebsem.ru / кейс', copy: CASE.ru },
+];
+
+const html = ({ locale, eyebrow, copy = COPY[locale] }) => {
+  const c = copy;
   return `<!doctype html><html lang="${locale}"><head><meta charset="utf-8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@500&display=block" rel="stylesheet">
@@ -82,15 +101,17 @@ const html = ({ locale, eyebrow }) => {
   .headline { margin-top: 24px; font-size: 84px; font-weight: 580; line-height: 1.02; letter-spacing: -0.045em; color: #ffffff; }
   .headline span { display: block; }
   .headline .accent { color: #2dd692; }
+  /* A one-line headline (the case name) is set larger, so the card does not look empty. */
+  .headline.solo { font-size: 136px; }
   .proof { position: relative; padding-top: 28px; border-top: 1px solid #25282b; font-size: 26px; line-height: 1.2; color: rgba(255,255,255,0.7); white-space: nowrap; }
 </style></head><body>
   <div class="top">
     <p class="eyebrow">${eyebrow}</p>
-    <p class="status">${c.status}</p>
+    ${c.status ? `<p class="status">${c.status}</p>` : ''}
   </div>
   <div class="lead">
     <p class="name">${c.name}</p>
-    <h1 class="headline"><span>${c.headline[0]}</span><span class="accent">${c.headline[1]}</span></h1>
+    <h1 class="headline${c.headline.length === 1 ? ' solo' : ''}">${c.headline.map((line, i) => `<span${i === 1 ? ' class="accent"' : ''}>${line}</span>`).join('')}</h1>
   </div>
   <p class="proof">${c.proof}</p>
 </body></html>`;
