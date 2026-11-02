@@ -11,6 +11,7 @@ import {
   telegramUrl,
   uiCopy,
 } from '../data/site-content';
+import { getGithubContributions } from '../lib/github';
 import type { Locale } from '../types/content';
 
 interface Props {
@@ -18,6 +19,14 @@ interface Props {
 }
 
 const { locale } = Astro.props;
+
+// Read at build time so the total is in the HTML without JavaScript: link
+// previews and LLM fetchers do not run it. No data at all leaves the band out
+// rather than printing 0. GitHub lists every day of the year, so an empty
+// calendar means the markup changed, not a quiet year.
+const fetchedContributions = await getGithubContributions(githubUsername).catch(() => undefined);
+const contributions = fetchedContributions && fetchedContributions.days.length > 0 ? fetchedContributions : undefined;
+const numberLocale = locale === 'ru' ? 'ru-RU' : 'en-US';
 
 const copy = {
   eyebrow: { ru: 'Обо мне', en: 'About' },
@@ -124,45 +133,48 @@ const copy = {
 
 {/* Moved here from the home page. A commit calendar on the front page of a
     product manager's site read as "engineer" before anything else; beside
-    "how I validate ideas" it is context, not the headline. The ids are what
-    src/scripts/github-activity.js fills in. */}
-<section class="section-block github-band" aria-labelledby="github-title">
-  <div class="github-inline">
-    <div class="github-inline-meta">
-      <span class="label">{copy.githubLabel[locale]}</span>
-      <strong id="contributions-total">0</strong>
-      <span class="label" id="github-title">{copy.githubUnit[locale]}</span>
-      <a class="github-profile-link link" href={`https://github.com/${githubUsername}`} target="_blank" rel="noreferrer">
-        github.com/{githubUsername}
-      </a>
-    </div>
-
-    <div class="github-heatmap">
-      <div id="contribution-grid" class="contribution-grid" role="group" aria-label={copy.heatmapAria[locale]}></div>
-
-      <div class="heatmap-legend" aria-hidden="true">
-        <span>0</span>
-        <div class="legend-level level-0"></div>
-        <div class="legend-level level-1"></div>
-        <div class="legend-level level-2"></div>
-        <div class="legend-level level-3"></div>
-        <div class="legend-level level-4"></div>
-        <span>max</span>
+    "how I validate ideas" it is context, not the headline. The total is
+    printed at build; src/scripts/github-activity.js draws the grid and
+    refreshes the same ids. */}
+{contributions && (
+  <section class="section-block github-band" aria-labelledby="github-title">
+    <div class="github-inline">
+      <div class="github-inline-meta">
+        <span class="label">{copy.githubLabel[locale]}</span>
+        <strong id="contributions-total">{contributions.totalLastYear.toLocaleString(numberLocale)}</strong>
+        <span class="label" id="github-title">{copy.githubUnit[locale]}</span>
+        <a class="github-profile-link link" href={`https://github.com/${githubUsername}`} target="_blank" rel="noreferrer">
+          github.com/{githubUsername}
+        </a>
       </div>
 
-      <p
-        id="contribution-tooltip"
-        class="contribution-tooltip"
-        data-hint-ru={copy.heatmapHint.ru}
-        data-hint-en={copy.heatmapHint.en}
-      >
-        {copy.heatmapHint[locale]}
-      </p>
+      <div class="github-heatmap">
+        <div id="contribution-grid" class="contribution-grid" role="group" aria-label={copy.heatmapAria[locale]}></div>
 
-      <p id="github-error" class="github-error hidden">{copy.githubError[locale]}</p>
+        <div class="heatmap-legend" aria-hidden="true">
+          <span>0</span>
+          <div class="legend-level level-0"></div>
+          <div class="legend-level level-1"></div>
+          <div class="legend-level level-2"></div>
+          <div class="legend-level level-3"></div>
+          <div class="legend-level level-4"></div>
+          <span>max</span>
+        </div>
+
+        <p
+          id="contribution-tooltip"
+          class="contribution-tooltip"
+          data-hint-ru={copy.heatmapHint.ru}
+          data-hint-en={copy.heatmapHint.en}
+        >
+          {copy.heatmapHint[locale]}
+        </p>
+
+        <p id="github-error" class="github-error hidden">{copy.githubError[locale]}</p>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+)}
 
 <style>
   .about {
