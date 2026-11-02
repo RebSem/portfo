@@ -1,7 +1,7 @@
 ---
 import CvDocument from '../components/CvDocument.astro';
 import SiteHeader from '../components/SiteHeader.astro';
-import { buildEmploymentSchema, cvFileBaseName, cvName, cvSummary } from '../data/cv';
+import { buildEmploymentSchema, cvFileBaseName, cvName } from '../data/cv';
 import { buildPersonSchema } from '../data/site-content';
 import Layout from '../layouts/Layout.astro';
 import cvScriptUrl from '../scripts/cv.js?url';
@@ -37,7 +37,7 @@ const cvSchema = {
 <Layout
   title={`${cvName.en} - CV`}
   image="/og/cv-en.png"
-  description={cvSummary.en}
+  description="Resume: product manager in B2B SaaS and AI. A voice AI agent line from scratch to 80 paying B2B customers in under a year. Open to work now. PDF, DOCX, TXT."
   noIndex
   followLinks
   schema={cvSchema}
