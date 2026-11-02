@@ -164,12 +164,18 @@ export const cvLocationLine: LocalizedText = {
   en: 'Perm, Russia (GMT+5) · Remote · Open to relocation (Cyprus, EU, UAE)',
 };
 
+/**
+ * The opening sentence is the one a recruiter and an LLM screener quote, so it
+ * names the product role, not an engineering background. The team sentence
+ * says who decided what: engineering reported to the tech lead, so "led 4
+ * engineers" would overstate the role.
+ */
 export const cvSummary: LocalizedText = {
-  ru: 'Продакт-менеджер с инженерным бэкграундом, 4,5 года в B2B SaaS. Запустил направление голосовых AI-агентов с нуля до 80 платящих клиентов, 500 000+ минут в проде и ~10% выручки группы меньше чем за год. Вёл продуктовую команду из 4 инженеров, отвечал за прайсинг, юнит-экономику и запуск новых направлений. Сейчас ищу следующую продуктовую роль, готов выйти сразу.',
+  ru: 'Продакт-менеджер, 4,5 года в B2B SaaS. Запустил направление голосовых AI-агентов с нуля до 80 платящих клиентов, 500 000+ минут в проде и ~10% выручки группы меньше чем за год. Отвечал за прайсинг, юнит-экономику и запуск новых направлений; приоритеты, постановка и приёмка для команды из 4 инженеров были за мной. Начинал разработчиком, поэтому говорю с инженерами на одном языке. Ищу следующую продуктовую роль и готов выйти сразу.',
   // The role at Zvonobot ended in October 2026 (the position was cut), so
-  // the team and ownership lines moved to the past tense, and the last
+  // the team and ownership lines are in the past tense, and the last
   // sentence answers the first question a recruiter asks: can he start.
-  en: 'Product manager with an engineering background, 4.5 years in B2B SaaS. Launched a voice AI agent line from zero to 80 paying customers, 500,000+ minutes in production and ~10% of group revenue in under a year. Led a product team of 4 engineers and owned pricing, unit economics and new line launches. Looking for my next product role and can start immediately.',
+  en: 'Product manager, 4.5 years in B2B SaaS. Launched a voice AI agent line from scratch to 80 paying customers, 500,000+ minutes in production and ~10% of group revenue in under a year. Owned pricing, unit economics and new line launches; priorities, specs and acceptance for a team of 4 engineers were mine. Started as a developer, so I speak engineering. Looking for my next product role and can start immediately.',
 };
 
 /**
@@ -224,8 +230,8 @@ export const cvMetrics: CvMetric[] = [
     id: 'average-spend',
     value: { ru: '+30%', en: '+30%' },
     label: {
-      ru: 'средний чек после запуска новых тарифов',
-      en: 'average customer spend after the new plans launched',
+      ru: 'средний чек: клиенты на AI-агентах против классического робота',
+      en: 'average spend: customers on AI agents vs the scripted robot',
     },
   },
   {
@@ -308,8 +314,8 @@ export const cvExperience: CvExperienceRole[] = [
           ],
           [
             t(
-              '+30% к среднему чеку после запуска AI-тарифов: чек клиентов на AI-агентах против клиентов на классическом линейном IVR-роботе. Конверсия AI-агентов в целевое действие на тёплых базах стабильно выше линейных роботов, это стало основой прайсинга.',
-              '+30% in average customer spend after the AI plans launched: customers on AI agents versus customers on the legacy linear IVR robot. AI agents consistently outperform the scripted robots on conversion to the target action on warm lead lists, which became the basis for pricing.',
+              '+30% к среднему чеку: чек клиентов на AI-агентах против клиентов на классическом линейном IVR-роботе. На тёплых базах AI-агенты в наших тестах обходили линейных роботов по конверсии в целевое действие, это стало основой прайсинга.',
+              '+30% in average customer spend: customers on AI agents versus customers on the legacy linear IVR robot. On warm lead lists, AI agents beat the legacy robots on conversion to the target action in our tests, which became the basis for pricing.',
             ),
           ],
           [
@@ -534,17 +540,14 @@ export const cvSkillGroups: CvSkillGroup[] = [
       { ru: 'быстрая валидация гипотез, 0 -> 1', en: 'fast hypothesis validation, 0 to 1' },
     ],
   },
-  // The three tool groups mirror the current resume file verbatim: full tool
-  // list, an AI-tools group of its own, and SIP named in the tech line.
+  // Five tools, the ones a product hiring search matches on. YouTrack, Notion
+  // and Miro were cut to shorten the resume.
   {
     label: { ru: 'Инструменты', en: 'Tools' },
     items: [
       { ru: 'Jira', en: 'Jira' },
-      { ru: 'YouTrack', en: 'YouTrack' },
-      { ru: 'Notion', en: 'Notion' },
       { ru: 'Confluence', en: 'Confluence' },
       { ru: 'Figma', en: 'Figma' },
-      { ru: 'Miro', en: 'Miro' },
       { ru: 'Яндекс Метрика', en: 'Yandex Metrica' },
       { ru: 'PostHog', en: 'PostHog' },
     ],
@@ -599,7 +602,9 @@ export const cvLanguages: LocalizedText = {
 
 export const cvWorkFormat: LocalizedText = {
   ru: 'Удалённо из Перми (GMT+5), открыт к релокации (Кипр, ЕС, ОАЭ), готов к командировкам. Полная занятость или контракт (ИП или самозанятость), оплата в USD, EUR или USDT, готов выйти сразу.',
-  en: 'Remote from Perm (GMT+5), open to relocation (Cyprus, EU, UAE), available for business travel. Full-time or contract (self-employed), invoices in USD, EUR or USDT, can start immediately.',
+  // No crypto payment in the EN file: for an EU or US talent partner it is a
+  // compliance question that delays the candidate before the first call.
+  en: 'Remote from Perm (GMT+5), open to relocation (Cyprus, EU, UAE), available for business travel. Full-time, or contract as a self-employed contractor or via an EOR, invoices in USD or EUR, can start immediately.',
 };
 
 // --- What I am looking for ------------------------------------------------

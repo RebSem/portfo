@@ -514,7 +514,7 @@ export const uiCopy = {
       },
       {
         value: { ru: '+30%', en: '+30%' },
-        label: { ru: 'к среднему чеку после запуска AI-тарифов', en: 'average customer spend after the AI plans launched' },
+        label: { ru: 'выше средний чек на AI-агентах, чем на классическом роботе', en: 'higher average spend on AI agents than on our scripted robot' },
       },
       {
         value: { ru: '30%', en: '30%' },
