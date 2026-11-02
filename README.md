@@ -35,7 +35,7 @@ Russian lives under `/ru`.
 | Route | |
 |---|---|
 | `/`, `/ru/` | Landing page |
-| `/about`, `/ru/about` | Profile, working style, anti-fit |
+| `/about`, `/ru/about` | Profile, working style, what I am looking for |
 | `/blog`, `/ru/blog` | Blog index (unlisted: not in the menu or sitemap) |
 | `/blog/:slug` | Post, paired across locales by `translationKey` |
 | `/projects/:slug` | Project case study, 7 published per locale (slugs end in `-en` / `-ru`) |

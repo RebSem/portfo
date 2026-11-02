@@ -37,6 +37,14 @@ The repository is **public**. Treat every commit as permanent and world-readable
   (`.ed-row` in `global.css`, the same grid as the About rows); the home footer is the
   closing call to action (`SiteFooter closing`). Nothing in the opener starts hidden:
   the only motion is the hairlines drawing in, so the H1 stays the LCP element.
+  Since 2026-11-03 the byline reads "Product Manager since <year>" (year from the
+  Zvonobot role in `cv.ts`), the hero tightens on windows up to 770px tall so the
+  results labels fit a laptop's first screen, and the AgentOps proof is two plain
+  receipt lines (merged PR count and deploy hash, both rendered at build), not a
+  terminal window.
+- Case studies end on `CaseNext.astro` (loop zvonobot-ai → cursivo → obrabot, side
+  projects point to zvonobot-ai; `src/lib/case-order.ts`) and the closing footer with
+  `rail={false}`. No tech-stack blocks on case pages (owner's call, 2026-11-03).
 - Content status: 7 published project case studies per locale (`tubedrop` is
   `draft: true`); one published blog post pair (`welcome`), the `tubedrop` post pair is
   a draft. The blog is **unlisted** since 2026-08-18: kept at its URLs, absent from the
@@ -117,8 +125,8 @@ if a runner image ever ships an older 22.x, switch both to `node-version-file: .
 | OG cards | `npm run og:build` (macOS Chrome path is hard-coded in the script) |
 | WebP screenshots | `npm run shots:webp` |
 
-Verified on 2026-10-21 (Node 22.22, npm 10.9): `npm ci`, `npm run validate`
-(0 errors/warnings/hints, build OK, 80/80 tests including the `dist/` suites, link
+Verified on 2026-11-03 (Node 22.22, npm 10.9): `npm ci`, `npm run validate`
+(0 errors/warnings/hints, build OK, 104/104 tests including the `dist/` suites, link
 check passed for 27 HTML files). Not run: `cv:export`, `cv:vacancy`, `og:build`,
 `shots:webp`, `dev`, `preview`.
 
@@ -141,7 +149,8 @@ is git-ignored; `.env.example` is the template.
 ## Deploy & release
 
 - `deploy.yml`: on push to `main`, nightly at 02:00 UTC (keeps the build-time GitHub
-  activity fresh) and on manual dispatch → `npm ci` → `npm run build` →
+  activity fresh; GitHub starts scheduled runs 5-7 hours late, around 07:30-09:15 UTC)
+  and on manual dispatch → `npm ci` → `npm run build` →
   `npm run link-check` → upload `dist/` → GitHub Pages, custom domain via `public/CNAME`.
 - `ci.yml`: on every pull request and push to `main` → check, build, test, link check.
   The build comes first so the suites that read `dist/` run in CI. `main` requires a PR
@@ -196,7 +205,17 @@ is git-ignored; `.env.example` is the template.
 - Per-vacancy resumes are the candidate's document: `cv:vacancy` only strips the phone,
   it does not edit the text. Slugs and file names stay ASCII.
 - Unlisted pages (`/cv`, `/ru/cv`, `/cv.txt`, the blog) stay out of the sitemap,
-  navigation and `llms.txt`; `/cv` keeps `noindex,follow`.
+  header navigation and `llms.txt`; `/cv` keeps `noindex,follow`. Since 2026-11-03
+  `/cv/` is reachable only through a quiet `rel="nofollow"` "Resume" text link in the
+  home closing and in the case availability strip; the resume downloads are nofollow
+  too, and `robots.txt` disallows the per-vacancy folders (`/cv/*/`).
+- Internal page links end in `/`: GitHub Pages answers `/about` with a 301 first.
+  `scripts/link-check.mjs` fails a page link without the slash. Prefetch is
+  `viewport` for every link; file downloads opt out with `data-astro-prefetch="false"`.
+- Calm motion is enforced: no endless animation and no `@starting-style` hidden start
+  on any page, meta descriptions at most 160 characters, no client-side GitHub API
+  calls (`tests/regression-guards.test.ts`); no em dash in published MDX or the web
+  manifest (`tests/no-em-dash.test.ts`).
 - Analytics stays storage-free and anonymous: `persistence: 'memory'`, no `identify()`,
   no session replay. The only device write is the owner's `?me=1` opt-out flag.
   UI code never imports posthog: it emits `rebsem:signal`, and only names and values
@@ -255,6 +274,16 @@ is git-ignored; `.env.example` is the template.
   structural copy: `home.resultsTitle`, `home.resultsContext`, `footer.closingTitle`;
   `heroShotCaption` and `featuredScreenshotAlt` were removed. The dashboard screenshots
   stay in the Zvonobot case study.
+- 2026-11-03: first batch of the 2026-10-28 UI audit (26 of its 84 items, tracked in the
+  owner's local beads, not in git), shipped overnight in #75-#78: trailing slashes and
+  viewport prefetch, no endless or hidden-start motion, anchors below the sticky header,
+  case endings with the next case, GitHub numbers at build time, the AgentOps receipt
+  lines, the tenure byline, the laptop fold, a nofollow resume link, meta descriptions
+  under 160 characters, new link-preview cards (home, About, CV, the Zvonobot case),
+  the Zvonobot case's key decision in plain view, one definition of +30%, no stack
+  blocks or em dashes in cases, a three-page resume with a product-first summary, no
+  USDT in the EN resume, and guard tests. Each item was implemented by a Haiku agent
+  and checked by a Sonnet tester before review.
 
 ## Gotchas
 
