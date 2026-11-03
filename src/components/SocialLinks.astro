@@ -9,9 +9,17 @@ interface Props {
   hideEmail?: boolean;
   /** Landmark name; pass a distinct one when a page renders this row twice. */
   label?: string;
+  /** Target of the email icon. Pages pass buildIntroMailto, so the first mail is the intro template. */
+  mailHref?: string;
 }
 
-const { className = 'social-links', hideTelegram = false, hideEmail = false, label } = Astro.props;
+const {
+  className = 'social-links',
+  hideTelegram = false,
+  hideEmail = false,
+  label,
+  mailHref = `mailto:${email}`,
+} = Astro.props;
 const profileUrl = `https://github.com/${githubUsername}`;
 const locale = Astro.currentLocale === 'ru' ? 'ru' : 'en';
 ---
@@ -49,7 +57,7 @@ const locale = Astro.currentLocale === 'ru' ? 'ru' : 'en';
   {!hideEmail && (
     <a
       class="social-link"
-      href={`mailto:${email}`}
+      href={mailHref}
       aria-label={uiCopy.social.email[locale]}
     >
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

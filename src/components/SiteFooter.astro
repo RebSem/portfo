@@ -81,7 +81,7 @@ const closingWords = uiCopy.footer.closingTitle[locale].split(' ');
           <>
             <p class="footer-pitch">{uiCopy.footer.pitch[locale]}</p>
             <div class="footer-actions">
-              <SocialLinks />
+              <SocialLinks mailHref={buildIntroMailto(locale)} />
             </div>
             <p class="footer-note">{note}</p>
           </>

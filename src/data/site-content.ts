@@ -396,6 +396,13 @@ export const uiCopy = {
     // The footer renders the same icon row under uiCopy.footer.socialAria;
     // two landmarks with one name would be indistinguishable to a screen reader.
     heroSocialAria: { ru: 'Контакты и профили', en: 'Contact and profiles' },
+    // On phones the icon row is hidden, so the two other ways to write sit in
+    // one line under the buttons (HomeHero.astro, .hero-alt).
+    heroAlt: {
+      lead: { ru: 'или', en: 'or' },
+      email: { ru: 'Почта', en: 'Email' },
+      linkedin: { ru: 'LinkedIn', en: 'LinkedIn' },
+    },
     // One line under the hero instead of the former status section: the four
     // facts a recruiter screens on. The pill says only the status; "start
     // now" is the second fact, so it is not said twice.
