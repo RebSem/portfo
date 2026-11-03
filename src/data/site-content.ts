@@ -15,6 +15,18 @@ import {
 // unable to disagree.
 export { email, githubUsername, linkedinUrl, siteRepoUrl, telegramUrl };
 
+// The Cal.com calendar behind /call/ (CallBooking.astro). The public embed needs
+// no key, so none is stored. The user slug is Cyrillic: renaming the account to
+// Latin means changing this one value. The page offers only these two public
+// event types; the hidden default type is never linked.
+export const calBooking = {
+  user: 'михаил-семенов-xljaey',
+  events: {
+    intro: '15min',
+    product: '30min',
+  },
+} as const;
+
 export const homePath = '/';
 export const aboutPath = '/about/';
 export const blogPath = '/blog/';
@@ -613,6 +625,49 @@ export const uiCopy = {
   // The label over the next case, after a case study's last section (CaseNext.astro).
   caseNext: {
     label: { ru: 'Следующий кейс', en: 'Next case' },
+  },
+  // The booking page at /call/ (CallBooking.astro). The calendar itself is
+  // Cal.com's; this is the frame around it. Each format's time, title and note
+  // are the two options the page offers.
+  call: {
+    title: {
+      ru: 'Записаться на созвон с Михаилом',
+      en: 'Book a call with Mikhail',
+    },
+    lead: {
+      ru: 'Выберите формат и удобное время. Время показано в вашем часовом поясе, я в GMT+5.',
+      en: 'Pick a format and a time that suits you. Times show in your time zone; I am in GMT+5.',
+    },
+    formatLegend: { ru: 'Формат', en: 'Format' },
+    formats: {
+      intro: {
+        time: { ru: '15 минут', en: '15 min' },
+        title: { ru: 'Знакомство', en: 'Intro call' },
+        note: {
+          ru: 'Для рекрутёров: роль, сроки, условия и подхожу ли я.',
+          en: 'For recruiters: the role, timing and terms, and whether I fit.',
+        },
+      },
+      product: {
+        time: { ru: '30 минут', en: '30 min' },
+        title: { ru: 'Продуктовый разговор', en: 'Product conversation' },
+        note: {
+          ru: 'Для нанимающих менеджеров: задачи команды, мои кейсы, как бы я работал.',
+          en: "For hiring managers: the team's problems, my cases, how I would work.",
+        },
+      },
+    },
+    loading: { ru: 'Загружаю календарь…', en: 'Loading the calendar…' },
+    noscript: {
+      ru: 'Календарю нужен JavaScript. Ссылка ниже откроет его на Cal.com.',
+      en: 'The calendar needs JavaScript. The link below opens it on Cal.com.',
+    },
+    openCal: {
+      ru: 'Календарь не загружается? Откройте его на Cal.com',
+      en: 'Calendar not loading? Open it on Cal.com',
+    },
+    telegram: { ru: 'Написать в Telegram', en: 'Message on Telegram' },
+    email: { ru: 'Почта', en: 'Email' },
   },
   footer: {
     defaultNote: {

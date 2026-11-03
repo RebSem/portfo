@@ -1,0 +1,253 @@
+---
+import { calBooking, telegramUrl, uiCopy } from '../data/site-content';
+import { buildCalPublicUrl } from '../lib/booking';
+import { buildIntroMailto } from '../lib/intro-mail';
+import type { Locale } from '../types/content';
+
+interface Props {
+  locale: Locale;
+}
+
+// The format picker is two native radio buttons, so the arrow keys and space
+// work and a screen reader announces a radio group. The static HTML carries the
+// picker, the fallback link and the contacts; the calendar is drawn into the
+// stage by src/scripts/call-booking.ts.
+const { locale } = Astro.props;
+const copy = uiCopy.call;
+const defaultSlug = calBooking.events.intro;
+const formats = [
+  { slug: calBooking.events.intro, ...copy.formats.intro },
+  { slug: calBooking.events.product, ...copy.formats.product },
+];
+const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
+---
+
+<section
+  class="call"
+  aria-labelledby="call-title"
+  data-call-booking
+  data-call-user={calBooking.user}
+  data-locale={locale}
+>
+  <header class="call-head">
+    <h1 id="call-title" class="call-title">{copy.title[locale]}</h1>
+    <p class="call-lead">{copy.lead[locale]}</p>
+  </header>
+
+  <fieldset class="call-formats">
+    <legend class="call-legend ed-label">{copy.formatLegend[locale]}</legend>
+    <div class="call-format-list" data-call-formats>
+      {formats.map((format) => (
+        <div class="call-format">
+          <input
+            class="call-format-input sr-only"
+            type="radio"
+            name="call-format"
+            id={`call-format-${format.slug}`}
+            value={format.slug}
+            checked={format.slug === defaultSlug}
+          />
+          <label class="call-format-card" for={`call-format-${format.slug}`}>
+            <span class="call-format-time">{format.time[locale]}</span>
+            <span class="call-format-title">{format.title[locale]}</span>
+            <span class="call-format-note">{format.note[locale]}</span>
+          </label>
+        </div>
+      ))}
+    </div>
+  </fieldset>
+
+  <div class="call-embed" data-call-embed>
+    <p class="call-loading">{copy.loading[locale]}</p>
+    <div id="call-stage" class="call-stage" data-call-stage>
+      <noscript>
+        <p class="call-noscript">{copy.noscript[locale]}</p>
+      </noscript>
+    </div>
+  </div>
+
+  <p class="call-fallback">
+    <a href={fallbackHref} target="_blank" rel="noreferrer" data-call-open>{copy.openCal[locale]}</a>
+  </p>
+
+  <p class="call-contact">
+    <a href={telegramUrl} target="_blank" rel="noreferrer">{copy.telegram[locale]}</a>
+    <a href={buildIntroMailto(locale)}>{copy.email[locale]}</a>
+  </p>
+</section>
+
+<script>
+  import '../scripts/call-booking';
+</script>
+
+<style>
+  .call {
+    max-width: 52rem;
+  }
+
+  .call-head {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .call-title {
+    font-size: clamp(2.1rem, 4.6vw, 3rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+  }
+
+  .call-lead {
+    max-width: 44ch;
+    font-size: 1.02rem;
+    line-height: 1.55;
+    color: color-mix(in oklab, var(--foreground) 74%, transparent);
+  }
+
+  .call-formats {
+    min-width: 0;
+    margin: clamp(2rem, 4vw, 2.75rem) 0 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .call-legend {
+    padding: 0;
+    margin-bottom: 0.75rem;
+  }
+
+  .call-format-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  @media (max-width: 560px) {
+    .call-format-list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .call-format {
+    position: relative;
+    min-width: 0;
+  }
+
+  .call-format-card {
+    display: grid;
+    gap: 0.4rem;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 1rem 1.15rem 1.1rem;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    background: var(--surface);
+    cursor: pointer;
+    transition:
+      border-color var(--dur-fast) var(--ease-out-strong),
+      background-color var(--dur-fast) var(--ease-out-strong);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .call-format-card:hover {
+      border-color: color-mix(in oklab, var(--accent) 45%, var(--border));
+    }
+  }
+
+  .call-format-input:checked + .call-format-card {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .call-format-input:focus-visible + .call-format-card {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 3px;
+  }
+
+  .call-format-time {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: color-mix(in oklab, var(--foreground) 70%, transparent);
+  }
+
+  .call-format-title {
+    font-size: 1.08rem;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+  }
+
+  .call-format-note {
+    font-size: 0.92rem;
+    line-height: 1.45;
+    color: color-mix(in oklab, var(--foreground) 76%, transparent);
+  }
+
+  /* The stage reserves a minimum height so the contacts do not move while Cal
+     loads the calendar. Cal then sets the frame's own height (about 680px on a
+     laptop, about 760px on a phone), so the stage grows to fit it: a fixed
+     height clipped the bottom of the calendar. */
+  .call-embed {
+    position: relative;
+    margin-top: 1.1rem;
+  }
+
+  .call-stage {
+    min-height: 43rem;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    background: var(--surface);
+  }
+
+  @media (max-width: 640px) {
+    .call-stage {
+      min-height: 48rem;
+    }
+  }
+
+  .call-stage :global(iframe) {
+    display: block;
+    width: 100%;
+    border: 0;
+  }
+
+  .call-loading {
+    position: absolute;
+    inset: 0;
+    display: none;
+    place-items: center;
+    padding: 1rem;
+    text-align: center;
+    pointer-events: none;
+    font-size: 0.92rem;
+    color: color-mix(in oklab, var(--foreground) 70%, transparent);
+  }
+
+  .call-embed[data-state='loading'] .call-loading {
+    display: grid;
+  }
+
+  .call-noscript {
+    padding: 1.25rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: color-mix(in oklab, var(--foreground) 72%, transparent);
+  }
+
+  .call-fallback {
+    margin-top: 0.9rem;
+    font-size: 0.92rem;
+    line-height: 1.45;
+  }
+
+  .call-contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    margin-top: 1.6rem;
+    font-weight: 500;
+  }
+</style>

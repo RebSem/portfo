@@ -1,0 +1,29 @@
+---
+import CallBooking from '../../components/CallBooking.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import { heroDisplayName } from '../../data/site-content';
+import Layout from '../../layouts/Layout.astro';
+
+// Unlisted like /ru/cv: noindex,follow, and absent from the sitemap, llms.txt and
+// the menu. The page is itself the call to action, so it ends on the plain
+// footer, not the closing one.
+---
+
+<Layout
+  title={`${heroDisplayName.ru} - Созвон`}
+  description="Запись на созвон с Михаилом Семеновым, продакт-менеджером: 15 или 30 минут. Выберите время в своём часовом поясе, календарь на этой странице."
+  noIndex
+  followLinks
+  alternate="/call/"
+>
+  <a id="skip-to-content" href="#main-content" class="skip-link">К содержимому</a>
+
+  <SiteHeader active="none" localeToggleUrl="/call/" />
+
+  <main id="main-content" class="page-main">
+    <CallBooking locale="ru" />
+  </main>
+
+  <SiteFooter />
+</Layout>
