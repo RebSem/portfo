@@ -1072,7 +1072,18 @@ html[data-theme='dark'] .theme-icon-sun {
 
 .post-head {
   display: grid;
-  gap: 0.55rem;
+  gap: 1rem;
+}
+
+/* Long case titles balance over two lines instead of leaving one short line. */
+.post-head h1 {
+  text-wrap: balance;
+}
+
+/* A compound word (AI-агентов, B2B-звонков) stays on one line; src/lib/nb.ts
+   wraps those tokens in this span. */
+.nb {
+  white-space: nowrap;
 }
 
 .post-meta {
@@ -1843,7 +1854,7 @@ a.project-shot-zoom {
 .prose > ul,
 .prose > ol,
 .prose details > :is(p, ul, ol, h3) {
-  max-width: 46rem;
+  max-width: 40rem;
 }
 
 .post-lead {

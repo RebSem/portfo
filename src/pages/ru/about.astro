@@ -4,15 +4,13 @@ import SiteFooter from '../../components/SiteFooter.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import {
   buildPersonSchema,
-  githubUsername,
   heroDisplayName,
+  uiCopy,
 } from '../../data/site-content';
 import Layout from '../../layouts/Layout.astro';
 import githubScriptUrl from '../../scripts/github-activity.js?url';
 
-const avatarUrl = `https://avatars.githubusercontent.com/${githubUsername}?size=560`;
-const personEntity = buildPersonSchema('https://rebsem.ru/ru/about/');
-personEntity.image = avatarUrl;
+const personEntity = buildPersonSchema('https://rebsem.ru/ru/about/', 'ru');
 const aboutSchema = {
   '@context': 'https://schema.org',
   '@type': 'ProfilePage',
@@ -38,6 +36,6 @@ const aboutSchema = {
     <AboutContent locale="ru" />
   </main>
 
-  <SiteFooter />
+  <SiteFooter noteRu={uiCopy.home.workFormat.ru} noteEn={uiCopy.home.workFormat.en} />
   <script is:inline type="module" src={githubScriptUrl}></script>
 </Layout>

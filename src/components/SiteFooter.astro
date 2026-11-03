@@ -51,7 +51,7 @@ const closingWords = uiCopy.footer.closingTitle[locale].split(' ');
                 <>{index > 0 && ' '}<span class="footer-word">{word}</span></>
               ))}
             </h2>
-            <p class="footer-pitch">{uiCopy.footer.pitch[locale]}</p>
+            <p class="footer-pitch">{uiCopy.footer.closingPitch[locale]}</p>
             <div class="footer-actions">
               <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -81,7 +81,7 @@ const closingWords = uiCopy.footer.closingTitle[locale].split(' ');
           <>
             <p class="footer-pitch">{uiCopy.footer.pitch[locale]}</p>
             <div class="footer-actions">
-              <SocialLinks />
+              <SocialLinks mailHref={buildIntroMailto(locale)} />
             </div>
             <p class="footer-note">{note}</p>
           </>

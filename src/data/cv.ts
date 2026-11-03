@@ -213,7 +213,7 @@ export const cvMetrics: CvMetric[] = [
     value: { ru: '~10%', en: '~10%' },
     label: {
       ru: 'выручки группы давало направление, запущенное с нуля за год',
-      en: 'of group revenue came from a line launched from zero in a year',
+      en: 'of group revenue came from a line launched from scratch in a year',
     },
   },
   {
@@ -305,7 +305,7 @@ export const cvExperience: CvExperienceRole[] = [
             ),
           ],
           [
-            t('С нуля до рынка за несколько недель: запустил ', 'From zero to market in weeks: launched '),
+            t('С нуля до рынка за несколько недель: запустил ', 'From scratch to market in weeks: launched '),
             link('Zvonobot AI', 'Zvonobot AI', { caseId: 'zvonobot-ai' }),
             t(
               ', направление голосовых AI-агентов, на white-label платформе и доказал спрос на живых клиентах. Затем обосновал цифрами переход на собственную, более гибкую платформу и начал перевод направления на неё.',
@@ -410,13 +410,13 @@ export const cvExperience: CvExperienceRole[] = [
 ];
 
 /**
- * Employment history for JSON-LD.
+ * Employment history for JSON-LD, attached on /cv only.
  *
- * The site-wide Person schema says only `worksFor: Prof-IT` with no dates,
- * so the word "Zvonobot" — the subject of the whole resume — appeared nowhere
- * in the structured data an LLM screener reads first, and the second employer
- * was missing entirely. Built from cvExperience so it cannot drift from the
- * visible text, and it is what finally gives `startDate`/`endDate` a reader.
+ * Each role is an OrganizationRole with its dates, so the Zvonobot role and
+ * the earlier one are readable from the structured data an LLM screener reads
+ * first. The employer sits under alumniOf, not worksFor: a bare worksFor reads
+ * as a current employer, and pipelines that drop endDate kept reading it so.
+ * Built from cvExperience so it cannot drift from the visible text.
  */
 export const buildEmploymentSchema = (locale: Locale): Record<string, unknown>[] =>
   cvExperience.map((role) => ({
@@ -424,7 +424,7 @@ export const buildEmploymentSchema = (locale: Locale): Record<string, unknown>[]
     roleName: role.role[locale],
     startDate: role.startDate,
     ...(role.endDate ? { endDate: role.endDate } : {}),
-    worksFor: {
+    alumniOf: {
       '@type': 'Organization',
       name: role.company[locale],
     },
@@ -448,22 +448,23 @@ export const cvProducts: CvProduct[] = [
     // the proof line makes the different claim: zero to a revenue line.
     proof: {
       ru: 'Доказывает запуск нового направления с нуля до заметной доли выручки группы за год.',
-      en: 'Proves a new line launched from zero to a visible share of group revenue in a year.',
+      en: 'Proves a new line launched from scratch to a visible share of group revenue in a year.',
     },
   },
   {
     id: 'cursivo',
-    name: 'cursivo',
+    // The brand part of the case title, the same in both locales.
+    name: 'Cursivo',
     caseId: 'cursivo',
     externalUrl: 'https://cursivo.xyz',
     // In development, not launched: no live users yet, and claiming any is
     // exactly the kind of line that dies in the first interview question.
-    metric: { ru: 'В процессе реализации', en: 'In development' },
+    metric: { ru: 'В разработке', en: 'In development' },
     // The status lives in the metric line above; repeating it in the summary
     // read as an unedited card.
     summary: {
-      ru: 'AI-CRM для автопрокатов: читает документы клиента, считает риск по сделке, подсказывает следующий шаг.',
-      en: 'An AI CRM for car rental: reads client documents, scores deal risk, suggests the next step.',
+      ru: 'AI-агент и CRM для операторов автопроката в Дубае.',
+      en: 'An AI agent and CRM for car rental operators in Dubai.',
     },
     // Not another "Proves...": three cards opening with the same verb read
     // as a template. One card keeps the frame, the other two state the fact.
@@ -474,15 +475,16 @@ export const cvProducts: CvProduct[] = [
   },
   {
     id: 'obrabot',
-    name: 'obrabot',
+    // The brand part of the case title, the same in both locales.
+    name: 'Obrabot',
     caseId: 'obrabot',
     metric: {
-      ru: 'Продукт в проде, внутренний инструмент Prof-IT',
-      en: 'Live in production, internal Prof-IT tool',
+      ru: 'Продукт в проде, внутреннее рабочее пространство Prof-IT',
+      en: 'Live in production, internal Prof-IT workspace',
     },
     summary: {
-      ru: 'Внутренний кабинет аналитики голосовых AI-агентов: LLM сегментирует звонки и подсвечивает то, что требует внимания.',
-      en: 'An internal voice AI analytics console: an LLM segments calls and surfaces what needs human attention.',
+      ru: 'Внутреннее рабочее пространство направления voice AI: реестр промптов, генератор КП и аналитика звонков.',
+      en: 'An internal workspace for the voice AI line: a prompt registry, a proposal generator and call analytics.',
     },
     proof: {
       ru: 'LLM-аналитика поверх реальных данных прода.',
@@ -626,7 +628,7 @@ export const cvWorkFormat: LocalizedText = {
  */
 export const cvLookingFor: LocalizedText = {
   ru: 'Роль Product Manager или Product Owner уровня middle+ в продуктовой команде. Домены, где мой опыт работает сразу: B2B SaaS, AI/LLM-продукты, платежи и биллинг, телеком и CPaaS, инфраструктурные платформы с интеграциями и API. Сильнее всего я там, где продукт надо запустить с нуля или вывести из MVP в рост.',
-  en: 'A Product Manager or Product Owner role on a product team. Domains where my experience works from day one: B2B SaaS, AI and LLM products, payments and billing, telecom and CPaaS, infrastructure platforms with integrations and APIs. I am at my best where a product needs to be launched from zero or taken from MVP to growth.',
+  en: 'A Product Manager or Product Owner role on a product team. Domains where my experience works from day one: B2B SaaS, AI and LLM products, payments and billing, telecom and CPaaS, infrastructure platforms with integrations and APIs. I am at my best where a product needs to be launched from scratch or taken from MVP to growth.',
 };
 
 // --- Export file names ----------------------------------------------------

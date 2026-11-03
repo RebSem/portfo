@@ -1,5 +1,6 @@
 ---
 import { uiCopy } from '../data/site-content';
+import { chunks, HYPHENATED } from '../lib/nb';
 import type { Locale } from '../types/content';
 
 interface Props {
@@ -10,9 +11,7 @@ const { locale } = Astro.props;
 const results = uiCopy.projects.featuredResults;
 
 // Balanced labels must not break "B2B-клиентов" or "AI-агентах" at the
-// hyphen: same nowrap-span fix as the hero standfirst and nb() on /cv.
-const HYPHENATED = /[\p{L}\p{N}]-[\p{L}\p{N}]/u;
-const chunks = (value: string) => value.split(/(\s+)/);
+// hyphen, so hyphenated tokens go in a nowrap span (src/lib/nb.ts).
 ---
 
 {/*
@@ -25,7 +24,7 @@ const chunks = (value: string) => value.split(/(\s+)/);
 <section class="home-results ed-row ed-mark ed-draw" aria-labelledby="results-title">
   <div class="home-results-rail">
     <h2 id="results-title" class="ed-label">{uiCopy.home.resultsTitle[locale]}</h2>
-    <p class="ed-context">{uiCopy.home.resultsContext[locale]}</p>
+    <p class="ed-context">{chunks(uiCopy.home.resultsContext[locale]).map((c) => (HYPHENATED.test(c) ? <span class="nb">{c}</span> : c))}</p>
   </div>
   <ul class="home-results-list">
     {results.map((result) => (
@@ -62,10 +61,6 @@ const chunks = (value: string) => value.split(/(\s+)/);
   .home-results-list li:first-child {
     padding-left: 0;
     border-left: 0;
-  }
-
-  .nb {
-    white-space: nowrap;
   }
 
   .home-result-value {

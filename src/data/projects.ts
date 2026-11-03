@@ -9,11 +9,11 @@ export const projects: ProjectItem[] = [
     },
     appType: {
       ru: 'Платформа голосовых AI-агентов для B2B (Prof-IT)',
-      en: 'Voice AI-agent platform for B2B (Prof-IT)',
+      en: 'Voice AI agent platform for B2B (Prof-IT)',
     },
     summary: {
       ru: 'Голосовые AI-агенты для исходящих звонков: клиент сам собирает агента, загружает базу и запускает обзвон.',
-      en: 'Voice AI agents for outbound calls: a client builds the agent, uploads a contact base and starts the campaign.',
+      en: 'Voice AI agents for outbound calls: a client builds the agent, uploads a contact list and starts the campaign.',
     },
     stack: ['React 19', 'TypeScript', 'Vite', 'Flask', 'PostgreSQL', 'Redis', 'LLM orchestration'],
     visibility: 'private',
@@ -24,16 +24,16 @@ export const projects: ProjectItem[] = [
   {
     id: 'cursivo',
     title: {
-      ru: 'cursivo',
-      en: 'cursivo',
+      ru: 'Cursivo: AI-агент и CRM для автопрокатов',
+      en: 'Cursivo: AI agent and CRM for car rental teams',
     },
     appType: {
-      ru: 'AI-CRM для автопрокатов',
-      en: 'AI-powered car rental CRM',
+      ru: 'AI-агент и CRM для автопрокатов',
+      en: 'AI agent and CRM for car rental',
     },
     summary: {
-      ru: 'CRM для автопрокатов: AI читает документы клиента, считает риск по сделке и подсказывает менеджеру следующий шаг. Мой собственный продукт.',
-      en: 'A CRM for car rental: AI reads client documents, scores deal risk and suggests the manager’s next step. My own product.',
+      ru: 'AI-агент и CRM для операторов автопроката в Дубае. Мой продукт, делаю в свободное время.',
+      en: 'An AI agent and CRM for car rental operators in Dubai. My own product, built on my own time.',
     },
     // Product tags, not a framework list: the case pages carry no tech stack.
     stack: ['AI CRM', 'Car rental', 'In development'],
@@ -45,18 +45,18 @@ export const projects: ProjectItem[] = [
   {
     id: 'obrabot',
     title: {
-      ru: 'obrabot',
-      en: 'obrabot',
+      ru: 'Obrabot: внутреннее рабочее пространство voice AI-команды Prof-IT',
+      en: 'Obrabot: internal workspace for the voice AI team at Prof-IT',
     },
     appType: {
-      ru: 'Внутренний кабинет аналитики voice AI в Prof-IT',
-      en: 'Internal voice AI analytics dashboard at Prof-IT',
+      ru: 'Внутреннее рабочее пространство voice AI-команды Prof-IT',
+      en: 'Internal workspace for the voice AI team at Prof-IT',
     },
     summary: {
-      ru: 'Аналитика звонков голосовых AI-агентов: LLM разбирает разговоры и подсвечивает те, что требуют внимания. Вёл продукт до октября 2026.',
-      en: 'Call analytics for voice AI agents: an LLM sorts the conversations and flags the ones that need a human. I ran the product until October 2026.',
+      ru: 'Внутреннее рабочее пространство направления voice AI: реестр промптов, генератор коммерческих предложений и аналитика звонков. Вёл его как продакт до октября 2026.',
+      en: 'An internal workspace for the voice AI line: a prompt registry, a proposal generator and call analytics. I ran it as the PM until October 2026.',
     },
-    stack: ['LLM call analytics', 'Internal product', 'Prof-IT'],
+    stack: ['LLM call analytics', 'Internal workspace', 'Prof-IT'],
     visibility: 'private',
     featured: true,
     tier: 'work-led',
@@ -69,11 +69,11 @@ export const projects: ProjectItem[] = [
     },
     appType: {
       ru: 'Telegram-бот для очистки клиентских баз',
-      en: 'Telegram bot for cleaning client bases',
+      en: 'Telegram bot for cleaning contact lists',
     },
     summary: {
       ru: 'Бот принимает CSV/XLSX, нормализует номера, фильтрует операторов и возвращает готовую базу без дублей. Внутренний инструмент, ускоряющий подготовку данных для обзвонов.',
-      en: 'Bot that accepts CSV/XLSX files, normalizes numbers, filters operators, and returns a deduplicated clean base. Internal tool that speeds up call-list preparation.',
+      en: 'Bot that accepts CSV/XLSX files, normalizes numbers, filters operators, and returns a clean, deduplicated contact list. Internal tool that speeds up call-list preparation.',
     },
     stack: ['Python', 'Telegram Bot API', 'CSV/XLSX', 'p1sms API'],
     visibility: 'private',
@@ -82,7 +82,7 @@ export const projects: ProjectItem[] = [
     petOrder: 1,
     proof: {
       ru: 'AI/ops в реальном workflow: убирает ручную чистку баз перед обзвонами, ускоряет подготовку данных для команды.',
-      en: 'AI/ops in a real workflow: kills the manual base cleanup before call campaigns and speeds up data prep for the team.',
+      en: 'AI/ops in a real workflow: kills the manual cleanup of contact lists before call campaigns and speeds up data prep for the team.',
     },
   },
   {
@@ -130,7 +130,7 @@ export const projects: ProjectItem[] = [
     petOrder: 4,
     proof: {
       ru: 'Product taste на новой платформе: за неделю собрал нативное iOS-приложение с AI-помощником с нуля до working build.',
-      en: 'Product taste on a new platform: a native iOS app with an AI assistant, from zero to a working build in a week.',
+      en: 'Product taste on a new platform: a native iOS app with an AI assistant, from scratch to a working build in a week.',
     },
   },
   {
