@@ -234,6 +234,25 @@ describeBuilt('cv build output', () => {
     expect(readDist('llms.txt')).not.toMatch(/\/cv\b/);
   });
 
+  it('keeps llms.txt to the owner exclusions and to pages that exist', () => {
+    // llms.txt is built from cv.ts, which also holds the revenue share and the
+    // city. Neither may reach a screener through this file, and every link in
+    // it must resolve to a page of this build.
+    const llms = readDist('llms.txt');
+    expect(llms).not.toMatch(/~10%|Perm/);
+
+    const routes = [...llms.matchAll(/\]\(https:\/\/rebsem\.ru(\/[^)\s]*)\)/g)].map(
+      (match) => match[1],
+    );
+    expect(routes.length).toBeGreaterThan(0);
+    for (const route of routes) {
+      const file = route.endsWith('/')
+        ? path.join(DIST, route, 'index.html')
+        : path.join(DIST, route);
+      expect(existsSync(file), `${route} has no built page`).toBe(true);
+    }
+  });
+
   it('is linked only from the quiet resume links, all nofollow', () => {
     // Unlisted still means no sitemap entry, no menu and no llms.txt line.
     // The one link after Email on each home page and the one in each case's

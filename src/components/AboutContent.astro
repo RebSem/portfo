@@ -11,6 +11,7 @@ import {
   telegramUrl,
   uiCopy,
 } from '../data/site-content';
+import { buildContributionGrid, contributionWord } from '../lib/contribution-grid';
 import { getGithubContributions } from '../lib/github';
 import { buildIntroMailto } from '../lib/intro-mail';
 import { chunks, HYPHENATED } from '../lib/nb';
@@ -23,13 +24,17 @@ interface Props {
 
 const { locale } = Astro.props;
 
-// Read at build time so the total is in the HTML without JavaScript: link
-// previews and LLM fetchers do not run it. No data at all leaves the band out
-// rather than printing 0. GitHub lists every day of the year, so an empty
-// calendar means the markup changed, not a quiet year.
+// Read at build time so the total and the calendar are in the HTML without
+// JavaScript: link previews and LLM fetchers do not run it. No data at all leaves
+// the band out rather than printing 0. GitHub lists every day of the year, so an
+// empty calendar means the markup changed, not a quiet year.
 const fetchedContributions = await getGithubContributions(githubUsername).catch(() => undefined);
 const contributions = fetchedContributions && fetchedContributions.days.length > 0 ? fetchedContributions : undefined;
+const heatmap = buildContributionGrid(contributions?.days ?? []);
 const numberLocale = locale === 'ru' ? 'ru-RU' : 'en-US';
+const totalLastYear = contributions?.totalLastYear ?? 0;
+const totalText = totalLastYear.toLocaleString(numberLocale);
+const unitText = contributionWord(totalLastYear, locale);
 
 const copy = {
   eyebrow: { ru: 'Обо мне', en: 'About' },
@@ -44,17 +49,17 @@ const copy = {
     en: 'Send me the role and a line about the product. I will tell you honestly whether I am a fit.',
   },
   githubLabel: { ru: 'GitHub · за год', en: 'GitHub · last year' },
-  githubUnit: { ru: 'вкладов', en: 'contributions' },
-  heatmapAria: { ru: 'График активности GitHub', en: 'GitHub activity graph' },
+  heatmapName: { ru: 'Активность на GitHub', en: 'GitHub activity' },
+  heatmapPeriod: { ru: 'за последний год', en: 'in the last year' },
   heatmapHint: {
     ru: 'Наведите на ячейку, чтобы увидеть дату и число вкладов.',
     en: 'Hover a cell to see the exact date and number of contributions.',
   },
-  githubError: {
-    ru: 'Не удалось загрузить GitHub-данные. Попробуйте обновить страницу позже.',
-    en: 'Unable to load GitHub data. Please refresh later.',
-  },
 } as const;
+
+// The whole heatmap is one image for assistive tech: its name is the total, so
+// the 371 cells are not read one by one.
+const heatmapAria = `${copy.heatmapName[locale]}: ${totalText} ${unitText} ${copy.heatmapPeriod[locale]}`;
 ---
 
 {/*
@@ -120,23 +125,41 @@ const copy = {
   {/* Moved here from the home page. A commit calendar on the front page of a
       product manager's site read as "engineer" before anything else; beside
       "how I validate ideas" it is context, not the headline. It sits above
-      the call to action, so the page still ends on the ask. The total is
-      printed at build; src/scripts/github-activity.js draws the grid and
-      refreshes the same ids. */}
+      the call to action, so the page still ends on the ask. The total and
+      the cells are printed at build; src/scripts/github-activity.js only adds
+      the hover hint. */}
   {contributions && (
     <section class="section-block github-band" aria-labelledby="github-title">
       <div class="github-inline">
         <div class="github-inline-meta">
           <span class="label">{copy.githubLabel[locale]}</span>
-          <strong id="contributions-total">{contributions.totalLastYear.toLocaleString(numberLocale)}</strong>
-          <span class="label" id="github-title">{copy.githubUnit[locale]}</span>
+          <strong>{totalText}</strong>
+          <span class="label" id="github-title">{unitText}</span>
           <a class="github-profile-link link" href={`https://github.com/${githubUsername}`} target="_blank" rel="noreferrer">
             github.com/{githubUsername}
           </a>
         </div>
 
         <div class="github-heatmap">
-          <div id="contribution-grid" class="contribution-grid" role="group" aria-label={copy.heatmapAria[locale]}></div>
+          {/* role="img" makes the grid one node for screen readers, named by the total;
+              its cells stay out of the accessibility tree and the tab order (371 tab
+              stops are hostile to keyboard users). No per-cell title: a tooltip on each
+              cell is a mouse-only hint that repeats the hover line below. */}
+          <div
+            id="contribution-grid"
+            class="contribution-grid"
+            role="img"
+            aria-label={heatmapAria}
+            style={`--weeks: ${heatmap.weeks}`}
+          >
+            {heatmap.cells.map((cell) => (
+              <div
+                class={`contribution-cell level-${cell.level}`}
+                data-date={cell.date}
+                data-count={cell.count}
+              ></div>
+            ))}
+          </div>
 
           <div class="heatmap-legend" aria-hidden="true">
             <span>0</span>
@@ -156,8 +179,6 @@ const copy = {
           >
             {copy.heatmapHint[locale]}
           </p>
-
-          <p id="github-error" class="github-error hidden">{copy.githubError[locale]}</p>
         </div>
       </div>
     </section>
