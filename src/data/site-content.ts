@@ -27,7 +27,7 @@ export const heroDisplayName: LocalizedText = {
 
 export const heroSubtitle: LocalizedText = {
   ru: 'Продакт-менеджер в B2B SaaS. Запустил в Zvonobot (группа Prof-IT) направление голосовых AI-агентов с нуля: 80 платящих клиентов меньше чем за год.',
-  en: 'Product manager in B2B SaaS. Launched the voice AI agent line at Zvonobot (Prof-IT Group) from zero: 80 paying customers in under a year.',
+  en: 'Product manager in B2B SaaS. Launched the voice AI agent line at Zvonobot (Prof-IT Group) from scratch: 80 paying customers in under a year.',
 };
 
 export const blogLabel: LocalizedText = {
@@ -241,7 +241,7 @@ export function buildPersonSchema(url: string): Record<string, unknown> {
     alternateName: heroDisplayName.ru,
     jobTitle: 'Product Manager',
     description:
-      'Product Manager, open to work and available to start immediately. At Zvonobot (Prof-IT Group) from February 2022 to October 2026, launched a B2B voice AI agent line from zero: 80 paying customers and 500,000+ minutes of live conversations in production in under a year. Owned pricing, unit economics and go-to-market. Based in Perm, Russia. Remote, GMT+5, open to relocation.',
+      'Product Manager, open to work and available to start immediately. At Zvonobot (Prof-IT Group) from February 2022 to October 2026, launched a B2B voice AI agent line from scratch: 80 paying customers and 500,000+ minutes of live conversations in production in under a year. Owned pricing, unit economics and go-to-market. Based in Perm, Russia. Remote, GMT+5, open to relocation.',
     url,
     image: 'https://rebsem.ru/main-hero.jpg',
     email: `mailto:${email}`,
@@ -295,7 +295,7 @@ export const agentOps = {
   title: { ru: 'Гипотеза получает релиз за дни, а не за спринт.', en: 'A hypothesis gets a release in days, not a sprint.' },
   lead: {
     ru: 'Прототипы и пет-проекты собираю сам с AI-агентами. Так гипотеза получает рабочий релиз за дни вместо спринта, а с инженерами я говорю на одном языке. Продуктовые решения, постановка и ревью остаются за мной; этот сайт тоже живёт так: каждое изменение это PR, написанный агентом и проверенный мной.',
-    en: 'Prototypes and side projects I build myself with AI coding agents. A hypothesis gets a working release in days instead of a sprint, and I speak the same language as engineers. Product decisions, specs and review stay with me; this site runs the same way, every change an agent-written PR that I review.',
+    en: 'I build prototypes and side projects myself with AI coding agents. A hypothesis gets a working release in days instead of a sprint, and I speak the same language as engineers. Product decisions, specs and review stay with me; this site runs the same way, every change an agent-written PR that I review.',
   },
   steps: [
     {
@@ -386,12 +386,12 @@ export const uiCopy = {
       en: 'Message me on Telegram',
     },
     heroCtaSecondary: {
-      ru: 'Смотреть кейс',
-      en: 'See the case',
+      ru: 'Читать кейс',
+      en: 'Read the case study',
     },
     heroCaseLabel: {
-      ru: 'Смотреть кейс Zvonobot AI',
-      en: 'See the case: Zvonobot AI',
+      ru: 'Читать кейс Zvonobot AI',
+      en: 'Read the case study: Zvonobot AI',
     },
     // The footer renders the same icon row under uiCopy.footer.socialAria;
     // two landmarks with one name would be indistinguishable to a screen reader.
@@ -410,19 +410,19 @@ export const uiCopy = {
         value: { ru: 'Сразу, без отработки', en: 'Right away, no notice period' },
       },
       {
-        label: { ru: 'Формат', en: 'Format' },
+        label: { ru: 'Формат', en: 'Work setup' },
         value: { ru: 'Удалённо, GMT+5, открыт к релокации', en: 'Remote, GMT+5, open to relocation' },
       },
       {
         label: { ru: 'Английский', en: 'English' },
-        value: { ru: 'B2, рабочий', en: 'B2, daily at work' },
+        value: { ru: 'B2, рабочий', en: 'B2, working proficiency' },
       },
     ],
     // The results band right under the hero (HomeResults.astro): a section
     // label and its context, nothing more. The numbers themselves are
     // uiCopy.projects.featuredResults, so the band and the case never drift.
     resultsTitle: { ru: 'Результаты', en: 'Results' },
-    resultsContext: { ru: 'Zvonobot AI, 2025-2026', en: 'Zvonobot AI, 2025-2026' },
+    resultsContext: { ru: 'Zvonobot AI, 2025-2026', en: 'Zvonobot AI, a B2B call automation platform, 2025-2026' },
     postsTitle: { ru: 'Свежие статьи', en: 'Recent posts' },
     postsSubtitle: {
       ru: 'Заметки о продуктовой логике, delivery-процессах и практическом использовании AI.',
@@ -529,8 +529,8 @@ export const uiCopy = {
         label: { ru: 'выручки направления давали повторные оплаты', en: 'of the line’s revenue came from repeat payments' },
       },
     ],
-    caseLink: { ru: 'Открыть кейс', en: 'Read the case' },
-    caseShort: { ru: 'Кейс', en: 'Case' },
+    caseLink: { ru: 'Читать кейс', en: 'Read the case study' },
+    caseShort: { ru: 'Кейс', en: 'Case study' },
     workTitle: { ru: 'Работа и свой продукт', en: 'Work and my own product' },
     petTitle: { ru: 'Пет-проекты', en: 'Side projects' },
     statusLabel: {
