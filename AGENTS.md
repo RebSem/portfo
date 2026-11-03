@@ -319,6 +319,17 @@ is git-ignored; `.env.example` is the template.
   calm link underlines, motion tokens and the iOS 15 colour fallback. Measured and
   left alone: the first theme toggle (32 ms with analytics on a throttled phone) and
   page navigation (150-190 ms tap to paint, so no progress bar).
+- 2026-11-03, fourth batch (#88, from the owner's answers; about 94% of the audit
+  closed): the Zvonobot case says who bought and through which channels, how agent
+  quality was judged (answering machines were the biggest cost problem), what did not
+  work at first (one big scenario, split into small agents), and three product
+  decisions with their trade-offs; About names the billing work and five principles;
+  the resume's 2022-2025 years name the virtual PBX line; the Drinkit per-vacancy
+  resume is gone; inner labels in sentence-case Geist and the results numbers in the
+  foreground colour; a reply-time line next to the contacts. The owner offered to let
+  figures be made up; none were, and none may be (see the `cv.ts` content rules).
+  Open and waiting on him: a Cal.com booking link (never use an API key for it), the
+  hh.ru link, a named reference, Search Console, and the card-to-title morph (P15).
 
 ## Gotchas
 
