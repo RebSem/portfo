@@ -1,7 +1,7 @@
 {
   "name": "Mikhail Semenov, Product Manager",
   "short_name": "M. Semenov",
-  "description": "Product manager in B2B SaaS. Launched a voice AI agent line from scratch: 80 paying customers and 500,000+ minutes in production in under a year.",
+  "description": "Product manager in B2B SaaS. Launched a voice AI agent line from scratch: 80 paying B2B customers in under a year.",
   "start_url": "/",
   "scope": "/",
   "display": "browser",
@@ -19,6 +19,16 @@
       "src": "/favicon-32.png",
       "type": "image/png",
       "sizes": "32x32"
+    },
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
     }
   ]
 }

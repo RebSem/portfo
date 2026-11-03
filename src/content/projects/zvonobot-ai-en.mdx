@@ -15,6 +15,15 @@ import ProjectScreenshot from '../../components/ProjectScreenshot.astro';
 import LiveCabinetButton from '../../components/LiveCabinetButton.astro';
 import ShotGrid from '../../components/ShotGrid.astro';
 
+<nav aria-label="On this page">
+  <ul class="case-jump">
+    <li><a href="#result">Result</a></li>
+    <li><a href="#key-decision-sell-first-build-later">Key decision</a></li>
+    <li><a href="#how-the-console-works">How the console works</a></li>
+    <li><a href="#my-part">My part</a></li>
+  </ul>
+</nav>
+
 ## Result
 
 - **80 paying B2B customers** in under a year from launch.
@@ -30,7 +39,7 @@ They did. On warm lead lists the AI agents beat the legacy robocalls on conversi
 
 ## What it is
 
-Zvonobot AI is a console where a B2B client builds a voice AI agent, gives it a prompt and a contact list, and runs outbound campaigns: sales, onboarding, reactivation, surveys. A team of four engineers built it; the product decisions were mine.
+Zvonobot AI is a console where a B2B client builds a voice AI agent, gives it a prompt and a contact list, and runs outbound campaigns: sales, onboarding, reactivation, surveys. A team of four engineers built it; the product decisions were mine. The interface is in Russian, the product’s market.
 
 <LiveCabinetButton
   href="https://lk2.ai-zvonki.ru"
@@ -38,7 +47,7 @@ Zvonobot AI is a console where a B2B client builds a voice AI agent, gives it a 
   title="The console is live, open it and try it yourself"
   body="Not a prototype. Register in a minute and build your own voice agent in the same console the line's paying customers use."
   cta="Open the console"
-  urlLabel="lk2.ai-zvonki.ru"
+  urlLabel="lk2.ai-zvonki.ru · Russian interface"
   secondaryHref="https://zvonobot.ru/ai-agent"
   secondaryLabel="Product landing: zvonobot.ru/ai-agent"
 />
@@ -47,7 +56,7 @@ Zvonobot AI is a console where a B2B client builds a voice AI agent, gives it a 
   lightSrc="/projects/zvonobot-dashboard-light.png"
   darkSrc="/projects/zvonobot-dashboard-dark.png"
   alt="Zvonobot AI client dashboard: KPIs for leads, conversion and cost per lead, a lead funnel, and a daily call timeline (demo data)"
-  caption="Client dashboard · demo account"
+  caption="Client dashboard · demo account, Russian UI"
 />
 
 <ShotGrid>
@@ -102,7 +111,7 @@ Why outbound is worth automating for a mid-market B2B team:
 
 </details>
 
-<details>
+<details id="how-the-console-works">
 <summary>How the console works: signup, campaigns, billing</summary>
 
 One console for every role: agent assembly, dialing, billing and analytics.
@@ -118,7 +127,7 @@ One console for every role: agent assembly, dialing, billing and analytics.
 
 </details>
 
-<details>
+<details id="my-part">
 <summary>My part and the team’s</summary>
 
 I owned the line: what got built, what it cost, whom we sold it to, pricing and per-call-type margins. Specs, priorities and review were mine. When a hypothesis needed a working answer faster than a sprint, I prototyped it myself with AI coding agents (Claude Code, Codex) and handed the team the learning, not the code.

@@ -6,6 +6,7 @@
 // so only the active theme's image is ever fetched.
 //
 // Use one shot, or pass `shots` (2 items) for a responsive side-by-side duo.
+// Each PNG has an AVIF beside it (scripts/webp-shots.mjs) in the <picture>.
 interface Shot {
   lightSrc: string;
   darkSrc: string;
@@ -29,23 +30,34 @@ const panes: Shot[] = shots ?? [
   { lightSrc: lightSrc!, darkSrc: darkSrc!, alt: alt!, caption },
 ];
 const isDuo = panes.length > 1;
+const avif = (png: string) => png.replace(/\.png$/, '.avif');
 ---
 
 <figure class:list={["app-shot", { "app-shot-duo": isDuo }]}>
   {panes.map((p) => (
     <figure class="app-shot-pane">
       <div class="app-shot-frame">
-        <img
-          src={p.lightSrc}
-          data-light-src={p.lightSrc}
-          data-dark-src={p.darkSrc}
-          alt={p.alt}
-          class="app-shot-img"
-          loading="lazy"
-          decoding="async"
-          width={width}
-          height={height}
-        />
+        {/* The swap in src/scripts/theme-images.js flips the AVIF source too:
+            a matching <source> ignores the img's own src. */}
+        <picture>
+          <source
+            type="image/avif"
+            srcset={avif(p.lightSrc)}
+            data-light-srcset={avif(p.lightSrc)}
+            data-dark-srcset={avif(p.darkSrc)}
+          />
+          <img
+            src={p.lightSrc}
+            data-light-src={p.lightSrc}
+            data-dark-src={p.darkSrc}
+            alt={p.alt}
+            class="app-shot-img"
+            loading="lazy"
+            decoding="async"
+            width={width}
+            height={height}
+          />
+        </picture>
       </div>
       {p.caption && <figcaption class="app-shot-caption">{p.caption}</figcaption>}
     </figure>

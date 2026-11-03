@@ -48,7 +48,6 @@ html[data-theme='light'] {
   --dur-page: 180ms;
   --dur-base: 220ms;
   --dur-draw: 600ms;
-  --dur-reveal: 700ms;
   --press-scale: 0.98;
 
   /* Editorial grid of the home page (see "Editorial system" below): the
@@ -147,6 +146,9 @@ body {
 
 html {
   scroll-behavior: smooth;
+  /* iOS in landscape inflates text on its own; the type is sized here. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   /* Reserve the scrollbar gutter without forcing an always-on scrollbar
      (the old overflow-y: scroll hack cost ~15px and skewed centering). */
   scrollbar-gutter: stable;
@@ -985,6 +987,9 @@ html[data-theme='dark'] .theme-icon-sun {
   grid-template-columns: repeat(var(--weeks), minmax(9px, 1fr));
   grid-template-rows: repeat(7, 9px);
   gap: 3px;
+  /* Cells arrive in week order (AboutContent.astro), so filling by column
+     places each one without an inline grid-column and grid-row. */
+  grid-auto-flow: column;
   /* overflow-x auto for narrow viewports, but Y must stay visible —
      otherwise the cell border and the hover scale on the top row get
      clipped by the scroll container. */
@@ -993,16 +998,6 @@ html[data-theme='dark'] .theme-icon-sun {
   /* Breathing room above the top row (and below) so hover scale(1.4)
      and outlines never get eaten by the container edge. */
   padding: 6px 0 0.4rem;
-
-  /* Reveal-on-view: starts clipped from the right, animates open
-     left → right when JS toggles data-revealed="true". Wave reads
-     as "activity accumulating over the year". */
-  clip-path: inset(0 100% 0 0);
-  transition: clip-path var(--dur-reveal) var(--ease-in-out-strong);
-}
-
-.contribution-grid[data-revealed='true'] {
-  clip-path: inset(0 0 0 0);
 }
 
 .contribution-cell {
@@ -1088,13 +1083,12 @@ html[data-theme='dark'] .theme-icon-sun {
   color: color-mix(in oklab, var(--foreground) 74%, transparent);
 }
 
-.github-error {
-  color: #d65252;
-  font-size: 0.84rem;
-}
-
-.hidden {
-  display: none !important;
+/* A touch screen has no hover, so "Hover a cell..." would describe a gesture the
+   reader cannot make. */
+@media (hover: none) {
+  .contribution-tooltip {
+    display: none;
+  }
 }
 
 /* Primary action: this product is live, so the visit-the-product link
@@ -1279,6 +1273,41 @@ html[data-theme='dark'] .theme-icon-sun {
 .case-tags li:not(:last-child)::after {
   content: '·';
   margin: 0 0.5em;
+}
+
+/* The jump links under a case's availability strip: one quiet line with dots
+   between the links, as the tags at the end of a case. Each link lands on its
+   section below the sticky header (html scroll-padding). */
+.prose .case-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  color: var(--foreground);
+}
+
+.case-jump li:not(:last-child)::after {
+  content: '·';
+  margin: 0 0.5em;
+  color: var(--text-muted);
+}
+
+/* A touch screen gets a 44px tap area per link. The padding of an inline link
+   takes no room in the line, so the links stay as tight as text. */
+@media (pointer: coarse) {
+  .case-jump a {
+    padding-block: 0.8rem;
+  }
+}
+
+@media print {
+  .prose .case-jump {
+    display: none;
+  }
 }
 
 /* Pulse intentionally slow + sparse — the dot still reads as "alive"
@@ -1727,10 +1756,6 @@ html[data-theme='dark'] .theme-icon-sun {
     filter: none;
   }
 
-  .contribution-grid {
-    clip-path: none;
-  }
-
   .contribution-cell {
     transition: outline-color 80ms linear;
   }
@@ -1841,11 +1866,34 @@ a.project-shot-zoom {
   background: color-mix(in oklab, #0c0d0e 72%, transparent);
 }
 
+/* The dialog settles into place over 200 ms from 98%. It starts visible: an
+   opacity of 0 in @starting-style would hide the shot on open (AGENTS.md
+   bans that). Reduced motion gets no transition, so no scale either. */
+@media (prefers-reduced-motion: no-preference) {
+  .shot-lightbox {
+    transition: transform 200ms var(--ease-out-strong);
+  }
+}
+
+@starting-style {
+  .shot-lightbox[open] {
+    transform: scale(0.98);
+  }
+}
+
 .shot-lightbox-img {
   display: block;
   width: 100%;
   height: auto;
   aspect-ratio: 16 / 10;
+}
+
+/* On phones the shot keeps a laptop's text size: 1100px wide, scrolled
+   sideways inside the dialog. */
+@media (max-width: 720px) {
+  .shot-lightbox-img {
+    width: 1100px;
+  }
 }
 
 .shot-lightbox-close {
@@ -1948,10 +1996,50 @@ a.project-shot-zoom {
   margin-bottom: 1.25rem;
 }
 
-/* A printed or PDF-saved case keeps the collapsed sections. */
+/* The content opens over 200 ms where the browser can animate to
+   `height: auto` and style ::details-content (Chromium). Other browsers keep
+   the instant open. Only the content box moves, so the summary, its focus
+   ring and the chevron stay put. The small clip margin keeps focus rings of
+   links inside the content unclipped. flow-root keeps the first and last child
+   margins inside the box, so the animated block-size includes them and the
+   page below does not hop at the start or end. */
+@supports (interpolate-size: allow-keywords) and selector(::details-content) {
+  .prose {
+    interpolate-size: allow-keywords;
+  }
+
+  .prose details::details-content {
+    display: flow-root;
+    block-size: 0;
+    opacity: 0;
+    overflow: clip;
+    overflow-clip-margin: 0.5rem;
+    transition:
+      block-size 200ms var(--ease-out-strong),
+      opacity 200ms var(--ease-out-strong),
+      content-visibility 200ms allow-discrete;
+  }
+
+  .prose details[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prose details::details-content {
+    transition: none;
+  }
+}
+
+/* A printed or PDF-saved case keeps the collapsed sections, open and fully
+   visible: the closed content box is 0 high and faded out on screen. */
 @media print {
   .prose details::details-content {
     content-visibility: visible;
+    block-size: auto;
+    opacity: 1;
+    transition: none;
   }
 }
 

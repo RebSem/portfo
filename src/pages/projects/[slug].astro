@@ -9,6 +9,7 @@ import { githubUsername, heroDisplayName, heroFallbackName, linkedinUrl, personS
 import { nextCaseProjectId } from '../../lib/case-order';
 import { chunks, HYPHENATED } from '../../lib/nb';
 import Layout from '../../layouts/Layout.astro';
+import caseLinksScriptUrl from '../../scripts/case-links.js?url';
 
 export async function getStaticPaths() {
   const projectEntries = await getCollection('projects', ({ data }) => !data.draft && data.lang === 'en');
@@ -148,4 +149,5 @@ const breadcrumbSchema = {
   </main>
 
   <SiteFooter closing rail={false} />
+  <script is:inline type="module" src={caseLinksScriptUrl}></script>
 </Layout>
