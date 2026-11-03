@@ -15,42 +15,58 @@ const { lightSrc, darkSrc, alt, caption, sizes = '(max-width: 980px) 100vw, 880p
 const zoomLabel = `${alt}${Astro.currentLocale === 'ru' ? '. Открыть крупно' : '. Open full size'}`;
 
 /**
- * The PNGs stay in the repo as the source; scripts/webp-shots.mjs writes a
- * 2x and a 1x WebP beside each. Five 350 KB PNGs per theme on a case page
- * were the single heaviest thing on the site; the 1x WebP is ~50 KB and a
- * laptop never asks for the 2x.
+ * The PNGs stay in the repo as the source; scripts/webp-shots.mjs writes a 2x
+ * and a 1x WebP and AVIF beside each. Five 350 KB PNGs per theme on a case page
+ * were the single heaviest thing on the site; the 1x AVIF is about 60 KB at most
+ * and a laptop never asks for the 2x.
  */
 const webp = (png: string) => png.replace(/\.png$/, '.webp');
 const webp1x = (png: string) => png.replace(/\.png$/, '-1440.webp');
 const srcset = (png: string) => `${webp1x(png)} 1440w, ${webp(png)} 2880w`;
+// The AVIF source comes first in the <picture>; a browser without AVIF skips it
+// and takes the WebP on the img.
+const avif = (png: string) => png.replace(/\.png$/, '.avif');
+const avif1x = (png: string) => png.replace(/\.png$/, '-1440.avif');
+const avifSrcset = (png: string) => `${avif1x(png)} 1440w, ${avif(png)} 2880w`;
 ---
 
 <figure class="project-shot">
   {/* A link to the full-size image, so a shot shrunk into a grid can still be
-      read: with JS it opens in the lightbox below, without JS in a new tab. */}
-  <a class="project-shot-frame project-shot-zoom" href={webp(lightSrc)} target="_blank" rel="noopener" aria-label={zoomLabel}>
+      read: with JS it opens in the lightbox below, without JS in a new tab.
+      Prefetch is off: Astro would fetch the 2x of every shot on the page. */}
+  <a class="project-shot-frame project-shot-zoom" href={webp(lightSrc)} target="_blank" rel="noopener" aria-label={zoomLabel} data-astro-prefetch="false">
     <div class="project-shot-bar" aria-hidden="true">
       <span class="project-shot-dot"></span>
       <span class="project-shot-dot"></span>
       <span class="project-shot-dot"></span>
     </div>
-    {/* Theme swap lives in src/scripts/theme-images.js: it flips src and
-        srcset together from these data attributes. */}
-    <img
-      src={webp1x(lightSrc)}
-      srcset={srcset(lightSrc)}
-      sizes={sizes}
-      data-light-src={webp1x(lightSrc)}
-      data-dark-src={webp1x(darkSrc)}
-      data-light-srcset={srcset(lightSrc)}
-      data-dark-srcset={srcset(darkSrc)}
-      alt={alt}
-      class="project-shot-img"
-      loading="lazy"
-      decoding="async"
-      width="1440"
-      height="900"
-    />
+    {/* Theme swap lives in src/scripts/theme-images.js: it flips the img's src
+        and srcset and the AVIF source's srcset from these data attributes. A
+        matching <source> ignores the img's own src, so it must switch too. */}
+    <picture>
+      <source
+        type="image/avif"
+        srcset={avifSrcset(lightSrc)}
+        sizes={sizes}
+        data-light-srcset={avifSrcset(lightSrc)}
+        data-dark-srcset={avifSrcset(darkSrc)}
+      />
+      <img
+        src={webp1x(lightSrc)}
+        srcset={srcset(lightSrc)}
+        sizes={sizes}
+        data-light-src={webp1x(lightSrc)}
+        data-dark-src={webp1x(darkSrc)}
+        data-light-srcset={srcset(lightSrc)}
+        data-dark-srcset={srcset(darkSrc)}
+        alt={alt}
+        class="project-shot-img"
+        loading="lazy"
+        decoding="async"
+        width="1440"
+        height="900"
+      />
+    </picture>
   </a>
   {caption && <figcaption class="project-shot-caption">{caption}</figcaption>}
 </figure>
@@ -101,10 +117,10 @@ const srcset = (png: string) => `${webp1x(png)} 1440w, ${webp(png)} 2880w`;
     const image = dialog.querySelector<HTMLImageElement>(`.${LIGHTBOX}-img`);
     if (!image) return;
     // The 1x the thumbnail already shows, in the theme that is showing
-    // (theme-images.js keeps its src on the active theme). The browser has
+    // (theme-images.js keeps the picture on the active theme). The browser has
     // decoded it, so the frame is never empty while the 2x downloads.
     const shown = thumb.currentSrc || thumb.src;
-    const full = shown.replace(/-1440\.webp$/, '.webp');
+    const full = shown.replace(/-1440\.(webp|avif)$/, '.$1');
     image.src = shown;
     image.alt = thumb.alt;
     dialog.setAttribute('aria-label', thumb.alt);

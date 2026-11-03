@@ -1,9 +1,11 @@
 // Theme-aware screenshot sources. Each shot renders a single <img> whose
 // src follows [data-theme] on <html>, so only the active variant downloads
 // (the old twin light+dark <img> pair fetched both: display:none does not
-// stop the browser). A <picture media="prefers-color-scheme"> can't do this
-// job here because the theme is a manual localStorage-backed toggle that can
-// disagree with the OS preference.
+// stop the browser). A shot inside a <picture> also carries an AVIF <source>
+// whose srcset follows the theme the same way. A
+// <picture media="prefers-color-scheme"> can't do this job here because the
+// theme is a manual localStorage-backed toggle that can disagree with the OS
+// preference.
 
 const state = window.__portfolioThemeImagesState ?? {
   observerBound: false,
@@ -24,6 +26,15 @@ const syncThemeImages = () => {
     const wantSet = theme === 'dark' ? img.dataset.darkSrcset : img.dataset.lightSrcset;
     if (wantSet && img.getAttribute('srcset') !== wantSet) {
       img.setAttribute('srcset', wantSet);
+    }
+  });
+
+  // Inside a <picture> the first matching <source> decides the file, and the
+  // img's src and srcset are ignored, so the AVIF source switches with the theme.
+  document.querySelectorAll('source[data-light-srcset][data-dark-srcset]').forEach((source) => {
+    const want = theme === 'dark' ? source.dataset.darkSrcset : source.dataset.lightSrcset;
+    if (want && source.getAttribute('srcset') !== want) {
+      source.setAttribute('srcset', want);
     }
   });
 };

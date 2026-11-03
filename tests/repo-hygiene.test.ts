@@ -124,7 +124,7 @@ describe('tracked files', () => {
   };
 
   it('hold no photo with GPS coordinates', () => {
-    const photos = files.filter((file) => /\.(jpe?g|heic|heif|png|webp|tiff?)$/i.test(file));
+    const photos = files.filter((file) => /\.(jpe?g|heic|heif|avif|png|webp|tiff?)$/i.test(file));
     expect(photos.length).toBeGreaterThan(0);
     expect(photos.filter((file) => hasGps(readFileSync(file))), 'GPS EXIF in tracked images').toEqual([]);
   });
