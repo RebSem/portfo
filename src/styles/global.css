@@ -201,11 +201,27 @@ a {
   text-decoration-thickness: 1px;
   text-decoration-style: solid;
   text-underline-offset: 4px;
+  transition: color var(--dur-fast) var(--ease-out-strong);
 }
 
-a:hover,
 a:focus-visible {
   color: var(--accent-text);
+}
+
+/* Link hover colour only with a fine pointer: on a phone a tap leaves :hover
+   applied, and the header's locale link (an <a>) stayed green after the tap. */
+@media (hover: hover) and (pointer: fine) {
+  a:hover {
+    color: var(--accent-text);
+  }
+}
+
+/* A tap on a phone flashes the system highlight over links and buttons; the
+   hover and press states already show the touch, so the flash only adds blue. */
+a,
+button,
+summary {
+  -webkit-tap-highlight-color: transparent;
 }
 
 .skip-link {
@@ -316,11 +332,13 @@ a:focus-visible {
   letter-spacing: 0;
   text-decoration: none;
   white-space: nowrap;
-  transition: transform var(--dur-press) var(--ease-out-strong);
+  transition:
+    color var(--dur-fast) var(--ease-out-strong),
+    transform var(--dur-press) var(--ease-out-strong);
 }
 
 .brand:active {
-  transform: scale(0.97);
+  transform: scale(0.98);
 }
 
 .header-controls {
@@ -346,11 +364,13 @@ a:focus-visible {
   padding: 0.25rem 0.55rem;
   text-decoration: none;
   font-weight: 500;
-  transition: transform var(--dur-press) var(--ease-out-strong);
+  transition:
+    color var(--dur-fast) var(--ease-out-strong),
+    transform var(--dur-press) var(--ease-out-strong);
 }
 
 .main-nav-link:active {
-  transform: scale(0.96);
+  transform: scale(0.98);
 }
 
 .main-nav-link {
@@ -410,15 +430,24 @@ a:focus-visible {
     transform var(--dur-press) var(--ease-out-strong);
 }
 
-.locale-toggle:hover,
 .locale-toggle:focus-visible {
   background: color-mix(in oklab, var(--surface) 92%, var(--accent) 8%);
   border-color: color-mix(in oklab, var(--accent) 35%, var(--border));
   color: var(--accent-text);
 }
 
+/* Hover only with a fine pointer: on a phone a tap leaves :hover applied, and
+   the toggle stayed green after it. */
+@media (hover: hover) and (pointer: fine) {
+  .locale-toggle:hover {
+    background: color-mix(in oklab, var(--surface) 92%, var(--accent) 8%);
+    border-color: color-mix(in oklab, var(--accent) 35%, var(--border));
+    color: var(--accent-text);
+  }
+}
+
 .locale-toggle:active {
-  transform: scale(0.94);
+  transform: scale(0.95);
 }
 
 /* Resume-only download action. The header is sticky, so this is also the
@@ -452,7 +481,7 @@ a:focus-visible {
 }
 
 .header-pdf:active {
-  transform: scale(0.96);
+  transform: scale(0.98);
 }
 
 .theme-toggle {
@@ -474,15 +503,22 @@ a:focus-visible {
     transform var(--dur-press) var(--ease-out-strong);
 }
 
-.theme-toggle:hover,
 .theme-toggle:focus-visible {
   color: var(--accent-text);
   border-color: color-mix(in oklab, var(--accent) 35%, var(--border));
   background: color-mix(in oklab, var(--surface) 92%, var(--accent) 8%);
 }
 
+@media (hover: hover) and (pointer: fine) {
+  .theme-toggle:hover {
+    color: var(--accent-text);
+    border-color: color-mix(in oklab, var(--accent) 35%, var(--border));
+    background: color-mix(in oklab, var(--surface) 92%, var(--accent) 8%);
+  }
+}
+
 .theme-toggle:active {
-  transform: scale(0.94);
+  transform: scale(0.95);
 }
 
 .theme-icon {
@@ -1232,6 +1268,14 @@ html[data-theme='dark'] .theme-icon-sun {
   color: color-mix(in oklab, var(--foreground) 66%, transparent);
 }
 
+/* This rule outranks .social-link:hover, so the closing footer names its own
+   hover colour. */
+@media (hover: hover) and (pointer: fine) {
+  .site-footer-closing .footer-actions .social-link:hover {
+    color: var(--accent-text);
+  }
+}
+
 /* The resume: a quiet text link after Email, set like the footer nav and
    as tall as the icon row beside it so it is easy to tap. */
 .site-footer-closing .footer-cv {
@@ -1324,13 +1368,11 @@ html[data-theme='dark'] .theme-icon-sun {
     transform var(--dur-press) var(--ease-out-strong);
 }
 
-/* Hover only on real pointer devices — and a subtle lift instead of rotate.
-   Rotation is decoration without function and these live in the header/footer
-   on every page; it shouldn't shout. */
+/* Hover only on real pointer devices, and colour only: no lift or scale. These
+   icons sit in the header and footer on every page, so they stay quiet. */
 @media (hover: hover) and (pointer: fine) {
   .social-link:hover {
     color: var(--accent-text);
-    transform: scale(1.08);
   }
 }
 
@@ -1339,7 +1381,7 @@ html[data-theme='dark'] .theme-icon-sun {
 }
 
 .social-link:active {
-  transform: scale(0.94);
+  transform: scale(0.95);
 }
 
 .footer-note {
@@ -1636,7 +1678,7 @@ a.project-shot-zoom {
   color: inherit;
   text-decoration: none;
   cursor: zoom-in;
-  transition: transform var(--dur-fast) var(--ease-out-strong);
+  transition: border-color var(--dur-fast) var(--ease-out-strong);
 }
 
 a.project-shot-zoom:focus-visible {
@@ -1646,13 +1688,17 @@ a.project-shot-zoom:focus-visible {
 
 @media (hover: hover) and (pointer: fine) {
   a.project-shot-zoom:hover {
-    transform: translateY(-2px);
+    border-color: color-mix(in oklab, var(--accent) 40%, var(--border));
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   a.project-shot-zoom {
     transition: none;
+    transform: none;
+  }
+
+  a.project-shot-zoom:hover {
     transform: none;
   }
 }
@@ -1749,6 +1795,13 @@ a.project-shot-zoom:focus-visible {
 
 .prose details[open] > summary::after {
   transform: translateY(15%) rotate(225deg);
+}
+
+/* After the base rule above: same specificity, so source order decides. */
+@media (prefers-reduced-motion: reduce) {
+  .prose summary::after {
+    transition: none;
+  }
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -1901,7 +1954,10 @@ a.project-shot-zoom:focus-visible {
   white-space: nowrap;
   text-decoration: none;
   box-shadow: 0 1px 2px color-mix(in oklab, var(--foreground) 8%, transparent);
-  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+  transition:
+    background var(--dur-fast) var(--ease-out-strong),
+    border-color var(--dur-fast) var(--ease-out-strong),
+    transform var(--dur-press) var(--ease-out-strong);
 }
 
 /* When two CTAs sit in a wrap, they manage their own width — let them be. */
@@ -1919,7 +1975,17 @@ a.project-shot-zoom:focus-visible {
   .repo-cta:hover {
     background: color-mix(in oklab, var(--accent) 20%, var(--surface));
     border-color: color-mix(in oklab, var(--accent) 60%, var(--border));
-    transform: translateY(-1px);
+  }
+}
+
+.repo-cta:active {
+  transform: scale(0.98);
+}
+
+/* After the base rule above: same specificity, so source order decides. */
+@media (prefers-reduced-motion: reduce) {
+  .repo-cta:active {
+    transform: none;
   }
 }
 
@@ -1933,7 +1999,6 @@ a.project-shot-zoom:focus-visible {
   .repo-cta-secondary:hover {
     background: var(--surface);
     border-color: color-mix(in oklab, var(--foreground) 25%, var(--border));
-    transform: translateY(-1px);
   }
 }
 

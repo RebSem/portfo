@@ -143,24 +143,37 @@ const { href, eyebrow, title, body, cta, urlLabel, secondaryHref, secondaryLabel
     white-space: nowrap;
     text-decoration: none;
     box-shadow: 0 2px 10px color-mix(in oklab, var(--accent) 30%, transparent);
-    transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+    transition:
+      background-color var(--dur-fast) var(--ease-out-strong),
+      box-shadow var(--dur-fast) var(--ease-out-strong),
+      transform var(--dur-press) var(--ease-out-strong);
   }
 
   .live-cabinet__btn svg {
     width: 1rem;
     height: 1rem;
     flex: none;
-    transition: transform 0.18s ease;
+    transition: transform var(--dur-fast) var(--ease-out-strong);
   }
 
   @media (hover: hover) and (pointer: fine) {
     .live-cabinet__btn:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.04);
+      background: var(--accent-strong);
       box-shadow: 0 4px 16px color-mix(in oklab, var(--accent) 38%, transparent);
     }
     .live-cabinet__btn:hover svg {
       transform: translateX(2px);
+    }
+  }
+
+  .live-cabinet__btn:active {
+    transform: scale(0.98);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .live-cabinet__btn:active,
+    .live-cabinet__btn:hover svg {
+      transform: none;
     }
   }
 
