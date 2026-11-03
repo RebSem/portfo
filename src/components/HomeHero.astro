@@ -51,7 +51,9 @@ const copy = uiCopy.home;
   {/* The ways to write sit with the actions: Telegram as the button, the
       profiles and the email as quiet icons after it. On phones the icons
       drop out and the line under the buttons (.hero-alt) carries Email and
-      LinkedIn instead, so a recruiter without Telegram still has a way in. */}
+      LinkedIn instead, so a recruiter without Telegram still has a way in.
+      That line has its own placement: on phones it is the only Email and
+      LinkedIn in the hero, so its clicks can be counted apart. */}
   <div class="hero-cta-row">
     <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -73,7 +75,7 @@ const copy = uiCopy.home;
     />
   </div>
 
-  <p class="hero-alt">
+  <p class="hero-alt" data-analytics-placement="hero-alt">
     {copy.heroAlt.lead[locale]}
     <a href={buildIntroMailto(locale)}>{copy.heroAlt.email[locale]}</a>
     <span class="hero-alt-sep" aria-hidden="true">·</span>

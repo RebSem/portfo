@@ -43,6 +43,7 @@ html[data-theme='light'] {
   --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
   --dur-press: 120ms;
   --dur-fast: 160ms;
+  --dur-page: 180ms;
   --dur-base: 220ms;
   --dur-reveal: 700ms;
 
@@ -2326,26 +2327,40 @@ a.project-shot-zoom {
 }
 
 /* ============================================================
-   Theme cross-fade.
+   Page transitions.
 
-   The theme toggle runs through document.startViewTransition (see
-   src/scripts/locale.js), which snapshots the page and cross-fades between
-   the two palettes. Without these rules it runs at the browser default of
-   250ms with a slide, which on a full page of text reads as sluggish and
-   slightly seasick. 180ms, opacity only, no movement: the palette changes
-   and nothing slides.
+   Two things run through document.startViewTransition: the theme toggle (see
+   src/scripts/locale.js) and ClientRouter navigations. Both snapshot the page
+   and fade opacity only, nothing moves.
 
-   ClientRouter navigations use the same mechanism, so this also tightens
-   page-to-page transitions.
+   Clicks go to the transition overlay until its longest animation ends, so
+   that length is also how long a click right after a theme toggle or a
+   navigation can be lost. The group defaults to 250ms, longer than either
+   fade, so it is pinned to --dur-page (180ms) here.
+
+   The theme switch is a plain 180ms cross-fade: the same page, a new palette.
+   A navigation fades through instead. The old page fades out over 90ms from
+   the start; the new one waits 60ms and fades in over 150ms, so the two never
+   both show at full strength and the transition ends at 210ms.
    ============================================================ */
+
+::view-transition-group(root) {
+  animation-duration: var(--dur-page);
+}
 
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 180ms;
+  animation-duration: var(--dur-page);
   animation-timing-function: var(--ease-out-strong);
-  /* Both layers cross-fade in place. The default group animation would also
-     translate and scale the snapshot, which is what causes the drift. */
-  mix-blend-mode: normal;
+}
+
+:root[data-astro-transition]::view-transition-old(root) {
+  animation-duration: 90ms;
+}
+
+:root[data-astro-transition]::view-transition-new(root) {
+  animation-delay: 60ms;
+  animation-duration: 150ms;
 }
 
 @media (prefers-reduced-motion: reduce) {

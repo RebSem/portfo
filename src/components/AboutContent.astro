@@ -163,7 +163,7 @@ const copy = {
     </section>
   )}
 
-  <div class="about-cta">
+  <div class="about-cta" data-analytics-placement="about-cta">
     <div>
       <p class="about-row-eyebrow">{copy.ctaEyebrow[locale]}</p>
       <p class="about-cta-headline">{chunks(copy.ctaHeadline[locale]).map((c) => (HYPHENATED.test(c) ? <span class="nb">{c}</span> : c))}</p>

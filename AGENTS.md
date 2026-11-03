@@ -126,7 +126,7 @@ if a runner image ever ships an older 22.x, switch both to `node-version-file: .
 | WebP screenshots | `npm run shots:webp` |
 
 Verified on 2026-11-03 (Node 22.22, npm 10.9): `npm ci`, `npm run validate`
-(0 errors/warnings/hints, build OK, 104/104 tests including the `dist/` suites, link
+(0 errors/warnings/hints, build OK, 122/122 tests including the `dist/` suites, link
 check passed for 27 HTML files). Not run: `cv:export`, `cv:vacancy`, `og:build`,
 `shots:webp`, `dev`, `preview`.
 
@@ -212,6 +212,10 @@ is git-ignored; `.env.example` is the template.
 - Internal page links end in `/`: GitHub Pages answers `/about` with a 301 first.
   `scripts/link-check.mjs` fails a page link without the slash. Prefetch is
   `viewport` for every link; file downloads opt out with `data-astro-prefetch="false"`.
+- Page transitions: the root view-transition group runs `--dur-page` (180 ms); a
+  navigation fades through (old 90 ms, new 60 + 150 ms) so the two pages never
+  overlay. Chrome sends clicks to the transition overlay while it runs, so do not
+  lengthen these.
 - Calm motion is enforced: no endless animation and no `@starting-style` hidden start
   on any page, meta descriptions at most 160 characters, no client-side GitHub API
   calls (`tests/regression-guards.test.ts`); no em dash in published MDX or the web
@@ -284,6 +288,20 @@ is git-ignored; `.env.example` is the template.
   blocks or em dashes in cases, a three-page resume with a product-first summary, no
   USDT in the EN resume, and guard tests. Each item was implemented by a Haiku agent
   and checked by a Sonnet tester before review.
+- 2026-11-03, second batch (#79-#83, 22 more items, about 55% of the audit done):
+  `alumniOf` instead of `worksFor` on /cv, one Person `@id` and a WebSite node,
+  the blog `noindex,follow`, fonts preloaded per locale; cursivo and obrabot
+  described as the owner confirmed (an AI agent and CRM for car rental teams in
+  development; the voice AI team's internal workspace), native English ("from
+  scratch", "contact lists", "Read the case study"), descriptions at most 160
+  characters, `src/lib/nb.ts` for unbroken hyphenated words, an llmstxt.org-shaped
+  `llms.txt` without the revenue share or the city; a home standfirst without the
+  repeated 80, a closing that does not repeat its question, About ending once,
+  "or Email · LinkedIn" on phones; one hover and press language, hairlines drawn
+  once, AA captions and selection, one focus ring, 44px touch targets in the case
+  strip, honest toggle labels, page transitions shortened to 180 ms without double
+  exposure; and analytics for every new link (`cv:link_click`, `link_placement` on
+  all link events). The owner declined a prefilled Telegram message.
 
 ## Gotchas
 

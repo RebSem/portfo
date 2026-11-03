@@ -50,6 +50,11 @@ export function isCvPath(pathname: string): boolean {
   return /^\/(?:ru\/)?cv\/?$/.test(pathname);
 }
 
+/** A link to one of this site's resume pages, not a file on it and not another host. */
+export function isCvLink(url: URL, siteHost: string): boolean {
+  return isInternal(url, siteHost) && isCvPath(url.pathname);
+}
+
 /**
  * The `?src=` tag on a resume link, e.g. /cv?src=exness. It records which
  * outreach a view came from, which is the only attribution this site can have:

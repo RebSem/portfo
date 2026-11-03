@@ -180,7 +180,7 @@ export function scrollDepthPercent(scrollY: number, viewportHeight: number, docu
   return Math.max(0, Math.min(100, Math.round(reached)));
 }
 
-/** `currently-title` → `currently`; the section names in events stay short. */
+/** `currently-title` → `currently`, `case-next-label` → `case-next`; the section names in events stay short. */
 export function sectionKey(labelledBy: string): string {
-  return labelledBy.replace(/-title$/, '');
+  return labelledBy.replace(/-(title|label)$/, '');
 }
