@@ -160,6 +160,10 @@ document.addEventListener('astro:before-swap', (event) => {
   const theme = state.initialized ? state.activeTheme : readTheme();
   incoming.setAttribute('data-theme', theme);
   incoming.style.colorScheme = theme;
+
+  // Every soft navigation rebuilds the home page's rules, so global.css skips
+  // their draw animation on this marker; only the first load plays it.
+  incoming.setAttribute('data-soft-nav', '');
 });
 
 // Fires on the initial load as well as after every swap, so it is the whole

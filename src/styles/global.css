@@ -2252,7 +2252,9 @@ a.project-shot-zoom:focus-visible {
 }
 
 /* The home page's only motion: the two hairlines under the headline draw
-   in from the left once, the results rule a beat after the facts rule.
+   in from the left on the first load, the results rule a beat after the
+   facts rule. A soft navigation back to the home page does not replay them
+   (see the data-soft-nav rule at the end of this group).
    Only the rules move. Every word and figure is on screen from the first
    frame: the H1 is the LCP element, and a capture at t=0 (a preview bot,
    a slow phone) still gets the whole opener. The home sections keep no
@@ -2277,13 +2279,13 @@ a.project-shot-zoom:focus-visible {
   height: 1px;
   background: var(--ed-rule);
   transform-origin: left center;
-  animation: ed-draw 1100ms var(--ease-out-strong) 60ms both;
+  animation: ed-draw 600ms var(--ease-out-strong) both;
 }
 
 .ed-draw.ed-mark::before {
   z-index: 1;
   transform-origin: left center;
-  animation: ed-draw 700ms var(--ease-out-strong) 200ms both;
+  animation: ed-draw 450ms var(--ease-out-strong) 200ms both;
 }
 
 .home-results.ed-draw::after {
@@ -2301,6 +2303,14 @@ a.project-shot-zoom:focus-visible {
   .ed-draw.ed-mark::before {
     animation: none;
   }
+}
+
+/* locale.js stamps data-soft-nav on the incoming <html> at astro:before-swap.
+   A return to the home page then shows the rules at once; only the first
+   load plays the draw. */
+:root[data-soft-nav] .ed-draw::after,
+:root[data-soft-nav] .ed-draw.ed-mark::before {
+  animation: none;
 }
 
 /* ============================================================
