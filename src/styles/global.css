@@ -1263,16 +1263,16 @@ html[data-theme='dark'] .theme-icon-sun {
   row-gap: 1.25rem;
 }
 
+/* Wraps inside the column instead of pushing the page wider when the text is
+   spaced out (WCAG 1.4.12); anywhere also counts toward min-content, so the
+   grid track does not grow to fit a long word. */
 .footer-closing-title {
   max-width: 16em;
   font-size: clamp(2rem, 2.6vw + 1rem, 3.5rem);
   font-weight: 580;
   letter-spacing: -0.044em;
   line-height: 1.02;
-}
-
-.footer-word {
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 .site-footer-closing .footer-body {

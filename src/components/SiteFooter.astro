@@ -2,6 +2,7 @@
 import SocialLinks from './SocialLinks.astro';
 import { siteRepoUrl, telegramUrl, uiCopy } from '../data/site-content';
 import { buildIntroMailto } from '../lib/intro-mail';
+import { noBreakAfterHyphen } from '../lib/nb';
 
 interface Props {
   noteRu?: string;
@@ -34,9 +35,9 @@ const locale = Astro.currentLocale === 'ru' ? 'ru' : 'en';
 const note = locale === 'ru' ? noteRu : noteEn;
 const prefix = locale === 'ru' ? '/ru' : '';
 
-// Word by word, so a line can only break between words: left to the
-// browser, "Нужен продакт-менеджер?" splits at its hyphen.
-const closingWords = uiCopy.footer.closingTitle[locale].split(' ');
+// "продакт-менеджер?" must not break at its hyphen, but it may wrap inside the
+// column when the text is spaced out (overflow-wrap in global.css).
+const closingTitle = noBreakAfterHyphen(uiCopy.footer.closingTitle[locale]);
 ---
 
 <footer class:list={['site-footer', { 'site-footer-closing': closing, 'site-footer-norail': !rail }]} data-analytics-placement="footer">
@@ -46,11 +47,7 @@ const closingWords = uiCopy.footer.closingTitle[locale].split(' ');
       <div class="footer-body">
         {closing ? (
           <>
-            <h2 class="footer-closing-title">
-              {closingWords.map((word, index) => (
-                <>{index > 0 && ' '}<span class="footer-word">{word}</span></>
-              ))}
-            </h2>
+            <h2 class="footer-closing-title">{closingTitle}</h2>
             <p class="footer-pitch">{uiCopy.footer.closingPitch[locale]}</p>
             <div class="footer-actions">
               <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
