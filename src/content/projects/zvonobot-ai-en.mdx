@@ -102,12 +102,11 @@ Zvonobot AI is a console where a B2B client builds a voice AI agent, gives it a 
 
 October 2025. Zvonobot was a mature outbound calling platform: robots dialing contact lists with pre-recorded scripts. LLMs had just learned to hold a real conversation. Recorded scripts would only get us so far, and if we did not build live agents, someone else would take the category. The question was not whether to build voice AI, but how to find out fast and cheaply whether our customers would pay for it.
 
-Why outbound is worth automating for a mid-market B2B team:
+### Who bought and how we sold it
 
-- Headcount does not scale linearly: a 30 to 60 seat outbound team is hard to hire, train and keep.
-- Speed-to-call decides the funnel: a lead called within minutes converts far better than one called tomorrow, and people are not on every shift.
-- Quality is uneven: two operators, one script, two different conversations, and no cheap way to audit what was actually said.
-- Lifecycle calls (onboarding nudges, reactivation, NPS, payment reminders) are cheap one by one and huge in volume together, more than a human team can justify.
+Buyers were companies in finance (banks, microfinance), HR and recruiting, online education, real estate, clinics and car dealers. The typical jobs were lead qualification, booking a visit or a call, confirming an order, delivery or booking, reactivating old customers, and the first screening of job candidates.
+
+We sold through four channels: our existing Zvonobot customers, cold calls from our sales managers, Yandex Direct ads, and word of mouth with referrals.
 
 </details>
 
@@ -124,6 +123,30 @@ One console for every role: agent assembly, dialing, billing and analytics.
 - **No call gets stuck, every minute is billed once.** A background poller reconciles every unfinished call with the provider every 60 seconds and settles the wallet.
 - **Post-call analytics.** An LLM breaks each conversation into an outcome, a sentiment and custom parameters. The dashboard ranks outcomes by frequency and shows the sentiment split and the hours when people actually answer.
 - **Four roles, one codebase.** Super-admin, manager, client owner, accountant, each with its own scope and views.
+
+</details>
+
+<details id="how-we-judged-agent-quality">
+<summary>How we judged agent quality</summary>
+
+A successful call was one that met the client's own criteria, and those criteria differed from client to client. For some clients the agent had to segment the list, deciding who was worth a call at all. For others it had to bring the contact to a target action. So there was no single bar for every agent: each one was checked against what its client asked for.
+
+We tested every change on calls from test accounts before it went to a client.
+
+We compared three metrics:
+
+- **Share of target actions:** how many calls ended with the step the client wanted.
+- **Hang-ups in the first seconds:** calls the person dropped almost at once.
+- **Calls flagged by the LLM for a human:** conversations the model itself sent for a person to review.
+
+The biggest problem was answering machines. The agent talked to them, the client paid for those minutes, and the client's cost per lead went up.
+
+</details>
+
+<details id="what-did-not-work-at-first">
+<summary>What did not work at first</summary>
+
+The first version was one big all-in-one scenario: one agent for the whole conversation. It came out too expensive, so we split the task and replaced the big agent with several small ones. It was less a failure than a new hypothesis: agents should be small.
 
 </details>
 
