@@ -630,6 +630,9 @@ export const uiCopy = {
   caseAvailability: {
     telegram: { ru: 'Написать в Telegram', en: 'Message on Telegram' },
     email: { ru: 'Почта', en: 'Email' },
+    // The envelope icon has no visible text, so its name says what it does.
+    // The visible email buttons (SiteFooter, About) keep `email`.
+    emailAria: { ru: 'Написать на почту', en: 'Email me' },
   },
   // The label over the next case, after a case study's last section (CaseNext.astro).
   caseNext: {
@@ -743,8 +746,8 @@ export const uiCopy = {
     // (SiteFooter.astro) and in the case availability strip (CaseAvailability.astro).
     // The owner replies within about half an hour, so the line sets that expectation.
     replyTime: {
-      ru: 'Обычно отвечаю в течение 30 минут в рабочее время (GMT+5).',
-      en: 'I usually reply within 30 minutes during working hours (GMT+5).',
+      ru: 'Отвечаю в течение 30 минут в рабочее время (GMT+5).',
+      en: 'I reply within 30 minutes during working hours (GMT+5).',
     },
     navAria: {
       ru: 'Навигация в подвале',

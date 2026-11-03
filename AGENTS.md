@@ -41,10 +41,20 @@ The repository is **public**. Treat every commit as permanent and world-readable
   Zvonobot role in `cv.ts`), the hero tightens on windows up to 770px tall so the
   results labels fit a laptop's first screen, and the AgentOps proof is two plain
   receipt lines (merged PR count and deploy hash, both rendered at build), not a
-  terminal window.
+  terminal window. Since 2026-11-04 the opener starts about 40px under the header
+  (the owner saw the empty band above the byline as a white stripe), and the header's
+  tint, blur and hairline come in only once content scrolls under it (32-80px on
+  the home page; a `data-condensed` fallback in `SiteHeader.astro` for browsers
+  without scroll-driven animations and for reduced motion). Never on at rest.
 - Case studies end on `CaseNext.astro` (loop zvonobot-ai → cursivo → obrabot, side
   projects point to zvonobot-ai; `src/lib/case-order.ts`) and the closing footer with
   `rail={false}`. No tech-stack blocks on case pages (owner's call, 2026-11-03).
+  Under the role and timeline facts sits one quiet availability line
+  (`CaseAvailability.astro`): the status, the reply time, Telegram and email as
+  icons, "Book a call" as text, no box. The case head (`.case-shell` rules in
+  `global.css`) is sized so the flagship's Results fit whole on a 13-inch laptop's
+  first screen (about 1440x813) in both locales; keep it that way when the head
+  or the first section changes.
 - Content status: 7 published project case studies per locale (`tubedrop` is
   `draft: true`); one published blog post pair (`welcome`), the `tubedrop` post pair is
   a draft. The blog is **unlisted** since 2026-08-18: kept at its URLs, absent from the
@@ -209,7 +219,8 @@ is git-ignored; `.env.example` is the template.
 - Unlisted pages (`/cv`, `/ru/cv`, `/cv.txt`, `/call/`, `/call/thanks/`, the blog) stay out of the sitemap,
   header navigation and `llms.txt`; `/cv` keeps `noindex,follow`. Since 2026-11-03
   `/cv/` is reachable only through a quiet `rel="nofollow"` "Resume" text link in the
-  home closing and in the case availability strip; the resume downloads are nofollow
+  closing footer of the home page and of every case (since 2026-11-04 no longer in
+  the case availability line); the resume downloads are nofollow
   too, and `robots.txt` disallows the per-vacancy folders (`/cv/*/`).
 - Internal page links end in `/`: GitHub Pages answers `/about` with a 301 first.
   `scripts/link-check.mjs` fails a page link without the slash. Prefetch is
@@ -352,6 +363,16 @@ is git-ignored; `.env.example` is the template.
   vacancy link", with notes and phone hidden; no 'Redirect on booking' on purpose (the
   site routes to the thanks page in the visitor's locale). Cal's calendar language
   follows the visitor's browser, not the page.
+- 2026-11-04: the owner's notes on the case page and the home top (#91, #92). The case
+  availability box became one quiet line (Telegram and email as icons, the call as
+  text, the resume left for the closing footer); the case head was tightened so the
+  Zvonobot Results fit on a 13-inch laptop's first screen (wider lead and role,
+  smaller gaps, a smaller title and lead on windows up to 860px tall), with the
+  phones' rhythm kept; copy: "Отвечаю в течение 30 минут" without "обычно", "собственная
+  платформа в 2026", and no claim that a visitor can register in the Zvonobot
+  console (the link and "Кабинет уже работает" stay). The home opener moved up to
+  about 40px under the header and the header tint no longer shows at rest. Built by
+  Haiku developers with Sonnet testers, then reviewed by an Opus critic.
 
 ## Gotchas
 
