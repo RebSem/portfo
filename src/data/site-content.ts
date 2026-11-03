@@ -356,13 +356,16 @@ export const uiCopy = {
       ru: 'B2B и AI-продукты.',
       en: 'B2B & AI products.',
     },
+    // The standfirst says what he owned; the 80 stays in the results band
+    // right below it. The intro has no full stop: the result line continues
+    // the same sentence on its own line.
     proofIntro: {
-      ru: 'В Zvonobot запустил направление голосовых AI-агентов с нуля.',
-      en: 'Launched Zvonobot’s voice AI agent line from zero.',
+      ru: 'В Zvonobot запустил направление голосовых AI-агентов с нуля',
+      en: 'Launched Zvonobot’s voice AI agent line from scratch',
     },
     proofResult: {
-      ru: `${cvMetric('customers').value.ru} платящих B2B-клиентов меньше чем за год.`,
-      en: `${cvMetric('customers').value.en} paying B2B customers in under a year.`,
+      ru: 'и вёл его целиком: продукт, прайсинг, вывод на рынок.',
+      en: 'and owned it end to end: product, pricing, go-to-market.',
     },
     // An active search, not a passive "open to offers": the role at Zvonobot
     // ended in October 2026, and the status links down to the block that
@@ -504,8 +507,8 @@ export const uiCopy = {
       en: 'Live in production',
     },
     featuredRole: {
-      ru: 'Продукт, прайсинг, вывод на рынок\u00a0· запустил с нуля осенью 2025, вёл до октября 2026',
-      en: 'Product, pricing, go-to-market\u00a0· launched from zero in fall 2025, ran it until October 2026',
+      ru: 'Продакт-менеджер направления с октября 2025 по октябрь 2026',
+      en: 'Product manager of the line, October 2025 to October 2026',
     },
     // Results, not features: three numbers a reader keeps, shown in the band
     // right under the hero. The modest size is deliberate (Mikhail rejected
