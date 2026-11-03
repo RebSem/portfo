@@ -475,15 +475,16 @@ export const cvProducts: CvProduct[] = [
   },
   {
     id: 'obrabot',
-    name: 'obrabot',
+    // The brand part of the case title, the same in both locales.
+    name: 'Obrabot',
     caseId: 'obrabot',
     metric: {
-      ru: 'Продукт в проде, внутренний инструмент Prof-IT',
-      en: 'Live in production, internal Prof-IT tool',
+      ru: 'Продукт в проде, внутреннее рабочее пространство Prof-IT',
+      en: 'Live in production, internal Prof-IT workspace',
     },
     summary: {
-      ru: 'Внутренний кабинет аналитики голосовых AI-агентов: LLM сегментирует звонки и подсвечивает то, что требует внимания.',
-      en: 'An internal voice AI analytics console: an LLM segments calls and surfaces what needs human attention.',
+      ru: 'Внутреннее рабочее пространство направления voice AI: реестр промптов, генератор КП и аналитика звонков.',
+      en: 'An internal workspace for the voice AI line: a prompt registry, a proposal generator and call analytics.',
     },
     proof: {
       ru: 'LLM-аналитика поверх реальных данных прода.',

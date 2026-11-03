@@ -45,18 +45,18 @@ export const projects: ProjectItem[] = [
   {
     id: 'obrabot',
     title: {
-      ru: 'obrabot',
-      en: 'obrabot',
+      ru: 'Obrabot: внутреннее рабочее пространство voice AI-команды Prof-IT',
+      en: 'Obrabot: internal workspace for the voice AI team at Prof-IT',
     },
     appType: {
-      ru: 'Внутренний кабинет аналитики voice AI в Prof-IT',
-      en: 'Internal voice AI analytics dashboard at Prof-IT',
+      ru: 'Внутреннее рабочее пространство voice AI-команды Prof-IT',
+      en: 'Internal workspace for the voice AI team at Prof-IT',
     },
     summary: {
-      ru: 'Аналитика звонков голосовых AI-агентов: LLM разбирает разговоры и подсвечивает те, что требуют внимания. Вёл продукт до октября 2026.',
-      en: 'Call analytics for voice AI agents: an LLM sorts the conversations and flags the ones that need a human. I ran the product until October 2026.',
+      ru: 'Внутреннее рабочее пространство направления voice AI: реестр промптов, генератор коммерческих предложений и аналитика звонков. Вёл его как продакт до октября 2026.',
+      en: 'An internal workspace for the voice AI line: a prompt registry, a proposal generator and call analytics. I ran it as the PM until October 2026.',
     },
-    stack: ['LLM call analytics', 'Internal product', 'Prof-IT'],
+    stack: ['LLM call analytics', 'Internal workspace', 'Prof-IT'],
     visibility: 'private',
     featured: true,
     tier: 'work-led',

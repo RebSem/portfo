@@ -532,7 +532,7 @@ export const uiCopy = {
     petTitle: { ru: 'Пет-проекты', en: 'Side projects' },
     statusLabel: {
       cursivo: { ru: 'В разработке', en: 'In development' },
-      obrabot: { ru: 'Внутренний продукт Prof-IT', en: 'Internal Prof-IT product' },
+      obrabot: { ru: 'Внутреннее рабочее пространство Prof-IT', en: 'Internal Prof-IT workspace' },
     },
   },
   blog: {
