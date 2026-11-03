@@ -126,7 +126,7 @@ export const buildLlmsText = (cases: LlmsCase[]): string => {
     '## Zvonobot core platform, 2022-2025',
     '- The core B2B SaaS platform end to end: self-service customer console, campaign creation and lead-list targeting, script builder, telephony, per-second billing, wallets, reporting and call analytics',
     `- CPaaS products of the group in ${countries.value.en} countries (bulk calls and SMS): ran Effebot (Zvonobot's international brand) and P1SMS, with traffic routing across providers, billing and API integrations`,
-    '- A virtual PBX launched as a complementary product to raise customer retention',
+    '- Took over the virtual PBX line: connecting businesses to it as an adjacent product for existing call and SMS customers',
     '- A full discovery and delivery loop: customer interviews, hypotheses tested on metrics, A/B tests of call scripts, PRDs, and a release cycle run with sales, support and engineering',
     '- A voice bot MVP on the OpenAI Realtime API in 2 days, and an internal analytics tool over the database in 4 days',
     '',
