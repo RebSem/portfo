@@ -184,6 +184,24 @@ const watchFrame = (stage: HTMLElement): MutationObserver => {
   return observer;
 };
 
+// On a phone the long list of times gives way to the short booking form once a
+// time is picked, and the page stays scrolled to where the list was: the
+// visitor sees the footer, with the form above the screen. Cal scrolls back only
+// when the frame was mostly off screen before it shrank, so the page does it
+// itself, for a calendar that lost over a quarter of its height and now ends in
+// the upper part of the screen with its top cut off. A shorter list of times for
+// another day still runs past the screen, so it stays where it is.
+const keepFormInView = (embed: HTMLElement, stage: HTMLElement) => {
+  let lastHeight = 0;
+  new ResizeObserver(() => {
+    const { top, bottom, height } = stage.getBoundingClientRect();
+    const shrank = height > 0 && height < lastHeight * 0.75;
+    lastHeight = height;
+    if (!shrank || embed.dataset.state !== 'ready') return;
+    if (top < 0 && bottom < window.innerHeight * 0.75) stage.scrollIntoView({ block: 'start' });
+  }).observe(stage);
+};
+
 // The format's length, from the data-minutes the page renders on each option.
 const minutesOf = (input: HTMLInputElement): BookingMinutes | undefined => {
   const minutes = Number(input.dataset.minutes);
@@ -313,6 +331,9 @@ const boot = () => {
   watchReports();
   watchBookings();
   showZone(section);
+  const embed = section.querySelector<HTMLElement>('[data-call-embed]');
+  const stage = section.querySelector<HTMLElement>(STAGE_SELECTOR);
+  if (embed && stage) keepFormInView(embed, stage);
 
   section.querySelector<HTMLElement>('[data-call-formats]')?.addEventListener('change', (event) => {
     const input = event.target;

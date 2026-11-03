@@ -337,10 +337,12 @@ is git-ignored; `.env.example` is the template.
   picker, which becomes a segmented control on phones) beside the calendar, with no
   captions or notes; the H1 is "Let's talk" / "Давайте созвонимся". The calendar takes
   the site's colours and theme, and only Cal's `linkReady` report draws it (a frame's
-  load event also fires for a frame that failed). A calendar still loading after 10 s
-  keeps the skeleton and shows the links under "Still loading"; a blocked embed script
-  or a link Cal cannot find shows the failed message with Cal.com, Telegram and Email
-  links. A booking sends the visitor to `/call/thanks/` (or `/ru/call/thanks/`), which
+  load event also fires for a frame that failed). A drawn calendar takes its own
+  height, and on a phone, once a time is picked, the page scrolls back to the top of
+  the booking form (Cal does not, after the long list of times). A calendar still
+  loading after 10 s keeps the skeleton and shows the links under "Still loading"; a
+  blocked embed script or a link Cal cannot find shows the failed message with
+  Cal.com, Telegram and Email links. A booking sends the visitor to `/call/thanks/` (or `/ru/call/thanks/`), which
   strips the query string before analytics loads. Built by Haiku and Sonnet agents,
   then reviewed by independent critics, whose accepted findings were fixed. No Cal.com
   API key is used or stored: the public embed needs none. Cal.com side (owner's

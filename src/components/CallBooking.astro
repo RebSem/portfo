@@ -453,7 +453,9 @@ const mailHref = buildIntroMailto(locale);
   }
 
   /* The calendar. Its stage is reserved at a height close to the one Cal sets,
-     so the footer below does not move when the frame arrives. The skeleton shows
+     so the footer below does not move when the frame arrives; a drawn calendar
+     takes its own height, so a short step (the booking form) leaves no empty
+     space under it. The skeleton shows
      while the calendar loads and goes at once when Cal reports it ready; the
      stage then fades in on its own. A format switch fades the old calendar out
      first (the 'switching' state), so the skeleton never sits over a calendar. A
@@ -487,6 +489,7 @@ const mailHref = buildIntroMailto(locale);
     visibility: hidden;
   }
 
+  .call-embed[data-state='ready'],
   .call-embed[data-state='failed'] {
     min-height: 0;
   }

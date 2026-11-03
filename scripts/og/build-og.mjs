@@ -60,18 +60,18 @@ const CASE = {
 };
 
 // The booking page's card (/call/). The name line is the home card's; the
-// headline is the action, and the line under it lists the formats. No status
+// headline is the page's H1, and the line under it lists the formats. No status
 // pill: the card is about booking, not the job search. The Russian headline is
-// two lines, since the one-line size would not fit "Записаться на созвон".
+// two lines, since the one-line size would not fit "Давайте созвонимся".
 const CALL = {
   en: {
     name: COPY.en.name,
-    headline: ['Book a call'],
+    headline: ["Let's talk"],
     proof: '15, 30 or 60 minutes · Google Meet · your time zone',
   },
   ru: {
     name: COPY.ru.name,
-    headline: ['Записаться', 'на созвон'],
+    headline: ['Давайте', 'созвонимся'],
     proof: '15, 30 или 60 минут · Google Meet · ваш часовой пояс',
   },
 };
