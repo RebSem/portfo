@@ -119,26 +119,24 @@ describe('nothing starts hidden', () => {
 
 describe('meta descriptions', () => {
   // Search snippets are cut at about 160 characters, so a longer description loses
-  // its tail. Only the pages rewritten for that are pinned here; case studies and
-  // posts still run longer and are shortened separately.
+  // its tail. Every built page is checked, case studies and posts included. The 404
+  // is left out (it is not indexed), and so are the redirect stubs under /projects/,
+  // which are noindex too and carry no description to measure.
   const LIMIT = 160;
-  const PAGES = [
-    'index.html',
-    'ru/index.html',
-    'about/index.html',
-    'ru/about/index.html',
-    'cv/index.html',
-    'ru/cv/index.html',
-  ];
+  const REDIRECT = /<meta\s+http-equiv="refresh"/i;
   const TAGS = [
     ['name', 'description'],
     ['property', 'og:description'],
   ] as const;
 
   it.skipIf(!hasDist)('keeps each description and og:description within 160 characters', () => {
-    for (const page of PAGES) {
-      const file = path.join(DIST, page);
+    const pages = walk(DIST).filter(
+      (name) => name.endsWith('.html') && name !== path.join(DIST, '404.html'),
+    );
+    expect(pages.length).toBeGreaterThan(0);
+    for (const file of pages) {
       const html = readFileSync(file, 'utf8');
+      if (REDIRECT.test(html)) continue;
       for (const [attribute, value] of TAGS) {
         const content = metaContent(html, attribute, value);
         expect(content, `${rel(file)} has no <meta ${attribute}="${value}">`).toBeDefined();
