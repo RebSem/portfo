@@ -1,5 +1,7 @@
+// The grid and its counts are printed at build (AboutContent.astro). This script
+// only adds the hover hint and keeps the mobile grid scrolled to the latest weeks,
+// so a page transition never waits on a fetch or a layout pass over 371 cells.
 const state = window.__portfolioGithubState ?? {
-  contributionPayload: null,
   activeContributionPoint: null,
   activeLocale: document.documentElement.lang === 'ru' ? 'ru' : 'en',
   viewportListenerBound: false,
@@ -7,8 +9,6 @@ const state = window.__portfolioGithubState ?? {
 
 window.__portfolioGithubState = state;
 
-let cachedNumberFormatLocale = '';
-let cachedNumberFormat = null;
 let cachedDateFormatLocale = '';
 let cachedDateFormat = null;
 
@@ -18,16 +18,6 @@ const syncLocaleFromDocument = () => {
   state.activeLocale = document.documentElement.lang === 'ru' ? 'ru' : 'en';
 };
 
-const getNumberFormatter = () => {
-  const locale = state.activeLocale === 'ru' ? 'ru-RU' : 'en-US';
-  if (!cachedNumberFormat || cachedNumberFormatLocale !== locale) {
-    cachedNumberFormat = new Intl.NumberFormat(locale);
-    cachedNumberFormatLocale = locale;
-  }
-
-  return cachedNumberFormat;
-};
-
 const getDateFormatter = () => {
   const locale = state.activeLocale === 'ru' ? 'ru-RU' : 'en-US';
   if (!cachedDateFormat || cachedDateFormatLocale !== locale) {
@@ -35,6 +25,7 @@ const getDateFormatter = () => {
       day: 'numeric',
       month: 'short',
       year: 'numeric',
+      timeZone: 'UTC',
     });
     cachedDateFormatLocale = locale;
   }
@@ -42,19 +33,30 @@ const getDateFormatter = () => {
   return cachedDateFormat;
 };
 
-const formatMetric = (value) => getNumberFormatter().format(value);
-
 const formatLocalizedDate = (isoDate) => {
   const date = new Date(`${isoDate}T00:00:00.000Z`);
   return getDateFormatter().format(date);
 };
 
+// Mirrors contributionWord in src/lib/contribution-grid.ts: this file is served
+// as-is, so it cannot import from src/lib. Keep the two tables in step.
+const CONTRIBUTION_WORDS = {
+  en: { one: 'contribution', other: 'contributions' },
+  ru: { one: 'вклад', few: 'вклада', many: 'вкладов', other: 'вкладов' },
+};
+
+const PLURAL_RULES = {
+  en: new Intl.PluralRules('en-US'),
+  ru: new Intl.PluralRules('ru-RU'),
+};
+
+const contributionWord = (count, locale) => {
+  const forms = CONTRIBUTION_WORDS[locale];
+  return forms[PLURAL_RULES[locale].select(count)] ?? forms.other;
+};
+
 const formatContributionLabel = (count, isoDate) =>
-  withLocale(
-    state.activeLocale,
-    `${count} вкладов • ${formatLocalizedDate(isoDate)}`,
-    `${count} contributions • ${formatLocalizedDate(isoDate)}`,
-  );
+  `${count} ${contributionWord(count, state.activeLocale)} • ${formatLocalizedDate(isoDate)}`;
 
 const renderContributionTooltip = () => {
   const tooltip = document.getElementById('contribution-tooltip');
@@ -70,8 +72,6 @@ const renderContributionTooltip = () => {
   tooltip.textContent = withLocale(state.activeLocale, hintRu, hintEn);
 };
 
-const dateToIso = (date) => date.toISOString().slice(0, 10);
-
 const alignHeatmapToLatest = () => {
   const grid = document.getElementById('contribution-grid');
   if (!(grid instanceof HTMLElement)) return;
@@ -86,113 +86,6 @@ const requestHeatmapAlignment = () => {
     alignHeatmapToLatest();
     window.setTimeout(alignHeatmapToLatest, 80);
   });
-};
-
-const renderContributionGrid = (days) => {
-  const grid = document.getElementById('contribution-grid');
-  if (!grid) return;
-
-  const sortedDays = [...days].sort((a, b) => a.date.localeCompare(b.date));
-  if (sortedDays.length === 0) {
-    grid.innerHTML = '';
-    return;
-  }
-
-  const map = new Map(sortedDays.map((day) => [day.date, day]));
-  const firstDate = new Date(`${sortedDays[0].date}T00:00:00.000Z`);
-  const lastDate = new Date(`${sortedDays[sortedDays.length - 1].date}T00:00:00.000Z`);
-
-  const start = new Date(firstDate);
-  start.setUTCDate(start.getUTCDate() - start.getUTCDay());
-
-  const end = new Date(lastDate);
-  end.setUTCDate(end.getUTCDate() + (6 - end.getUTCDay()));
-
-  const daysCount = Math.floor((end.getTime() - start.getTime()) / 86400000) + 1;
-  const weeks = Math.ceil(daysCount / 7);
-
-  grid.innerHTML = '';
-  grid.style.setProperty('--weeks', String(weeks));
-
-  const fragment = document.createDocumentFragment();
-
-  for (let week = 0; week < weeks; week += 1) {
-    for (let dayOfWeek = 0; dayOfWeek < 7; dayOfWeek += 1) {
-      const currentDate = new Date(start);
-      currentDate.setUTCDate(start.getUTCDate() + week * 7 + dayOfWeek);
-      const isoDate = dateToIso(currentDate);
-      const current = map.get(isoDate);
-
-      const cell = document.createElement('div');
-      const level = current?.level ?? 0;
-      const count = current?.count ?? 0;
-      const label = formatContributionLabel(count, isoDate);
-
-      // Plain presentational cells: the total is announced in the section copy,
-      // so cells stay out of the tab order (370 tab stops is keyboard hostile).
-      cell.className = `contribution-cell level-${level}`;
-      cell.style.gridColumn = String(week + 1);
-      cell.style.gridRow = String(dayOfWeek + 1);
-      cell.dataset.date = isoDate;
-      cell.dataset.count = String(count);
-      cell.title = label;
-
-      fragment.appendChild(cell);
-    }
-  }
-
-  grid.appendChild(fragment);
-  // Force the browser to commit the initial clipped state (clip-path: inset(0 100% 0 0))
-  // before we flip the data-revealed flag. Without this layout read, fast reloads
-  // can paint straight at the revealed state and skip the transition entirely.
-  void grid.getBoundingClientRect();
-  requestHeatmapAlignment();
-  scheduleHeatmapReveal(grid);
-};
-
-// Reveal the heatmap left → right on first viewport entry.
-// One-shot per grid instance; respects prefers-reduced-motion.
-const scheduleHeatmapReveal = (grid) => {
-  if (grid.dataset.revealScheduled === 'true') return;
-  grid.dataset.revealScheduled = 'true';
-
-  const reduceMotion =
-    typeof window !== 'undefined' &&
-    window.matchMedia &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  if (reduceMotion || typeof IntersectionObserver === 'undefined') {
-    grid.dataset.revealed = 'true';
-    return;
-  }
-
-  const reveal = () => {
-    // Double rAF lets the browser settle layout before flipping the clip-path,
-    // so the transition actually runs instead of being snapped past.
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        grid.dataset.revealed = 'true';
-      });
-    });
-  };
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          reveal();
-          observer.disconnect();
-          break;
-        }
-      }
-    },
-    { threshold: 0.15 },
-  );
-
-  // Observe the un-clipped wrapper, not the grid: Chromium intersects the
-  // target's own clip-path, so the initial inset(0 100% 0 0) reports a 0x0
-  // intersection forever and the reveal would never fire.
-  observer.observe(grid.closest('.github-heatmap') ?? grid);
 };
 
 const bindContributionTooltip = () => {
@@ -227,85 +120,22 @@ const bindContributionTooltip = () => {
   grid.dataset.tooltipBound = 'true';
 };
 
-const updateContributions = (payload) => {
-  state.contributionPayload = payload;
-
-  const totalNode = document.getElementById('contributions-total');
-  if (totalNode) {
-    totalNode.textContent = formatMetric(payload.totalLastYear);
-  }
-
-  renderContributionGrid(payload.days);
-  bindContributionTooltip();
-  renderContributionTooltip();
-};
-
-const hideGithubError = () => {
-  const errorNode = document.getElementById('github-error');
-  if (errorNode) {
-    errorNode.classList.add('hidden');
-  }
-};
-
-const showGithubError = () => {
-  const errorNode = document.getElementById('github-error');
-  if (errorNode) {
-    errorNode.classList.remove('hidden');
-  }
-};
-
-const fetchJson = async (url) => {
-  const response = await fetch(url, { headers: { Accept: 'application/json' } });
-  if (!response.ok) {
-    throw new Error(`Request to ${url} failed with status ${response.status}`);
-  }
-  return response.json();
-};
-
-// The static fallback endpoints can ship an `{error}` body that GitHub Pages
-// serves as HTTP 200 — validate the shape so we never render NaN totals.
-const isValidContributionsPayload = (payload) =>
-  Boolean(payload) && typeof payload.totalLastYear === 'number' && Array.isArray(payload.days);
-
-const hydrateGithub = async () => {
-  try {
-    const contributions = await fetchJson('/api/github/contributions.json');
-    if (!isValidContributionsPayload(contributions)) {
-      throw new Error('Malformed contributions payload');
-    }
-    updateContributions(contributions);
-    hideGithubError();
-  } catch {
-    showGithubError();
-  }
-};
-
 const initGithubActivity = () => {
   if (!document.getElementById('contribution-grid')) {
     return;
   }
 
   if (!state.viewportListenerBound) {
-    window.addEventListener(
-      'resize',
-      () => {
-        if (!state.contributionPayload) return;
-        requestHeatmapAlignment();
-      },
-      { passive: true },
-    );
+    window.addEventListener('resize', requestHeatmapAlignment, { passive: true });
     state.viewportListenerBound = true;
   }
 
   syncLocaleFromDocument();
-
-  if (state.contributionPayload) {
-    updateContributions(state.contributionPayload);
-    hideGithubError();
-  }
-
+  // A point hovered on the previous visit belongs to a grid that is gone.
+  state.activeContributionPoint = null;
+  bindContributionTooltip();
   renderContributionTooltip();
-  void hydrateGithub();
+  requestHeatmapAlignment();
 };
 
 // astro:page-load fires on the initial load too, so this is the whole bootstrap;
