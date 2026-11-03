@@ -24,16 +24,16 @@ export const projects: ProjectItem[] = [
   {
     id: 'cursivo',
     title: {
-      ru: 'cursivo',
-      en: 'cursivo',
+      ru: 'Cursivo: AI-агент и CRM для автопрокатов',
+      en: 'Cursivo: AI agent and CRM for car rental teams',
     },
     appType: {
-      ru: 'AI-CRM для автопрокатов',
-      en: 'AI-powered car rental CRM',
+      ru: 'AI-агент и CRM для автопрокатов',
+      en: 'AI agent and CRM for car rental',
     },
     summary: {
-      ru: 'CRM для автопрокатов: AI читает документы клиента, считает риск по сделке и подсказывает менеджеру следующий шаг. Мой собственный продукт.',
-      en: 'A CRM for car rental: AI reads client documents, scores deal risk and suggests the manager’s next step. My own product.',
+      ru: 'AI-агент и CRM для операторов автопроката в Дубае. Мой продукт, делаю в свободное время.',
+      en: 'An AI agent and CRM for car rental operators in Dubai. My own product, built on my own time.',
     },
     // Product tags, not a framework list: the case pages carry no tech stack.
     stack: ['AI CRM', 'Car rental', 'In development'],

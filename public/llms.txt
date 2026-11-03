@@ -25,7 +25,7 @@ Owned pricing, unit economics and go-to-market; prototypes with AI coding agents
 
 ## Selected work
 - Zvonobot AI: voice AI-agent platform for B2B (Prof-IT), launched in the fall of 2025 and owned end-to-end until October 2026 (product, pricing, go-to-market). Multi-tenant SaaS console over telephony infrastructure. Case: https://rebsem.ru/projects/zvonobot-ai-en/
-- cursivo: AI-powered CRM for car rental, his own product, in development (no public release and no users yet). https://cursivo.xyz
+- cursivo: AI agent and CRM for car rental operators in Dubai, his own product, in development (no public release and no users yet). https://cursivo.xyz
 - obrabot: internal voice AI analytics dashboard (Prof-IT). Case: https://rebsem.ru/projects/obrabot-en/
 - Side projects shipped in 1-7 days with AI coding agents (bazabot, Zodial, Slopiq, portfo)
 

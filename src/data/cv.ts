@@ -453,17 +453,18 @@ export const cvProducts: CvProduct[] = [
   },
   {
     id: 'cursivo',
-    name: 'cursivo',
+    // The brand part of the case title, the same in both locales.
+    name: 'Cursivo',
     caseId: 'cursivo',
     externalUrl: 'https://cursivo.xyz',
     // In development, not launched: no live users yet, and claiming any is
     // exactly the kind of line that dies in the first interview question.
-    metric: { ru: 'В процессе реализации', en: 'In development' },
+    metric: { ru: 'В разработке', en: 'In development' },
     // The status lives in the metric line above; repeating it in the summary
     // read as an unedited card.
     summary: {
-      ru: 'AI-CRM для автопрокатов: читает документы клиента, считает риск по сделке, подсказывает следующий шаг.',
-      en: 'An AI CRM for car rental: reads client documents, scores deal risk, suggests the next step.',
+      ru: 'AI-агент и CRM для операторов автопроката в Дубае.',
+      en: 'An AI agent and CRM for car rental operators in Dubai.',
     },
     // Not another "Proves...": three cards opening with the same verb read
     // as a template. One card keeps the frame, the other two state the fact.
