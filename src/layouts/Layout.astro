@@ -20,6 +20,11 @@ interface Props {
    * case studies it references.
    */
   followLinks?: boolean;
+  /**
+   * Leaves out the canonical link. The 404 page answers at every missing path,
+   * so its canonical would name /404/, which is itself a 404.
+   */
+  noCanonical?: boolean;
   schema?: Record<string, unknown> | Array<Record<string, unknown>>;
   /** Path of this page in the other locale, e.g. '/ru/about/'. Emits hreflang alternates. */
   alternate?: string;
@@ -34,11 +39,20 @@ const {
   type = 'website',
   noIndex = false,
   followLinks = false,
+  noCanonical = false,
   schema = [],
   alternate,
 } = Astro.props;
 
 const lang = Astro.currentLocale ?? 'en';
+// The Cyrillic faces are preloaded on /ru only. EN pages have no Cyrillic text,
+// so preloading their two Cyrillic files (about 28 KB) only competes with the
+// CSS and the Latin faces for the connection. Geist Mono keeps its Cyrillic
+// subset on /ru too: the hero facts and the results labels are Russian and set
+// in Geist Mono on the first screen.
+const fontPreloads = lang === 'ru'
+  ? [{ subset: 'latin' }, { subset: 'cyrillic' }]
+  : [{ subset: 'latin' }];
 // The link-preview card. It used to fall back to the About portrait, which is
 // the wrong image for a recruiter's Telegram or LinkedIn preview: they see the
 // card before they see the site, so it carries the name and the role, the
@@ -113,15 +127,15 @@ const hreflangRu = lang === 'ru' ? canonicalUrl : alternateUrl;
       without anyone noticing, since its metric-matched fallback is sized to
       match.
     */}
-    <Font cssVariable="--font-geist" preload />
-    <Font cssVariable="--font-geist-mono" preload />
+    <Font cssVariable="--font-geist" preload={fontPreloads} />
+    <Font cssVariable="--font-geist-mono" preload={fontPreloads} />
     <Font cssVariable="--font-newsreader" />
     <meta name="description" content={description} />
     <meta name="robots" content={robotsContent} />
     <meta name="author" content="Mikhail Semenov" />
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4f4f1" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0c0d0e" />
-    <link rel="canonical" href={canonicalUrl} />
+    {!noCanonical && <link rel="canonical" href={canonicalUrl} />}
     {alternateUrl && hreflangEn && <link rel="alternate" hreflang="en" href={hreflangEn} />}
     {alternateUrl && hreflangRu && <link rel="alternate" hreflang="ru" href={hreflangRu} />}
     {alternateUrl && hreflangEn && <link rel="alternate" hreflang="x-default" href={hreflangEn} />}

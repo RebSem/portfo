@@ -410,13 +410,13 @@ export const cvExperience: CvExperienceRole[] = [
 ];
 
 /**
- * Employment history for JSON-LD.
+ * Employment history for JSON-LD, attached on /cv only.
  *
- * The site-wide Person schema says only `worksFor: Prof-IT` with no dates,
- * so the word "Zvonobot" — the subject of the whole resume — appeared nowhere
- * in the structured data an LLM screener reads first, and the second employer
- * was missing entirely. Built from cvExperience so it cannot drift from the
- * visible text, and it is what finally gives `startDate`/`endDate` a reader.
+ * Each role is an OrganizationRole with its dates, so the Zvonobot role and
+ * the earlier one are readable from the structured data an LLM screener reads
+ * first. The employer sits under alumniOf, not worksFor: a bare worksFor reads
+ * as a current employer, and pipelines that drop endDate kept reading it so.
+ * Built from cvExperience so it cannot drift from the visible text.
  */
 export const buildEmploymentSchema = (locale: Locale): Record<string, unknown>[] =>
   cvExperience.map((role) => ({
@@ -424,7 +424,7 @@ export const buildEmploymentSchema = (locale: Locale): Record<string, unknown>[]
     roleName: role.role[locale],
     startDate: role.startDate,
     ...(role.endDate ? { endDate: role.endDate } : {}),
-    worksFor: {
+    alumniOf: {
       '@type': 'Organization',
       name: role.company[locale],
     },

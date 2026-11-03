@@ -5,7 +5,7 @@ import CaseNext from '../../components/CaseNext.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import { projects } from '../../data/projects';
-import { githubUsername, heroDisplayName, heroFallbackName, linkedinUrl, telegramUrl } from '../../data/site-content';
+import { githubUsername, heroDisplayName, heroFallbackName, linkedinUrl, personSchemaId, telegramUrl } from '../../data/site-content';
 import { nextCaseProjectId } from '../../lib/case-order';
 import { chunks, HYPHENATED } from '../../lib/nb';
 import Layout from '../../layouts/Layout.astro';
@@ -42,6 +42,7 @@ const projectSchema = {
     : `https://rebsem.ru${pageImage}`,
   url: `https://rebsem.ru/projects/${entry.id}/`,
   author: {
+    '@id': personSchemaId,
     '@type': 'Person',
     name: heroDisplayName.en,
     alternateName: heroDisplayName.ru,

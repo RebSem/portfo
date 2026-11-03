@@ -187,3 +187,27 @@ describe('GitHub numbers come from the build', () => {
     }
   });
 });
+
+describe('unlisted pages stay out of the index', () => {
+  // The blog is kept at its URLs for anyone who holds one, but it is out of the
+  // sitemap and the menu, so it must say noindex. `follow` keeps its links counted,
+  // as on /cv. The 404 page answers at every missing path, so it has no canonical of its own.
+  it.skipIf(!hasDist)('marks every built blog page noindex,follow', () => {
+    for (const directory of [path.join(DIST, 'blog'), path.join(DIST, 'ru', 'blog')]) {
+      const pages = walk(directory).filter((file) => file.endsWith('index.html'));
+      expect(pages.length, `${rel(directory)} has no built pages`).toBeGreaterThan(0);
+      for (const file of pages) {
+        const robots = metaContent(readFileSync(file, 'utf8'), 'name', 'robots');
+        expect(robots, `${rel(file)} robots`).toBe('noindex,follow');
+      }
+    }
+  });
+
+  it.skipIf(!hasDist)('keeps the blog out of the sitemap', () => {
+    expect(readFileSync(path.join(DIST, 'sitemap.xml'), 'utf8')).not.toContain('/blog/');
+  });
+
+  it.skipIf(!hasDist)('leaves the canonical link off the 404 page', () => {
+    expect(readFileSync(path.join(DIST, '404.html'), 'utf8')).not.toContain('rel="canonical"');
+  });
+});
