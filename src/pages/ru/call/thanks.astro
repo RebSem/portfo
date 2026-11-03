@@ -1,0 +1,30 @@
+---
+import CallThanks from '../../../components/CallThanks.astro';
+import SiteFooter from '../../../components/SiteFooter.astro';
+import SiteHeader from '../../../components/SiteHeader.astro';
+import { heroDisplayName } from '../../../data/site-content';
+import Layout from '../../../layouts/Layout.astro';
+
+// Unlisted like /ru/call/: noindex,follow, and absent from the sitemap, llms.txt
+// and the menu. cleanAddress drops the booking details Cal.com can append to this
+// URL before any other script reads the address.
+---
+
+<Layout
+  title={`${heroDisplayName.ru} - Готово, спасибо`}
+  description="Созвон с Михаилом Семеновым забронирован. Приглашение со ссылкой на Google Meet уже в вашей почте."
+  noIndex
+  followLinks
+  cleanAddress
+  alternate="/call/thanks/"
+>
+  <a id="skip-to-content" href="#main-content" class="skip-link">К содержимому</a>
+
+  <SiteHeader active="none" localeToggleUrl="/call/thanks/" />
+
+  <main id="main-content" class="page-main">
+    <CallThanks locale="ru" />
+  </main>
+
+  <SiteFooter />
+</Layout>

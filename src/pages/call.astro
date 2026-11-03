@@ -1,0 +1,31 @@
+---
+import CallBooking from '../components/CallBooking.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import { heroFallbackName } from '../data/site-content';
+import Layout from '../layouts/Layout.astro';
+
+// Unlisted like /cv: noindex,follow, and absent from the sitemap, llms.txt and
+// the menu. The page is itself the call to action, so it ends on the plain
+// footer, not the closing one.
+---
+
+<Layout
+  title={`${heroFallbackName} - Book a call`}
+  description="Book a 15, 30 or 60 minute call with Mikhail Semenov, product manager. Pick a time in your time zone; the calendar loads on this page."
+  image="/og/call-en.png"
+  imageAlt="Book a call with Mikhail Semenov: 15, 30 or 60 minutes on Google Meet"
+  noIndex
+  followLinks
+  alternate="/ru/call/"
+>
+  <a id="skip-to-content" href="#main-content" class="skip-link">Skip to content</a>
+
+  <SiteHeader active="none" localeToggleUrl="/ru/call/" />
+
+  <main id="main-content" class="page-main">
+    <CallBooking locale="en" />
+  </main>
+
+  <SiteFooter />
+</Layout>

@@ -11,6 +11,8 @@ interface Props {
   title?: string;
   description?: string;
   image?: string;
+  /** Alt text of the image. Set it for a card whose text is not the page's own. */
+  imageAlt?: string;
   type?: 'website' | 'article';
   noIndex?: boolean;
   /**
@@ -25,6 +27,12 @@ interface Props {
    * so its canonical would name /404/, which is itself a 404.
    */
   noCanonical?: boolean;
+  /**
+   * Drops the query string and hash from the address bar before any other script
+   * runs. The thank-you page after a booking can arrive with the booking details
+   * in its URL: they must not stay in the address bar or reach analytics.
+   */
+  cleanAddress?: boolean;
   schema?: Record<string, unknown> | Array<Record<string, unknown>>;
   /** Path of this page in the other locale, e.g. '/ru/about/'. Emits hreflang alternates. */
   alternate?: string;
@@ -36,10 +44,12 @@ const {
   // Undefined here and resolved below, because the default depends on the
   // page language.
   image: imageProp,
+  imageAlt: imageAltProp,
   type = 'website',
   noIndex = false,
   followLinks = false,
   noCanonical = false,
+  cleanAddress = false,
   schema = [],
   alternate,
 } = Astro.props;
@@ -70,7 +80,7 @@ const isOgCard = image.startsWith('/og/');
 const ogCardAlt = lang === 'ru'
   ? 'Михаил Семенов: ищу работу, 80 платящих B2B-клиентов'
   : 'Mikhail Semenov: open to work, 80 paying B2B customers';
-const imageAlt = isOgCard && !image.startsWith('/og/case-') ? ogCardAlt : title;
+const imageAlt = imageAltProp ?? (isOgCard && !image.startsWith('/og/case-') ? ogCardAlt : title);
 // Versioned so a preview service that cached the old card by its URL fetches
 // the new one. Bump when scripts/og/build-og.mjs changes what the cards say
 // (2026-10: the job-search status line; 2026-11-03: the new card layout).
@@ -92,6 +102,11 @@ const hreflangRu = lang === 'ru' ? canonicalUrl : alternateUrl;
 <!doctype html>
 <html lang={lang} data-locale={lang}>
   <head>
+    {cleanAddress && (
+      <script is:inline>
+        if (location.search || location.hash) history.replaceState(null, '', location.pathname);
+      </script>
+    )}
     <script is:inline>
       (() => {
         const root = document.documentElement;

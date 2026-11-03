@@ -1,0 +1,122 @@
+---
+import { getCollection } from 'astro:content';
+import { telegramUrl, uiCopy } from '../data/site-content';
+import type { Locale } from '../types/content';
+
+interface Props {
+  locale: Locale;
+}
+
+// The page after a booking says where the invitation is, then offers three
+// quiet links for the time before the call: the flagship case (the one the home
+// page leads with), the resume and Telegram. The resume link is nofollow, like
+// the other resume links on the site. The card is the booking page's card, with
+// a check mark in place of the calendar.
+const { locale } = Astro.props;
+const copy = uiCopy.callThanks;
+const prefix = locale === 'ru' ? '/ru' : '';
+const caseEntries = await getCollection('projects', ({ data }) => !data.draft && data.lang === locale);
+const caseEntry = caseEntries.find((entry) => entry.data.projectId === 'zvonobot-ai');
+const caseHref = caseEntry ? `${prefix}/projects/${caseEntry.id}/` : `${prefix}/#projects`;
+---
+
+<section class="thanks" aria-labelledby="thanks-title" data-analytics-placement="call-thanks">
+  <div class="thanks-card">
+    <span class="thanks-check" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12l5 5l10 -10" />
+      </svg>
+    </span>
+    <header class="thanks-head">
+      <h1 id="thanks-title" class="thanks-title">{copy.title[locale]}</h1>
+      <p class="thanks-lead">{copy.invite[locale]}</p>
+    </header>
+
+    <div class="thanks-next">
+      <p class="thanks-prepare">{copy.prepare[locale]}</p>
+      <ul class="thanks-links">
+        <li><a href={caseHref}>{copy.caseLink[locale]}</a></li>
+        <li><a href={`${prefix}/cv/`} rel="nofollow">{uiCopy.footer.resume[locale]}</a></li>
+        <li><a href={telegramUrl} target="_blank" rel="noreferrer">{copy.telegram[locale]}</a></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .thanks {
+    max-width: 40rem;
+    min-width: 0;
+  }
+
+  .thanks-card {
+    display: grid;
+    gap: 1.1rem;
+    justify-items: start;
+    padding: clamp(1.5rem, 3.5vw, 2.4rem);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  .thanks-check {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent-text);
+  }
+
+  .thanks-check svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    display: block;
+  }
+
+  .thanks-head {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  .thanks-title {
+    font-size: clamp(1.85rem, 3.6vw, 2.5rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  .thanks-lead {
+    max-width: 46ch;
+    font-size: 1rem;
+    line-height: 1.55;
+    color: color-mix(in oklab, var(--foreground) 74%, transparent);
+  }
+
+  .thanks-next {
+    display: grid;
+    gap: 0.6rem;
+    width: 100%;
+    margin-top: 0.4rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .thanks-prepare {
+    margin: 0;
+    font-size: 0.95rem;
+    color: color-mix(in oklab, var(--foreground) 70%, transparent);
+  }
+
+  .thanks-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-weight: 500;
+  }
+</style>

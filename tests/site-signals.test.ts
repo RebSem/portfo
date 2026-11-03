@@ -34,6 +34,45 @@ describe('sanitizeSignal', () => {
   });
 });
 
+describe('sanitizeSignal for the booking page', () => {
+  it('passes a format length of 15, 30 or 60 minutes', () => {
+    for (const minutes of [15, 30, 60]) {
+      expect(sanitizeSignal({ name: 'booking:select', props: { minutes } })).toEqual({
+        name: 'booking:select',
+        props: { minutes },
+      });
+      expect(sanitizeSignal({ name: 'booking:done', props: { minutes } })).toEqual({
+        name: 'booking:done',
+        props: { minutes },
+      });
+    }
+  });
+
+  it('drops any other length, or a length sent as text', () => {
+    for (const minutes of [45, 0, 90, '30', null, undefined]) {
+      expect(sanitizeSignal({ name: 'booking:done', props: { minutes } })).toEqual({
+        name: 'booking:done',
+        props: {},
+      });
+    }
+  });
+
+  it('keeps nothing from the embed but the length', () => {
+    // Names, emails, times and the Cal.com event itself must never reach a property.
+    expect(
+      sanitizeSignal({
+        name: 'booking:done',
+        props: { minutes: 30, name: 'Anna', email: 'anna@example.com', start: '2026-11-10T10:00', eventType: '30min' },
+      }),
+    ).toEqual({ name: 'booking:done', props: { minutes: 30 } });
+  });
+
+  it('does not accept booking names outside the allow-list', () => {
+    expect(sanitizeSignal({ name: 'booking:cancel', props: { minutes: 30 } })).toBeNull();
+    expect(sanitizeSignal({ name: 'booking', props: { minutes: 30 } })).toBeNull();
+  });
+});
+
 describe('hiddenBucket', () => {
   it('buckets the time away', () => {
     expect(hiddenBucket(5_000)).toBe('under-1m');

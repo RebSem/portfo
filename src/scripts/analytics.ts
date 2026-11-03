@@ -18,6 +18,7 @@ import {
   cleanKey,
   contactChannel,
   contactHref,
+  isCallLink,
   isCvLink,
   isCvPath,
   isInternal,
@@ -220,7 +221,11 @@ function bindSignalTracking(): void {
   document.addEventListener(SIGNAL_EVENT, (event) => {
     const signal = sanitizeSignal((event as CustomEvent<unknown>).detail);
     if (!signal) return;
-    posthog.capture(signal.name, { ...baseProps(), ...signal.props });
+    // A confirmed booking leads straight to the thank-you page, and a page change
+    // cancels an ordinary request. A beacon survives it, as page:summary does.
+    const options: CaptureOptions | undefined =
+      signal.name === 'booking:done' ? { transport: 'sendBeacon', send_instantly: true } : undefined;
+    posthog.capture(signal.name, { ...baseProps(), ...signal.props }, options);
   });
 }
 
@@ -590,6 +595,17 @@ function bindClickTracking(): void {
     // link was used, so the click is recorded where it happens.
     if (isCvLink(url, window.location.host)) {
       posthog.capture('cv:link_click', {
+        ...baseProps(),
+        link_href: url.pathname,
+        ...linkPlacement(anchor),
+      });
+      return;
+    }
+
+    // The booking page links (the home and case closing blocks, the case strip,
+    // About). Same shape as the resume links: the click says where it happened.
+    if (isCallLink(url, window.location.host)) {
+      posthog.capture('call:link_click', {
         ...baseProps(),
         link_href: url.pathname,
         ...linkPlacement(anchor),

@@ -41,6 +41,8 @@ Russian lives under `/ru`.
 | `/projects/:slug` | Project case study, 7 published per locale (slugs end in `-en` / `-ru`) |
 | `/projects` | Redirects to `/#projects` (no index page) |
 | `/cv`, `/ru/cv` | Interactive resume, unlisted (`noindex,follow`) |
+| `/call/`, `/ru/call/` | Booking page with the Cal.com calendar inline (15, 30, 60 min), unlisted (`noindex,follow`) |
+| `/call/thanks/`, `/ru/call/thanks/` | After a booking; strips any query string before analytics loads |
 | `/cv.txt`, `/ru/cv.txt` | Plain-text resume |
 | `/cv/*.pdf`, `/cv/*.docx` | Generated resume files, see [`scripts/cv/README.md`](scripts/cv/README.md) |
 | `/api/github/{profile,repos,contributions}.json` | Static JSON, generated at build time |
@@ -157,10 +159,13 @@ instead of importing the SDK (`rebsem:signal`, allow-listed in
 [`src/lib/site-signals.ts`](src/lib/site-signals.ts)): `tab:return` when a visitor
 comes back to a tab that showed the away title. Clicks that mean something get
 stable names: `contact:link_click` (Telegram, email, LinkedIn, the GitHub
-profile), `cv:link_click` (the quiet Resume links), `project:card_click` (case
-cards and the Next case block) and `outbound:link_click`, each with
-`link_placement` from the nearest `data-analytics-placement` (hero, hero-alt,
-case, case-next, agent-receipts, about-cta, footer). Classification lives in
+profile), `cv:link_click` (the quiet Resume links), `call:link_click` (the
+Book a call links), `project:card_click` (case cards and the Next case block)
+and `outbound:link_click`, each with `link_placement` from the nearest
+`data-analytics-placement` (hero, hero-alt, case, case-next, agent-receipts,
+about-cta, footer, call). On `/call/` the booking page reports `booking:select`
+and `booking:done` with only the length in minutes, never a name, email or time.
+The Cal.com embed is third-party code from app.cal.com and loads only on `/call/`. Classification lives in
 [`src/lib/visitor-signals.ts`](src/lib/visitor-signals.ts) with its tests;
 nothing in it is stored or precise enough to recognise anyone.
 

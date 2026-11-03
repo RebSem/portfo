@@ -1,6 +1,7 @@
 ---
 import SocialLinks from './SocialLinks.astro';
 import { siteRepoUrl, telegramUrl, uiCopy } from '../data/site-content';
+import { callPagePath } from '../lib/booking';
 import { buildIntroMailto } from '../lib/intro-mail';
 import { noBreakAfterHyphen } from '../lib/nb';
 
@@ -63,6 +64,13 @@ const closingTitle = noBreakAfterHyphen(uiCopy.footer.closingTitle[locale]);
                   <path d="M3 7l9 6l9 -6" />
                 </svg>
                 {uiCopy.caseAvailability.email[locale]}
+              </a>
+              <a class="cta-button cta-secondary" href={callPagePath(locale)}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="3" y="4" width="18" height="18" rx="2" />
+                  <path d="M16 2v4M8 2v4M3 10h18" />
+                </svg>
+                {uiCopy.call.linkLabel[locale]}
               </a>
               <a class="footer-cv" href={`${prefix}/cv/`} rel="nofollow">{uiCopy.footer.resume[locale]}</a>
               <SocialLinks hideTelegram hideEmail />

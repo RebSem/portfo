@@ -18,8 +18,39 @@ const placed = (value: string) => `data-analytics-placement="${value}"`;
 const caseSlug = hasDist
   ? readdirSync(path.join(DIST, 'projects')).find((name) => name.endsWith('-en'))
   : undefined;
+const caseSlugRu = hasDist
+  ? readdirSync(path.join(DIST, 'ru', 'projects')).find((name) => name.endsWith('-ru'))
+  : undefined;
 
 describe('analytics placements in the built pages', () => {
+  it.skipIf(!hasDist)('marks the booking link in the home closing footer, in both locales', () => {
+    for (const [html, href] of [[built(), '/call/'], [built('ru'), '/ru/call/']] as const) {
+      const footer = html.match(new RegExp(`<footer[^>]*${placed('footer')}[\\s\\S]*?</footer>`))?.[0] ?? '';
+      expect(footer).toContain(`href="${href}"`);
+    }
+  });
+
+  it.skipIf(!hasDist)('marks the booking link in the case availability strip, in both locales', () => {
+    const en = built('projects', caseSlug ?? '');
+    const ru = built('ru', 'projects', caseSlugRu ?? '');
+    for (const [html, href] of [[en, '/call/'], [ru, '/ru/call/']] as const) {
+      const strip = html.match(new RegExp(`<p[^>]*${placed('case')}[\\s\\S]*?</p>`))?.[0] ?? '';
+      expect(strip).toContain(`href="${href}"`);
+    }
+  });
+
+  it.skipIf(!hasDist)('marks the booking link in the About call to action, in both locales', () => {
+    for (const [html, href] of [[built('about'), '/call/'], [built('ru', 'about'), '/ru/call/']] as const) {
+      const cta = html.match(new RegExp(`<div class="about-cta"[^>]*${placed('about-cta')}[\\s\\S]*?</section>`))?.[0] ?? '';
+      expect(cta).toContain(`href="${href}"`);
+    }
+  });
+
+  it.skipIf(!hasDist)('marks the booking page section itself', () => {
+    expect(built('call').includes(placed('call'))).toBe(true);
+    expect(built('ru', 'call').includes(placed('call'))).toBe(true);
+  });
+
   it.skipIf(!hasDist)('marks the phone line under the home hero, with its Email and LinkedIn links', () => {
     for (const html of [built(), built('ru')]) {
       const line = html.match(new RegExp(`<p[^>]*${placed('hero-alt')}[\\s\\S]*?</p>`))?.[0] ?? '';

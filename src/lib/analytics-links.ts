@@ -56,6 +56,19 @@ export function isCvLink(url: URL, siteHost: string): boolean {
 }
 
 /**
+ * The booking page routes, both locales. The thank-you page after a booking
+ * (/call/thanks/) is not a booking link, so it does not match.
+ */
+export function isCallPath(pathname: string): boolean {
+  return /^\/(?:ru\/)?call\/?$/.test(pathname);
+}
+
+/** A link to the booking page on this site, in either locale. */
+export function isCallLink(url: URL, siteHost: string): boolean {
+  return isInternal(url, siteHost) && isCallPath(url.pathname);
+}
+
+/**
  * The `?src=` tag on a resume link, e.g. /cv?src=exness. It records which
  * outreach a view came from, which is the only attribution this site can have:
  * every application goes out as a link in a direct message, and referrers do

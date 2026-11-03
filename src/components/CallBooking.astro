@@ -1,0 +1,660 @@
+---
+import { Image } from 'astro:assets';
+import heroImage from '../assets/main-hero.jpg';
+import { calBooking, heroDisplayName, telegramUrl, uiCopy } from '../data/site-content';
+import { buildCalPublicUrl } from '../lib/booking';
+import { buildIntroMailto } from '../lib/intro-mail';
+import type { Locale } from '../types/content';
+
+interface Props {
+  locale: Locale;
+}
+
+// One card, as on Cal.com's booking page: a details panel (the owner, the
+// chosen format, the format picker) beside the calendar on wide screens, and
+// the panel above the calendar on phones. The format picker is native radio
+// buttons, so the arrow keys and space work and a screen reader announces a
+// radio group. The calendar is drawn into the stage by src/scripts/call-booking.ts.
+// The 15 minute format is the default. Each option carries its length in minutes
+// for the analytics signals; the detail blocks are shown one at a time by the
+// same script, and the static HTML already shows the default.
+const { locale } = Astro.props;
+const copy = uiCopy.call;
+const defaultSlug = calBooking.events.intro;
+const formats = [
+  { slug: calBooking.events.intro, minutes: 15, ...copy.formats.intro },
+  { slug: calBooking.events.product, minutes: 30, ...copy.formats.product },
+  { slug: calBooking.events.deepDive, minutes: 60, ...copy.formats.deepDive },
+];
+const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
+---
+
+<section
+  class="call"
+  aria-labelledby="call-title"
+  data-call-booking
+  data-call-user={calBooking.user}
+  data-locale={locale}
+  data-analytics-placement="call"
+>
+  <header class="call-head">
+    <h1 id="call-title" class="call-title">{copy.title[locale]}</h1>
+    <p class="call-lead">{copy.lead[locale]}</p>
+    <p class="call-quick">
+      {copy.preferWrite[locale]} <a href={telegramUrl} target="_blank" rel="noreferrer">{copy.telegram[locale]}</a>
+    </p>
+  </header>
+
+  <div class="call-card">
+    <div class="call-panel">
+      <div class="call-person">
+        <Image
+          class="call-avatar"
+          src={heroImage}
+          width={112}
+          height={112}
+          loading="eager"
+          alt={copy.portraitAlt[locale]}
+        />
+        <div class="call-person-text">
+          <p class="call-name">{heroDisplayName[locale]}</p>
+          <p class="call-role">{uiCopy.home.heroRole[locale]}</p>
+        </div>
+      </div>
+
+      {
+        formats.map((format) => (
+          <div class="call-detail" data-call-detail={format.slug} hidden={format.slug !== defaultSlug}>
+            <h2 class="call-detail-title">{format.title[locale]}</h2>
+            <p class="call-detail-note">{format.note[locale]}</p>
+            <ul class="call-facts">
+              <li class="call-fact-length">
+                <svg class="call-fact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                  <path d="M12 7v5l3 3" />
+                </svg>
+                <span>{format.time[locale]}</span>
+              </li>
+              <li class="call-fact-meet">
+                <svg class="call-fact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M15 10l4.553 -2.276a1 1 0 0 1 1.447 .894v6.764a1 1 0 0 1 -1.447 .894l-4.553 -2.276v-4z" />
+                  <path d="M3 6m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z" />
+                </svg>
+                <span>{copy.facts.meet[locale]}</span>
+              </li>
+              <li>
+                <svg class="call-fact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+                  <path d="M3.6 9h16.8" />
+                  <path d="M3.6 15h16.8" />
+                  <path d="M11.5 3a17 17 0 0 0 0 18" />
+                  <path d="M12.5 3a17 17 0 0 1 0 18" />
+                </svg>
+                <span data-call-zone data-zone-label={copy.facts.zone[locale]}>{copy.facts.timezone[locale]}</span>
+              </li>
+            </ul>
+          </div>
+        ))
+      }
+
+      <fieldset class="call-formats">
+        <legend class="call-legend ed-label">{copy.formatLegend[locale]}</legend>
+        <div class="call-format-list" data-call-formats>
+          {
+            formats.map((format) => (
+              <div class="call-format">
+                <input
+                  class="call-format-input sr-only"
+                  type="radio"
+                  name="call-format"
+                  id={`call-format-${format.slug}`}
+                  value={format.slug}
+                  data-minutes={format.minutes}
+                  checked={format.slug === defaultSlug}
+                />
+                <label class="call-format-card" for={`call-format-${format.slug}`}>
+                  <span class="call-format-dot" aria-hidden="true"></span>
+                  <span class="call-format-time">{format.time[locale]}</span>
+                  <span class="call-format-title">{format.title[locale]}</span>
+                </label>
+              </div>
+            ))
+          }
+        </div>
+      </fieldset>
+    </div>
+
+    <div class="call-embed" data-call-embed data-state="loading">
+      <div class="call-skeleton" role="status">
+        <p class="call-status call-status-loading">{copy.loading[locale]}</p>
+        <div class="call-status call-status-failed">
+          <p>{copy.failed[locale]}</p>
+          <p class="call-links">
+            <a href={fallbackHref} target="_blank" rel="noreferrer" data-call-open-inline>{copy.openCalLink[locale]}</a>
+            <a href={telegramUrl} target="_blank" rel="noreferrer">{copy.telegram[locale]}</a>
+          </p>
+        </div>
+        <div class="call-skeleton-blocks" aria-hidden="true">
+          <span class="call-skeleton-bar"></span>
+          <div class="call-skeleton-grid">
+            {Array.from({ length: 28 }).map(() => (
+              <span class="call-skeleton-cell"></span>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div id="call-stage" class="call-stage" data-call-stage data-frame-title={copy.frameTitle[locale]}></div>
+      <noscript>
+        <style>
+          .call-embed { min-height: 0 !important; }
+          .call-skeleton { display: none !important; }
+        </style>
+        <div class="call-noscript">
+          <p>{copy.noscript[locale]}</p>
+          <p class="call-links">
+            <a href={fallbackHref} target="_blank" rel="noreferrer">{copy.openCalLink[locale]}</a>
+            <a href={telegramUrl} target="_blank" rel="noreferrer">{copy.telegram[locale]}</a>
+          </p>
+        </div>
+      </noscript>
+    </div>
+  </div>
+
+  <p class="call-fallback">
+    <a href={fallbackHref} target="_blank" rel="noreferrer" data-call-open>{copy.openCal[locale]}</a>
+  </p>
+
+  <p class="call-contact">
+    <a href={telegramUrl} target="_blank" rel="noreferrer">{copy.telegram[locale]}</a>
+    <a href={buildIntroMailto(locale)}>{copy.email[locale]}</a>
+  </p>
+</section>
+
+<script>
+  import '../scripts/call-booking';
+</script>
+
+<style>
+  .call {
+    min-width: 0;
+  }
+
+  .call-head {
+    display: grid;
+    gap: 0.6rem;
+    margin-bottom: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .call-title {
+    font-size: clamp(1.85rem, 3.6vw, 2.5rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+
+  .call-lead {
+    max-width: 60ch;
+    font-size: 1rem;
+    line-height: 1.55;
+    color: color-mix(in oklab, var(--foreground) 74%, transparent);
+  }
+
+  /* The card: one surface with the site's radius and shadow. Three widths:
+     phones stack the panel above the calendar; from 900px the panel is a band
+     above a full-width calendar; from 1200px it is a column beside it. Cal lays
+     its month and time slots side by side only when its frame is about 800px
+     wide or more, and stacks them below that into a frame over 1500px tall, so
+     the column layout starts where the calendar keeps at least that width. */
+  .call-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    background: var(--surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  .call-panel {
+    display: grid;
+    align-content: start;
+    gap: 1.25rem;
+    min-width: 0;
+    padding: 1.25rem 1.25rem 1.35rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  @media (min-width: 900px) {
+    .call-panel {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-areas:
+        'person formats'
+        'detail formats';
+      column-gap: 2.5rem;
+      row-gap: 1.25rem;
+      padding: 1.6rem 1.75rem;
+      background: color-mix(in oklab, var(--foreground) 2.5%, var(--surface));
+    }
+
+    .call-person {
+      grid-area: person;
+    }
+
+    .call-detail {
+      grid-area: detail;
+    }
+
+    .call-formats {
+      grid-area: formats;
+      align-self: start;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .call-card {
+      grid-template-columns: minmax(0, 18.5rem) minmax(0, 1fr);
+    }
+
+    .call-panel {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: none;
+      gap: 1.5rem;
+      padding: 1.75rem 1.5rem;
+      border-right: 1px solid var(--border);
+      border-bottom: 0;
+    }
+
+    .call-person,
+    .call-detail,
+    .call-formats {
+      grid-area: auto;
+    }
+  }
+
+  .call-person {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    min-width: 0;
+  }
+
+  .call-avatar {
+    flex-shrink: 0;
+    width: 3.5rem;
+    height: 3.5rem;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .call-name {
+    font-size: 0.98rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+
+  .call-role {
+    font-size: 0.86rem;
+    line-height: 1.4;
+    color: var(--text-muted);
+  }
+
+  .call-detail {
+    display: grid;
+    gap: 0.55rem;
+    min-width: 0;
+  }
+
+  .call-detail[hidden] {
+    display: none;
+  }
+
+  .call-detail-title {
+    font-size: 1.35rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  .call-detail-note {
+    font-size: 0.93rem;
+    line-height: 1.5;
+    color: color-mix(in oklab, var(--foreground) 76%, transparent);
+  }
+
+  .call-facts {
+    display: grid;
+    gap: 0.45rem;
+    margin: 0.35rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .call-facts li {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .call-fact-icon {
+    flex-shrink: 0;
+    width: 1.05rem;
+    height: 1.05rem;
+    color: var(--text-muted);
+  }
+
+  .call-formats {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .call-legend {
+    padding: 0;
+    margin-bottom: 0.7rem;
+  }
+
+  .call-format-list {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .call-format {
+    position: relative;
+    min-width: 0;
+  }
+
+  /* Each option is a compact row: a radio dot, the length, the title. The
+     selected row takes the accent border and a soft fill; the hover is colour
+     and border only, and the press uses the site's press scale. */
+  .call-format-card {
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 0.7rem;
+    box-sizing: border-box;
+    min-height: 2.75rem;
+    padding: 0.55rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    background: var(--background-alt);
+    cursor: pointer;
+    transition:
+      border-color var(--dur-fast) var(--ease-out-strong),
+      background-color var(--dur-fast) var(--ease-out-strong),
+      transform var(--dur-press) var(--ease-out-strong);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .call-format-card:hover {
+      border-color: color-mix(in oklab, var(--accent) 45%, var(--border));
+    }
+  }
+
+  .call-format-card:active {
+    transform: scale(var(--press-scale));
+  }
+
+  .call-format-input:checked + .call-format-card {
+    border-color: var(--accent-text);
+    background: var(--accent-soft);
+  }
+
+  .call-format-input:focus-visible + .call-format-card {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 3px;
+  }
+
+  .call-format-dot {
+    display: grid;
+    place-items: center;
+    width: 0.95rem;
+    height: 0.95rem;
+    border: 1.5px solid color-mix(in oklab, var(--foreground) 40%, transparent);
+    border-radius: 50%;
+    transition: border-color var(--dur-fast) var(--ease-out-strong);
+  }
+
+  .call-format-dot::after {
+    content: '';
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--accent-text);
+    transform: scale(0);
+    transition: transform var(--dur-fast) var(--ease-out-strong);
+  }
+
+  .call-format-input:checked + .call-format-card .call-format-dot {
+    border-color: var(--accent-text);
+  }
+
+  .call-format-input:checked + .call-format-card .call-format-dot::after {
+    transform: scale(1);
+  }
+
+  .call-format-time {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: color-mix(in oklab, var(--foreground) 70%, transparent);
+  }
+
+  .call-format-title {
+    min-width: 0;
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
+  /* Phones keep the panel short: the title and the note stay, and so does the
+     time zone row, which says which zone the calendar's times are in. The
+     duration (on each option already) and the Meet line go. */
+  @media (max-width: 899.98px) {
+    .call-facts .call-fact-length,
+    .call-facts .call-fact-meet {
+      display: none;
+    }
+  }
+
+  /* The Telegram line above the calendar on phones, where the slot list would
+     otherwise push the contacts far down. The contacts below the card carry it
+     from 900px. */
+  .call-quick {
+    display: none;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    color: color-mix(in oklab, var(--foreground) 74%, transparent);
+  }
+
+  @media (max-width: 899.98px) {
+    .call-quick {
+      display: block;
+    }
+  }
+
+  /* The calendar. Its stage is reserved at a height close to the one Cal sets,
+     so the contacts below do not move when the frame arrives. The skeleton and
+     the stage swap with the state the script sets on the embed: the markup starts
+     in the loading state, so the skeleton shows before the script runs; when Cal
+     reports the calendar ready the stage fades in and the skeleton goes. A failed
+     calendar takes no height: the card shrinks around its message and links, and
+     the stage (with Cal's own error page, if it drew one) leaves the layout. */
+  .call-embed {
+    position: relative;
+    min-width: 0;
+    min-height: 48rem;
+  }
+
+  @media (min-width: 900px) {
+    .call-embed {
+      min-height: 37rem;
+    }
+  }
+
+  .call-stage {
+    min-width: 0;
+    transition:
+      opacity var(--dur-base) var(--ease-out-strong),
+      visibility var(--dur-base) var(--ease-out-strong);
+  }
+
+  .call-embed[data-state='loading'] .call-stage,
+  .call-embed[data-state='failed'] .call-stage {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .call-embed[data-state='failed'] {
+    min-height: 0;
+  }
+
+  .call-embed[data-state='failed'] .call-skeleton {
+    position: static;
+  }
+
+  .call-embed[data-state='failed'] .call-stage {
+    display: none;
+  }
+
+  .call-stage :global(iframe) {
+    display: block;
+    width: 100%;
+    border: 0;
+  }
+
+  .call-skeleton {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    align-content: start;
+    gap: 1.1rem;
+    padding: 1.5rem;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity var(--dur-base) var(--ease-out-strong),
+      visibility var(--dur-base) var(--ease-out-strong);
+  }
+
+  .call-embed[data-state='loading'] .call-skeleton,
+  .call-embed[data-state='failed'] .call-skeleton {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .call-status {
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+  }
+
+  .call-status-failed {
+    display: none;
+    gap: 0.7rem;
+  }
+
+  .call-embed[data-state='failed'] .call-status-loading {
+    display: none;
+  }
+
+  .call-embed[data-state='failed'] .call-status-failed {
+    display: grid;
+  }
+
+  .call-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    font-weight: 500;
+  }
+
+  .call-skeleton-blocks {
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  .call-embed[data-state='failed'] .call-skeleton-blocks {
+    display: none;
+  }
+
+  .call-skeleton-bar {
+    display: block;
+    width: 40%;
+    height: 1.4rem;
+    border-radius: 0.5rem;
+    background: color-mix(in oklab, var(--foreground) 7%, transparent);
+  }
+
+  .call-skeleton-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0.55rem;
+  }
+
+  .call-skeleton-cell {
+    display: block;
+    aspect-ratio: 1;
+    border-radius: 0.5rem;
+    background: color-mix(in oklab, var(--foreground) 5%, transparent);
+  }
+
+  .call-noscript {
+    display: grid;
+    gap: 0.7rem;
+    padding: 1.25rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: color-mix(in oklab, var(--foreground) 72%, transparent);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .call-stage,
+    .call-skeleton,
+    .call-format-card,
+    .call-format-dot,
+    .call-format-dot::after {
+      transition: none;
+    }
+
+    .call-format-card:active {
+      transform: none;
+    }
+  }
+
+  .call-fallback {
+    margin-top: 1rem;
+    font-size: 0.92rem;
+    line-height: 1.45;
+  }
+
+  .call-contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    margin-top: 1.6rem;
+    font-weight: 500;
+  }
+
+  /* Touch targets: the links around the card and in its messages are 44px tall
+     on a touch screen, the height the case strip's links use. */
+  @media (pointer: coarse) {
+    .call-quick a,
+    .call-fallback a,
+    .call-links a,
+    .call-contact a {
+      display: inline-block;
+      padding-block: 0.7rem;
+    }
+  }
+</style>
