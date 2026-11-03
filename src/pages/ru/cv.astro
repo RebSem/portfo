@@ -13,8 +13,9 @@ const txtHref = '/ru/cv.txt';
 
 const personEntity = buildPersonSchema(pageUrl);
 // Employment history, so an LLM screener handed this link can answer
-// "where did they work and when" from the structured data alone.
-personEntity.worksFor = buildEmploymentSchema('ru');
+// "where did they work and when" from the structured data alone. Past jobs
+// go under alumniOf: worksFor reads as a current employer, and there is none.
+personEntity.alumniOf = [personEntity.alumniOf, ...buildEmploymentSchema('ru')];
 const cvSchema = {
   '@context': 'https://schema.org',
   '@type': 'ProfilePage',
