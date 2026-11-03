@@ -84,7 +84,7 @@ const imageAlt = imageAltProp ?? (isOgCard && !image.startsWith('/og/case-') ? o
 // Versioned so a preview service that cached the old card by its URL fetches
 // the new one. Bump when scripts/og/build-og.mjs changes what the cards say
 // (2026-10: the job-search status line; 2026-11-03: the new card layout).
-const OG_CARD_VERSION = '2026-11-03';
+const OG_CARD_VERSION = '2026-11-04';
 const imageUrl = image.startsWith('http://') || image.startsWith('https://')
   ? image
   : new URL(isOgCard ? `${image}?v=${OG_CARD_VERSION}` : image, siteUrl).toString();

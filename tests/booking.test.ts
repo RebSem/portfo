@@ -155,21 +155,22 @@ describe('call page copy', () => {
 
   it('gives every string of the page both locales', () => {
     const strings = localizedStrings(uiCopy.call);
-    expect(strings.length).toBeGreaterThan(20);
+    expect(strings.length).toBeGreaterThan(15);
     for (const { ru, en } of strings) {
       expect(ru, 'ru').toBeTruthy();
       expect(en, 'en').toBeTruthy();
     }
   });
 
-  it('names the failed message, its links and the frame in both locales', () => {
+  it('names the slow and failed messages, their links and the frame in both locales', () => {
     for (const field of [
+      uiCopy.call.slow,
       uiCopy.call.failed,
       uiCopy.call.openCalLink,
-      uiCopy.call.openCal,
+      uiCopy.call.telegram,
+      uiCopy.call.email,
       uiCopy.call.noscript,
       uiCopy.call.frameTitle,
-      uiCopy.call.preferWrite,
       uiCopy.call.facts.zone,
     ]) {
       expect(field.ru).toBeTruthy();
@@ -177,12 +178,13 @@ describe('call page copy', () => {
     }
   });
 
-  it('gives each format a title, a time and a note in both locales', () => {
+  it('gives each format a time and a title in both locales, and no note', () => {
     for (const format of [uiCopy.call.formats.intro, uiCopy.call.formats.product, uiCopy.call.formats.deepDive]) {
-      for (const field of [format.time, format.title, format.note]) {
+      for (const field of [format.time, format.title]) {
         expect(field.ru).toBeTruthy();
         expect(field.en).toBeTruthy();
       }
+      expect(format).not.toHaveProperty('note');
     }
   });
 });
@@ -245,9 +247,25 @@ describeBuilt('built booking page', () => {
       const html = readFileSync(file, 'utf8');
       expect(html, `${file} loading state`).toContain('data-state="loading"');
       expect(html, `${file} failed link`).toContain('data-call-open-inline');
+      expect(html, `${file} failed email`).toContain('mailto:');
       expect(html, `${file} zone row`).toMatch(/data-call-zone data-zone-label="[^"]+"/);
       expect(html, `${file} frame title`).toMatch(/data-frame-title="[^"]+"/);
     }
+  });
+
+  it('has the short H1 and no captions around the card: the footer is the only text below it', () => {
+    const h1 = [
+      /<h1 id="call-title" class="call-title"[^>]*>Let(?:&#39;|&#x27;|')s talk<\/h1>/,
+      /<h1 id="call-title" class="call-title"[^>]*>Давайте созвонимся<\/h1>/,
+    ];
+    pages.forEach(({ file }, index) => {
+      const html = readFileSync(file, 'utf8');
+      expect(html, `${file} H1`).toMatch(h1[index]);
+      for (const removed of ['call-lead', 'call-quick', 'call-fallback', 'call-contact', 'call-detail-title']) {
+        expect(html, `${file} ${removed}`).not.toContain(removed);
+      }
+      expect(html, `${file} open-calendar caption`).not.toMatch(/Open the calendar there|Откройте календарь там/);
+    });
   });
 
   it('previews with its own link card in each locale, with the card described', () => {

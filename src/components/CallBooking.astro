@@ -10,14 +10,14 @@ interface Props {
   locale: Locale;
 }
 
-// One card, as on Cal.com's booking page: a details panel (the owner, the
-// chosen format, the format picker) beside the calendar on wide screens, and
-// the panel above the calendar on phones. The format picker is native radio
-// buttons, so the arrow keys and space work and a screen reader announces a
-// radio group. The calendar is drawn into the stage by src/scripts/call-booking.ts.
+// One card, as on Cal.com's booking page: a short panel (the owner, the time zone
+// the times are in, the format picker) beside the calendar on wide screens, and
+// above it on phones, where the formats become one segmented control. The format
+// picker is native radio buttons, so the arrow keys and space work and a screen
+// reader announces a radio group under its legend. The calendar is drawn into the
+// stage by src/scripts/call-booking.ts.
 // The 15 minute format is the default. Each option carries its length in minutes
-// for the analytics signals; the detail blocks are shown one at a time by the
-// same script, and the static HTML already shows the default.
+// for the analytics signals; the static HTML already shows the default.
 const { locale } = Astro.props;
 const copy = uiCopy.call;
 const defaultSlug = calBooking.events.intro;
@@ -27,6 +27,7 @@ const formats = [
   { slug: calBooking.events.deepDive, minutes: 60, ...copy.formats.deepDive },
 ];
 const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
+const mailHref = buildIntroMailto(locale);
 ---
 
 <section
@@ -37,13 +38,7 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
   data-locale={locale}
   data-analytics-placement="call"
 >
-  <header class="call-head">
-    <h1 id="call-title" class="call-title">{copy.title[locale]}</h1>
-    <p class="call-lead">{copy.lead[locale]}</p>
-    <p class="call-quick">
-      {copy.preferWrite[locale]} <a href={telegramUrl} target="_blank" rel="noreferrer">{copy.telegram[locale]}</a>
-    </p>
-  </header>
+  <h1 id="call-title" class="call-title">{copy.title[locale]}</h1>
 
   <div class="call-card">
     <div class="call-panel">
@@ -62,43 +57,28 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
         </div>
       </div>
 
-      {
-        formats.map((format) => (
-          <div class="call-detail" data-call-detail={format.slug} hidden={format.slug !== defaultSlug}>
-            <h2 class="call-detail-title">{format.title[locale]}</h2>
-            <p class="call-detail-note">{format.note[locale]}</p>
-            <ul class="call-facts">
-              <li class="call-fact-length">
-                <svg class="call-fact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
-                  <path d="M12 7v5l3 3" />
-                </svg>
-                <span>{format.time[locale]}</span>
-              </li>
-              <li class="call-fact-meet">
-                <svg class="call-fact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M15 10l4.553 -2.276a1 1 0 0 1 1.447 .894v6.764a1 1 0 0 1 -1.447 .894l-4.553 -2.276v-4z" />
-                  <path d="M3 6m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z" />
-                </svg>
-                <span>{copy.facts.meet[locale]}</span>
-              </li>
-              <li>
-                <svg class="call-fact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
-                  <path d="M3.6 9h16.8" />
-                  <path d="M3.6 15h16.8" />
-                  <path d="M11.5 3a17 17 0 0 0 0 18" />
-                  <path d="M12.5 3a17 17 0 0 1 0 18" />
-                </svg>
-                <span data-call-zone data-zone-label={copy.facts.zone[locale]}>{copy.facts.timezone[locale]}</span>
-              </li>
-            </ul>
-          </div>
-        ))
-      }
+      <ul class="call-facts">
+        <li>
+          <svg class="call-fact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M15 10l4.553 -2.276a1 1 0 0 1 1.447 .894v6.764a1 1 0 0 1 -1.447 .894l-4.553 -2.276v-4z" />
+            <path d="M3 6m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z" />
+          </svg>
+          <span>{copy.facts.meet[locale]}</span>
+        </li>
+        <li>
+          <svg class="call-fact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
+            <path d="M3.6 9h16.8" />
+            <path d="M3.6 15h16.8" />
+            <path d="M11.5 3a17 17 0 0 0 0 18" />
+            <path d="M12.5 3a17 17 0 0 1 0 18" />
+          </svg>
+          <span data-call-zone data-zone-label={copy.facts.zone[locale]}>{copy.facts.timezone[locale]}</span>
+        </li>
+      </ul>
 
       <fieldset class="call-formats">
-        <legend class="call-legend ed-label">{copy.formatLegend[locale]}</legend>
+        <legend class="sr-only">{copy.formatLegend[locale]}</legend>
         <div class="call-format-list" data-call-formats>
           {
             formats.map((format) => (
@@ -127,11 +107,13 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
     <div class="call-embed" data-call-embed data-state="loading">
       <div class="call-skeleton" role="status">
         <p class="call-status call-status-loading">{copy.loading[locale]}</p>
-        <div class="call-status call-status-failed">
-          <p>{copy.failed[locale]}</p>
+        <div class="call-status call-status-message">
+          <p class="call-status-slow">{copy.slow[locale]}</p>
+          <p class="call-status-failed">{copy.failed[locale]}</p>
           <p class="call-links">
             <a href={fallbackHref} target="_blank" rel="noreferrer" data-call-open-inline>{copy.openCalLink[locale]}</a>
             <a href={telegramUrl} target="_blank" rel="noreferrer">{copy.telegram[locale]}</a>
+            <a href={mailHref}>{copy.email[locale]}</a>
           </p>
         </div>
         <div class="call-skeleton-blocks" aria-hidden="true">
@@ -159,15 +141,6 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
       </noscript>
     </div>
   </div>
-
-  <p class="call-fallback">
-    <a href={fallbackHref} target="_blank" rel="noreferrer" data-call-open>{copy.openCal[locale]}</a>
-  </p>
-
-  <p class="call-contact">
-    <a href={telegramUrl} target="_blank" rel="noreferrer">{copy.telegram[locale]}</a>
-    <a href={buildIntroMailto(locale)}>{copy.email[locale]}</a>
-  </p>
 </section>
 
 <script>
@@ -179,24 +152,12 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
     min-width: 0;
   }
 
-  .call-head {
-    display: grid;
-    gap: 0.6rem;
-    margin-bottom: clamp(1.5rem, 3vw, 2rem);
-  }
-
   .call-title {
+    margin-bottom: clamp(1.25rem, 3vw, 1.75rem);
     font-size: clamp(1.85rem, 3.6vw, 2.5rem);
     font-weight: 600;
     letter-spacing: -0.03em;
     line-height: 1.1;
-  }
-
-  .call-lead {
-    max-width: 60ch;
-    font-size: 1rem;
-    line-height: 1.55;
-    color: color-mix(in oklab, var(--foreground) 74%, transparent);
   }
 
   /* The card: one surface with the site's radius and shadow. Three widths:
@@ -219,9 +180,9 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
   .call-panel {
     display: grid;
     align-content: start;
-    gap: 1.25rem;
+    gap: 0.9rem;
     min-width: 0;
-    padding: 1.25rem 1.25rem 1.35rem;
+    padding: 1rem 1rem 1.1rem;
     border-bottom: 1px solid var(--border);
   }
 
@@ -230,7 +191,7 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       grid-template-areas:
         'person formats'
-        'detail formats';
+        'facts formats';
       column-gap: 2.5rem;
       row-gap: 1.25rem;
       padding: 1.6rem 1.75rem;
@@ -241,8 +202,8 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
       grid-area: person;
     }
 
-    .call-detail {
-      grid-area: detail;
+    .call-facts {
+      grid-area: facts;
     }
 
     .call-formats {
@@ -266,7 +227,7 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
     }
 
     .call-person,
-    .call-detail,
+    .call-facts,
     .call-formats {
       grid-area: auto;
     }
@@ -275,76 +236,66 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
   .call-person {
     display: flex;
     align-items: center;
-    gap: 0.8rem;
+    gap: 0.7rem;
     min-width: 0;
   }
 
   .call-avatar {
     flex-shrink: 0;
-    width: 3.5rem;
-    height: 3.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
     border: 1px solid var(--border);
     border-radius: 50%;
     object-fit: cover;
   }
 
+  @media (min-width: 900px) {
+    .call-person {
+      gap: 0.8rem;
+    }
+
+    .call-avatar {
+      width: 3.5rem;
+      height: 3.5rem;
+    }
+  }
+
   .call-name {
-    font-size: 0.98rem;
+    font-size: 0.96rem;
     font-weight: 600;
     letter-spacing: -0.01em;
     line-height: 1.3;
   }
 
   .call-role {
-    font-size: 0.86rem;
+    font-size: 0.85rem;
     line-height: 1.4;
     color: var(--text-muted);
   }
 
-  .call-detail {
-    display: grid;
-    gap: 0.55rem;
-    min-width: 0;
-  }
-
-  .call-detail[hidden] {
-    display: none;
-  }
-
-  .call-detail-title {
-    font-size: 1.35rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    line-height: 1.2;
-    text-wrap: balance;
-  }
-
-  .call-detail-note {
-    font-size: 0.93rem;
-    line-height: 1.5;
-    color: color-mix(in oklab, var(--foreground) 76%, transparent);
-  }
-
+  /* The time zone and the video link: one line on a phone when they fit. */
   .call-facts {
-    display: grid;
-    gap: 0.45rem;
-    margin: 0.35rem 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.1rem;
+    margin: 0;
     padding: 0;
     list-style: none;
-    font-size: 0.9rem;
+    font-size: 0.86rem;
     line-height: 1.4;
   }
 
   .call-facts li {
     display: flex;
     align-items: center;
-    gap: 0.55rem;
+    gap: 0.45rem;
+    min-width: 0;
   }
 
   .call-fact-icon {
     flex-shrink: 0;
-    width: 1.05rem;
-    height: 1.05rem;
+    width: 1rem;
+    height: 1rem;
     color: var(--text-muted);
   }
 
@@ -353,11 +304,6 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
     margin: 0;
     padding: 0;
     border: 0;
-  }
-
-  .call-legend {
-    padding: 0;
-    margin-bottom: 0.7rem;
   }
 
   .call-format-list {
@@ -448,47 +394,74 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
     color: color-mix(in oklab, var(--foreground) 70%, transparent);
   }
 
+  /* The soft hyphens in the titles matter only on phones, where the segments
+     are narrow; on wider cards they are ignored, so a title breaks at its spaces. */
   .call-format-title {
     min-width: 0;
     font-size: 0.95rem;
     font-weight: 500;
     line-height: 1.3;
     overflow-wrap: anywhere;
+    hyphens: none;
   }
 
-  /* Phones keep the panel short: the title and the note stay, and so does the
-     time zone row, which says which zone the calendar's times are in. The
-     duration (on each option already) and the Meet line go. */
+  /* Phones: the three formats sit side by side as one segmented control. Each
+     segment is a column, the length above the short name; the radio dot goes,
+     and the fill and border show the choice. A segment is 44px or taller. */
   @media (max-width: 899.98px) {
-    .call-facts .call-fact-length,
-    .call-facts .call-fact-meet {
+    .call-format-list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.4rem;
+    }
+
+    /* The wrapper stretches to the tallest segment, so the three match. */
+    .call-format {
+      display: grid;
+    }
+
+    .call-format-card {
+      grid-template-columns: minmax(0, 1fr);
+      justify-items: center;
+      row-gap: 0.1rem;
+      min-height: 3.1rem;
+      padding: 0.45rem 0.2rem;
+      text-align: center;
+    }
+
+    .call-format-dot {
       display: none;
     }
-  }
 
-  /* The Telegram line above the calendar on phones, where the slot list would
-     otherwise push the contacts far down. The contacts below the card carry it
-     from 900px. */
-  .call-quick {
-    display: none;
-    font-size: 0.95rem;
-    line-height: 1.45;
-    color: color-mix(in oklab, var(--foreground) 74%, transparent);
-  }
+    .call-format-time {
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0;
+      text-transform: none;
+      color: var(--foreground);
+    }
 
-  @media (max-width: 899.98px) {
-    .call-quick {
-      display: block;
+    /* Breaks only at spaces and soft hyphens: a word never splits mid-word. */
+    .call-format-title {
+      font-size: 0.76rem;
+      line-height: 1.25;
+      color: var(--text-muted);
+      overflow-wrap: normal;
+      hyphens: manual;
+      text-wrap: balance;
     }
   }
 
   /* The calendar. Its stage is reserved at a height close to the one Cal sets,
-     so the contacts below do not move when the frame arrives. The skeleton and
-     the stage swap with the state the script sets on the embed: the markup starts
-     in the loading state, so the skeleton shows before the script runs; when Cal
-     reports the calendar ready the stage fades in and the skeleton goes. A failed
-     calendar takes no height: the card shrinks around its message and links, and
-     the stage (with Cal's own error page, if it drew one) leaves the layout. */
+     so the footer below does not move when the frame arrives; a drawn calendar
+     takes its own height, so a short step (the booking form) leaves no empty
+     space under it. The skeleton shows
+     while the calendar loads and goes at once when Cal reports it ready; the
+     stage then fades in on its own. A format switch fades the old calendar out
+     first (the 'switching' state), so the skeleton never sits over a calendar. A
+     failed calendar takes no height: the card shrinks around its message and
+     links, and the stage (with Cal's own error page, if it drew one) leaves the
+     layout. */
   .call-embed {
     position: relative;
     min-width: 0;
@@ -509,17 +482,27 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
   }
 
   .call-embed[data-state='loading'] .call-stage,
+  .call-embed[data-state='switching'] .call-stage,
+  .call-embed[data-state='slow'] .call-stage,
   .call-embed[data-state='failed'] .call-stage {
     opacity: 0;
     visibility: hidden;
   }
 
+  .call-embed[data-state='ready'],
   .call-embed[data-state='failed'] {
     min-height: 0;
   }
 
+  /* A slow calendar keeps the reserved height and the skeleton; only its links
+     take the pointer. */
+  .call-embed[data-state='slow'] .call-skeleton {
+    pointer-events: auto;
+  }
+
   .call-embed[data-state='failed'] .call-skeleton {
     position: static;
+    pointer-events: auto;
   }
 
   .call-embed[data-state='failed'] .call-stage {
@@ -532,6 +515,10 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
     border: 0;
   }
 
+  /* No transition on the skeleton: it is either there or gone, so it never
+     fades over the calendar. Pointer events pass through while it is up; the
+     slow and failed messages take them back, since the links live inside the
+     skeleton. */
   .call-skeleton {
     position: absolute;
     inset: 0;
@@ -542,12 +529,10 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-    transition:
-      opacity var(--dur-base) var(--ease-out-strong),
-      visibility var(--dur-base) var(--ease-out-strong);
   }
 
   .call-embed[data-state='loading'] .call-skeleton,
+  .call-embed[data-state='slow'] .call-skeleton,
   .call-embed[data-state='failed'] .call-skeleton {
     opacity: 1;
     visibility: visible;
@@ -559,17 +544,30 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
     color: var(--text-muted);
   }
 
-  .call-status-failed {
+  /* The slow and failed lines take turns above the same links. */
+  .call-status-message {
     display: none;
     gap: 0.7rem;
   }
 
+  .call-status-slow,
+  .call-status-failed {
+    display: none;
+  }
+
+  .call-embed[data-state='slow'] .call-status-loading,
   .call-embed[data-state='failed'] .call-status-loading {
     display: none;
   }
 
-  .call-embed[data-state='failed'] .call-status-failed {
+  .call-embed[data-state='slow'] .call-status-message,
+  .call-embed[data-state='failed'] .call-status-message {
     display: grid;
+  }
+
+  .call-embed[data-state='slow'] .call-status-slow,
+  .call-embed[data-state='failed'] .call-status-failed {
+    display: block;
   }
 
   .call-links {
@@ -620,7 +618,6 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
 
   @media (prefers-reduced-motion: reduce) {
     .call-stage,
-    .call-skeleton,
     .call-format-card,
     .call-format-dot,
     .call-format-dot::after {
@@ -632,27 +629,10 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
     }
   }
 
-  .call-fallback {
-    margin-top: 1rem;
-    font-size: 0.92rem;
-    line-height: 1.45;
-  }
-
-  .call-contact {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem 1.25rem;
-    margin-top: 1.6rem;
-    font-weight: 500;
-  }
-
-  /* Touch targets: the links around the card and in its messages are 44px tall
-     on a touch screen, the height the case strip's links use. */
+  /* Touch targets: the links in the failed message are 44px tall on a touch
+     screen, the height the case strip's links use. */
   @media (pointer: coarse) {
-    .call-quick a,
-    .call-fallback a,
-    .call-links a,
-    .call-contact a {
+    .call-links a {
       display: inline-block;
       padding-block: 0.7rem;
     }

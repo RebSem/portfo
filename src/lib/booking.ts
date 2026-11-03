@@ -39,7 +39,7 @@ export const isBookingMinutes = (value: unknown): value is BookingMinutes =>
 export const calBookedActions = ['bookingSuccessfulV2', 'bookingSuccessful'] as const;
 
 // The embed event that means the calendar is drawn and can be shown. The stage
-// fades in on it; the frame's own load event is the fallback.
+// fades in on it alone: a frame's load event also fires for a frame that failed.
 export const calReadyAction = 'linkReady';
 
 // The embed event for a link it cannot find, such as an event type that was
