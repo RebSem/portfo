@@ -45,7 +45,7 @@ Russian lives under `/ru`.
 | `/cv/*.pdf`, `/cv/*.docx` | Generated resume files, see [`scripts/cv/README.md`](scripts/cv/README.md) |
 | `/api/github/{profile,repos,contributions}.json` | Static JSON, generated at build time |
 | `/sitemap.xml`, `/robots.txt` | Generated |
-| `/llms.txt` | Hand-maintained, in `public/` |
+| `/llms.txt` | Generated at build from `src/data/cv.ts` and the case collection (`src/pages/llms.txt.ts`) |
 | `/404.html` | Served by GitHub Pages for any missing path; one file, picks EN or RU from the URL |
 
 ## Layout
