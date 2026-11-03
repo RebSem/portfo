@@ -25,6 +25,15 @@ export const callPagePath = (locale: Locale): string => (locale === 'ru' ? '/ru/
 
 export const callThanksPath = (locale: Locale): string => `${callPagePath(locale)}thanks/`;
 
+// The lengths of the public formats, in minutes. The analytics signals report
+// only this number: never the event name, the time or anything the booker typed.
+export const bookingLengths = [15, 30, 60] as const;
+
+export type BookingMinutes = (typeof bookingLengths)[number];
+
+export const isBookingMinutes = (value: unknown): value is BookingMinutes =>
+  (bookingLengths as readonly unknown[]).includes(value);
+
 // The embed events that mean a booking was confirmed. Cal.com sends the newer
 // one; the older one is listened to as well, in case a version sends only that.
 export const calBookedActions = ['bookingSuccessfulV2', 'bookingSuccessful'] as const;

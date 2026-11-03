@@ -9,6 +9,8 @@
  * no DOM text ever reaches a property.
  */
 
+import { isBookingMinutes } from './booking';
+
 export const SIGNAL_EVENT = 'rebsem:signal';
 
 export type HiddenBucket = 'under-1m' | '1-10m' | 'over-10m';
@@ -20,6 +22,14 @@ const SIGNALS = {
   // human coming back after 1-10 minutes is someone comparing candidates.
   'tab:return': {
     hidden_bucket: (value: unknown) => value === 'under-1m' || value === '1-10m' || value === 'over-10m',
+  },
+  // The booking page (/call/): the format picked, and a booking Cal.com
+  // confirmed. The length alone; nothing else from the embed is recorded.
+  'booking:select': {
+    minutes: isBookingMinutes,
+  },
+  'booking:done': {
+    minutes: isBookingMinutes,
   },
 } satisfies Record<string, Record<string, Validator>>;
 

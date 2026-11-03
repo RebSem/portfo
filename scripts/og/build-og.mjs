@@ -1,6 +1,6 @@
 /**
- * Renders the link-preview cards (og:image) for the home, About and CV pages in
- * both locales, and for the Zvonobot AI case. A recruiter sees this card in
+ * Renders the link-preview cards (og:image) for the home, About, CV and booking
+ * pages in both locales, and for the Zvonobot AI case. A recruiter sees this card in
  * Telegram or LinkedIn before they see the site, and a feed often shows only the
  * card and the title, so the home card carries what the home page leads with:
  * the name and the role, the headline, the job-search status and the one proof
@@ -59,6 +59,23 @@ const CASE = {
   },
 };
 
+// The booking page's card (/call/). The name line is the home card's; the
+// headline is the action, and the line under it lists the formats. No status
+// pill: the card is about booking, not the job search. The Russian headline is
+// two lines, since the one-line size would not fit "Записаться на созвон".
+const CALL = {
+  en: {
+    name: COPY.en.name,
+    headline: ['Book a call'],
+    proof: '15, 30 or 60 minutes · Google Meet · your time zone',
+  },
+  ru: {
+    name: COPY.ru.name,
+    headline: ['Записаться', 'на созвон'],
+    proof: '15, 30 или 60 минут · Google Meet · ваш часовой пояс',
+  },
+};
+
 // The eyebrow is the only part that differs between pages: it says where the
 // link leads. Everything else is the same card for every page of a locale.
 const CARDS = [
@@ -68,6 +85,8 @@ const CARDS = [
   { page: 'about', locale: 'ru', eyebrow: 'rebsem.ru / обо мне' },
   { page: 'cv', locale: 'en', eyebrow: 'rebsem.ru / cv' },
   { page: 'cv', locale: 'ru', eyebrow: 'rebsem.ru / резюме' },
+  { page: 'call', locale: 'en', eyebrow: 'rebsem.ru / call', copy: CALL.en },
+  { page: 'call', locale: 'ru', eyebrow: 'rebsem.ru / созвон', copy: CALL.ru },
   { page: 'case-zvonobot-ai', locale: 'en', eyebrow: 'rebsem.ru / case', copy: CASE.en },
   { page: 'case-zvonobot-ai', locale: 'ru', eyebrow: 'rebsem.ru / кейс', copy: CASE.ru },
 ];

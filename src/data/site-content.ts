@@ -677,6 +677,9 @@ export const uiCopy = {
     },
     telegram: { ru: 'Написать в Telegram', en: 'Message on Telegram' },
     email: { ru: 'Почта', en: 'Email' },
+    // The label of every link to this page: the home and case closing blocks,
+    // the case strip and About. The links point at /call/ (or /ru/call/).
+    linkLabel: { ru: 'Записаться на созвон', en: 'Book a call' },
   },
   // The thank-you page after a booking (CallThanks.astro): where the invitation
   // is, and three quiet links for the time before the call. The resume link

@@ -12,13 +12,14 @@ interface Props {
 // and a screen reader announces a radio group. The static HTML carries the
 // picker, the fallback link and the contacts; the calendar is drawn into the
 // stage by src/scripts/call-booking.ts. The 15 minute format is the default.
+// Each option carries its length in minutes for the analytics signals.
 const { locale } = Astro.props;
 const copy = uiCopy.call;
 const defaultSlug = calBooking.events.intro;
 const formats = [
-  { slug: calBooking.events.intro, ...copy.formats.intro },
-  { slug: calBooking.events.product, ...copy.formats.product },
-  { slug: calBooking.events.deepDive, ...copy.formats.deepDive },
+  { slug: calBooking.events.intro, minutes: 15, ...copy.formats.intro },
+  { slug: calBooking.events.product, minutes: 30, ...copy.formats.product },
+  { slug: calBooking.events.deepDive, minutes: 60, ...copy.formats.deepDive },
 ];
 const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
 ---
@@ -29,6 +30,7 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
   data-call-booking
   data-call-user={calBooking.user}
   data-locale={locale}
+  data-analytics-placement="call"
 >
   <header class="call-head">
     <h1 id="call-title" class="call-title">{copy.title[locale]}</h1>
@@ -46,6 +48,7 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
             name="call-format"
             id={`call-format-${format.slug}`}
             value={format.slug}
+            data-minutes={format.minutes}
             checked={format.slug === defaultSlug}
           />
           <label class="call-format-card" for={`call-format-${format.slug}`}>

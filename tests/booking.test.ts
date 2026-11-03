@@ -3,6 +3,7 @@ import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { calBooking, uiCopy } from '../src/data/site-content';
 import {
+  bookingLengths,
   buildCalEmbedLink,
   buildCalInlineOptions,
   buildCalPublicUrl,
@@ -12,6 +13,7 @@ import {
   calUiOptions,
   callPagePath,
   callThanksPath,
+  isBookingMinutes,
 } from '../src/lib/booking';
 
 const DIST = path.resolve('dist');
@@ -90,6 +92,16 @@ describe('booking event types', () => {
   });
 });
 
+describe('booking lengths', () => {
+  it('accepts exactly the 15, 30 and 60 minute formats', () => {
+    expect(bookingLengths).toEqual([15, 30, 60]);
+    for (const minutes of bookingLengths) expect(isBookingMinutes(minutes)).toBe(true);
+    for (const value of [45, 0, '15', '30', null, undefined, NaN]) {
+      expect(isBookingMinutes(value)).toBe(false);
+    }
+  });
+});
+
 describe('booking confirmation', () => {
   it('listens to the current Cal.com success event and to the older one', () => {
     expect(calBookedActions).toContain('bookingSuccessfulV2');
@@ -146,5 +158,32 @@ describeBuilt('built thank-you pages', () => {
     }
     expect(readFileSync(path.join(DIST, 'sitemap.xml'), 'utf8')).not.toContain('/call/');
     expect(readFileSync(path.join(DIST, 'llms.txt'), 'utf8')).not.toContain('/call/');
+  });
+});
+
+describeBuilt('built booking page', () => {
+  const pages = [
+    { file: path.join(DIST, 'call', 'index.html'), locale: 'en', image: '/og/call-en.png' },
+    { file: path.join(DIST, 'ru', 'call', 'index.html'), locale: 'ru', image: '/og/call-ru.png' },
+  ] as const;
+
+  it('offers each format with its length, in a section marked for analytics', () => {
+    for (const { file } of pages) {
+      const html = readFileSync(file, 'utf8');
+      expect(html, `${file} section placement`).toContain('data-analytics-placement="call"');
+      for (const [slug, minutes] of [['15min', 15], ['30min', 30], ['60min', 60]] as const) {
+        expect(html, `${file} ${slug} length`).toMatch(new RegExp(`value="${slug}" data-minutes="${minutes}"`));
+      }
+    }
+  });
+
+  it('previews with its own link card in each locale, with the card described', () => {
+    for (const { file, image } of pages) {
+      const html = readFileSync(file, 'utf8');
+      const src = html.match(/<meta property="og:image" content="([^"]*)"/)?.[1] ?? '';
+      expect(src, `${file} og:image`).toMatch(new RegExp(`${image.replace('.', '\\.')}\\?v=`));
+      expect(html.match(/<meta property="og:image:alt" content="([^"]*)"/)?.[1], `${file} alt`).toBeTruthy();
+      expect(existsSync(path.join(DIST, image))).toBe(true);
+    }
   });
 });

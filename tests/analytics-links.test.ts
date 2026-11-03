@@ -3,6 +3,8 @@ import {
   cleanKey,
   contactChannel,
   contactHref,
+  isCallLink,
+  isCallPath,
   isCvLink,
   isCvPath,
   isInternal,
@@ -138,6 +140,39 @@ describe('isCvPath', () => {
     expect(isCvPath('/')).toBe(false);
     expect(isCvPath('/about')).toBe(false);
     expect(isCvPath('/blog/cv')).toBe(false);
+  });
+});
+
+describe('isCallPath', () => {
+  it('matches the booking page in both locales, with or without a trailing slash', () => {
+    expect(isCallPath('/call/')).toBe(true);
+    expect(isCallPath('/call')).toBe(true);
+    expect(isCallPath('/ru/call/')).toBe(true);
+    expect(isCallPath('/ru/call')).toBe(true);
+  });
+
+  it('does not match the thank-you page, which is not a booking link', () => {
+    expect(isCallPath('/call/thanks/')).toBe(false);
+    expect(isCallPath('/ru/call/thanks/')).toBe(false);
+    expect(isCallPath('/callback/')).toBe(false);
+    expect(isCallPath('/cv/')).toBe(false);
+    expect(isCallPath('/blog/call/')).toBe(false);
+  });
+});
+
+describe('isCallLink', () => {
+  // The booking links in the home and case closing blocks, the case strip and
+  // the About call to action all point at these.
+  it('matches the booking page on this site in both locales, whatever the query', () => {
+    expect(isCallLink(u('https://rebsem.ru/call/'), SITE)).toBe(true);
+    expect(isCallLink(u('https://rebsem.ru/ru/call/'), SITE)).toBe(true);
+    expect(isCallLink(u('https://rebsem.ru/call/?utm_source=x'), SITE)).toBe(true);
+  });
+
+  it('ignores the same path on another host, and the thank-you page', () => {
+    expect(isCallLink(u('https://example.com/call/'), SITE)).toBe(false);
+    expect(isCallLink(u('https://cal.com/michael-semenov/15min'), SITE)).toBe(false);
+    expect(isCallLink(u('https://rebsem.ru/call/thanks/'), SITE)).toBe(false);
   });
 });
 

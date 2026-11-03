@@ -11,6 +11,8 @@ interface Props {
   title?: string;
   description?: string;
   image?: string;
+  /** Alt text of the image. Set it for a card whose text is not the page's own. */
+  imageAlt?: string;
   type?: 'website' | 'article';
   noIndex?: boolean;
   /**
@@ -42,6 +44,7 @@ const {
   // Undefined here and resolved below, because the default depends on the
   // page language.
   image: imageProp,
+  imageAlt: imageAltProp,
   type = 'website',
   noIndex = false,
   followLinks = false,
@@ -77,7 +80,7 @@ const isOgCard = image.startsWith('/og/');
 const ogCardAlt = lang === 'ru'
   ? 'Михаил Семенов: ищу работу, 80 платящих B2B-клиентов'
   : 'Mikhail Semenov: open to work, 80 paying B2B customers';
-const imageAlt = isOgCard && !image.startsWith('/og/case-') ? ogCardAlt : title;
+const imageAlt = imageAltProp ?? (isOgCard && !image.startsWith('/og/case-') ? ogCardAlt : title);
 // Versioned so a preview service that cached the old card by its URL fetches
 // the new one. Bump when scripts/og/build-og.mjs changes what the cards say
 // (2026-10: the job-search status line; 2026-11-03: the new card layout).

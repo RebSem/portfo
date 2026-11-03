@@ -1,5 +1,6 @@
 ---
 import { telegramUrl, uiCopy } from '../data/site-content';
+import { callPagePath } from '../lib/booking';
 import { buildIntroMailto } from '../lib/intro-mail';
 import type { Locale } from '../types/content';
 
@@ -31,6 +32,7 @@ const prefix = locale === 'ru' ? '/ru' : '';
     <a href={telegramUrl} target="_blank" rel="noreferrer">{copy.telegram[locale]}</a>
     <a href={buildIntroMailto(locale)}>{copy.email[locale]}</a>
     <a href={`${prefix}/cv/`} rel="nofollow">{uiCopy.footer.resume[locale]}</a>
+    <a href={callPagePath(locale)}>{uiCopy.call.linkLabel[locale]}</a>
   </span>
   <span class="case-availability-reply">{uiCopy.footer.replyTime[locale]}</span>
 </p>

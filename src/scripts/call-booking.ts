@@ -1,9 +1,10 @@
 /**
  * The /call/ page's client side (CallBooking.astro). It draws the Cal.com
  * calendar inline for the format picked, draws it again when the format
- * changes, follows the site theme, and sends a confirmed booking to the
- * thank-you page. Bundled with the page, so it loads on the call pages only,
- * together with Cal's embed script.
+ * changes, follows the site theme, reports the format's length (booking:select,
+ * booking:done) and sends a confirmed booking to the thank-you page. Bundled
+ * with the page, so it loads on the call pages only, together with Cal's embed
+ * script.
  *
  * A soft navigation swaps the whole page, so every load of a call page gets its
  * own calendar (boot checks the page for one). The Cal.com loader and the theme
@@ -11,6 +12,7 @@
  */
 
 import {
+  type BookingMinutes,
   buildCalInlineOptions,
   buildCalPublicUrl,
   calBookedActions,
@@ -19,7 +21,9 @@ import {
   calThemeFor,
   calUiOptions,
   type CalTheme,
+  isBookingMinutes,
 } from '../lib/booking';
+import { emitSignal } from '../lib/site-signals';
 import type { Locale } from '../types/content';
 
 const EMBED_SRC = 'https://app.cal.com/embed/embed.js';
@@ -48,6 +52,8 @@ let bookingWatched = false;
 let thanksOpened = false;
 let frameWatch: MutationObserver | undefined;
 let loadTimer: number | undefined;
+// The length of the format on screen, read when a booking is confirmed.
+let activeMinutes: BookingMinutes | undefined;
 
 /**
  * Cal.com's loader, as its embed snippet writes it: the first call injects
@@ -120,15 +126,23 @@ const watchFrame = (embed: HTMLElement, stage: HTMLElement): MutationObserver =>
   return observer;
 };
 
-const renderFormat = (section: HTMLElement, eventSlug: string) => {
+// The format's length, from the data-minutes the page renders on each option.
+const minutesOf = (input: HTMLInputElement): BookingMinutes | undefined => {
+  const minutes = Number(input.dataset.minutes);
+  return isBookingMinutes(minutes) ? minutes : undefined;
+};
+
+const renderFormat = (section: HTMLElement, format: HTMLInputElement) => {
   const embed = section.querySelector<HTMLElement>('[data-call-embed]');
   const stage = section.querySelector<HTMLElement>(STAGE_SELECTOR);
   const fallback = section.querySelector<HTMLAnchorElement>('[data-call-open]');
   if (!embed || !stage || !fallback) return;
 
+  const eventSlug = format.value;
   const user = section.dataset.callUser ?? '';
   const locale = localeOf(section);
   fallback.href = buildCalPublicUrl(user, eventSlug, locale);
+  activeMinutes = minutesOf(format);
 
   frameWatch?.disconnect();
   window.clearTimeout(loadTimer);
@@ -159,6 +173,8 @@ const watchBookings = () => {
     const section = document.querySelector<HTMLElement>('[data-call-booking]');
     if (!section || thanksOpened) return;
     thanksOpened = true;
+    // Reported before the redirect; only the length goes out with it.
+    if (activeMinutes) emitSignal('booking:done', { minutes: activeMinutes });
     window.location.assign(callThanksPath(localeOf(section)));
   };
 
@@ -190,13 +206,17 @@ const boot = () => {
 
   section.querySelector<HTMLElement>('[data-call-formats]')?.addEventListener('change', (event) => {
     const input = event.target;
-    if (input instanceof HTMLInputElement && input.checked) renderFormat(section, input.value);
+    if (!(input instanceof HTMLInputElement) || !input.checked) return;
+    renderFormat(section, input);
+    // Only a switch the visitor makes is reported, not the format the page opens on.
+    const minutes = minutesOf(input);
+    if (minutes) emitSignal('booking:select', { minutes });
   });
 
   const picked =
     section.querySelector<HTMLInputElement>('input[name="call-format"]:checked') ??
     section.querySelector<HTMLInputElement>('input[name="call-format"]');
-  if (picked) renderFormat(section, picked.value);
+  if (picked) renderFormat(section, picked);
 
   bindThemeSync();
 };
