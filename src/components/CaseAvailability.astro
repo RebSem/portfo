@@ -73,6 +73,18 @@ const prefix = locale === 'ru' ? '/ru' : '';
     font-weight: 500;
   }
 
+  /* The three links are the only contact on a case's first screen. At 21px
+     tall they pass WCAG 2.5.8 on spacing alone, so touch screens get a 44px
+     box per link. A mouse keeps the text-height line. */
+  @media (pointer: coarse) {
+    .case-availability-links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.75rem;
+      padding-inline: 0.35rem;
+    }
+  }
+
   @media print {
     .case-availability {
       display: none;
