@@ -1307,6 +1307,58 @@ html[data-theme='dark'] .theme-icon-sun {
   }
 }
 
+/* The first screen of a case on a 13-inch laptop (about 1440x813) has to hold
+   the flagship's Results whole. Scoped to .case-shell, so blog posts, which
+   share .post-shell, keep their layout. */
+@media (min-width: 900px) {
+  .case-shell .post-lead {
+    max-width: 46rem;
+  }
+
+  /* The role is the longest fact: it takes the wider share, so it wraps to two
+     lines instead of three. */
+  .case-shell .project-quick-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem 2.5rem;
+    padding-block: 0.85rem;
+  }
+
+  .case-shell .fact-item {
+    flex: 1 1 14rem;
+  }
+
+  .case-shell .fact-item:first-child {
+    flex-grow: 1.7;
+  }
+}
+
+.case-shell {
+  gap: 0.85rem;
+}
+
+/* The jump links above already set this section apart, so it needs less room
+   than the default h2 margin. */
+.case-shell .prose > nav:first-child + h2 {
+  margin-top: 1.25rem;
+}
+
+/* Short laptop windows: the head takes less height, as the home hero does on
+   short windows. */
+@media (min-width: 900px) and (max-height: 860px) {
+  .page-main:has(> .case-shell) {
+    padding-top: 1rem;
+  }
+
+  .case-shell .post-head h1 {
+    font-size: clamp(2.4rem, 6.4vh, 3.6rem);
+  }
+
+  .case-shell .post-lead {
+    font-size: 1.1rem;
+  }
+}
+
 /* Pulse intentionally slow + sparse — the dot still reads as "alive"
    without stealing attention 60 times a minute. */
 
