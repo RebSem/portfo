@@ -84,6 +84,57 @@ html[data-theme='dark'] {
   --success-4: #55da93;
 }
 
+/* Safari and iOS 15 to 16.1 have no color-mix() (it shipped in 16.2). A
+   declaration that reads var() inside color-mix() is kept there and computes to
+   its initial value, so it beats an equal or weaker selector. The light rules
+   therefore carry html:root to outrank the base rules and the scoped component
+   selectors. Literal values stand in for those mixes, one set per theme;
+   browsers with color-mix() skip the block. */
+@supports not (color: color-mix(in oklab, red, red)) {
+  :root,
+  html[data-theme='light'] {
+    --text-muted: rgb(20 24 31 / 0.64);
+    --ed-rule: rgb(20 24 31 / 0.16);
+  }
+
+  html[data-theme='dark'] {
+    --text-muted: rgb(236 236 236 / 0.64);
+    --ed-rule: rgb(236 236 236 / 0.16);
+  }
+
+  html:root .site-header::after {
+    background: rgb(244 244 241 / 0.88);
+    border-bottom: 1px solid rgb(226 227 221 / 0.9);
+    box-shadow: 0 10px 30px -24px rgb(20 24 31 / 0.25);
+  }
+
+  html[data-theme='dark'] .site-header::after {
+    background: rgb(12 13 14 / 0.88);
+    border-bottom-color: rgb(37 40 43 / 0.9);
+    box-shadow: 0 10px 30px -24px rgb(236 236 236 / 0.25);
+  }
+
+  html:root .hero-status {
+    border: 1px solid rgb(0 184 122 / 0.34);
+    background: rgb(0 184 122 / 0.11);
+  }
+
+  html[data-theme='dark'] .hero-status {
+    border-color: rgb(45 214 146 / 0.34);
+    background: rgb(45 214 146 / 0.11);
+  }
+
+  html:root .hp-featured {
+    border: 1px solid rgb(192 218 199);
+    background: rgb(244 250 244);
+  }
+
+  html[data-theme='dark'] .hp-featured {
+    border-color: rgb(48 74 64);
+    background: rgb(24 31 31);
+  }
+}
+
 * {
   box-sizing: border-box;
 }
