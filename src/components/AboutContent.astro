@@ -12,6 +12,7 @@ import {
   uiCopy,
 } from '../data/site-content';
 import { getGithubContributions } from '../lib/github';
+import { chunks, HYPHENATED } from '../lib/nb';
 import type { Locale } from '../types/content';
 
 interface Props {
@@ -119,7 +120,7 @@ const copy = {
   <div class="about-cta">
     <div>
       <p class="about-row-eyebrow">{copy.ctaEyebrow[locale]}</p>
-      <p class="about-cta-headline">{copy.ctaHeadline[locale]}</p>
+      <p class="about-cta-headline">{chunks(copy.ctaHeadline[locale]).map((c) => (HYPHENATED.test(c) ? <span class="nb">{c}</span> : c))}</p>
       <p class="about-cta-sub">{copy.ctaSub[locale]}</p>
     </div>
     <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
