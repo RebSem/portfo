@@ -209,4 +209,28 @@ const toggleUrl = localeToggleUrl ?? localeToggleByActive[active];
 
   document.addEventListener('astro:page-load', updateSwitcher);
   updateSwitcher();
+
+  // The header tint in global.css is scroll-driven where the browser can do
+  // it. Elsewhere, and under reduced motion, this sets data-condensed past the
+  // threshold instead. The home page's first line sits lower, hence 48px there.
+  // toggleAttribute with a force value leaves the DOM alone when nothing changes.
+  const syncCondensed = () => {
+    const header = document.querySelector('.site-header');
+    if (!header) return;
+    const threshold = document.querySelector('.home-intro') ? 48 : 32;
+    header.toggleAttribute('data-condensed', window.scrollY > threshold);
+  };
+
+  let condenseFrame = 0;
+  const queueCondensed = () => {
+    if (condenseFrame) return;
+    condenseFrame = requestAnimationFrame(() => {
+      condenseFrame = 0;
+      syncCondensed();
+    });
+  };
+
+  window.addEventListener('scroll', queueCondensed, { passive: true });
+  document.addEventListener('astro:page-load', syncCondensed);
+  syncCondensed();
 </script>
