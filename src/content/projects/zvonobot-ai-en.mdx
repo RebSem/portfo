@@ -115,14 +115,39 @@ We sold through four channels: our existing Zvonobot customers, cold calls from 
 
 One console for every role: agent assembly, dialing, billing and analytics.
 
-- **Signup without friction.** Email, password, phone, and the client is in. The phone is verified inside the console before the first call, not at the door; Yandex ID login works too.
+- **Signup without friction.** Email, password, phone, and the client is in. Yandex ID login works too.
 - **Agent builder.** Voice, model, language, a structured prompt, a contact list and a phone number: a working outbound agent in minutes.
 - **Campaigns.** A campaign is "this agent calls this list from this number". Pause, resume, retry, switch carriers without leaving the page.
 - **Call history.** Every call lands with status, outcome, duration, cost and a recording. Numbers are masked, so the console is safe to demo and audit.
-- **A client never goes negative mid-campaign.** A campaign holds its estimated cost up front, settles the real cost after every call and releases the hold if it stops early.
 - **No call gets stuck, every minute is billed once.** A background poller reconciles every unfinished call with the provider every 60 seconds and settles the wallet.
 - **Post-call analytics.** An LLM breaks each conversation into an outcome, a sentiment and custom parameters. The dashboard ranks outcomes by frequency and shows the sentiment split and the hours when people actually answer.
 - **Four roles, one codebase.** Super-admin, manager, client owner, accountant, each with its own scope and views.
+
+</details>
+
+<details id="decisions-and-trade-offs">
+<summary>Decisions and trade-offs: pricing, billing, signup</summary>
+
+### Price per second, built from the cost of each part
+
+- **We chose:** a price per second of a call, built from what each part costs us: telephony, speech recognition, speech synthesis and the LLM.
+- **We rejected:** a flat price per minute.
+- **What it cost:** the tariffs became harder to explain, so we trained sales and support on the product every week.
+- **What it gave:** the price follows what a call really costs us, part by part, and the client pays for the seconds the conversation takes.
+
+### A client never goes negative mid-campaign
+
+- **We chose:** when a campaign starts, its estimated cost is held from the client's balance. Each call's real cost is settled when the call ends, and the unused part of the hold goes back if the campaign stops early.
+- **We rejected:** starting a campaign with no hold, charging each call as it ends from whatever balance is there.
+- **What it cost:** the money has to be on the balance before the campaign starts, and the estimate is only a forecast, so until the campaign closes the hold can be larger than what the calls end up spending.
+- **What it gave:** the balance does not go negative in the middle of a campaign, and money held for a campaign that stopped early returns to the client.
+
+### The phone is verified before the first call, not at signup
+
+- **We chose:** the phone is verified inside the console before the client's first call.
+- **We rejected:** verifying the phone at signup, as the condition for getting into the console.
+- **What it cost:** the check moved to the first call. A client who has not confirmed the number cannot dial yet, so the check arrives at the moment they want to try the agent, not at the door.
+- **What it gave:** signup stays short, and only the clients who actually start calling go through the check.
 
 </details>
 
@@ -155,7 +180,7 @@ The first version was one big all-in-one scenario: one agent for the whole conve
 
 I owned the line: what got built, what it cost, whom we sold it to, pricing and per-call-type margins. Specs, priorities and review were mine. When a hypothesis needed a working answer faster than a sprint, I prototyped it myself with AI coding agents (Claude Code, Codex) and handed the team the learning, not the code.
 
-I ran go-to-market with sales, support and finance and trained them on the product weekly; the sales team selling the line grew from 4 to 15.
+I ran go-to-market with sales, support and finance; the sales team selling the line grew from 4 to 15.
 
 - The loop: **hypothesis → smallest surface → live customers → decision**, in days, not quarters. White-label first was that loop applied to the whole line.
 - Boring infrastructure is product work: holds, reconciliation, idempotency and masked personal data decide whether a SaaS feels stable or fragile.
