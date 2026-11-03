@@ -1,0 +1,81 @@
+---
+import { getCollection } from 'astro:content';
+import { telegramUrl, uiCopy } from '../data/site-content';
+import type { Locale } from '../types/content';
+
+interface Props {
+  locale: Locale;
+}
+
+// The page after a booking says where the invitation is, then offers three
+// quiet links for the time before the call: the flagship case (the one the home
+// page leads with), the resume and Telegram. The resume link is nofollow, like
+// the other resume links on the site.
+const { locale } = Astro.props;
+const copy = uiCopy.callThanks;
+const prefix = locale === 'ru' ? '/ru' : '';
+const caseEntries = await getCollection('projects', ({ data }) => !data.draft && data.lang === locale);
+const caseEntry = caseEntries.find((entry) => entry.data.projectId === 'zvonobot-ai');
+const caseHref = caseEntry ? `${prefix}/projects/${caseEntry.id}/` : `${prefix}/#projects`;
+---
+
+<section class="thanks" aria-labelledby="thanks-title" data-analytics-placement="call-thanks">
+  <header class="thanks-head">
+    <h1 id="thanks-title" class="thanks-title">{copy.title[locale]}</h1>
+    <p class="thanks-lead">{copy.invite[locale]}</p>
+  </header>
+
+  <div class="thanks-next">
+    <p class="thanks-prepare">{copy.prepare[locale]}</p>
+    <ul class="thanks-links">
+      <li><a href={caseHref}>{copy.caseLink[locale]}</a></li>
+      <li><a href={`${prefix}/cv/`} rel="nofollow">{uiCopy.footer.resume[locale]}</a></li>
+      <li><a href={telegramUrl} target="_blank" rel="noreferrer">{copy.telegram[locale]}</a></li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .thanks {
+    max-width: 40rem;
+  }
+
+  .thanks-head {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .thanks-title {
+    font-size: clamp(2.1rem, 4.6vw, 3rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+  }
+
+  .thanks-lead {
+    max-width: 44ch;
+    font-size: 1.02rem;
+    line-height: 1.55;
+    color: color-mix(in oklab, var(--foreground) 74%, transparent);
+  }
+
+  .thanks-next {
+    margin-top: clamp(2rem, 4vw, 2.75rem);
+  }
+
+  .thanks-prepare {
+    margin: 0 0 0.6rem;
+    font-size: 0.95rem;
+    color: color-mix(in oklab, var(--foreground) 70%, transparent);
+  }
+
+  .thanks-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-weight: 500;
+  }
+</style>

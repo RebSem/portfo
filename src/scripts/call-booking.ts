@@ -1,8 +1,9 @@
 /**
  * The /call/ page's client side (CallBooking.astro). It draws the Cal.com
  * calendar inline for the format picked, draws it again when the format
- * changes, and follows the site theme. Bundled with the page, so it loads on
- * the call pages only, together with Cal's embed script.
+ * changes, follows the site theme, and sends a confirmed booking to the
+ * thank-you page. Bundled with the page, so it loads on the call pages only,
+ * together with Cal's embed script.
  *
  * A soft navigation swaps the whole page, so every load of a call page gets its
  * own calendar (boot checks the page for one). The Cal.com loader and the theme
@@ -12,7 +13,9 @@
 import {
   buildCalInlineOptions,
   buildCalPublicUrl,
+  calBookedActions,
   calOrigin,
+  callThanksPath,
   calThemeFor,
   calUiOptions,
   type CalTheme,
@@ -41,6 +44,8 @@ interface CalHost {
 
 let initialised = false;
 let themeBound = false;
+let bookingWatched = false;
+let thanksOpened = false;
 let frameWatch: MutationObserver | undefined;
 let loadTimer: number | undefined;
 
@@ -138,6 +143,28 @@ const renderFormat = (section: HTMLElement, eventSlug: string) => {
   callCal('ui', calUiOptions(currentTheme()));
 };
 
+// A confirmed booking moves the visitor to the thank-you page of their locale.
+// Only the plain path goes into the URL, never the booking itself.
+//
+// For bookings made on cal.com directly, the owner sets each event type's
+// "Redirect on booking" to https://rebsem.ru/call/thanks/ in Cal.com, with
+// parameter forwarding off, so the booking details never reach the address.
+const watchBookings = () => {
+  if (bookingWatched) return;
+  bookingWatched = true;
+
+  const onBooked = () => {
+    // The page may have been swapped out by a soft navigation since the
+    // subscription; the callback then has no call page to answer for.
+    const section = document.querySelector<HTMLElement>('[data-call-booking]');
+    if (!section || thanksOpened) return;
+    thanksOpened = true;
+    window.location.assign(callThanksPath(localeOf(section)));
+  };
+
+  for (const action of calBookedActions) callCal('on', { action, callback: onBooked });
+};
+
 // Cal's ui call re-themes a calendar already on the page, so a theme toggle
 // changes the colours without drawing the calendar again.
 const bindThemeSync = () => {
@@ -159,6 +186,7 @@ const boot = () => {
     ensureCal()('init', NAMESPACE, { origin: calOrigin });
     initialised = true;
   }
+  watchBookings();
 
   section.querySelector<HTMLElement>('[data-call-formats]')?.addEventListener('change', (event) => {
     const input = event.target;

@@ -8,16 +8,17 @@ interface Props {
   locale: Locale;
 }
 
-// The format picker is two native radio buttons, so the arrow keys and space
-// work and a screen reader announces a radio group. The static HTML carries the
+// The format picker is native radio buttons, so the arrow keys and space work
+// and a screen reader announces a radio group. The static HTML carries the
 // picker, the fallback link and the contacts; the calendar is drawn into the
-// stage by src/scripts/call-booking.ts.
+// stage by src/scripts/call-booking.ts. The 15 minute format is the default.
 const { locale } = Astro.props;
 const copy = uiCopy.call;
 const defaultSlug = calBooking.events.intro;
 const formats = [
   { slug: calBooking.events.intro, ...copy.formats.intro },
   { slug: calBooking.events.product, ...copy.formats.product },
+  { slug: calBooking.events.deepDive, ...copy.formats.deepDive },
 ];
 const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
 ---
@@ -118,13 +119,13 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
 
   .call-format-list {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
     gap: 0.75rem;
   }
 
-  @media (max-width: 560px) {
+  @media (min-width: 720px) {
     .call-format-list {
-      grid-template-columns: minmax(0, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 

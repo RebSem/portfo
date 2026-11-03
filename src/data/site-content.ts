@@ -16,14 +16,15 @@ import {
 export { email, githubUsername, linkedinUrl, siteRepoUrl, telegramUrl };
 
 // The Cal.com calendar behind /call/ (CallBooking.astro). The public embed needs
-// no key, so none is stored. The user slug is Cyrillic: renaming the account to
-// Latin means changing this one value. The page offers only these two public
-// event types; the hidden default type is never linked.
+// no key, so none is stored. The user slug is the account's public name: renaming
+// the account means changing this one value. The page offers only these three
+// public event types; the hidden default type is never linked.
 export const calBooking = {
-  user: 'михаил-семенов-xljaey',
+  user: 'michael-semenov',
   events: {
     intro: '15min',
     product: '30min',
+    deepDive: '60min',
   },
 } as const;
 
@@ -628,7 +629,7 @@ export const uiCopy = {
   },
   // The booking page at /call/ (CallBooking.astro). The calendar itself is
   // Cal.com's; this is the frame around it. Each format's time, title and note
-  // are the two options the page offers.
+  // are the three options the page offers.
   call: {
     title: {
       ru: 'Записаться на созвон с Михаилом',
@@ -656,6 +657,14 @@ export const uiCopy = {
           en: "For hiring managers: the team's problems, my cases, how I would work.",
         },
       },
+      deepDive: {
+        time: { ru: '60 минут', en: '60 min' },
+        title: { ru: 'Подробный разбор', en: 'Deep dive' },
+        note: {
+          ru: 'Для финального этапа или рабочей сессии: ваша продуктовая задача, разобранная вместе.',
+          en: 'For a final round or a working session: a product problem of yours, worked through together.',
+        },
+      },
     },
     loading: { ru: 'Загружаю календарь…', en: 'Loading the calendar…' },
     noscript: {
@@ -668,6 +677,19 @@ export const uiCopy = {
     },
     telegram: { ru: 'Написать в Telegram', en: 'Message on Telegram' },
     email: { ru: 'Почта', en: 'Email' },
+  },
+  // The thank-you page after a booking (CallThanks.astro): where the invitation
+  // is, and three quiet links for the time before the call. The resume link
+  // reuses footer.resume.
+  callThanks: {
+    title: { ru: 'Готово, спасибо', en: 'Booked, thank you' },
+    invite: {
+      ru: 'Приглашение со ссылкой на Google Meet уже у вас в почте. Перенести или отменить встречу можно по ссылке из приглашения.',
+      en: 'The invitation with a Google Meet link is in your email. To reschedule or cancel, use the link in that invitation.',
+    },
+    prepare: { ru: 'Перед звонком, если будет минута:', en: 'Before the call, if you have a minute:' },
+    caseLink: { ru: 'Кейс Zvonobot AI', en: 'The Zvonobot AI case' },
+    telegram: { ru: 'Написать в Telegram', en: 'Message on Telegram' },
   },
   footer: {
     defaultNote: {

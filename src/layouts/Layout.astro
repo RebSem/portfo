@@ -25,6 +25,12 @@ interface Props {
    * so its canonical would name /404/, which is itself a 404.
    */
   noCanonical?: boolean;
+  /**
+   * Drops the query string and hash from the address bar before any other script
+   * runs. The thank-you page after a booking can arrive with the booking details
+   * in its URL: they must not stay in the address bar or reach analytics.
+   */
+  cleanAddress?: boolean;
   schema?: Record<string, unknown> | Array<Record<string, unknown>>;
   /** Path of this page in the other locale, e.g. '/ru/about/'. Emits hreflang alternates. */
   alternate?: string;
@@ -40,6 +46,7 @@ const {
   noIndex = false,
   followLinks = false,
   noCanonical = false,
+  cleanAddress = false,
   schema = [],
   alternate,
 } = Astro.props;
@@ -92,6 +99,11 @@ const hreflangRu = lang === 'ru' ? canonicalUrl : alternateUrl;
 <!doctype html>
 <html lang={lang} data-locale={lang}>
   <head>
+    {cleanAddress && (
+      <script is:inline>
+        if (location.search || location.hash) history.replaceState(null, '', location.pathname);
+      </script>
+    )}
     <script is:inline>
       (() => {
         const root = document.documentElement;

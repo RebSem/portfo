@@ -1,0 +1,30 @@
+---
+import CallThanks from '../../components/CallThanks.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import { heroFallbackName } from '../../data/site-content';
+import Layout from '../../layouts/Layout.astro';
+
+// Unlisted like /call/: noindex,follow, and absent from the sitemap, llms.txt and
+// the menu. cleanAddress drops the booking details Cal.com can append to this
+// URL before any other script reads the address.
+---
+
+<Layout
+  title={`${heroFallbackName} - Booked, thank you`}
+  description="Your call with Mikhail Semenov is booked. The invitation with the Google Meet link is in your email."
+  noIndex
+  followLinks
+  cleanAddress
+  alternate="/ru/call/thanks/"
+>
+  <a id="skip-to-content" href="#main-content" class="skip-link">Skip to content</a>
+
+  <SiteHeader active="none" localeToggleUrl="/ru/call/thanks/" />
+
+  <main id="main-content" class="page-main">
+    <CallThanks locale="en" />
+  </main>
+
+  <SiteFooter />
+</Layout>

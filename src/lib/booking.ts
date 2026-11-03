@@ -25,6 +25,10 @@ export const callPagePath = (locale: Locale): string => (locale === 'ru' ? '/ru/
 
 export const callThanksPath = (locale: Locale): string => `${callPagePath(locale)}thanks/`;
 
+// The embed events that mean a booking was confirmed. Cal.com sends the newer
+// one; the older one is listened to as well, in case a version sends only that.
+export const calBookedActions = ['bookingSuccessfulV2', 'bookingSuccessful'] as const;
+
 // The embed names the calendar as "user/event" and builds its own iframe URL
 // from it, so the user slug is passed unencoded: encoding it here would make
 // the embed encode it a second time.
