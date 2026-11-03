@@ -20,6 +20,11 @@ interface Props {
    * case studies it references.
    */
   followLinks?: boolean;
+  /**
+   * Leaves out the canonical link. The 404 page answers at every missing path,
+   * so its canonical would name /404/, which is itself a 404.
+   */
+  noCanonical?: boolean;
   schema?: Record<string, unknown> | Array<Record<string, unknown>>;
   /** Path of this page in the other locale, e.g. '/ru/about/'. Emits hreflang alternates. */
   alternate?: string;
@@ -34,6 +39,7 @@ const {
   type = 'website',
   noIndex = false,
   followLinks = false,
+  noCanonical = false,
   schema = [],
   alternate,
 } = Astro.props;
@@ -121,7 +127,7 @@ const hreflangRu = lang === 'ru' ? canonicalUrl : alternateUrl;
     <meta name="author" content="Mikhail Semenov" />
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4f4f1" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0c0d0e" />
-    <link rel="canonical" href={canonicalUrl} />
+    {!noCanonical && <link rel="canonical" href={canonicalUrl} />}
     {alternateUrl && hreflangEn && <link rel="alternate" hreflang="en" href={hreflangEn} />}
     {alternateUrl && hreflangRu && <link rel="alternate" hreflang="ru" href={hreflangRu} />}
     {alternateUrl && hreflangEn && <link rel="alternate" hreflang="x-default" href={hreflangEn} />}

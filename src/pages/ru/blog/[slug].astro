@@ -77,6 +77,8 @@ const breadcrumbSchema = {
   description={post.data.description}
   image={pageImage}
   type="article"
+  noIndex
+  followLinks
   schema={[articleSchema, breadcrumbSchema]}
   alternate={enSlug ? `/blog/${enSlug}/` : undefined}
 >
