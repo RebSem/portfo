@@ -32,6 +32,7 @@ const prefix = locale === 'ru' ? '/ru' : '';
     <a href={buildIntroMailto(locale)}>{copy.email[locale]}</a>
     <a href={`${prefix}/cv/`} rel="nofollow">{uiCopy.footer.resume[locale]}</a>
   </span>
+  <span class="case-availability-reply">{uiCopy.footer.replyTime[locale]}</span>
 </p>
 
 <style>
@@ -71,6 +72,13 @@ const prefix = locale === 'ru' ? '/ru' : '';
     flex-wrap: wrap;
     gap: 0.25rem 1rem;
     font-weight: 500;
+  }
+
+  /* The reply time takes a row of its own under the links: a quiet note in the
+     muted tone, not a fourth link to tap. */
+  .case-availability-reply {
+    flex: 0 0 100%;
+    color: var(--text-muted);
   }
 
   /* The three links are the only contact on a case's first screen. At 21px

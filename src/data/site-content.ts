@@ -89,19 +89,17 @@ export const aboutBlocks: AboutBlock[] = [
         ru: `Вёл продукт целиком, от клиентского кабинета до биллинга. Меньше чем за год: ${cvMetric('customers').value.ru} платящих B2B-клиентов, ${cvMetric('minutes').value.ru} минут разговоров в проде.`,
         en: `I owned the product end to end, from the client console to billing. In under a year: ${cvMetric('customers').value.en} paying B2B customers, ${cvMetric('minutes').value.en} minutes of live conversations in production.`,
       },
+      {
+        ru: 'До этого, с 2022 года, вёл основную платформу: self-service кабинет, посекундный биллинг и кошельки (пополнения, списания, холды), CPaaS-продукты группы для массовых звонков и SMS.',
+        en: 'Before that, from 2022, I ran the core platform: the self-service console, per-second billing and wallets (top-ups, charges, balance holds), and the group’s CPaaS products for bulk calls and SMS.',
+      },
     ],
   },
   {
     eyebrow: { ru: '02 · Где полезен сильнее всего', en: '02 · Where I add the most value' },
     title: { ru: 'AI, встроенный в реальную работу', en: 'AI built into real work' },
-    body: [
-      {
-        ru: 'Продукты, где AI делает настоящую работу для бизнеса, а не живёт как демо.',
-        en: 'Products where AI does the actual business job instead of living as a demo.',
-      },
-    ],
+    body: [],
     bullets: [
-      { ru: 'AI внутри рабочего процесса команды, а не отдельной кнопкой', en: 'AI inside a team’s workflow, not a separate button' },
       { ru: 'Продукты, где AI убирает рутину и ускоряет людей', en: 'Products where AI removes busywork and speeds people up' },
       { ru: 'Голосовые и диалоговые AI-сценарии: один из доменов, не единственный', en: 'Voice and conversational AI: one domain, not the only one' },
     ],
@@ -111,9 +109,22 @@ export const aboutBlocks: AboutBlock[] = [
     title: { ru: 'Гипотеза получает рабочий релиз за дни', en: 'A hypothesis gets a working release in days' },
     body: [
       {
-        ru: 'Пет-проекты собираю сам с AI-агентами Claude Code и Codex: так гипотеза проверяется за дни, а с инженерами я говорю на одном языке. Каждый пет-проект на сайте прошёл путь от идеи до рабочего релиза за срок от 1 до 7 дней. В Zvonobot продуктовые решения, прайсинг и вывод на рынок были за мной, а команда инженеров отгружала.',
-        en: 'I build side projects myself with AI coding agents (Claude Code and Codex): a hypothesis gets tested in days, and I speak the same language as engineers. Each side project on this site went from idea to a working release in 1 to 7 days. At Zvonobot, product decisions, pricing and go-to-market were mine, and the engineering team shipped.',
+        ru: 'Пет-проекты собираю сам с AI-агентами Claude Code и Codex, а с инженерами я говорю на одном языке. Каждый пет-проект на сайте прошёл путь от идеи до рабочего релиза за срок от 1 до 7 дней. В Zvonobot продуктовые решения, прайсинг и вывод на рынок были за мной, а команда инженеров отгружала.',
+        en: 'I build side projects myself with AI coding agents (Claude Code and Codex), and I speak the same language as engineers. Each side project on this site went from idea to a working release in 1 to 7 days. At Zvonobot, product decisions, pricing and go-to-market were mine, and the engineering team shipped.',
       },
+    ],
+  },
+  {
+    // Stated once, here. Blocks 02 and 03 no longer repeat them in prose.
+    eyebrow: { ru: '04 · Принципы', en: '04 · Principles' },
+    title: { ru: 'Пять принципов', en: 'Five principles' },
+    body: [],
+    bullets: [
+      { ru: 'Сначала доказать, что платят, потом строить', en: 'Prove they pay before you build' },
+      { ru: 'Решения на цифрах, а не на презентациях', en: 'Decisions on numbers, not decks' },
+      { ru: 'AI внутри рабочего процесса, а не отдельной кнопкой', en: 'AI inside the workflow, not a separate button' },
+      { ru: 'Надёжность без блеска тоже продуктовая работа', en: 'Boring reliability is product work' },
+      { ru: 'Сначала минимальная стабильная поверхность, потом рост', en: 'Smallest stable surface first, then grow it' },
     ],
   },
   {
@@ -121,7 +132,7 @@ export const aboutBlocks: AboutBlock[] = [
     // white-label first, the case for the in-house platform, a team of four
     // engineers, sales growing from 4 to 15, a release cycle run with sales
     // and support. Nothing here is a claim the resume does not already make.
-    eyebrow: { ru: '04 · Команда и люди', en: '04 · Team and people' },
+    eyebrow: { ru: '05 · Команда и люди', en: '05 · Team and people' },
     title: { ru: 'Без формальной власти, с общей целью', en: 'No formal authority, one shared goal' },
     body: [
       {
@@ -135,7 +146,7 @@ export const aboutBlocks: AboutBlock[] = [
     ],
   },
   {
-    eyebrow: { ru: '05 · Ищу работу', en: '05 · Looking now' },
+    eyebrow: { ru: '06 · Ищу работу', en: '06 · Looking now' },
     title: { ru: 'Продакт-менеджер в B2B SaaS, платежах и AI-продуктах', en: 'Product manager in B2B SaaS, payments and AI products' },
     body: [
       {
@@ -635,6 +646,13 @@ export const uiCopy = {
     resume: {
       ru: 'Резюме',
       en: 'Resume',
+    },
+    // How fast a message gets an answer: a quiet line under the closing buttons
+    // (SiteFooter.astro) and in the case availability strip (CaseAvailability.astro).
+    // The owner replies within about half an hour, so the line sets that expectation.
+    replyTime: {
+      ru: 'Обычно отвечаю в течение 30 минут в рабочее время (GMT+5).',
+      en: 'I usually reply within 30 minutes during working hours (GMT+5).',
     },
     navAria: {
       ru: 'Навигация в подвале',

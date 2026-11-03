@@ -100,4 +100,3 @@ for a phone number and for links to a local server.
 
 | Vacancy | Link |
 |---|---|
-| Drinkit, Product Owner (7 Oct 2026; republished 18 Oct 2026 from the owner's updated source, Zvonobot dated to Oct 2026) | `/cv/drinkit/Semenov_Mikhail_Product_Owner_Drinkit_RU.pdf` |
