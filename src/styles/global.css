@@ -152,11 +152,14 @@ html[data-theme='dark'] body::after {
   color: var(--foreground);
 }
 
-:is(a, button):focus-visible {
+:is(a, button, summary):focus-visible {
   /* Solid token per theme: the old 75%-alpha accent ring sat at 1.94:1 on
-     the light background, invisible to keyboard users (WCAG needs 3:1). */
-  outline: 2px dashed var(--focus-ring);
-  outline-offset: 1px;
+     the light background, invisible to keyboard users (WCAG needs 3:1).
+     Summary is here so the case-page disclosures stop falling back to the
+     browser's thin blue ring. The 3px offset keeps the ring clear of the
+     button shadow. */
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
   text-decoration: none;
 }
 
@@ -1682,11 +1685,6 @@ a.project-shot-zoom {
   text-decoration: none;
   cursor: zoom-in;
   transition: border-color var(--dur-fast) var(--ease-out-strong);
-}
-
-a.project-shot-zoom:focus-visible {
-  outline: 2px solid var(--focus-ring, var(--accent));
-  outline-offset: 3px;
 }
 
 @media (hover: hover) and (pointer: fine) {
