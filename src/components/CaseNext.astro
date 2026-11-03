@@ -17,8 +17,9 @@ const { locale, href, title, summary } = Astro.props;
   one case had only the footer's icons to go on, so the case ends by handing
   over to the next one. The label stacks above the text, as the footer does
   on case pages, so both start on the case column's left edge.
+  data-analytics-placement tells its clicks apart from the case cards.
 */}
-<section class="case-next ed-row ed-mark" aria-labelledby="case-next-label">
+<section class="case-next ed-row ed-mark" aria-labelledby="case-next-label" data-analytics-placement="case-next">
   <p id="case-next-label" class="ed-label">{uiCopy.caseNext.label[locale]}</p>
   <div class="case-next-body">
     <p class="case-next-title">

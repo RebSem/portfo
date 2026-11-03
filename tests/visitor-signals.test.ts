@@ -219,6 +219,7 @@ describe('helpers', () => {
   it('shortens section ids', () => {
     expect(sectionKey('currently-title')).toBe('currently');
     expect(sectionKey('cv-contact-title')).toBe('cv-contact');
+    expect(sectionKey('case-next-label')).toBe('case-next');
     expect(sectionKey('footer')).toBe('footer');
   });
 });

@@ -18,6 +18,7 @@ import {
   cleanKey,
   contactChannel,
   contactHref,
+  isCvLink,
   isCvPath,
   isInternal,
   outreachTag,
@@ -510,6 +511,16 @@ function projectSlugFromCard(anchor: HTMLAnchorElement): string | null {
   }
 }
 
+/**
+ * Where a link sits, from the nearest data-analytics-placement. The same Telegram
+ * link appears in the hero, a case page and the footer, and page_path alone
+ * cannot tell them apart. A link inside no placed block gets no property.
+ */
+function linkPlacement(anchor: HTMLAnchorElement): { link_placement?: string } {
+  const placement = cleanKey(anchor.closest<HTMLElement>('[data-analytics-placement]')?.dataset.analyticsPlacement);
+  return placement ? { link_placement: placement } : {};
+}
+
 // Autocapture keys events on DOM text, which on a bilingual site splits every
 // CTA into a Russian and an English event and breaks history on any copy edit.
 // The handful of clicks that actually mean something get stable names here.
@@ -563,18 +574,25 @@ function bindClickTracking(): void {
     // longer compete for the same click.
     const channel = contactChannel(url);
     if (channel) {
-      // Where the link sits (hero, case page, footer): the same Telegram
-      // link appears in all three, and page_path alone cannot tell them apart.
-      const placement = cleanKey(
-        anchor.closest<HTMLElement>('[data-analytics-placement]')?.dataset.analyticsPlacement,
-      );
       const contact = contactHref(url);
       posthog.capture('contact:link_click', {
         ...baseProps(),
         contact_channel: channel,
         link_href: contact.href,
         ...(contact.prefilled ? { mail_prefilled: true } : {}),
-        ...(placement ? { link_placement: placement } : {}),
+        ...linkPlacement(anchor),
+      });
+      return;
+    }
+
+    // The resume links (the home and case closing blocks, the case availability
+    // strip) lead to our own page. The page view that follows cannot tell which
+    // link was used, so the click is recorded where it happens.
+    if (isCvLink(url, window.location.host)) {
+      posthog.capture('cv:link_click', {
+        ...baseProps(),
+        link_href: url.pathname,
+        ...linkPlacement(anchor),
       });
       return;
     }
@@ -592,12 +610,15 @@ function bindClickTracking(): void {
       projectSlugFromCard(anchor) ??
       (anchor.dataset.projectLink ? projectSlugFromPath(window.location.pathname) : null);
 
+    // The next-case block at the end of a case study is a case-study URL too, so it
+    // lands here as a case click; its placement tells it apart from the cards.
     if (projectSlug) {
       posthog.capture('project:card_click', {
         ...baseProps(),
         project_slug: projectSlug,
         link_destination: projectDestination(url, window.location.host),
         link_href: url.href,
+        ...linkPlacement(anchor),
       });
       return;
     }
@@ -607,6 +628,7 @@ function bindClickTracking(): void {
         ...baseProps(),
         link_host: url.hostname,
         link_href: url.href,
+        ...linkPlacement(anchor),
       });
     }
   });

@@ -62,7 +62,7 @@ const mergedPrCount = await getMergedPrCount(repoSlug);
         its dot and "PR" on one line through the no-break spaces.
       */}
       {(mergedPrCount !== undefined || commitHash) && (
-        <ul class="agent-receipts">
+        <ul class="agent-receipts" data-analytics-placement="agent-receipts">
           {mergedPrCount !== undefined && (
             <li class="agent-receipt">
               <p class="agent-receipt-line">

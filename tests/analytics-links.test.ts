@@ -3,6 +3,7 @@ import {
   cleanKey,
   contactChannel,
   contactHref,
+  isCvLink,
   isCvPath,
   isInternal,
   outreachTag,
@@ -161,5 +162,63 @@ describe('outreachTag', () => {
     expect(outreachTag('?src=-leading-dash')).toBeNull();
     expect(outreachTag(`?src=${'x'.repeat(41)}`)).toBeNull();
     expect(outreachTag(`?src=${'x'.repeat(40)}`)).toBe('x'.repeat(40));
+  });
+});
+
+describe('isCvLink', () => {
+  // The resume link in the home closing block, the case availability strip and
+  // the case closing block all point at these.
+  it('matches the resume pages on this site in both locales', () => {
+    expect(isCvLink(u('https://rebsem.ru/cv/'), SITE)).toBe(true);
+    expect(isCvLink(u('https://rebsem.ru/ru/cv/'), SITE)).toBe(true);
+  });
+
+  it('ignores the same path on another host, and the downloads on this one', () => {
+    expect(isCvLink(u('https://example.com/cv/'), SITE)).toBe(false);
+    expect(isCvLink(u('https://rebsem.ru/cv/Mikhail_Semenov_CV_EN.pdf'), SITE)).toBe(false);
+    expect(isCvLink(u('https://rebsem.ru/cv.txt'), SITE)).toBe(false);
+  });
+});
+
+describe('the resume link keeps its outreach tag', () => {
+  // Every application goes out as /cv?src=<tag>. The resume link must not
+  // lose the tag: the page view reads it from the URL the visitor lands on.
+  it('still yields the tag on /cv/ and /ru/cv/ after the resume check', () => {
+    const en = u('https://rebsem.ru/cv/?src=exness');
+    expect(isCvLink(en, SITE)).toBe(true);
+    expect(outreachTag(en.search)).toBe('exness');
+
+    const ru = u('https://rebsem.ru/ru/cv/?src=yandex-hr');
+    expect(isCvLink(ru, SITE)).toBe(true);
+    expect(outreachTag(ru.search)).toBe('yandex-hr');
+  });
+});
+
+describe('the next-case link', () => {
+  // The block at the end of a case study is a plain case-study URL, so it is
+  // classified by its slug and lands as a case click, never as a contact.
+  it('is a case click on this site in both locales', () => {
+    const en = u('https://rebsem.ru/projects/cursivo-en/');
+    expect(projectSlugFromPath(en.pathname)).toBe('cursivo-en');
+    expect(projectDestination(en, SITE)).toBe('case');
+    expect(contactChannel(en)).toBeNull();
+
+    const ru = u('https://rebsem.ru/ru/projects/cursivo-ru/');
+    expect(projectSlugFromPath(ru.pathname)).toBe('cursivo-ru');
+    expect(projectDestination(ru, SITE)).toBe('case');
+    expect(isCvLink(ru, SITE)).toBe(false);
+  });
+});
+
+describe('the receipt link', () => {
+  // The merged-PRs link in AgentOps is a repository link: not a contact, not a
+  // case study, not a resume. It is recorded as an outbound GitHub link.
+  it('is none of the on-site classes and not a contact', () => {
+    const receipt = u('https://github.com/RebSem/portfo/pulls?q=is%3Apr+is%3Amerged');
+    expect(contactChannel(receipt)).toBeNull();
+    expect(projectSlugFromPath(receipt.pathname)).toBeNull();
+    expect(isCvLink(receipt, SITE)).toBe(false);
+    expect(isInternal(receipt, SITE)).toBe(false);
+    expect(receipt.hostname).toBe('github.com');
   });
 });
