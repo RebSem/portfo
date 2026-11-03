@@ -363,8 +363,8 @@ export const cvExperience: CvExperienceRole[] = [
           ],
           [
             t(
-              'Виртуальная АТС запущена как комплементарный продукт для удержания клиентов платформы.',
-              'A virtual PBX launched as a complementary product to raise customer retention.',
+              'Взял на себя направление виртуальной АТС: подключение бизнеса к ней как смежного продукта для действующих клиентов звонков и SMS.',
+              'Took over the virtual PBX line: connecting businesses to it as an adjacent product for existing call and SMS customers.',
             ),
           ],
           [

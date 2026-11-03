@@ -30,7 +30,7 @@ Zvonobot AI (Oct 2025 - Oct 2026)
 Core platform (2022-2025)
 - The core B2B SaaS platform end to end: self-service customer console, campaign creation and lead-list targeting, script builder, telephony, per-second billing, wallets, reporting and call analytics. Prioritization by metrics and data.
 - 130+ countries, bulk calls and SMS: ran the group CPaaS products, Effebot (Zvonobot's international brand) and P1SMS. Traffic routing across providers, billing, API integrations.
-- A virtual PBX launched as a complementary product to raise customer retention.
+- Took over the virtual PBX line: connecting businesses to it as an adjacent product for existing call and SMS customers.
 - A full discovery and delivery loop: customer interviews, hypotheses formulated and defended with metrics, A/B testing of call scripts, effect sizing before development, decomposition and PRDs, a cross-functional release cycle run jointly with sales, support and engineering.
 - A voice bot MVP on the OpenAI Realtime API in 2 days and an internal analytics tool over the database in 4 days: brought LLM tooling and AI-assisted prototyping into company workflows. Still work with Claude Code and Codex every day.
 

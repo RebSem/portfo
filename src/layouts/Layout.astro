@@ -48,7 +48,7 @@ const lang = Astro.currentLocale ?? 'en';
 // The Cyrillic faces are preloaded on /ru only. EN pages have no Cyrillic text,
 // so preloading their two Cyrillic files (about 28 KB) only competes with the
 // CSS and the Latin faces for the connection. Geist Mono keeps its Cyrillic
-// subset on /ru too: the hero facts and the results labels are Russian and set
+// subset on /ru too: the rail labels, such as the Russian results label, are set
 // in Geist Mono on the first screen.
 const fontPreloads = lang === 'ru'
   ? [{ subset: 'latin' }, { subset: 'cyrillic' }]

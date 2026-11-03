@@ -3,7 +3,7 @@
  * Publishes a resume written for one vacancy at rebsem.ru/cv/<slug>/.
  *
  *   npm run cv:vacancy -- <source.md> <slug> <FileBaseName>
- *   npm run cv:vacancy -- "…/Drinkit 07.10/исходники/drinkit_ru.md" drinkit Semenov_Mikhail_Product_Owner_Drinkit_RU
+ *   npm run cv:vacancy -- <source>.md <slug> <FileBaseName>
  *
  * The per-vacancy resumes are written and rendered in the job tracker (outside
  * this repo), and they carry the phone number on purpose: they go into
