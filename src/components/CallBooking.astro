@@ -40,6 +40,9 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
   <header class="call-head">
     <h1 id="call-title" class="call-title">{copy.title[locale]}</h1>
     <p class="call-lead">{copy.lead[locale]}</p>
+    <p class="call-quick">
+      {copy.preferWrite[locale]} <a href={telegramUrl} target="_blank" rel="noreferrer">{copy.telegram[locale]}</a>
+    </p>
   </header>
 
   <div class="call-card">
@@ -65,14 +68,14 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
             <h2 class="call-detail-title">{format.title[locale]}</h2>
             <p class="call-detail-note">{format.note[locale]}</p>
             <ul class="call-facts">
-              <li>
+              <li class="call-fact-length">
                 <svg class="call-fact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" />
                   <path d="M12 7v5l3 3" />
                 </svg>
                 <span>{format.time[locale]}</span>
               </li>
-              <li>
+              <li class="call-fact-meet">
                 <svg class="call-fact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M15 10l4.553 -2.276a1 1 0 0 1 1.447 .894v6.764a1 1 0 0 1 -1.447 .894l-4.553 -2.276v-4z" />
                   <path d="M3 6m0 2a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2z" />
@@ -87,7 +90,7 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
                   <path d="M11.5 3a17 17 0 0 0 0 18" />
                   <path d="M12.5 3a17 17 0 0 1 0 18" />
                 </svg>
-                <span>{copy.facts.timezone[locale]}</span>
+                <span data-call-zone data-zone-label={copy.facts.zone[locale]}>{copy.facts.timezone[locale]}</span>
               </li>
             </ul>
           </div>
@@ -121,10 +124,16 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
       </fieldset>
     </div>
 
-    <div class="call-embed" data-call-embed>
+    <div class="call-embed" data-call-embed data-state="loading">
       <div class="call-skeleton" role="status">
         <p class="call-status call-status-loading">{copy.loading[locale]}</p>
-        <p class="call-status call-status-failed">{copy.openCal[locale]}</p>
+        <div class="call-status call-status-failed">
+          <p>{copy.failed[locale]}</p>
+          <p class="call-links">
+            <a href={fallbackHref} target="_blank" rel="noreferrer" data-call-open-inline>{copy.openCalLink[locale]}</a>
+            <a href={telegramUrl} target="_blank" rel="noreferrer">{copy.telegram[locale]}</a>
+          </p>
+        </div>
         <div class="call-skeleton-blocks" aria-hidden="true">
           <span class="call-skeleton-bar"></span>
           <div class="call-skeleton-grid">
@@ -134,11 +143,20 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
           </div>
         </div>
       </div>
-      <div id="call-stage" class="call-stage" data-call-stage>
-        <noscript>
-          <p class="call-noscript">{copy.noscript[locale]}</p>
-        </noscript>
-      </div>
+      <div id="call-stage" class="call-stage" data-call-stage data-frame-title={copy.frameTitle[locale]}></div>
+      <noscript>
+        <style>
+          .call-embed { min-height: 0 !important; }
+          .call-skeleton { display: none !important; }
+        </style>
+        <div class="call-noscript">
+          <p>{copy.noscript[locale]}</p>
+          <p class="call-links">
+            <a href={fallbackHref} target="_blank" rel="noreferrer">{copy.openCalLink[locale]}</a>
+            <a href={telegramUrl} target="_blank" rel="noreferrer">{copy.telegram[locale]}</a>
+          </p>
+        </div>
+      </noscript>
     </div>
   </div>
 
@@ -438,19 +456,39 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
     overflow-wrap: anywhere;
   }
 
-  /* Phones keep the panel short: the title and the note stay, the fact list
-     goes (the duration is on each row and the calendar shows the time zone). */
+  /* Phones keep the panel short: the title and the note stay, and so does the
+     time zone row, which says which zone the calendar's times are in. The
+     duration (on each option already) and the Meet line go. */
   @media (max-width: 899.98px) {
-    .call-facts {
+    .call-facts .call-fact-length,
+    .call-facts .call-fact-meet {
       display: none;
+    }
+  }
+
+  /* The Telegram line above the calendar on phones, where the slot list would
+     otherwise push the contacts far down. The contacts below the card carry it
+     from 900px. */
+  .call-quick {
+    display: none;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    color: color-mix(in oklab, var(--foreground) 74%, transparent);
+  }
+
+  @media (max-width: 899.98px) {
+    .call-quick {
+      display: block;
     }
   }
 
   /* The calendar. Its stage is reserved at a height close to the one Cal sets,
      so the contacts below do not move when the frame arrives. The skeleton and
-     the stage swap with the state the script sets on the embed: while the
-     calendar loads, the skeleton shows and the stage is hidden; when Cal reports
-     the calendar ready the stage fades in and the skeleton goes. */
+     the stage swap with the state the script sets on the embed: the markup starts
+     in the loading state, so the skeleton shows before the script runs; when Cal
+     reports the calendar ready the stage fades in and the skeleton goes. A failed
+     calendar takes no height: the card shrinks around its message and links, and
+     the stage (with Cal's own error page, if it drew one) leaves the layout. */
   .call-embed {
     position: relative;
     min-width: 0;
@@ -470,9 +508,22 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
       visibility var(--dur-base) var(--ease-out-strong);
   }
 
-  .call-embed[data-state='loading'] .call-stage {
+  .call-embed[data-state='loading'] .call-stage,
+  .call-embed[data-state='failed'] .call-stage {
     opacity: 0;
     visibility: hidden;
+  }
+
+  .call-embed[data-state='failed'] {
+    min-height: 0;
+  }
+
+  .call-embed[data-state='failed'] .call-skeleton {
+    position: static;
+  }
+
+  .call-embed[data-state='failed'] .call-stage {
+    display: none;
   }
 
   .call-stage :global(iframe) {
@@ -510,6 +561,7 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
 
   .call-status-failed {
     display: none;
+    gap: 0.7rem;
   }
 
   .call-embed[data-state='failed'] .call-status-loading {
@@ -517,7 +569,14 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
   }
 
   .call-embed[data-state='failed'] .call-status-failed {
-    display: block;
+    display: grid;
+  }
+
+  .call-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    font-weight: 500;
   }
 
   .call-skeleton-blocks {
@@ -551,6 +610,8 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
   }
 
   .call-noscript {
+    display: grid;
+    gap: 0.7rem;
     padding: 1.25rem;
     font-size: 0.95rem;
     line-height: 1.5;
@@ -583,5 +644,17 @@ const fallbackHref = buildCalPublicUrl(calBooking.user, defaultSlug, locale);
     gap: 0.4rem 1.25rem;
     margin-top: 1.6rem;
     font-weight: 500;
+  }
+
+  /* Touch targets: the links around the card and in its messages are 44px tall
+     on a touch screen, the height the case strip's links use. */
+  @media (pointer: coarse) {
+    .call-quick a,
+    .call-fallback a,
+    .call-links a,
+    .call-contact a {
+      display: inline-block;
+      padding-block: 0.7rem;
+    }
   }
 </style>

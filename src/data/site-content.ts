@@ -19,6 +19,14 @@ export { email, githubUsername, linkedinUrl, siteRepoUrl, telegramUrl };
 // no key, so none is stored. The user slug is the account's public name: renaming
 // the account means changing this one value. The page offers only these three
 // public event types; the hidden default type is never linked.
+//
+// Cal.com settings this page depends on (made in the Cal.com account, not here):
+// - the three event types stay public under the slugs above, and the hidden
+//   default type ("secret") is never linked;
+// - each event type's "Redirect on booking" points at https://rebsem.ru/call/thanks/
+//   with parameter forwarding off, so a booking made on cal.com lands on the
+//   thank-you page without its details in the address;
+// - optional: a 30 minute slot interval on the 15 minute type halves its slot list.
 export const calBooking = {
   user: 'michael-semenov',
   events: {
@@ -644,10 +652,16 @@ export const uiCopy = {
     // alt text, and the two facts that do not change with the format (the
     // duration comes from each format's time).
     portraitAlt: { ru: 'Портрет Михаила Семенова', en: 'Portrait of Mikhail Semenov' },
+    // The time zone row: the text until the script reads the browser's zone, and
+    // the label that follows the zone name then ("Europe/Berlin, your time zone").
     facts: {
       meet: { ru: 'Google Meet', en: 'Google Meet' },
       timezone: { ru: 'Ваш часовой пояс', en: 'Your time zone' },
+      zone: { ru: 'ваш часовой пояс', en: 'your time zone' },
     },
+    // The words before the Telegram link (uiCopy.call.telegram) in the line above
+    // the calendar, which CallBooking.astro shows on phones.
+    preferWrite: { ru: 'Проще в переписке?', en: 'Prefer to write?' },
     formats: {
       intro: {
         time: { ru: '15 минут', en: '15 min' },
@@ -675,13 +689,22 @@ export const uiCopy = {
       },
     },
     loading: { ru: 'Загружаю календарь…', en: 'Loading the calendar…' },
+    // The calendar's frame title, which a screen reader announces. Cal names the
+    // frame in English on both locales, so the page sets its own.
+    frameTitle: { ru: 'Календарь для записи на созвон', en: 'Booking calendar' },
+    // The card when the calendar cannot load (a blocked script, or a link Cal
+    // cannot find): the message and the two ways to book instead.
+    failed: { ru: 'Календарь не загрузился.', en: 'The calendar did not load.' },
+    openCalLink: { ru: 'Открыть на Cal.com', en: 'Open it on Cal.com' },
     noscript: {
-      ru: 'Календарю нужен JavaScript. Ссылка ниже откроет его на Cal.com.',
-      en: 'The calendar needs JavaScript. The link below opens it on Cal.com.',
+      ru: 'Календарю нужен JavaScript.',
+      en: 'The calendar needs JavaScript.',
     },
+    // The line under the calendar, shown whatever the state: a second way to
+    // the same booking, not a warning about a failure.
     openCal: {
-      ru: 'Календарь не загружается? Откройте его на Cal.com',
-      en: 'Calendar not loading? Open it on Cal.com',
+      ru: 'Удобнее на Cal.com? Откройте календарь там',
+      en: 'Prefer Cal.com? Open the calendar there',
     },
     telegram: { ru: 'Написать в Telegram', en: 'Message on Telegram' },
     email: { ru: 'Почта', en: 'Email' },

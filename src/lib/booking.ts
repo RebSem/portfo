@@ -42,6 +42,11 @@ export const calBookedActions = ['bookingSuccessfulV2', 'bookingSuccessful'] as 
 // fades in on it; the frame's own load event is the fallback.
 export const calReadyAction = 'linkReady';
 
+// The embed event for a link it cannot find, such as an event type that was
+// renamed or removed. Cal then draws its own error page into the frame, so the
+// page must not show that frame: it shows the failed state instead.
+export const calFailedAction = 'linkFailed';
+
 // The embed names the calendar as "user/event" and builds its own iframe URL
 // from it, so the user slug is passed unencoded: encoding it here would make
 // the embed encode it a second time.
@@ -66,12 +71,35 @@ export const buildCalInlineOptions = (
   config: { layout: 'month_view', language: locale },
 });
 
+// The booker's surfaces and text take the site's colours from global.css (the
+// surface, border and text tokens; the emphasis shade for the day cells is the
+// page background in light and one step above the surface in dark). The calendar
+// then reads as part of the card, not as a second box in Cal's own greys. The
+// booker's own border goes: the card already draws the edge around it.
+const calSurfaceLight = {
+  'cal-bg': '#fdfdfb',
+  'cal-bg-emphasis': '#f4f4f1',
+  'cal-border': '#e2e3dd',
+  'cal-border-subtle': '#e2e3dd',
+  'cal-border-booker': 'transparent',
+  'cal-text': '#14181f',
+};
+
+const calSurfaceDark = {
+  'cal-bg': '#15171a',
+  'cal-bg-emphasis': '#1f2226',
+  'cal-border': '#25282b',
+  'cal-border-subtle': '#25282b',
+  'cal-border-booker': 'transparent',
+  'cal-text': '#ececec',
+};
+
 export const calUiOptions = (theme: CalTheme) => ({
   hideEventTypeDetails: true,
   layout: 'month_view',
   theme,
   cssVarsPerTheme: {
-    light: { 'cal-brand': calBrand.light },
-    dark: { 'cal-brand': calBrand.dark },
+    light: { ...calSurfaceLight, 'cal-brand': calBrand.light },
+    dark: { ...calSurfaceDark, 'cal-brand': calBrand.dark },
   },
 });

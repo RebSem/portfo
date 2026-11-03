@@ -9,6 +9,7 @@ import {
   buildCalPublicUrl,
   calBookedActions,
   calBrand,
+  calFailedAction,
   calReadyAction,
   calThemeFor,
   calUiOptions,
@@ -19,6 +20,22 @@ import {
 
 const DIST = path.resolve('dist');
 const describeBuilt = existsSync(path.join(DIST, 'call', 'thanks', 'index.html')) ? describe : describe.skip;
+
+// The value of a site colour token in global.css, for the light (first) block
+// and the dark one that follows the data-theme switch.
+const siteCss = readFileSync(path.resolve('src/styles/global.css'), 'utf8');
+const darkStart = siteCss.indexOf("html[data-theme='dark'] {");
+const siteToken = (name: string, dark: boolean): string | undefined => {
+  const block = dark ? siteCss.slice(darkStart) : siteCss.slice(0, darkStart);
+  return block.match(new RegExp(`--${name}:\\s*(#[0-9a-fA-F]{6})`))?.[1]?.toLowerCase();
+};
+
+// Every {ru, en} pair in an object tree, however deep it nests.
+const localizedStrings = (node: unknown): { ru?: string; en?: string }[] => {
+  if (!node || typeof node !== 'object') return [];
+  if ('ru' in node && 'en' in node) return [node as { ru?: string; en?: string }];
+  return Object.values(node).flatMap(localizedStrings);
+};
 
 describe('call page paths', () => {
   it('serves the booking page at /call/ and /ru/call/, with a thanks page beside each', () => {
@@ -73,6 +90,18 @@ describe('embed options', () => {
     expect(dark.cssVarsPerTheme.light['cal-brand']).toBe(calBrand.light);
     expect(dark.cssVarsPerTheme.dark['cal-brand']).toBe(calBrand.dark);
   });
+
+  it('gives the booker the site surfaces, borders and text in each theme, and no border of its own', () => {
+    const { light, dark } = calUiOptions('light').cssVarsPerTheme;
+    expect(light['cal-bg']).toBe(siteToken('surface', false));
+    expect(light['cal-border']).toBe(siteToken('border', false));
+    expect(light['cal-text']).toBe(siteToken('foreground', false));
+    expect(dark['cal-bg']).toBe(siteToken('surface', true));
+    expect(dark['cal-border']).toBe(siteToken('border', true));
+    expect(dark['cal-text']).toBe(siteToken('foreground', true));
+    expect(light['cal-border-booker']).toBe('transparent');
+    expect(dark['cal-border-booker']).toBe('transparent');
+  });
 });
 
 describe('site theme names', () => {
@@ -112,11 +141,40 @@ describe('booking confirmation', () => {
   it('fades the calendar in on the embed ready event', () => {
     expect(calReadyAction).toBe('linkReady');
   });
+
+  it('shows the failed message on the embed event for a link Cal cannot find', () => {
+    expect(calFailedAction).toBe('linkFailed');
+    expect(calFailedAction).not.toBe(calReadyAction);
+  });
 });
 
 describe('call page copy', () => {
   it('contains no em dash or en dash in either locale', () => {
     expect(JSON.stringify(uiCopy.call)).not.toMatch(/[—–]/);
+  });
+
+  it('gives every string of the page both locales', () => {
+    const strings = localizedStrings(uiCopy.call);
+    expect(strings.length).toBeGreaterThan(20);
+    for (const { ru, en } of strings) {
+      expect(ru, 'ru').toBeTruthy();
+      expect(en, 'en').toBeTruthy();
+    }
+  });
+
+  it('names the failed message, its links and the frame in both locales', () => {
+    for (const field of [
+      uiCopy.call.failed,
+      uiCopy.call.openCalLink,
+      uiCopy.call.openCal,
+      uiCopy.call.noscript,
+      uiCopy.call.frameTitle,
+      uiCopy.call.preferWrite,
+      uiCopy.call.facts.zone,
+    ]) {
+      expect(field.ru).toBeTruthy();
+      expect(field.en).toBeTruthy();
+    }
   });
 
   it('gives each format a title, a time and a note in both locales', () => {
@@ -179,6 +237,16 @@ describeBuilt('built booking page', () => {
       for (const [slug, minutes] of [['15min', 15], ['30min', 30], ['60min', 60]] as const) {
         expect(html, `${file} ${slug} length`).toMatch(new RegExp(`value="${slug}" data-minutes="${minutes}"`));
       }
+    }
+  });
+
+  it('shows the loading state before the script runs, with the failed message and its links in the card', () => {
+    for (const { file } of pages) {
+      const html = readFileSync(file, 'utf8');
+      expect(html, `${file} loading state`).toContain('data-state="loading"');
+      expect(html, `${file} failed link`).toContain('data-call-open-inline');
+      expect(html, `${file} zone row`).toMatch(/data-call-zone data-zone-label="[^"]+"/);
+      expect(html, `${file} frame title`).toMatch(/data-frame-title="[^"]+"/);
     }
   });
 
