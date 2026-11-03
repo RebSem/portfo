@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chunks, HYPHENATED } from '../src/lib/nb';
+import { chunks, HYPHENATED, noBreakAfterHyphen } from '../src/lib/nb';
 
 describe('HYPHENATED', () => {
   it('matches a hyphen that joins two letters or digits', () => {
@@ -20,5 +20,23 @@ describe('chunks', () => {
     const title = 'Zvonobot AI: платформа голосовых AI-агентов для B2B-звонков';
     expect(chunks(title).join('')).toBe(title);
     expect(chunks('a  b\nc')).toEqual(['a', '  ', 'b', '\n', 'c']);
+  });
+});
+
+describe('noBreakAfterHyphen', () => {
+  it('puts a word joiner after a hyphen that joins two words', () => {
+    expect(noBreakAfterHyphen('Нужен продакт-менеджер?')).toBe('Нужен продакт-\u2060менеджер?');
+    expect(noBreakAfterHyphen('B2B-звонков LLM-оркестрация')).toBe('B2B-\u2060звонков LLM-\u2060оркестрация');
+  });
+
+  it('leaves text without joining hyphens unchanged', () => {
+    for (const text of ['Hiring a product manager?', 'AI: платформа', 'a - b', '-агентов', 'AI-']) {
+      expect(noBreakAfterHyphen(text), text).toBe(text);
+    }
+  });
+
+  it('removes nothing but the added joiners', () => {
+    const title = 'Нужен продакт-менеджер?';
+    expect(noBreakAfterHyphen(title).replaceAll('\u2060', '')).toBe(title);
   });
 });

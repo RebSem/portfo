@@ -64,8 +64,8 @@ export const projects: ProjectItem[] = [
   {
     id: 'bazabot',
     title: {
-      ru: 'bazabot',
-      en: 'bazabot',
+      ru: 'BazaBot',
+      en: 'BazaBot',
     },
     appType: {
       ru: 'Telegram-бот для очистки клиентских баз',

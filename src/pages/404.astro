@@ -1,5 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
 import { caseHref } from '../data/cv';
 import { telegramUrl } from '../data/site-content';
 
@@ -9,12 +11,12 @@ import { telegramUrl } from '../data/site-content';
 // correct page. The joke is about roadmaps, never about the layoff.
 const copy = {
   en: {
-    title: "This page isn't on the roadmap.",
+    title: "This page isn’t on the roadmap.",
     body: 'Maybe a typo, maybe an old link. Try one of these:',
     home: 'Home',
     case: 'Zvonobot AI case',
     telegram: 'Message me on Telegram',
-    note: "While you're here: I'm looking for a Product Manager role and can start right away.",
+    note: "While you’re here: I’m looking for a Product Manager role and can start right away.",
   },
   ru: {
     title: 'Этой страницы нет в роадмапе.',
@@ -33,6 +35,10 @@ const blocks = [
 ---
 
 <Layout title="Not found · Mikhail Semenov" description="Page not found." noIndex noCanonical>
+  <a id="skip-to-content" href="#main-content" class="skip-link">Skip to content</a>
+
+  <SiteHeader active="none" />
+
   <main id="main-content" class="page-main nf">
     <div class="nf-card">
       {blocks.map(({ locale, home }) => (
@@ -55,23 +61,30 @@ const blocks = [
           peeking over the top edge of the card. Decorative, static. */}
       <img class="nf-pug" src="/pixel-pug-peek.svg" alt="" width="60" height="42" />
     </div>
-
-    {/* data-astro-rerun: ClientRouter skips an inline script it has run
-        once, so without it a second soft visit to a 404 kept the language
-        picked on the first one. */}
-    <script is:inline data-astro-rerun>
-      (() => {
-        const ru = location.pathname === '/ru' || location.pathname.startsWith('/ru/');
-        const keep = ru ? 'ru' : 'en';
-        document.querySelectorAll('[data-nf-locale]').forEach((block) => {
-          block.hidden = block.getAttribute('data-nf-locale') !== keep;
-        });
-        document.documentElement.lang = keep;
-        document.documentElement.dataset.locale = keep;
-        if (ru) document.title = 'Не найдено · Михаил Семенов';
-      })();
-    </script>
   </main>
+
+  <SiteFooter />
+
+  {/* data-astro-rerun: ClientRouter skips an inline script it has run
+      once, so without it a second soft visit to a 404 kept the language
+      picked on the first one. */}
+  <script is:inline data-astro-rerun>
+    (() => {
+      const ru = location.pathname === '/ru' || location.pathname.startsWith('/ru/');
+      const keep = ru ? 'ru' : 'en';
+      document.querySelectorAll('[data-nf-locale]').forEach((block) => {
+        block.hidden = block.getAttribute('data-nf-locale') !== keep;
+      });
+      document.documentElement.lang = keep;
+      document.documentElement.dataset.locale = keep;
+      if (ru) document.title = 'Не найдено · Михаил Семенов';
+      // The header and footer are rendered once, in English. English chrome
+      // around a Russian card reads as a mistake, so they stay off /ru paths.
+      document.querySelectorAll('.site-header, .site-footer').forEach((el) => {
+        el.style.display = ru ? 'none' : '';
+      });
+    })();
+  </script>
 </Layout>
 
 <style>

@@ -545,6 +545,24 @@ const sectionIds = [
     background: currentColor;
   }
 
+  .cv-headline,
+  .cv-availability span {
+    text-wrap: balance;
+  }
+
+  /* On a phone the contacts are a column, so a wrapped line never starts
+     with a separator. Screen only: the PDF keeps the dotted run. */
+  @media screen and (max-width: 560px) {
+    .cv-contacts {
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+
+    .cv-contacts li + li::before {
+      content: none;
+    }
+  }
+
   /* Here and not in print.css: a bare class there loses to this scoped rule
      (class plus data-astro-cid attribute), which is how the first PDF of
      this line came out green. Paper is black on white: the accent green

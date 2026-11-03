@@ -9,7 +9,8 @@ import { heroFallbackName, uiCopy } from '../data/site-content';
 import localeScriptUrl from '../scripts/locale.js?url';
 
 interface Props {
-  active: 'home' | 'about' | 'blog' | 'cv';
+  /** `none` for a page outside the sections, such as the 404. */
+  active: 'home' | 'about' | 'blog' | 'cv' | 'none';
   /** Server-rendered locale-toggle target for deep pages (project/blog slugs). */
   localeToggleUrl?: string;
   /**
@@ -54,6 +55,8 @@ const localeToggleByActive: Record<typeof active, string> = {
   about: isRu ? '/about/' : '/ru/about/',
   blog: isRu ? '/blog/' : '/ru/blog/',
   cv: isRu ? '/cv/' : '/ru/cv/',
+  // A missing path has no counterpart in the other language: go to the home page.
+  none: isRu ? '/' : '/ru/',
 };
 const toggleUrl = localeToggleUrl ?? localeToggleByActive[active];
 ---

@@ -37,14 +37,18 @@ html[data-theme='light'] {
   --success-3: #2dae6f;
   --success-4: #1a7a4d;
 
-  /* Motion tokens — Emil-style strong easings + a small duration scale.
-     Use these instead of dropping raw bezier curves into transitions. */
+  /* Motion tokens: Emil-style strong easings, one duration scale and one press
+     depth. Use these instead of raw curves, milliseconds or scales. Never moves:
+     text, numbers, the H1, the status and its dots, cards, and sections as they
+     load. */
   --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
   --dur-press: 120ms;
   --dur-fast: 160ms;
   --dur-page: 180ms;
   --dur-base: 220ms;
+  --dur-draw: 600ms;
+  --press-scale: 0.98;
 
   /* Editorial grid of the home page (see "Editorial system" below): the
      label rail, the gutter beside it, the space between sections and the
@@ -77,6 +81,57 @@ html[data-theme='dark'] {
   --success-2: #2d7e54;
   --success-3: #3eb277;
   --success-4: #55da93;
+}
+
+/* Safari and iOS 15 to 16.1 have no color-mix() (it shipped in 16.2). A
+   declaration that reads var() inside color-mix() is kept there and computes to
+   its initial value, so it beats an equal or weaker selector. The light rules
+   therefore carry html:root to outrank the base rules and the scoped component
+   selectors. Literal values stand in for those mixes, one set per theme;
+   browsers with color-mix() skip the block. */
+@supports not (color: color-mix(in oklab, red, red)) {
+  :root,
+  html[data-theme='light'] {
+    --text-muted: rgb(20 24 31 / 0.64);
+    --ed-rule: rgb(20 24 31 / 0.16);
+  }
+
+  html[data-theme='dark'] {
+    --text-muted: rgb(236 236 236 / 0.64);
+    --ed-rule: rgb(236 236 236 / 0.16);
+  }
+
+  html:root .site-header::after {
+    background: rgb(244 244 241 / 0.88);
+    border-bottom: 1px solid rgb(226 227 221 / 0.9);
+    box-shadow: 0 10px 30px -24px rgb(20 24 31 / 0.25);
+  }
+
+  html[data-theme='dark'] .site-header::after {
+    background: rgb(12 13 14 / 0.88);
+    border-bottom-color: rgb(37 40 43 / 0.9);
+    box-shadow: 0 10px 30px -24px rgb(236 236 236 / 0.25);
+  }
+
+  html:root .hero-status {
+    border: 1px solid rgb(0 184 122 / 0.34);
+    background: rgb(0 184 122 / 0.11);
+  }
+
+  html[data-theme='dark'] .hero-status {
+    border-color: rgb(45 214 146 / 0.34);
+    background: rgb(45 214 146 / 0.11);
+  }
+
+  html:root .hp-featured {
+    border: 1px solid rgb(192 218 199);
+    background: rgb(244 250 244);
+  }
+
+  html[data-theme='dark'] .hp-featured {
+    border-color: rgb(48 74 64);
+    background: rgb(24 31 31);
+  }
 }
 
 * {
@@ -166,13 +221,16 @@ html[data-theme='dark'] body::after {
   text-decoration: none;
 }
 
+/* The side gutter grows with the viewport: 16px on phones, about 41px at
+   1024 and 56px from 1440 up. A fixed 16px put the brand and the first fact
+   against the edge on tablets and small laptops. */
 .header-inner,
 .page-main,
 .footer-inner,
 .divider-wrap {
   width: min(var(--container-width), 100%);
   margin-inline: auto;
-  padding-inline: 1rem;
+  padding-inline: clamp(1rem, 4vw, 3.5rem);
 }
 
 .sr-only {
@@ -204,6 +262,23 @@ p {
   margin: 0;
 }
 
+/* Headings break evenly; running text keeps a short last line from standing
+   alone ("PR", "LLM") on its own line. */
+h1,
+h2,
+h3,
+h4,
+.ed-h2,
+.footer-closing-title {
+  text-wrap: balance;
+}
+
+p,
+li,
+dd {
+  text-wrap: pretty;
+}
+
 a {
   color: inherit;
   overflow-wrap: anywhere;
@@ -233,6 +308,40 @@ summary {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Text links in running copy and the footer's text links (the build credit,
+   the resume): the underline is drawn at rest in the muted text tone, so a link
+   inside a sentence still reads as a link. On a mouse hover the underline takes
+   the accent over 150 ms and the text colour stays put. Buttons, icon links,
+   the case-study frames and the nav keep their own states. */
+.prose a:not([class]),
+.footer-craft a,
+.footer-cv {
+  text-decoration-color: var(--text-muted);
+  transition:
+    color var(--dur-fast) var(--ease-out-strong),
+    text-decoration-color 150ms var(--ease-out-strong);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .prose a:not([class]):hover {
+    color: inherit;
+  }
+
+  .prose a:not([class]):hover,
+  .footer-craft a:hover,
+  .footer-cv:hover {
+    text-decoration-color: var(--accent-text);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prose a:not([class]),
+  .footer-craft a,
+  .footer-cv {
+    transition: none;
+  }
+}
+
 .skip-link {
   position: absolute;
   left: 4rem;
@@ -249,16 +358,18 @@ summary {
 }
 
 /* Sticky glass header: keeps the masthead (the identity) framed while reading.
-   The hairline + tint fade in over the first 64px of scroll where the browser
-   supports scroll-driven animations; elsewhere a constant soft hairline. */
+   The tint, blur and hairline live on ::after. At rest the header is the page
+   itself: a tinted bar there left a seam against the white top of the page.
+   They fade in over the first 64px of scroll where the browser supports
+   scroll-driven animations; elsewhere they stay on. */
 .site-header {
   width: 100%;
   position: sticky;
   top: 0;
   z-index: 40;
-  background: color-mix(in oklab, var(--background) 78%, transparent);
-  -webkit-backdrop-filter: blur(14px) saturate(1.4);
-  backdrop-filter: blur(14px) saturate(1.4);
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   border-bottom: 1px solid transparent;
 }
 
@@ -280,6 +391,8 @@ summary {
   pointer-events: none;
   opacity: 0;
   background: color-mix(in oklab, var(--background) 88%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(1.15);
+  backdrop-filter: blur(12px) saturate(1.15);
   border-bottom: 1px solid color-mix(in oklab, var(--border) 90%, transparent);
   box-shadow: 0 10px 30px -24px color-mix(in oklab, var(--foreground) 25%, transparent);
 }
@@ -303,21 +416,19 @@ summary {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* Was not covered by the site-wide reduce block. A static hairline instead
-     of a scroll-driven reveal, matching the no-scroll-timeline fallback. */
+  /* Was not covered by the site-wide reduce block. No scroll-driven fade: the
+     tint, blur and hairline are on from the first frame. */
   .site-header::after {
     animation: none;
-    opacity: 0;
-  }
-
-  .site-header {
-    border-bottom-color: color-mix(in oklab, var(--border) 60%, transparent);
+    opacity: 1;
   }
 }
 
+/* The hairline is ::after's own now; a border on the header as well would
+   draw a second line 1px below it. */
 @supports not (animation-timeline: scroll()) {
-  .site-header {
-    border-bottom-color: color-mix(in oklab, var(--border) 60%, transparent);
+  .site-header::after {
+    opacity: 1;
   }
 }
 
@@ -347,7 +458,7 @@ summary {
 }
 
 .brand:active {
-  transform: scale(0.98);
+  transform: scale(var(--press-scale));
 }
 
 .header-controls {
@@ -379,7 +490,7 @@ summary {
 }
 
 .main-nav-link:active {
-  transform: scale(0.98);
+  transform: scale(var(--press-scale));
 }
 
 .main-nav-link {
@@ -490,7 +601,7 @@ summary {
 }
 
 .header-pdf:active {
-  transform: scale(0.98);
+  transform: scale(var(--press-scale));
 }
 
 .theme-toggle {
@@ -779,7 +890,7 @@ html[data-theme='dark'] .theme-icon-sun {
 }
 
 .cta-primary:active {
-  transform: scale(0.98);
+  transform: scale(var(--press-scale));
 }
 
 .cta-secondary {
@@ -796,7 +907,7 @@ html[data-theme='dark'] .theme-icon-sun {
 }
 
 .cta-secondary:active {
-  transform: scale(0.98);
+  transform: scale(var(--press-scale));
 }
 
 .github-inline {
@@ -1270,17 +1381,16 @@ html[data-theme='dark'] .theme-icon-sun {
   row-gap: 1.25rem;
 }
 
+/* Wraps inside the column instead of pushing the page wider when the text is
+   spaced out (WCAG 1.4.12); anywhere also counts toward min-content, so the
+   grid track does not grow to fit a long word. */
 .footer-closing-title {
   max-width: 16em;
   font-size: clamp(2rem, 2.6vw + 1rem, 3.5rem);
   font-weight: 580;
   letter-spacing: -0.044em;
   line-height: 1.02;
-  text-wrap: balance;
-}
-
-.footer-word {
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 .site-footer-closing .footer-body {
@@ -1324,17 +1434,16 @@ html[data-theme='dark'] .theme-icon-sun {
 }
 
 /* The resume: a quiet text link after Email, set like the footer nav and
-   as tall as the icon row beside it so it is easy to tap. */
+   as tall as the icon row beside it so it is easy to tap. Its underline and
+   hover come from the text links above; keyboard focus keeps the accent. */
 .site-footer-closing .footer-cv {
   display: inline-flex;
   align-items: center;
   min-height: 2.65rem;
   font-size: 0.875rem;
   color: color-mix(in oklab, var(--foreground) 72%, transparent);
-  text-decoration: none;
 }
 
-.site-footer-closing .footer-cv:hover,
 .site-footer-closing .footer-cv:focus-visible {
   color: var(--accent-text);
   text-decoration: underline;
@@ -1484,9 +1593,11 @@ html[data-theme='dark'] .theme-icon-sun {
 
 @media (max-width: 720px) {
   /* The wrapped 2-3 row header would eat too much of a phone viewport
-     if it stayed pinned - let it scroll away on small screens. */
+     if it stayed pinned - let it scroll away on small screens. Relative,
+     not static: ::after needs the header box as its containing block, or
+     the tint covers the viewport at the top of the page. */
   .site-header {
-    position: static;
+    position: relative;
   }
 
   /*
@@ -1689,15 +1800,13 @@ html[data-theme='dark'] .theme-icon-sun {
   border-bottom: 1px solid var(--border);
 }
 
+/* Neutral, not the macOS traffic lights: the frame is a mock, not a Mac window. */
 .project-shot-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
+  background: color-mix(in oklab, var(--foreground) 16%, transparent);
 }
-
-.project-shot-dot:nth-child(1) { background: #ff5f57; }
-.project-shot-dot:nth-child(2) { background: #febc2e; }
-.project-shot-dot:nth-child(3) { background: #28c840; }
 
 .project-shot-img {
   display: block;
@@ -2080,7 +2189,7 @@ a.project-shot-zoom {
 }
 
 .repo-cta:active {
-  transform: scale(0.98);
+  transform: scale(var(--press-scale));
 }
 
 /* After the base rule above: same specificity, so source order decides. */
@@ -2312,7 +2421,7 @@ a.project-shot-zoom {
   top: -1px;
   left: 0;
   width: 36px;
-  height: 1px;
+  height: 2px;
   background: var(--accent);
 }
 
@@ -2343,7 +2452,6 @@ a.project-shot-zoom {
   font-weight: 600;
   letter-spacing: -0.035em;
   line-height: 1.08;
-  text-wrap: balance;
 }
 
 @media (max-width: 900px) {
@@ -2380,7 +2488,7 @@ a.project-shot-zoom {
   height: 1px;
   background: var(--ed-rule);
   transform-origin: left center;
-  animation: ed-draw 600ms var(--ease-out-strong) both;
+  animation: ed-draw var(--dur-draw) var(--ease-out-strong) both;
 }
 
 .ed-draw.ed-mark::before {
@@ -2390,7 +2498,7 @@ a.project-shot-zoom {
 }
 
 .home-results.ed-draw::after {
-  animation-delay: 160ms;
+  animation-delay: var(--dur-fast);
 }
 
 @keyframes ed-draw {
