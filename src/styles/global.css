@@ -251,6 +251,40 @@ summary {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Text links in running copy and the footer's text links (the build credit,
+   the resume): the underline is drawn at rest in the muted text tone, so a link
+   inside a sentence still reads as a link. On a mouse hover the underline takes
+   the accent over 150 ms and the text colour stays put. Buttons, icon links,
+   the case-study frames and the nav keep their own states. */
+.prose a:not([class]),
+.footer-craft a,
+.footer-cv {
+  text-decoration-color: var(--text-muted);
+  transition:
+    color var(--dur-fast) var(--ease-out-strong),
+    text-decoration-color 150ms var(--ease-out-strong);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .prose a:not([class]):hover {
+    color: inherit;
+  }
+
+  .prose a:not([class]):hover,
+  .footer-craft a:hover,
+  .footer-cv:hover {
+    text-decoration-color: var(--accent-text);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prose a:not([class]),
+  .footer-craft a,
+  .footer-cv {
+    transition: none;
+  }
+}
+
 .skip-link {
   position: absolute;
   left: 4rem;
@@ -1316,17 +1350,16 @@ html[data-theme='dark'] .theme-icon-sun {
 }
 
 /* The resume: a quiet text link after Email, set like the footer nav and
-   as tall as the icon row beside it so it is easy to tap. */
+   as tall as the icon row beside it so it is easy to tap. Its underline and
+   hover come from the text links above; keyboard focus keeps the accent. */
 .site-footer-closing .footer-cv {
   display: inline-flex;
   align-items: center;
   min-height: 2.65rem;
   font-size: 0.875rem;
   color: color-mix(in oklab, var(--foreground) 72%, transparent);
-  text-decoration: none;
 }
 
-.site-footer-closing .footer-cv:hover,
 .site-footer-closing .footer-cv:focus-visible {
   color: var(--accent-text);
   text-decoration: underline;
