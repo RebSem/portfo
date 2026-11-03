@@ -107,8 +107,9 @@ const mailHref = buildIntroMailto(locale);
     <div class="call-embed" data-call-embed data-state="loading">
       <div class="call-skeleton" role="status">
         <p class="call-status call-status-loading">{copy.loading[locale]}</p>
-        <div class="call-status call-status-failed">
-          <p>{copy.failed[locale]}</p>
+        <div class="call-status call-status-message">
+          <p class="call-status-slow">{copy.slow[locale]}</p>
+          <p class="call-status-failed">{copy.failed[locale]}</p>
           <p class="call-links">
             <a href={fallbackHref} target="_blank" rel="noreferrer" data-call-open-inline>{copy.openCalLink[locale]}</a>
             <a href={telegramUrl} target="_blank" rel="noreferrer">{copy.telegram[locale]}</a>
@@ -393,12 +394,15 @@ const mailHref = buildIntroMailto(locale);
     color: color-mix(in oklab, var(--foreground) 70%, transparent);
   }
 
+  /* The soft hyphens in the titles matter only on phones, where the segments
+     are narrow; on wider cards they are ignored, so a title breaks at its spaces. */
   .call-format-title {
     min-width: 0;
     font-size: 0.95rem;
     font-weight: 500;
     line-height: 1.3;
     overflow-wrap: anywhere;
+    hyphens: none;
   }
 
   /* Phones: the three formats sit side by side as one segmented control. Each
@@ -443,6 +447,7 @@ const mailHref = buildIntroMailto(locale);
       line-height: 1.25;
       color: var(--text-muted);
       overflow-wrap: normal;
+      hyphens: manual;
       text-wrap: balance;
     }
   }
@@ -476,6 +481,7 @@ const mailHref = buildIntroMailto(locale);
 
   .call-embed[data-state='loading'] .call-stage,
   .call-embed[data-state='switching'] .call-stage,
+  .call-embed[data-state='slow'] .call-stage,
   .call-embed[data-state='failed'] .call-stage {
     opacity: 0;
     visibility: hidden;
@@ -483,6 +489,12 @@ const mailHref = buildIntroMailto(locale);
 
   .call-embed[data-state='failed'] {
     min-height: 0;
+  }
+
+  /* A slow calendar keeps the reserved height and the skeleton; only its links
+     take the pointer. */
+  .call-embed[data-state='slow'] .call-skeleton {
+    pointer-events: auto;
   }
 
   .call-embed[data-state='failed'] .call-skeleton {
@@ -502,7 +514,8 @@ const mailHref = buildIntroMailto(locale);
 
   /* No transition on the skeleton: it is either there or gone, so it never
      fades over the calendar. Pointer events pass through while it is up; the
-     failed message takes them back, since the links live inside the skeleton. */
+     slow and failed messages take them back, since the links live inside the
+     skeleton. */
   .call-skeleton {
     position: absolute;
     inset: 0;
@@ -516,6 +529,7 @@ const mailHref = buildIntroMailto(locale);
   }
 
   .call-embed[data-state='loading'] .call-skeleton,
+  .call-embed[data-state='slow'] .call-skeleton,
   .call-embed[data-state='failed'] .call-skeleton {
     opacity: 1;
     visibility: visible;
@@ -527,17 +541,30 @@ const mailHref = buildIntroMailto(locale);
     color: var(--text-muted);
   }
 
-  .call-status-failed {
+  /* The slow and failed lines take turns above the same links. */
+  .call-status-message {
     display: none;
     gap: 0.7rem;
   }
 
+  .call-status-slow,
+  .call-status-failed {
+    display: none;
+  }
+
+  .call-embed[data-state='slow'] .call-status-loading,
   .call-embed[data-state='failed'] .call-status-loading {
     display: none;
   }
 
-  .call-embed[data-state='failed'] .call-status-failed {
+  .call-embed[data-state='slow'] .call-status-message,
+  .call-embed[data-state='failed'] .call-status-message {
     display: grid;
+  }
+
+  .call-embed[data-state='slow'] .call-status-slow,
+  .call-embed[data-state='failed'] .call-status-failed {
+    display: block;
   }
 
   .call-links {

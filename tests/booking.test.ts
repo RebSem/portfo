@@ -162,8 +162,9 @@ describe('call page copy', () => {
     }
   });
 
-  it('names the failed message, its links and the frame in both locales', () => {
+  it('names the slow and failed messages, their links and the frame in both locales', () => {
     for (const field of [
+      uiCopy.call.slow,
       uiCopy.call.failed,
       uiCopy.call.openCalLink,
       uiCopy.call.telegram,

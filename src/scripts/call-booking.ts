@@ -10,8 +10,11 @@
  * fades in after it. A format switch fades the old calendar out first, with no
  * skeleton over it, and the skeleton returns once the new calendar is drawn. Both
  * fades are instant under reduced motion. A calendar that cannot load (the embed
- * script is blocked, Cal reports a link it cannot find, or nothing draws in time)
- * gives way to a message with the links to Cal.com, Telegram and email.
+ * script is blocked, or Cal reports a link it cannot find) gives way to a message
+ * with the links to Cal.com, Telegram and email. A calendar that is slow to draw
+ * keeps the skeleton, with the same links under a "still loading" line, until it
+ * draws. Only Cal's ready report draws the calendar: a frame's load event also
+ * fires for a frame that failed, so it never counts.
  *
  * A soft navigation swaps the whole page, so every load of a call page gets its
  * own calendar (boot checks the page for one). The Cal.com loader and the theme
@@ -38,9 +41,9 @@ import type { Locale } from '../types/content';
 const EMBED_SRC = 'https://app.cal.com/embed/embed.js';
 const NAMESPACE = 'call';
 const STAGE_SELECTOR = '#call-stage';
-// After this long without a drawn calendar the card shows the failed message,
-// with the links to Cal.com, Telegram and email. A calendar that loads later
-// still replaces it.
+// After this long without a drawn calendar the card shows the slow message, with
+// the links to Cal.com, Telegram and email. A calendar that loads later still
+// replaces it.
 const LOAD_TIMEOUT_MS = 10000;
 // The stage's fade, the --dur-base motion token in the stylesheet. A format
 // switch waits this long for the old calendar to fade out before drawing the new.
@@ -68,7 +71,7 @@ let frameWatch: MutationObserver | undefined;
 let drawTimer: number | undefined;
 let loadTimer: number | undefined;
 // Set when Cal reports the link as not found. Cal still draws its error page
-// into the frame, and that frame's load event must not mark the calendar ready.
+// into the frame, so a ready report that arrives later must not show it.
 let linkBroken = false;
 // Set when the embed script itself failed to load: no calendar can draw on this
 // document, so later formats go straight to the failed message.
@@ -131,7 +134,10 @@ const localeOf = (section: HTMLElement): Locale => (section.dataset.locale === '
 
 const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const setState = (embed: HTMLElement, state: 'loading' | 'switching' | 'ready' | 'failed') => {
+const setState = (
+  embed: HTMLElement,
+  state: 'loading' | 'switching' | 'slow' | 'ready' | 'failed',
+) => {
   embed.dataset.state = state;
 };
 
@@ -147,7 +153,7 @@ const markReady = () => {
 };
 
 // The failed message takes the card's place. It is used for a blocked embed
-// script, a link Cal cannot find and a calendar that does not draw in time.
+// script and a link Cal cannot find.
 const markFailed = () => {
   const embed = document.querySelector<HTMLElement>('[data-call-embed]');
   if (!embed) return;
@@ -163,23 +169,16 @@ const onLinkFailed = () => {
   markFailed();
 };
 
-// The frame's own load event is the fallback for the ready report. It only
-// counts for the frame on screen: a frame a later format switch replaced must
-// not mark the new one ready. Cal titles its frame in English on both locales,
-// so the frame gets the page's own title, set in the markup.
+// Cal titles its frame in English on both locales, so the frame gets the page's
+// own title, set in the markup. The frame's load event does not mark the
+// calendar ready: a frame that failed (a refused connection, a 503 page) loads
+// too, and only Cal's ready report means the calendar drew.
 const watchFrame = (stage: HTMLElement): MutationObserver => {
   const observer = new MutationObserver(() => {
     const frame = stage.querySelector('iframe');
     if (!frame) return;
     observer.disconnect();
     if (stage.dataset.frameTitle) frame.title = stage.dataset.frameTitle;
-    frame.addEventListener(
-      'load',
-      () => {
-        if (stage.querySelector('iframe') === frame) markReady();
-      },
-      { once: true },
-    );
   });
   observer.observe(stage, { childList: true, subtree: true });
   return observer;
@@ -210,7 +209,7 @@ const drawCalendar = (
   setState(embed, 'loading');
   frameWatch = watchFrame(stage);
   loadTimer = window.setTimeout(() => {
-    if (embed.dataset.state === 'loading') setState(embed, 'failed');
+    if (embed.dataset.state === 'loading') setState(embed, 'slow');
   }, LOAD_TIMEOUT_MS);
 
   callCal('inline', buildCalInlineOptions(user, eventSlug, locale, STAGE_SELECTOR));

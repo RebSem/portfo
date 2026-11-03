@@ -330,21 +330,26 @@ is git-ignored; `.env.example` is the template.
   figures be made up; none were, and none may be (see the `cv.ts` content rules).
   Open and waiting on him: a Cal.com booking link (never use an API key for it), the
   hh.ru link, a named reference, Search Console, and the card-to-title morph (P15).
-- 2026-11-03: booking page (#89). `/call/` and `/ru/call/` embed the owner's Cal.com
-  calendar inline (user `michael-semenov`, events `15min`, `30min`, `60min`; one
-  constant, `calBooking` in `src/data/site-content.ts`), in one card with a details
-  panel, the visitor's own time zone and a format picker; the calendar takes the
-  site's colours and theme; if app.cal.com is blocked or the event is missing, the
-  card shows Cal.com, Telegram and Email links instead. A booking sends the visitor
-  to `/call/thanks/` (or `/ru/call/thanks/`), which strips the query string before
-  analytics loads. Built by Haiku and Sonnet agents, then reviewed by an independent
-  critic whose 12 accepted findings were fixed. No Cal.com API key is used or stored:
-  the public embed needs none. Cal.com side (owner's account, set 2026-11-03): Google
-  Calendar for conflicts and new events, Google Meet as the location, 10 min buffer,
-  2 h minimum notice, 4 (60 min: 2) bookings per day, required Company and optional
-  Vacancy link questions; no 'Redirect on booking' on purpose (the site routes to the
-  thanks page in the visitor's locale). Cal's calendar language follows the visitor's
-  browser, not the page.
+- 2026-11-03: booking page (#89, then a quieter pass). `/call/` and `/ru/call/` embed the
+  owner's Cal.com calendar inline (user `michael-semenov`, events `15min`, `30min`,
+  `60min`; one constant, `calBooking` in `src/data/site-content.ts`). The page is one
+  card: a short panel (the owner, Google Meet, the visitor's own time zone and a format
+  picker, which becomes a segmented control on phones) beside the calendar, with no
+  captions or notes; the H1 is "Let's talk" / "Давайте созвонимся". The calendar takes
+  the site's colours and theme, and only Cal's `linkReady` report draws it (a frame's
+  load event also fires for a frame that failed). A calendar still loading after 10 s
+  keeps the skeleton and shows the links under "Still loading"; a blocked embed script
+  or a link Cal cannot find shows the failed message with Cal.com, Telegram and Email
+  links. A booking sends the visitor to `/call/thanks/` (or `/ru/call/thanks/`), which
+  strips the query string before analytics loads. Built by Haiku and Sonnet agents,
+  then reviewed by independent critics, whose accepted findings were fixed. No Cal.com
+  API key is used or stored: the public embed needs none. Cal.com side (owner's
+  account, set 2026-11-03): Google Calendar for conflicts and new events, Google Meet as
+  the location, 10 min buffer, 2 h minimum notice, 4 (60 min: 2) bookings per day; the
+  booker gives a name and an email and may fill one optional question, "Company or
+  vacancy link", with notes and phone hidden; no 'Redirect on booking' on purpose (the
+  site routes to the thanks page in the visitor's locale). Cal's calendar language
+  follows the visitor's browser, not the page.
 
 ## Gotchas
 

@@ -679,6 +679,9 @@ export const uiCopy = {
     // The card when the calendar cannot load (a blocked script, or a link Cal
     // cannot find): the message and the ways to book instead.
     failed: { ru: 'Календарь не загрузился.', en: 'The calendar did not load.' },
+    // The card while a slow calendar is still loading after the wait: the same
+    // links, under a line that says it is still coming.
+    slow: { ru: 'Ещё загружается. Или выберите другой способ:', en: 'Still loading. Or use one of these:' },
     openCalLink: { ru: 'Открыть на Cal.com', en: 'Open it on Cal.com' },
     noscript: {
       ru: 'Календарю нужен JavaScript.',
