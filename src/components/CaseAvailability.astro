@@ -130,6 +130,12 @@ const copy = uiCopy.caseAvailability;
     .case-availability-reply {
       font-size: 0.8125rem;
     }
+
+    /* The icons are 22px glyphs centered in a 36px box: pull the row left so
+       the glyph, not the box edge, lines up with the text. */
+    .case-availability-links {
+      margin-left: calc((22px - 2.25rem) / 2);
+    }
   }
 
   /* A touch screen gets a 44px box per link. A mouse keeps the slimmer row. */
@@ -144,6 +150,12 @@ const copy = uiCopy.caseAvailability;
       align-items: center;
       min-height: 2.75rem;
       padding-inline: 0.35rem;
+    }
+  }
+
+  @media (max-width: 639px) and (pointer: coarse) {
+    .case-availability-links {
+      margin-left: calc((22px - 2.75rem) / 2);
     }
   }
 

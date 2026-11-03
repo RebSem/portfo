@@ -1331,6 +1331,12 @@ html[data-theme='dark'] .theme-icon-sun {
   .case-shell .fact-item:first-child {
     flex-grow: 1.7;
   }
+
+  /* Balanced lines: a short tail such as "в 2026" does not stand alone on the
+     second line of a fact. */
+  .case-shell .fact-value {
+    text-wrap: balance;
+  }
 }
 
 .case-shell {
@@ -1356,6 +1362,14 @@ html[data-theme='dark'] .theme-icon-sun {
 
   .case-shell .post-lead {
     font-size: 1.1rem;
+  }
+}
+
+/* A 1080p laptop at 125% scaling leaves a window about 750px tall. There the
+   Russian title takes one line instead of two, so the Results stay whole. */
+@media (min-width: 900px) and (max-height: 760px) {
+  .case-shell .post-head h1 {
+    font-size: clamp(2.4rem, 5.6vh, 3.6rem);
   }
 }
 
