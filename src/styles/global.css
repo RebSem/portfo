@@ -91,6 +91,9 @@ body {
 
 html {
   scroll-behavior: smooth;
+  /* iOS in landscape inflates text on its own; the type is sized here. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   /* Reserve the scrollbar gutter without forcing an always-on scrollbar
      (the old overflow-y: scroll hack cost ~15px and skewed centering). */
   scrollbar-gutter: stable;
