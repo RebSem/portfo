@@ -47,11 +47,14 @@ const { locale } = Astro.props;
     color: var(--text-muted);
   }
 
+  /* In the 2x2 grid a value can wrap to two lines; balanced, they come out
+     even instead of leaving a short tail ("relocation" on its own). */
   .hero-facts-list dd {
     margin: 0;
     font-size: 0.925rem;
     line-height: 1.4;
     color: var(--foreground);
+    text-wrap: balance;
   }
 
   @media (max-width: 1180px) {

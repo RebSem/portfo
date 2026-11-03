@@ -38,7 +38,7 @@ const copy = uiCopy.home;
     <span class="hero-role" lang={locale === 'ru' ? 'en' : undefined}>{copy.heroRole[locale]}</span>
   </p>
 
-  <h1 id="home-title">
+  <h1 id="home-title" class={locale === 'en' ? 'h1-en' : undefined}>
     <span>{copy.title[locale]}</span>
     <span class="hero-focus">{copy.titleFocus[locale]}</span>
   </h1>
@@ -135,6 +135,14 @@ const copy = uiCopy.home;
     line-height: 0.99;
   }
 
+  /* English sets a wider headline: "B2B & AI products." is its longest line
+     and fits a 390px phone at this size. Russian keeps 9.1vw, its longer
+     words already fill the line. The class outranks the h1 rules, so the
+     short-window block below repeats this rule with its own height cap. */
+  .h1-en {
+    font-size: clamp(1.875rem, min(10.8vw, 11.6vh), 5.6rem);
+  }
+
   h1 > span {
     display: block;
   }
@@ -153,13 +161,13 @@ const copy = uiCopy.home;
     text-wrap: balance;
   }
 
-  /* Balance leaves "80 платящих" alone on a phone line once the compound
-     word is held together; the result line only needs a decent last line. */
+  /* Balanced, so a phone line never ends on a lone hyphenated word such as
+     "go-to-market.". */
   .hero-proof strong {
     display: block;
     color: var(--foreground);
     font-weight: 500;
-    text-wrap: pretty;
+    text-wrap: balance;
   }
 
   .hero-cta-row {
@@ -349,6 +357,10 @@ const copy = uiCopy.home;
     h1 {
       margin-top: 0.75rem;
       font-size: clamp(1.875rem, min(9.1vw, 10.2vh), 5.6rem);
+    }
+
+    .h1-en {
+      font-size: clamp(1.875rem, min(10.8vw, 10.2vh), 5.6rem);
     }
 
     .hero-proof {

@@ -202,6 +202,23 @@ p {
   margin: 0;
 }
 
+/* Headings break evenly; running text keeps a short last line from standing
+   alone ("PR", "LLM") on its own line. */
+h1,
+h2,
+h3,
+h4,
+.ed-h2,
+.footer-closing-title {
+  text-wrap: balance;
+}
+
+p,
+li,
+dd {
+  text-wrap: pretty;
+}
+
 a {
   color: inherit;
   overflow-wrap: anywhere;
@@ -1247,7 +1264,6 @@ html[data-theme='dark'] .theme-icon-sun {
   font-weight: 580;
   letter-spacing: -0.044em;
   line-height: 1.02;
-  text-wrap: balance;
 }
 
 .footer-word {
@@ -2255,7 +2271,6 @@ a.project-shot-zoom {
   font-weight: 600;
   letter-spacing: -0.035em;
   line-height: 1.08;
-  text-wrap: balance;
 }
 
 @media (max-width: 900px) {
