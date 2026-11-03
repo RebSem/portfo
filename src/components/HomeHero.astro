@@ -236,8 +236,10 @@ const copy = uiCopy.home;
 
   /* --- Availability line ----------------------------------------------- */
 
+  /* The pill shares the baseline of the fact values, not the middle of the
+     two-line facts block. Below 900px the stack is start-aligned instead. */
   .hero-facts {
-    align-items: center;
+    align-items: last baseline;
     margin-top: clamp(2rem, 5.5vh, 3.75rem);
     padding-bottom: clamp(1.1rem, 2.2vh, 1.4rem);
   }

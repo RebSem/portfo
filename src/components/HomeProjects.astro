@@ -117,14 +117,21 @@ const external = '<path d="M7 17 17 7M9 7h8v8"/>';
           <li>
             <article class="hp-pet" data-project-card>
               <h4 class="hp-pet-name">{href ? <a href={href}>{project.title[locale]}</a> : project.title[locale]}</h4>
-              <p class="hp-pet-type">{project.appType[locale]}</p>
+              {/* Only portfo has a repo: its link goes in the description, not
+                  in a column that would be empty in three rows of four. */}
+              <p class="hp-pet-type">
+                {project.appType[locale]}
+                {project.repoUrl && (
+                  <>
+                    {' · '}
+                    <a class="hp-pet-repo" href={project.repoUrl} target="_blank" rel="noreferrer">
+                      GitHub
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={external} />
+                    </a>
+                  </>
+                )}
+              </p>
               {project.shipTime && <p class="hp-pet-time">{project.shipTime[locale]}</p>}
-              {project.repoUrl ? (
-                <a class="hp-pet-repo" href={project.repoUrl} target="_blank" rel="noreferrer">
-                  GitHub
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" set:html={external} />
-                </a>
-              ) : <span class="hp-pet-repo" aria-hidden="true"></span>}
             </article>
           </li>
         );
@@ -366,7 +373,7 @@ const external = '<path d="M7 17 17 7M9 7h8v8"/>';
 
   .hp-pet {
     display: grid;
-    grid-template-columns: minmax(7rem, 0.9fr) minmax(0, 2.4fr) 5rem 5rem;
+    grid-template-columns: minmax(7rem, 0.9fr) minmax(0, 2.4fr) auto;
     align-items: baseline;
     gap: 0.4rem 1.5rem;
     padding: 0.8rem 0;
@@ -403,8 +410,6 @@ const external = '<path d="M7 17 17 7M9 7h8v8"/>';
   }
 
   .hp-pet-repo {
-    justify-self: end;
-    font-size: 0.85rem;
     font-weight: 500;
   }
 
@@ -454,16 +459,6 @@ const external = '<path d="M7 17 17 7M9 7h8v8"/>';
       grid-column: 2;
       grid-row: 1;
       justify-self: end;
-    }
-
-    .hp-pet-repo {
-      grid-column: 1 / -1;
-      grid-row: 3;
-      justify-self: start;
-    }
-
-    .hp-pet-repo:empty {
-      display: none;
     }
   }
 
