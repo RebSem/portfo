@@ -63,12 +63,14 @@ const results = uiCopy.projects.featuredResults;
     border-left: 0;
   }
 
+  /* The figures take the text colour: the accent stays on the H1's second
+     line, the status and the links, so one green line leads the page. */
   .home-result-value {
     font-size: clamp(2rem, 1.4vw + 1.2rem, 2.5rem);
     font-weight: 600;
     letter-spacing: -0.04em;
     line-height: 1;
-    color: var(--accent-text);
+    color: var(--foreground);
     font-variant-numeric: tabular-nums;
   }
 

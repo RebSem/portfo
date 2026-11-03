@@ -41,12 +41,10 @@ const { locale } = Astro.props;
     min-width: 0;
   }
 
+  /* Sentence case in Geist: the mono caps are kept for the rail labels only. */
   .hero-facts-list dt {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.08em;
+    font-size: 0.8125rem;
     line-height: 1.35;
-    text-transform: uppercase;
     color: var(--text-muted);
   }
 
