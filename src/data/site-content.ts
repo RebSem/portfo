@@ -578,13 +578,18 @@ export const uiCopy = {
       en: 'Social links',
     },
     eyebrow: { ru: 'Контакт', en: 'Contact' },
-    // The home page ends on this question, set in the headline's type as a
-    // bookend to the H1, with the pitch below as its subline
-    // (SiteFooter.astro, closing). Other pages keep the pitch alone.
+    // The home page and the case studies end on this question, set in the
+    // headline's type as a bookend to the H1, with closingPitch below as its
+    // subline (SiteFooter.astro, closing). It must not repeat the question.
+    // Other pages keep the regular pitch alone.
     closingTitle: { ru: 'Нужен продакт-менеджер?', en: 'Hiring a product manager?' },
+    closingPitch: {
+      ru: 'B2B SaaS, платежи, AI-продукты. Быстрее всего в Telegram, почта тоже подходит.',
+      en: 'B2B SaaS, payments, AI products. Telegram is fastest, email works too.',
+    },
     pitch: {
-      ru: 'Напишите, если ищете продакта в B2B SaaS, платежи или AI-продукты.',
-      en: 'Write me if you are hiring a product manager for B2B SaaS, payments or AI products.',
+      ru: 'Ищете продакт-менеджера для B2B SaaS, платежей или AI-продуктов? Напишите мне.',
+      en: 'Hiring a product manager for B2B SaaS, payments or AI products? Message me.',
     },
     // The quiet text link to /cv after Email on the home closing and in the
     // case availability strip. Not a button: the resume is a second step.
