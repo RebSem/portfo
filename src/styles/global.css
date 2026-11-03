@@ -438,8 +438,8 @@ summary {
   }
 }
 
-/* The hairline is ::after's own now; a border on the header as well would
-   draw a second line 1px below it. */
+/* Without scroll-driven animations the tint switches with data-condensed, so
+   a short opacity fade (still composited) keeps the switch from snapping. */
 @supports not (animation-timeline: scroll()) {
   @media (prefers-reduced-motion: no-preference) {
     .site-header::after {
