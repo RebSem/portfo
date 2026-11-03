@@ -1,6 +1,7 @@
 ---
 import { heroDisplayName, telegramUrl, uiCopy } from '../data/site-content';
 import type { Locale } from '../types/content';
+import HeroFacts from './HeroFacts.astro';
 import SocialLinks from './SocialLinks.astro';
 
 interface Props {
@@ -75,14 +76,7 @@ const chunks = (value: string) => value.split(/(\s+)/);
       <span class="hero-status-dot" aria-hidden="true"></span>
       {copy.heroStatusShort[locale]}
     </p>
-    <dl class="hero-facts-list">
-      {copy.facts.map((fact) => (
-        <div>
-          <dt>{fact.label[locale]}</dt>
-          <dd>{fact.value[locale]}</dd>
-        </div>
-      ))}
-    </dl>
+    <HeroFacts locale={locale} />
   </div>
 </section>
 
@@ -226,46 +220,6 @@ const chunks = (value: string) => value.split(/(\s+)/);
     background: currentColor;
   }
 
-  /* One line of four facts on a laptop, each as wide as its value, spread
-     over the column; a 2x2 grid once the column is too narrow for that. */
-  .hero-facts-list {
-    display: flex;
-    justify-content: space-between;
-    gap: 0.9rem 2rem;
-    margin: 0;
-  }
-
-  .hero-facts-list div {
-    display: grid;
-    align-content: start;
-    gap: 0.2rem;
-    min-width: 0;
-  }
-
-  .hero-facts-list dt {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.08em;
-    line-height: 1.35;
-    text-transform: uppercase;
-    color: var(--text-muted);
-  }
-
-  .hero-facts-list dd {
-    margin: 0;
-    font-size: 0.925rem;
-    line-height: 1.4;
-    color: var(--foreground);
-  }
-
-  @media (max-width: 1180px) {
-    .hero-facts-list {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.85rem 1.5rem;
-    }
-  }
-
   @media (max-width: 900px) {
     .hero-facts {
       align-items: start;
@@ -300,10 +254,6 @@ const chunks = (value: string) => value.split(/(\s+)/);
 
     .hero-facts {
       margin-top: 1.75rem;
-    }
-
-    .hero-facts-list {
-      gap: 0.75rem 1.25rem;
     }
   }
 

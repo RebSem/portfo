@@ -6,6 +6,7 @@ import {
   buildPersonSchema,
   githubUsername,
   heroDisplayName,
+  uiCopy,
 } from '../../data/site-content';
 import Layout from '../../layouts/Layout.astro';
 import githubScriptUrl from '../../scripts/github-activity.js?url';
@@ -38,6 +39,6 @@ const aboutSchema = {
     <AboutContent locale="ru" />
   </main>
 
-  <SiteFooter />
+  <SiteFooter noteRu={uiCopy.home.workFormat.ru} noteEn={uiCopy.home.workFormat.en} />
   <script is:inline type="module" src={githubScriptUrl}></script>
 </Layout>

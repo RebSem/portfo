@@ -1,0 +1,70 @@
+---
+import { uiCopy } from '../data/site-content';
+import type { Locale } from '../types/content';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+---
+
+{/* The four facts a recruiter screens on. The home hero and the About header
+    both render them from uiCopy.home.facts, so the wording and the layout
+    cannot drift apart. */}
+<dl class="hero-facts-list">
+  {uiCopy.home.facts.map((fact) => (
+    <div>
+      <dt>{fact.label[locale]}</dt>
+      <dd>{fact.value[locale]}</dd>
+    </div>
+  ))}
+</dl>
+
+<style>
+  /* One line of four facts on a laptop, each as wide as its value, spread
+     over the column; a 2x2 grid once the column is too narrow for that. */
+  .hero-facts-list {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.9rem 2rem;
+    margin: 0;
+  }
+
+  .hero-facts-list div {
+    display: grid;
+    align-content: start;
+    gap: 0.2rem;
+    min-width: 0;
+  }
+
+  .hero-facts-list dt {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    line-height: 1.35;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .hero-facts-list dd {
+    margin: 0;
+    font-size: 0.925rem;
+    line-height: 1.4;
+    color: var(--foreground);
+  }
+
+  @media (max-width: 1180px) {
+    .hero-facts-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.85rem 1.5rem;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .hero-facts-list {
+      gap: 0.75rem 1.25rem;
+    }
+  }
+</style>
