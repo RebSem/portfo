@@ -11,7 +11,7 @@ const pdfHref = `/cv/${cvFileBaseName.ru}.pdf`;
 const docxHref = `/cv/${cvFileBaseName.ru}.docx`;
 const txtHref = '/ru/cv.txt';
 
-const personEntity = buildPersonSchema(pageUrl);
+const personEntity = buildPersonSchema(pageUrl, 'ru');
 // Employment history, so an LLM screener handed this link can answer
 // "where did they work and when" from the structured data alone. Past jobs
 // go under alumniOf: worksFor reads as a current employer, and there is none.

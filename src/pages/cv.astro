@@ -20,7 +20,7 @@ const txtHref = '/cv.txt';
 // availability strip, and the PDF, DOCX and TXT downloads are nofollow too.
 // `follow` is deliberate, an LLM screener given the link has to be able to
 // reach the case studies it cites.
-const personEntity = buildPersonSchema(pageUrl);
+const personEntity = buildPersonSchema(pageUrl, 'en');
 // Employment history, so an LLM screener handed this link can answer
 // "where did they work and when" from the structured data alone. Past jobs
 // go under alumniOf: worksFor reads as a current employer, and there is none.
