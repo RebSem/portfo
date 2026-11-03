@@ -37,15 +37,19 @@ html[data-theme='light'] {
   --success-3: #2dae6f;
   --success-4: #1a7a4d;
 
-  /* Motion tokens — Emil-style strong easings + a small duration scale.
-     Use these instead of dropping raw bezier curves into transitions. */
+  /* Motion tokens: Emil-style strong easings, one duration scale and one press
+     depth. Use these instead of raw curves, milliseconds or scales. Never moves:
+     text, numbers, the H1, the status and its dots, cards, and sections as they
+     load. */
   --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
   --dur-press: 120ms;
   --dur-fast: 160ms;
   --dur-page: 180ms;
   --dur-base: 220ms;
+  --dur-draw: 600ms;
   --dur-reveal: 700ms;
+  --press-scale: 0.98;
 
   /* Editorial grid of the home page (see "Editorial system" below): the
      label rail, the gutter beside it, the space between sections and the
@@ -401,7 +405,7 @@ summary {
 }
 
 .brand:active {
-  transform: scale(0.98);
+  transform: scale(var(--press-scale));
 }
 
 .header-controls {
@@ -433,7 +437,7 @@ summary {
 }
 
 .main-nav-link:active {
-  transform: scale(0.98);
+  transform: scale(var(--press-scale));
 }
 
 .main-nav-link {
@@ -544,7 +548,7 @@ summary {
 }
 
 .header-pdf:active {
-  transform: scale(0.98);
+  transform: scale(var(--press-scale));
 }
 
 .theme-toggle {
@@ -833,7 +837,7 @@ html[data-theme='dark'] .theme-icon-sun {
 }
 
 .cta-primary:active {
-  transform: scale(0.98);
+  transform: scale(var(--press-scale));
 }
 
 .cta-secondary {
@@ -850,7 +854,7 @@ html[data-theme='dark'] .theme-icon-sun {
 }
 
 .cta-secondary:active {
-  transform: scale(0.98);
+  transform: scale(var(--press-scale));
 }
 
 .github-inline {
@@ -2046,7 +2050,7 @@ a.project-shot-zoom {
 }
 
 .repo-cta:active {
-  transform: scale(0.98);
+  transform: scale(var(--press-scale));
 }
 
 /* After the base rule above: same specificity, so source order decides. */
@@ -2345,7 +2349,7 @@ a.project-shot-zoom {
   height: 1px;
   background: var(--ed-rule);
   transform-origin: left center;
-  animation: ed-draw 600ms var(--ease-out-strong) both;
+  animation: ed-draw var(--dur-draw) var(--ease-out-strong) both;
 }
 
 .ed-draw.ed-mark::before {
@@ -2355,7 +2359,7 @@ a.project-shot-zoom {
 }
 
 .home-results.ed-draw::after {
-  animation-delay: 160ms;
+  animation-delay: var(--dur-fast);
 }
 
 @keyframes ed-draw {
