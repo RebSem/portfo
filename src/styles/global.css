@@ -360,8 +360,9 @@ summary {
 /* Sticky glass header: keeps the masthead (the identity) framed while reading.
    The tint, blur and hairline live on ::after. At rest the header is the page
    itself: a tinted bar there left a seam against the white top of the page.
-   They fade in over the first 64px of scroll where the browser supports
-   scroll-driven animations; elsewhere they stay on. */
+   Where the browser supports scroll-driven animations they fade in as the
+   page scrolls under the header; elsewhere they stay off at rest, and
+   SiteHeader.astro switches them on with data-condensed past the threshold. */
 .site-header {
   width: 100%;
   position: sticky;
@@ -404,6 +405,12 @@ summary {
     animation-range: 0 64px;
   }
 
+  /* The home page's first line sits about 40px under the header (see
+     .home-intro), so the tint starts once that line reaches the header. */
+  :root:has(.home-intro) .site-header::after {
+    animation-range: 32px 80px;
+  }
+
   @keyframes header-condense {
     from {
       opacity: 0;
@@ -415,20 +422,29 @@ summary {
   }
 }
 
+/* Without scroll-driven animations, and under reduced motion where the
+   animation is off, SiteHeader.astro sets data-condensed past the threshold.
+   Where the animation runs, it wins over this rule. */
+.site-header[data-condensed]::after {
+  opacity: 1;
+}
+
 @media (prefers-reduced-motion: reduce) {
   /* Was not covered by the site-wide reduce block. No scroll-driven fade: the
-     tint, blur and hairline are on from the first frame. */
+     tint comes in at the threshold through data-condensed, and at rest the
+     header is the page itself. */
   .site-header::after {
     animation: none;
-    opacity: 1;
   }
 }
 
 /* The hairline is ::after's own now; a border on the header as well would
    draw a second line 1px below it. */
 @supports not (animation-timeline: scroll()) {
-  .site-header::after {
-    opacity: 1;
+  @media (prefers-reduced-motion: no-preference) {
+    .site-header::after {
+      transition: opacity var(--dur-fast);
+    }
   }
 }
 
