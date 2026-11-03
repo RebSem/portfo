@@ -636,21 +636,17 @@ export const uiCopy = {
     label: { ru: 'Следующий кейс', en: 'Next case' },
   },
   // The booking page at /call/ (CallBooking.astro). The calendar itself is
-  // Cal.com's; this is the frame around it. Each format's time, title and note
-  // are the three options the page offers.
+  // Cal.com's; this is the frame around it. Each format's time and title are the
+  // three options the page offers.
   call: {
     title: {
-      ru: 'Записаться на созвон с Михаилом',
-      en: 'Book a call with Mikhail',
+      ru: 'Давайте созвонимся',
+      en: "Let's talk",
     },
-    lead: {
-      ru: 'Выберите формат и удобное время. Время показано в вашем часовом поясе, я в GMT+5.',
-      en: 'Pick a format and a time that suits you. Times show in your time zone; I am in GMT+5.',
-    },
+    // The group label of the format choice. Screen readers hear it; it is not shown.
     formatLegend: { ru: 'Формат', en: 'Format' },
-    // The details panel beside the calendar (CallBooking.astro): the photo's
-    // alt text, and the two facts that do not change with the format (the
-    // duration comes from each format's time).
+    // The panel beside the calendar (CallBooking.astro): the photo's alt text and
+    // the two facts that do not change with the format.
     portraitAlt: { ru: 'Портрет Михаила Семенова', en: 'Portrait of Mikhail Semenov' },
     // The time zone row: the text until the script reads the browser's zone, and
     // the label that follows the zone name then ("Europe/Berlin, your time zone").
@@ -659,33 +655,21 @@ export const uiCopy = {
       timezone: { ru: 'Ваш часовой пояс', en: 'Your time zone' },
       zone: { ru: 'ваш часовой пояс', en: 'your time zone' },
     },
-    // The words before the Telegram link (uiCopy.call.telegram) in the line above
-    // the calendar, which CallBooking.astro shows on phones.
-    preferWrite: { ru: 'Проще в переписке?', en: 'Prefer to write?' },
+    // The titles are also the short names on a phone's segment control, which is
+    // about 80px wide at 320px. The soft hyphens (U+00AD, invisible unless a line
+    // breaks there) let a long word break at a hyphen point, not mid-word.
     formats: {
       intro: {
         time: { ru: '15 минут', en: '15 min' },
-        title: { ru: 'Знакомство', en: 'Intro call' },
-        note: {
-          ru: 'Для рекрутёров: роль, сроки, условия и подхожу ли я.',
-          en: 'For recruiters: the role, timing and terms, and whether I fit.',
-        },
+        title: { ru: 'Зна\u00ADком\u00ADство', en: 'Intro call' },
       },
       product: {
         time: { ru: '30 минут', en: '30 min' },
-        title: { ru: 'Продуктовый разговор', en: 'Product conversation' },
-        note: {
-          ru: 'Для нанимающих менеджеров: задачи команды, мои кейсы, как бы я работал.',
-          en: "For hiring managers: the team's problems, my cases, how I would work.",
-        },
+        title: { ru: 'Продук\u00ADтовый разговор', en: 'Product con\u00ADversation' },
       },
       deepDive: {
         time: { ru: '60 минут', en: '60 min' },
-        title: { ru: 'Подробный разбор', en: 'Deep dive' },
-        note: {
-          ru: 'Для финального этапа или рабочей сессии: ваша продуктовая задача, разобранная вместе.',
-          en: 'For a final round or a working session: a product problem of yours, worked through together.',
-        },
+        title: { ru: 'Подроб\u00ADный разбор', en: 'Deep dive' },
       },
     },
     loading: { ru: 'Загружаю календарь…', en: 'Loading the calendar…' },
@@ -693,18 +677,12 @@ export const uiCopy = {
     // frame in English on both locales, so the page sets its own.
     frameTitle: { ru: 'Календарь для записи на созвон', en: 'Booking calendar' },
     // The card when the calendar cannot load (a blocked script, or a link Cal
-    // cannot find): the message and the two ways to book instead.
+    // cannot find): the message and the ways to book instead.
     failed: { ru: 'Календарь не загрузился.', en: 'The calendar did not load.' },
     openCalLink: { ru: 'Открыть на Cal.com', en: 'Open it on Cal.com' },
     noscript: {
       ru: 'Календарю нужен JavaScript.',
       en: 'The calendar needs JavaScript.',
-    },
-    // The line under the calendar, shown whatever the state: a second way to
-    // the same booking, not a warning about a failure.
-    openCal: {
-      ru: 'Удобнее на Cal.com? Откройте календарь там',
-      en: 'Prefer Cal.com? Open the calendar there',
     },
     telegram: { ru: 'Написать в Telegram', en: 'Message on Telegram' },
     email: { ru: 'Почта', en: 'Email' },

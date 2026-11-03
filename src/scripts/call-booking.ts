@@ -1,16 +1,17 @@
 /**
- * The /call/ page's client side (CallBooking.astro). It shows the details of the
- * format picked and the time zone the times are in, draws the Cal.com calendar
- * inline for that format and draws it again when the format changes, follows
- * the site theme, reports the format's length (booking:select, booking:done) and
- * sends a confirmed booking to the thank-you page. Bundled with the page, so it
- * loads on the call pages only, together with Cal's embed script.
+ * The /call/ page's client side (CallBooking.astro). It shows the time zone the
+ * times are in, draws the Cal.com calendar inline for the format picked and
+ * draws it again when the format changes, follows the site theme, reports the
+ * format's length (booking:select, booking:done) and sends a confirmed booking to
+ * the thank-you page. Bundled with the page, so it loads on the call pages only,
+ * together with Cal's embed script.
  *
- * The calendar stage fades in once Cal reports it ready, and a format switch
- * fades the old calendar out before the new one is drawn. Both fades are
- * instant under reduced motion. A calendar that cannot load (the embed script is
- * blocked, Cal reports a link it cannot find, or nothing draws in time) gives
- * way to a message with the links to Cal.com and Telegram.
+ * The skeleton goes at once when Cal reports the calendar ready, and the stage
+ * fades in after it. A format switch fades the old calendar out first, with no
+ * skeleton over it, and the skeleton returns once the new calendar is drawn. Both
+ * fades are instant under reduced motion. A calendar that cannot load (the embed
+ * script is blocked, Cal reports a link it cannot find, or nothing draws in time)
+ * gives way to a message with the links to Cal.com, Telegram and email.
  *
  * A soft navigation swaps the whole page, so every load of a call page gets its
  * own calendar (boot checks the page for one). The Cal.com loader and the theme
@@ -38,8 +39,8 @@ const EMBED_SRC = 'https://app.cal.com/embed/embed.js';
 const NAMESPACE = 'call';
 const STAGE_SELECTOR = '#call-stage';
 // After this long without a drawn calendar the card shows the failed message,
-// with the links to Cal.com and Telegram. A calendar that loads later still
-// replaces it.
+// with the links to Cal.com, Telegram and email. A calendar that loads later
+// still replaces it.
 const LOAD_TIMEOUT_MS = 10000;
 // The stage's fade, the --dur-base motion token in the stylesheet. A format
 // switch waits this long for the old calendar to fade out before drawing the new.
@@ -130,7 +131,7 @@ const localeOf = (section: HTMLElement): Locale => (section.dataset.locale === '
 
 const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const setState = (embed: HTMLElement, state: 'loading' | 'ready' | 'failed') => {
+const setState = (embed: HTMLElement, state: 'loading' | 'switching' | 'ready' | 'failed') => {
   embed.dataset.state = state;
 };
 
@@ -190,14 +191,6 @@ const minutesOf = (input: HTMLInputElement): BookingMinutes | undefined => {
   return isBookingMinutes(minutes) ? minutes : undefined;
 };
 
-// The panel's title, note and facts follow the format picked: one detail block
-// is shown, the others stay hidden.
-const showDetail = (section: HTMLElement, eventSlug: string) => {
-  for (const detail of section.querySelectorAll<HTMLElement>('[data-call-detail]')) {
-    detail.hidden = detail.dataset.callDetail !== eventSlug;
-  }
-};
-
 const drawCalendar = (
   embed: HTMLElement,
   stage: HTMLElement,
@@ -214,6 +207,7 @@ const drawCalendar = (
     setState(embed, 'failed');
     return;
   }
+  setState(embed, 'loading');
   frameWatch = watchFrame(stage);
   loadTimer = window.setTimeout(() => {
     if (embed.dataset.state === 'loading') setState(embed, 'failed');
@@ -231,23 +225,22 @@ const showFormat = (section: HTMLElement, format: HTMLInputElement) => {
   const eventSlug = format.value;
   const user = section.dataset.callUser ?? '';
   const locale = localeOf(section);
-  // Every link to Cal.com for this format: the one under the card and the one
-  // in the failed message.
+  // The link to Cal.com for this format, in the failed message.
   const publicUrl = buildCalPublicUrl(user, eventSlug, locale);
-  for (const link of section.querySelectorAll<HTMLAnchorElement>('[data-call-open], [data-call-open-inline]')) {
+  for (const link of section.querySelectorAll<HTMLAnchorElement>('[data-call-open-inline]')) {
     link.href = publicUrl;
   }
   activeMinutes = minutesOf(format);
-  showDetail(section, eventSlug);
 
-  // A switch fades the old calendar out before the new one is drawn. The first
-  // draw on the page has no calendar to fade.
+  // A switch fades the old calendar out before the new one is drawn, and the
+  // skeleton stays away until the stage is empty. The first draw on the page has
+  // no calendar to fade.
   const replacing = stage.querySelector('iframe') !== null && !reducedMotion();
 
   frameWatch?.disconnect();
   window.clearTimeout(drawTimer);
   window.clearTimeout(loadTimer);
-  setState(embed, 'loading');
+  setState(embed, replacing ? 'switching' : 'loading');
   drawTimer = window.setTimeout(
     () => drawCalendar(embed, stage, user, eventSlug, locale),
     replacing ? FADE_MS : 0,
@@ -263,7 +256,7 @@ const watchReports = () => {
   callCal('on', { action: calFailedAction, callback: onLinkFailed });
 };
 
-// The time zone the calendar draws its times in, named in the details panel.
+// The time zone the calendar draws its times in, named in the panel.
 // Read from the browser on the page; nothing is stored or sent.
 const showZone = (section: HTMLElement) => {
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
