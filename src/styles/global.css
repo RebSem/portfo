@@ -1862,10 +1862,50 @@ a.project-shot-zoom {
   margin-bottom: 1.25rem;
 }
 
-/* A printed or PDF-saved case keeps the collapsed sections. */
+/* The content opens over 200 ms where the browser can animate to
+   `height: auto` and style ::details-content (Chromium). Other browsers keep
+   the instant open. Only the content box moves, so the summary, its focus
+   ring and the chevron stay put. The small clip margin keeps focus rings of
+   links inside the content unclipped. flow-root keeps the first and last child
+   margins inside the box, so the animated block-size includes them and the
+   page below does not hop at the start or end. */
+@supports (interpolate-size: allow-keywords) and selector(::details-content) {
+  .prose {
+    interpolate-size: allow-keywords;
+  }
+
+  .prose details::details-content {
+    display: flow-root;
+    block-size: 0;
+    opacity: 0;
+    overflow: clip;
+    overflow-clip-margin: 0.5rem;
+    transition:
+      block-size 200ms var(--ease-out-strong),
+      opacity 200ms var(--ease-out-strong),
+      content-visibility 200ms allow-discrete;
+  }
+
+  .prose details[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prose details::details-content {
+    transition: none;
+  }
+}
+
+/* A printed or PDF-saved case keeps the collapsed sections, open and fully
+   visible: the closed content box is 0 high and faded out on screen. */
 @media print {
   .prose details::details-content {
     content-visibility: visible;
+    block-size: auto;
+    opacity: 1;
+    transition: none;
   }
 }
 
