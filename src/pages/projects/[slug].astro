@@ -5,8 +5,9 @@ import CaseNext from '../../components/CaseNext.astro';
 import SiteFooter from '../../components/SiteFooter.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import { projects } from '../../data/projects';
-import { githubUsername, heroDisplayName, heroFallbackName, linkedinUrl, telegramUrl } from '../../data/site-content';
+import { githubUsername, heroDisplayName, heroFallbackName, linkedinUrl, personSchemaId, telegramUrl } from '../../data/site-content';
 import { nextCaseProjectId } from '../../lib/case-order';
+import { chunks, HYPHENATED } from '../../lib/nb';
 import Layout from '../../layouts/Layout.astro';
 
 export async function getStaticPaths() {
@@ -41,6 +42,7 @@ const projectSchema = {
     : `https://rebsem.ru${pageImage}`,
   url: `https://rebsem.ru/projects/${entry.id}/`,
   author: {
+    '@id': personSchemaId,
     '@type': 'Person',
     name: heroDisplayName.en,
     alternateName: heroDisplayName.ru,
@@ -88,8 +90,8 @@ const breadcrumbSchema = {
       </p>
 
       <header class="post-head">
-        <h1>{entry.data.title}</h1>
-        <p class="post-lead">{entry.data.description}</p>
+        <h1>{chunks(entry.data.title).map((c) => (HYPHENATED.test(c) ? <span class="nb">{c}</span> : c))}</h1>
+        <p class="post-lead">{chunks(entry.data.description).map((c) => (HYPHENATED.test(c) ? <span class="nb">{c}</span> : c))}</p>
       </header>
 
       {(entry.data.role || entry.data.timeline || entry.data.repoUrl) && (

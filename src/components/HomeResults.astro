@@ -1,5 +1,6 @@
 ---
 import { uiCopy } from '../data/site-content';
+import { chunks, HYPHENATED } from '../lib/nb';
 import type { Locale } from '../types/content';
 
 interface Props {
@@ -10,9 +11,7 @@ const { locale } = Astro.props;
 const results = uiCopy.projects.featuredResults;
 
 // Balanced labels must not break "B2B-клиентов" or "AI-агентах" at the
-// hyphen: same nowrap-span fix as the hero standfirst and nb() on /cv.
-const HYPHENATED = /[\p{L}\p{N}]-[\p{L}\p{N}]/u;
-const chunks = (value: string) => value.split(/(\s+)/);
+// hyphen, so hyphenated tokens go in a nowrap span (src/lib/nb.ts).
 ---
 
 {/*
@@ -62,10 +61,6 @@ const chunks = (value: string) => value.split(/(\s+)/);
   .home-results-list li:first-child {
     padding-left: 0;
     border-left: 0;
-  }
-
-  .nb {
-    white-space: nowrap;
   }
 
   .home-result-value {

@@ -2,7 +2,7 @@
 import { getCollection, getEntry, render } from 'astro:content';
 import SiteFooter from '../../../components/SiteFooter.astro';
 import SiteHeader from '../../../components/SiteHeader.astro';
-import { githubUsername, heroDisplayName, linkedinUrl, telegramUrl, uiCopy } from '../../../data/site-content';
+import { githubUsername, heroDisplayName, linkedinUrl, personSchemaId, telegramUrl, uiCopy } from '../../../data/site-content';
 import Layout from '../../../layouts/Layout.astro';
 
 export async function getStaticPaths() {
@@ -49,6 +49,7 @@ const articleSchema = {
   url: `https://rebsem.ru/ru/blog/${post.id}/`,
   mainEntityOfPage: `https://rebsem.ru/ru/blog/${post.id}/`,
   author: {
+    '@id': personSchemaId,
     '@type': 'Person',
     name: heroDisplayName.en,
     alternateName: heroDisplayName.ru,
@@ -76,6 +77,8 @@ const breadcrumbSchema = {
   description={post.data.description}
   image={pageImage}
   type="article"
+  noIndex
+  followLinks
   schema={[articleSchema, breadcrumbSchema]}
   alternate={enSlug ? `/blog/${enSlug}/` : undefined}
 >

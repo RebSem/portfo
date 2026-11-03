@@ -1,6 +1,7 @@
 ---
 import { heroDisplayName, linkedinUrl, telegramUrl, uiCopy } from '../data/site-content';
 import { buildIntroMailto } from '../lib/intro-mail';
+import { chunks, HYPHENATED } from '../lib/nb';
 import type { Locale } from '../types/content';
 import HeroFacts from './HeroFacts.astro';
 import SocialLinks from './SocialLinks.astro';
@@ -14,11 +15,8 @@ const { locale, caseHref } = Astro.props;
 const copy = uiCopy.home;
 
 // The standfirst is balanced, and a balanced line happily breaks a compound
-// word at its hyphen ("B2B-" / "клиентов"). Same fix as nb() in
-// CvDocument.astro: hyphenated tokens go in a nowrap span, the text itself
-// is untouched.
-const HYPHENATED = /[\p{L}\p{N}]-[\p{L}\p{N}]/u;
-const chunks = (value: string) => value.split(/(\s+)/);
+// word at its hyphen ("B2B-" / "клиентов"), so hyphenated tokens go in a
+// nowrap span (src/lib/nb.ts).
 ---
 
 {/*
@@ -160,10 +158,6 @@ const chunks = (value: string) => value.split(/(\s+)/);
     color: var(--foreground);
     font-weight: 500;
     text-wrap: pretty;
-  }
-
-  .nb {
-    white-space: nowrap;
   }
 
   .hero-cta-row {
