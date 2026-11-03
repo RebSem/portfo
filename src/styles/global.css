@@ -1732,11 +1732,34 @@ a.project-shot-zoom {
   background: color-mix(in oklab, #0c0d0e 72%, transparent);
 }
 
+/* The dialog settles into place over 200 ms from 98%. It starts visible: an
+   opacity of 0 in @starting-style would hide the shot on open (AGENTS.md
+   bans that). Reduced motion gets no transition, so no scale either. */
+@media (prefers-reduced-motion: no-preference) {
+  .shot-lightbox {
+    transition: transform 200ms var(--ease-out-strong);
+  }
+}
+
+@starting-style {
+  .shot-lightbox[open] {
+    transform: scale(0.98);
+  }
+}
+
 .shot-lightbox-img {
   display: block;
   width: 100%;
   height: auto;
   aspect-ratio: 16 / 10;
+}
+
+/* On phones the shot keeps a laptop's text size: 1100px wide, scrolled
+   sideways inside the dialog. */
+@media (max-width: 720px) {
+  .shot-lightbox-img {
+    width: 1100px;
+  }
 }
 
 .shot-lightbox-close {

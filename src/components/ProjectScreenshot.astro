@@ -61,6 +61,9 @@ const srcset = (png: string) => `${webp1x(png)} 1440w, ${webp(png)} 2880w`;
   // survives swaps, and the dialog is created on demand because <body> does
   // not. Native <dialog>: Esc closes it and focus returns on its own.
   const LIGHTBOX = 'shot-lightbox';
+  // The 2x the lightbox is waiting for. A 2x still loading for an earlier
+  // shot must not replace the one open now.
+  let awaitedFull = '';
 
   const lightbox = (): HTMLDialogElement => {
     let dialog = document.getElementById(LIGHTBOX) as HTMLDialogElement | null;
@@ -97,14 +100,25 @@ const srcset = (png: string) => `${webp1x(png)} 1440w, ${webp(png)} 2880w`;
     const dialog = lightbox();
     const image = dialog.querySelector<HTMLImageElement>(`.${LIGHTBOX}-img`);
     if (!image) return;
-    // The 2x WebP of whichever theme is showing (theme-images.js keeps the
-    // thumbnail's src on the active theme).
-    // Clear first: otherwise the previous shot stays visible until the next
-    // one has downloaded.
-    image.removeAttribute('src');
-    image.src = (thumb.currentSrc || thumb.src).replace(/-1440\.webp$/, '.webp');
+    // The 1x the thumbnail already shows, in the theme that is showing
+    // (theme-images.js keeps its src on the active theme). The browser has
+    // decoded it, so the frame is never empty while the 2x downloads.
+    const shown = thumb.currentSrc || thumb.src;
+    const full = shown.replace(/-1440\.webp$/, '.webp');
+    image.src = shown;
     image.alt = thumb.alt;
     dialog.setAttribute('aria-label', thumb.alt);
     dialog.showModal();
+    awaitedFull = full;
+    if (full === shown) return;
+    // The 2x is decoded before it replaces the 1x, so the swap never flashes.
+    const loader = new Image();
+    loader.src = full;
+    loader.decode().then(
+      () => {
+        if (awaitedFull === full && dialog.open) image.src = full;
+      },
+      () => undefined,
+    );
   });
 </script>
