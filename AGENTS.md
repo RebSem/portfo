@@ -206,7 +206,7 @@ is git-ignored; `.env.example` is the template.
   files together with the change. Check PDFs with `pdftotext file.pdf - | head -40`.
 - Per-vacancy resumes are the candidate's document: `cv:vacancy` only strips the phone,
   it does not edit the text. Slugs and file names stay ASCII.
-- Unlisted pages (`/cv`, `/ru/cv`, `/cv.txt`, the blog) stay out of the sitemap,
+- Unlisted pages (`/cv`, `/ru/cv`, `/cv.txt`, `/call/`, `/call/thanks/`, the blog) stay out of the sitemap,
   header navigation and `llms.txt`; `/cv` keeps `noindex,follow`. Since 2026-11-03
   `/cv/` is reachable only through a quiet `rel="nofollow"` "Resume" text link in the
   home closing and in the case availability strip; the resume downloads are nofollow
@@ -330,6 +330,21 @@ is git-ignored; `.env.example` is the template.
   figures be made up; none were, and none may be (see the `cv.ts` content rules).
   Open and waiting on him: a Cal.com booking link (never use an API key for it), the
   hh.ru link, a named reference, Search Console, and the card-to-title morph (P15).
+- 2026-11-03: booking page (#89). `/call/` and `/ru/call/` embed the owner's Cal.com
+  calendar inline (user `michael-semenov`, events `15min`, `30min`, `60min`; one
+  constant, `calBooking` in `src/data/site-content.ts`), in one card with a details
+  panel, the visitor's own time zone and a format picker; the calendar takes the
+  site's colours and theme; if app.cal.com is blocked or the event is missing, the
+  card shows Cal.com, Telegram and Email links instead. A booking sends the visitor
+  to `/call/thanks/` (or `/ru/call/thanks/`), which strips the query string before
+  analytics loads. Built by Haiku and Sonnet agents, then reviewed by an independent
+  critic whose 12 accepted findings were fixed. No Cal.com API key is used or stored:
+  the public embed needs none. Cal.com side (owner's account, set 2026-11-03): Google
+  Calendar for conflicts and new events, Google Meet as the location, 10 min buffer,
+  2 h minimum notice, 4 (60 min: 2) bookings per day, required Company and optional
+  Vacancy link questions; no 'Redirect on booking' on purpose (the site routes to the
+  thanks page in the visitor's locale). Cal's calendar language follows the visitor's
+  browser, not the page.
 
 ## Gotchas
 
