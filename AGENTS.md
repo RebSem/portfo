@@ -64,6 +64,7 @@ astro.config.mjs        site URL, i18n (en default unprefixed, ru under /ru), se
                         compressHTML and the Vite CSS target (see Gotchas)
 src/
   pages/                file routes; ru/ mirrors the root. cv.astro, cv.txt.ts (resume),
+                        llms.txt.ts (generated from cv.ts and the case collection),
                         sitemap.xml.ts, robots.txt.ts, api/github/*.json.ts (build-time JSON)
   layouts/Layout.astro  the single page shell: head, meta, JSON-LD, robots, transitions
   components/           Astro components (HomeHero, CvDocument, FeaturedCase, Analytics, ...)
@@ -83,7 +84,8 @@ public/
                         per-vacancy resumes (see scripts/cv/README.md)
   og/                   generated 1200x630 link-preview cards
   projects/             case-study screenshots (PNG sources + WebP at two widths)
-  llms.txt, CNAME       hand-maintained llms.txt; CNAME = rebsem.ru
+  CNAME                 CNAME = rebsem.ru; favicon.svg, favicon.ico/-32.png,
+                        apple-touch-icon.png, icon-192/512.png (the M tile)
 scripts/
   link-check.mjs        internal link check over dist/
   new-post.mjs          creates a RU/EN blog draft pair
@@ -126,7 +128,7 @@ if a runner image ever ships an older 22.x, switch both to `node-version-file: .
 | WebP screenshots | `npm run shots:webp` |
 
 Verified on 2026-11-03 (Node 22.22, npm 10.9): `npm ci`, `npm run validate`
-(0 errors/warnings/hints, build OK, 122/122 tests including the `dist/` suites, link
+(0 errors/warnings/hints, build OK, 130/130 tests including the `dist/` suites, link
 check passed for 27 HTML files). Not run: `cv:export`, `cv:vacancy`, `og:build`,
 `shots:webp`, `dev`, `preview`.
 
@@ -212,6 +214,12 @@ is git-ignored; `.env.example` is the template.
 - Internal page links end in `/`: GitHub Pages answers `/about` with a 301 first.
   `scripts/link-check.mjs` fails a page link without the slash. Prefetch is
   `viewport` for every link; file downloads opt out with `data-astro-prefetch="false"`.
+- Motion tokens live in the `:root` block of `global.css` (`--dur-press`, `--dur-fast`,
+  `--dur-page`, `--dur-base`, `--dur-draw`, `--press-scale`, the two easings) with the
+  list of what never moves. Use them instead of raw milliseconds or scales.
+- iOS 15.0-16.1 has no `color-mix()`: an `@supports not (color: color-mix(...))` block
+  in `global.css` gives literal colours for the rules, muted text, header, status pill
+  and lead card. Do not raise `cssTarget` to fix it: that rewrites `max-width` queries.
 - Page transitions: the root view-transition group runs `--dur-page` (180 ms); a
   navigation fades through (old 90 ms, new 60 + 150 ms) so the two pages never
   overlay. Chrome sends clicks to the transition overlay while it runs, so do not
@@ -302,6 +310,15 @@ is git-ignored; `.env.example` is the template.
   strip, honest toggle labels, page transitions shortened to 180 ms without double
   exposure; and analytics for every new link (`cv:link_click`, `link_placement` on
   all link events). The owner declined a prefilled Telegram message.
+- 2026-11-03, third batch (#84-#87, 19 more items, about 78% of the audit done): the
+  About heatmap rendered at build and read as one image, `llms.txt` generated from
+  `cv.ts`, a new favicon and touch icons, text-size-adjust and distinct case link
+  names; the live-cabinet card in the site style with the Russian UI named, an
+  instant lightbox, AVIF screenshots, smooth details, quick links on the flagship;
+  a top-down type scale, real side margins and a seamless header, small polish,
+  calm link underlines, motion tokens and the iOS 15 colour fallback. Measured and
+  left alone: the first theme toggle (32 ms with analytics on a throttled phone) and
+  page navigation (150-190 ms tap to paint, so no progress bar).
 
 ## Gotchas
 
