@@ -38,12 +38,25 @@ const formatLocalizedDate = (isoDate) => {
   return getDateFormatter().format(date);
 };
 
+// Mirrors contributionWord in src/lib/contribution-grid.ts: this file is served
+// as-is, so it cannot import from src/lib. Keep the two tables in step.
+const CONTRIBUTION_WORDS = {
+  en: { one: 'contribution', other: 'contributions' },
+  ru: { one: 'вклад', few: 'вклада', many: 'вкладов', other: 'вкладов' },
+};
+
+const PLURAL_RULES = {
+  en: new Intl.PluralRules('en-US'),
+  ru: new Intl.PluralRules('ru-RU'),
+};
+
+const contributionWord = (count, locale) => {
+  const forms = CONTRIBUTION_WORDS[locale];
+  return forms[PLURAL_RULES[locale].select(count)] ?? forms.other;
+};
+
 const formatContributionLabel = (count, isoDate) =>
-  withLocale(
-    state.activeLocale,
-    `${count} вкладов • ${formatLocalizedDate(isoDate)}`,
-    `${count} contributions • ${formatLocalizedDate(isoDate)}`,
-  );
+  `${count} ${contributionWord(count, state.activeLocale)} • ${formatLocalizedDate(isoDate)}`;
 
 const renderContributionTooltip = () => {
   const tooltip = document.getElementById('contribution-tooltip');

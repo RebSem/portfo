@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildContributionGrid, contributionLabel } from '../src/lib/contribution-grid';
+import { buildContributionGrid, contributionWord } from '../src/lib/contribution-grid';
 import type { ContributionDay } from '../src/types/github';
 
 describe('buildContributionGrid', () => {
@@ -25,16 +25,20 @@ describe('buildContributionGrid', () => {
   });
 });
 
-describe('contributionLabel', () => {
-  it('reads the count and the date in English', () => {
-    expect(contributionLabel(3, '2026-03-04', 'en')).toBe('3 contributions • Mar 4, 2026');
+describe('contributionWord', () => {
+  it('uses the singular only for exactly one in English', () => {
+    expect(contributionWord(1, 'en')).toBe('contribution');
+    expect(contributionWord(2, 'en')).toBe('contributions');
+    expect(contributionWord(0, 'en')).toBe('contributions');
   });
 
-  it('reads the count and the date in Russian', () => {
-    expect(contributionLabel(3, '2026-03-04', 'ru')).toMatch(/^3 вкладов • 4 мар\. 2026/);
-  });
-
-  it('keeps the UTC day for a midnight date, whatever the machine time zone', () => {
-    expect(contributionLabel(1, '2026-01-01', 'en')).toBe('1 contributions • Jan 1, 2026');
+  it('follows the Russian plural rule: one, few, many', () => {
+    expect(contributionWord(1, 'ru')).toBe('вклад');
+    expect(contributionWord(2, 'ru')).toBe('вклада');
+    expect(contributionWord(5, 'ru')).toBe('вкладов');
+    expect(contributionWord(21, 'ru')).toBe('вклад');
+    expect(contributionWord(22, 'ru')).toBe('вклада');
+    expect(contributionWord(11, 'ru')).toBe('вкладов');
+    expect(contributionWord(0, 'ru')).toBe('вкладов');
   });
 });

@@ -969,6 +969,14 @@ html[data-theme='dark'] .theme-icon-sun {
   color: color-mix(in oklab, var(--foreground) 74%, transparent);
 }
 
+/* A touch screen has no hover, so "Hover a cell..." would describe a gesture the
+   reader cannot make. */
+@media (hover: none) {
+  .contribution-tooltip {
+    display: none;
+  }
+}
+
 /* Primary action: this product is live, so the visit-the-product link
    carries the accent fill instead of reading as just another ghost button. */
 

@@ -17,13 +17,6 @@ const DAY_MS = 86_400_000;
 
 const utcDate = (isoDate: string): Date => new Date(`${isoDate}T00:00:00.000Z`);
 
-// UTC everywhere: the dates are UTC midnights, and a viewer or build machine west
-// of Greenwich would otherwise print the day before.
-const DATE_FORMATS: Record<Locale, Intl.DateTimeFormat> = {
-  en: new Intl.DateTimeFormat('en-US', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }),
-  ru: new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }),
-};
-
 // Pads the year to whole Sunday-to-Saturday weeks, the way GitHub draws its
 // calendar, so the first and last columns are full. No days gives an empty grid.
 export const buildContributionGrid = (days: ContributionDay[]): ContributionGrid => {
@@ -53,9 +46,21 @@ export const buildContributionGrid = (days: ContributionDay[]): ContributionGrid
   return { weeks, cells };
 };
 
-// Same wording as the hover hint in src/scripts/github-activity.js, so the native
-// title on a cell and the hint line always agree.
-export const contributionLabel = (count: number, isoDate: string, locale: Locale): string => {
-  const date = DATE_FORMATS[locale].format(utcDate(isoDate));
-  return locale === 'ru' ? `${count} вкладов • ${date}` : `${count} contributions • ${date}`;
+// The noun after a count, picked by the locale's plural rule: Russian reads
+// "1 вклад", "2 вклада", "5 вкладов", "21 вклад". src/scripts/github-activity.js
+// repeats this table, because that script is served as-is and cannot import from
+// src/lib; keep the two in step.
+const CONTRIBUTION_WORDS: Record<Locale, Record<string, string>> = {
+  en: { one: 'contribution', other: 'contributions' },
+  ru: { one: 'вклад', few: 'вклада', many: 'вкладов', other: 'вкладов' },
+};
+
+const PLURAL_RULES: Record<Locale, Intl.PluralRules> = {
+  en: new Intl.PluralRules('en-US'),
+  ru: new Intl.PluralRules('ru-RU'),
+};
+
+export const contributionWord = (count: number, locale: Locale): string => {
+  const forms = CONTRIBUTION_WORDS[locale];
+  return forms[PLURAL_RULES[locale].select(count)] ?? forms.other;
 };

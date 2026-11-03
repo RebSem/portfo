@@ -11,7 +11,7 @@ import {
   telegramUrl,
   uiCopy,
 } from '../data/site-content';
-import { buildContributionGrid, contributionLabel } from '../lib/contribution-grid';
+import { buildContributionGrid, contributionWord } from '../lib/contribution-grid';
 import { getGithubContributions } from '../lib/github';
 import { buildIntroMailto } from '../lib/intro-mail';
 import { chunks, HYPHENATED } from '../lib/nb';
@@ -32,6 +32,9 @@ const fetchedContributions = await getGithubContributions(githubUsername).catch(
 const contributions = fetchedContributions && fetchedContributions.days.length > 0 ? fetchedContributions : undefined;
 const heatmap = buildContributionGrid(contributions?.days ?? []);
 const numberLocale = locale === 'ru' ? 'ru-RU' : 'en-US';
+const totalLastYear = contributions?.totalLastYear ?? 0;
+const totalText = totalLastYear.toLocaleString(numberLocale);
+const unitText = contributionWord(totalLastYear, locale);
 
 const copy = {
   eyebrow: { ru: 'Обо мне', en: 'About' },
@@ -46,13 +49,17 @@ const copy = {
     en: 'Send me the role and a line about the product. I will tell you honestly whether I am a fit.',
   },
   githubLabel: { ru: 'GitHub · за год', en: 'GitHub · last year' },
-  githubUnit: { ru: 'вкладов', en: 'contributions' },
-  heatmapAria: { ru: 'График активности GitHub', en: 'GitHub activity graph' },
+  heatmapName: { ru: 'Активность на GitHub', en: 'GitHub activity' },
+  heatmapPeriod: { ru: 'за последний год', en: 'in the last year' },
   heatmapHint: {
     ru: 'Наведите на ячейку, чтобы увидеть дату и число вкладов.',
     en: 'Hover a cell to see the exact date and number of contributions.',
   },
 } as const;
+
+// The whole heatmap is one image for assistive tech: its name is the total, so
+// the 371 cells are not read one by one.
+const heatmapAria = `${copy.heatmapName[locale]}: ${totalText} ${unitText} ${copy.heatmapPeriod[locale]}`;
 ---
 
 {/*
@@ -126,21 +133,23 @@ const copy = {
       <div class="github-inline">
         <div class="github-inline-meta">
           <span class="label">{copy.githubLabel[locale]}</span>
-          <strong>{contributions.totalLastYear.toLocaleString(numberLocale)}</strong>
-          <span class="label" id="github-title">{copy.githubUnit[locale]}</span>
+          <strong>{totalText}</strong>
+          <span class="label" id="github-title">{unitText}</span>
           <a class="github-profile-link link" href={`https://github.com/${githubUsername}`} target="_blank" rel="noreferrer">
             github.com/{githubUsername}
           </a>
         </div>
 
         <div class="github-heatmap">
-          {/* Plain presentational cells: the total is announced in the section copy,
-              so cells stay out of the tab order (371 tab stops is keyboard hostile). */}
+          {/* role="img" makes the grid one node for screen readers, named by the total;
+              its cells stay out of the accessibility tree and the tab order (371 tab
+              stops are hostile to keyboard users). No per-cell title: a tooltip on each
+              cell is a mouse-only hint that repeats the hover line below. */}
           <div
             id="contribution-grid"
             class="contribution-grid"
-            role="group"
-            aria-label={copy.heatmapAria[locale]}
+            role="img"
+            aria-label={heatmapAria}
             style={`--weeks: ${heatmap.weeks}`}
           >
             {heatmap.cells.map((cell) => (
@@ -148,7 +157,6 @@ const copy = {
                 class={`contribution-cell level-${cell.level}`}
                 data-date={cell.date}
                 data-count={cell.count}
-                title={contributionLabel(cell.count, cell.date, locale)}
               ></div>
             ))}
           </div>
