@@ -1343,10 +1343,14 @@ html[data-theme='dark'] .theme-icon-sun {
   gap: 0.85rem;
 }
 
-/* The jump links above already set this section apart, so it needs less room
-   than the default h2 margin. */
-.case-shell .prose > nav:first-child + h2 {
-  margin-top: 1.25rem;
+/* The jump links above already set this section apart, so on a laptop it
+   needs less room than the default h2 margin. Phones keep the default: there
+   the extra room keeps the heading from peeking at the bottom of the first
+   screen. */
+@media (min-width: 900px) {
+  .case-shell .prose > nav:first-child + h2 {
+    margin-top: 1.25rem;
+  }
 }
 
 /* Short laptop windows: the head takes less height, as the home hero does on
