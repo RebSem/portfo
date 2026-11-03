@@ -27,7 +27,10 @@ const { locale } = Astro.props;
   .hero-facts-list {
     display: flex;
     justify-content: space-between;
-    gap: 0.9rem 2rem;
+    /* The page gutter now takes 60-90px more from the column at 1181-1440,
+       and wider minimum gaps wrapped the English values there. space-between
+       spreads whatever room is left, so the visible gaps stay open. */
+    gap: 0.9rem 0.75rem;
     margin: 0;
   }
 

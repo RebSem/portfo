@@ -164,13 +164,16 @@ html[data-theme='dark'] body::after {
   text-decoration: none;
 }
 
+/* The side gutter grows with the viewport: 16px on phones, about 41px at
+   1024 and 56px from 1440 up. A fixed 16px put the brand and the first fact
+   against the edge on tablets and small laptops. */
 .header-inner,
 .page-main,
 .footer-inner,
 .divider-wrap {
   width: min(var(--container-width), 100%);
   margin-inline: auto;
-  padding-inline: 1rem;
+  padding-inline: clamp(1rem, 4vw, 3.5rem);
 }
 
 .sr-only {
@@ -264,16 +267,18 @@ summary {
 }
 
 /* Sticky glass header: keeps the masthead (the identity) framed while reading.
-   The hairline + tint fade in over the first 64px of scroll where the browser
-   supports scroll-driven animations; elsewhere a constant soft hairline. */
+   The tint, blur and hairline live on ::after. At rest the header is the page
+   itself: a tinted bar there left a seam against the white top of the page.
+   They fade in over the first 64px of scroll where the browser supports
+   scroll-driven animations; elsewhere they stay on. */
 .site-header {
   width: 100%;
   position: sticky;
   top: 0;
   z-index: 40;
-  background: color-mix(in oklab, var(--background) 78%, transparent);
-  -webkit-backdrop-filter: blur(14px) saturate(1.4);
-  backdrop-filter: blur(14px) saturate(1.4);
+  background: transparent;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   border-bottom: 1px solid transparent;
 }
 
@@ -295,6 +300,8 @@ summary {
   pointer-events: none;
   opacity: 0;
   background: color-mix(in oklab, var(--background) 88%, transparent);
+  -webkit-backdrop-filter: blur(12px) saturate(1.15);
+  backdrop-filter: blur(12px) saturate(1.15);
   border-bottom: 1px solid color-mix(in oklab, var(--border) 90%, transparent);
   box-shadow: 0 10px 30px -24px color-mix(in oklab, var(--foreground) 25%, transparent);
 }
@@ -318,21 +325,19 @@ summary {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* Was not covered by the site-wide reduce block. A static hairline instead
-     of a scroll-driven reveal, matching the no-scroll-timeline fallback. */
+  /* Was not covered by the site-wide reduce block. No scroll-driven fade: the
+     tint, blur and hairline are on from the first frame. */
   .site-header::after {
     animation: none;
-    opacity: 0;
-  }
-
-  .site-header {
-    border-bottom-color: color-mix(in oklab, var(--border) 60%, transparent);
+    opacity: 1;
   }
 }
 
+/* The hairline is ::after's own now; a border on the header as well would
+   draw a second line 1px below it. */
 @supports not (animation-timeline: scroll()) {
-  .site-header {
-    border-bottom-color: color-mix(in oklab, var(--border) 60%, transparent);
+  .site-header::after {
+    opacity: 1;
   }
 }
 
@@ -1471,9 +1476,11 @@ html[data-theme='dark'] .theme-icon-sun {
 
 @media (max-width: 720px) {
   /* The wrapped 2-3 row header would eat too much of a phone viewport
-     if it stayed pinned - let it scroll away on small screens. */
+     if it stayed pinned - let it scroll away on small screens. Relative,
+     not static: ::after needs the header box as its containing block, or
+     the tint covers the viewport at the top of the page. */
   .site-header {
-    position: static;
+    position: relative;
   }
 
   /*
