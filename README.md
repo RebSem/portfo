@@ -155,7 +155,12 @@ view with seconds actually on screen, scroll depth and the sections seen. The
 and scroll coordinates) are on. Small UI modules report through a DOM event
 instead of importing the SDK (`rebsem:signal`, allow-listed in
 [`src/lib/site-signals.ts`](src/lib/site-signals.ts)): `tab:return` when a visitor
-comes back to a tab that showed the away title. Classification lives in
+comes back to a tab that showed the away title. Clicks that mean something get
+stable names: `contact:link_click` (Telegram, email, LinkedIn, the GitHub
+profile), `cv:link_click` (the quiet Resume links), `project:card_click` (case
+cards and the Next case block) and `outbound:link_click`, each with
+`link_placement` from the nearest `data-analytics-placement` (hero, hero-alt,
+case, case-next, agent-receipts, about-cta, footer). Classification lives in
 [`src/lib/visitor-signals.ts`](src/lib/visitor-signals.ts) with its tests;
 nothing in it is stored or precise enough to recognise anyone.
 
