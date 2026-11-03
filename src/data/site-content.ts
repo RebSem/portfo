@@ -636,6 +636,13 @@ export const uiCopy = {
       ru: 'Резюме',
       en: 'Resume',
     },
+    // How fast a message gets an answer: a quiet line under the closing buttons
+    // (SiteFooter.astro) and in the case availability strip (CaseAvailability.astro).
+    // The owner replies within about half an hour, so the line sets that expectation.
+    replyTime: {
+      ru: 'Обычно отвечаю в течение 30 минут в рабочее время (GMT+5).',
+      en: 'I usually reply within 30 minutes during working hours (GMT+5).',
+    },
     navAria: {
       ru: 'Навигация в подвале',
       en: 'Footer navigation',

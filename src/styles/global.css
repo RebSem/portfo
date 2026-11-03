@@ -1447,6 +1447,16 @@ html[data-theme='dark'] .theme-icon-sun {
   text-underline-offset: 4px;
 }
 
+/* How fast a message gets an answer: a quiet line under the closing buttons,
+   in the status line's size and the muted tone. It sits closer to the buttons
+   than to the status below it, so the two read as one group. */
+.footer-reply {
+  margin: clamp(0.85rem, 1.4vw, 1.05rem) 0 0;
+  font-size: 0.925rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
 /* The status again, for the reader who scrolled to the end: the same
    wording as the hero, the dot static. */
 .footer-status {
