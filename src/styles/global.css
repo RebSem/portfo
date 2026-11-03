@@ -1170,6 +1170,41 @@ html[data-theme='dark'] .theme-icon-sun {
   margin: 0 0.5em;
 }
 
+/* The jump links under a case's availability strip: one quiet line with dots
+   between the links, as the tags at the end of a case. Each link lands on its
+   section below the sticky header (html scroll-padding). */
+.prose .case-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  color: var(--foreground);
+}
+
+.case-jump li:not(:last-child)::after {
+  content: '·';
+  margin: 0 0.5em;
+  color: var(--text-muted);
+}
+
+/* A touch screen gets a 44px tap area per link. The padding of an inline link
+   takes no room in the line, so the links stay as tight as text. */
+@media (pointer: coarse) {
+  .case-jump a {
+    padding-block: 0.8rem;
+  }
+}
+
+@media print {
+  .prose .case-jump {
+    display: none;
+  }
+}
+
 /* Pulse intentionally slow + sparse — the dot still reads as "alive"
    without stealing attention 60 times a minute. */
 

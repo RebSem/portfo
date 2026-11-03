@@ -15,6 +15,15 @@ import ProjectScreenshot from '../../components/ProjectScreenshot.astro';
 import LiveCabinetButton from '../../components/LiveCabinetButton.astro';
 import ShotGrid from '../../components/ShotGrid.astro';
 
+<nav aria-label="On this page">
+  <ul class="case-jump">
+    <li><a href="#result">Result</a></li>
+    <li><a href="#key-decision-sell-first-build-later">Key decision</a></li>
+    <li><a href="#how-the-console-works">How the console works</a></li>
+    <li><a href="#my-part">My part</a></li>
+  </ul>
+</nav>
+
 ## Result
 
 - **80 paying B2B customers** in under a year from launch.
@@ -102,7 +111,7 @@ Why outbound is worth automating for a mid-market B2B team:
 
 </details>
 
-<details>
+<details id="how-the-console-works">
 <summary>How the console works: signup, campaigns, billing</summary>
 
 One console for every role: agent assembly, dialing, billing and analytics.
@@ -118,7 +127,7 @@ One console for every role: agent assembly, dialing, billing and analytics.
 
 </details>
 
-<details>
+<details id="my-part">
 <summary>My part and the team’s</summary>
 
 I owned the line: what got built, what it cost, whom we sold it to, pricing and per-call-type margins. Specs, priorities and review were mine. When a hypothesis needed a working answer faster than a sprint, I prototyped it myself with AI coding agents (Claude Code, Codex) and handed the team the learning, not the code.
