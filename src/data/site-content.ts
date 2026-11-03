@@ -89,6 +89,10 @@ export const aboutBlocks: AboutBlock[] = [
         ru: `Вёл продукт целиком, от клиентского кабинета до биллинга. Меньше чем за год: ${cvMetric('customers').value.ru} платящих B2B-клиентов, ${cvMetric('minutes').value.ru} минут разговоров в проде.`,
         en: `I owned the product end to end, from the client console to billing. In under a year: ${cvMetric('customers').value.en} paying B2B customers, ${cvMetric('minutes').value.en} minutes of live conversations in production.`,
       },
+      {
+        ru: 'До этого, с 2022 года, вёл основную платформу: self-service кабинет, посекундный биллинг и кошельки (пополнения, списания, холды), CPaaS-продукты группы для массовых звонков и SMS.',
+        en: 'Before that, from 2022, I ran the core platform: the self-service console, per-second billing and wallets (top-ups, charges, balance holds), and the group’s CPaaS products for bulk calls and SMS.',
+      },
     ],
   },
   {
