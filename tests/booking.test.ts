@@ -9,6 +9,7 @@ import {
   buildCalPublicUrl,
   calBookedActions,
   calBrand,
+  calReadyAction,
   calThemeFor,
   calUiOptions,
   callPagePath,
@@ -106,6 +107,10 @@ describe('booking confirmation', () => {
   it('listens to the current Cal.com success event and to the older one', () => {
     expect(calBookedActions).toContain('bookingSuccessfulV2');
     expect(calBookedActions).toContain('bookingSuccessful');
+  });
+
+  it('fades the calendar in on the embed ready event', () => {
+    expect(calReadyAction).toBe('linkReady');
   });
 });
 

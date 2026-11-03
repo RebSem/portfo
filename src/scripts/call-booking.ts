@@ -1,10 +1,14 @@
 /**
- * The /call/ page's client side (CallBooking.astro). It draws the Cal.com
- * calendar inline for the format picked, draws it again when the format
- * changes, follows the site theme, reports the format's length (booking:select,
- * booking:done) and sends a confirmed booking to the thank-you page. Bundled
- * with the page, so it loads on the call pages only, together with Cal's embed
- * script.
+ * The /call/ page's client side (CallBooking.astro). It shows the details of the
+ * format picked, draws the Cal.com calendar inline for that format and draws it
+ * again when the format changes, follows the site theme, reports the format's
+ * length (booking:select, booking:done) and sends a confirmed booking to the
+ * thank-you page. Bundled with the page, so it loads on the call pages only,
+ * together with Cal's embed script.
+ *
+ * The calendar stage fades in once Cal reports it ready, and a format switch
+ * fades the old calendar out before the new one is drawn. Both fades are
+ * instant under reduced motion.
  *
  * A soft navigation swaps the whole page, so every load of a call page gets its
  * own calendar (boot checks the page for one). The Cal.com loader and the theme
@@ -17,6 +21,7 @@ import {
   buildCalPublicUrl,
   calBookedActions,
   calOrigin,
+  calReadyAction,
   callThanksPath,
   calThemeFor,
   calUiOptions,
@@ -32,6 +37,9 @@ const STAGE_SELECTOR = '#call-stage';
 // After this long without a loaded frame the loading line gives way. The link
 // to Cal.com stays on the page either way.
 const LOAD_TIMEOUT_MS = 20000;
+// The stage's fade, the --dur-base motion token in the stylesheet. A format
+// switch waits this long for the old calendar to fade out before drawing the new.
+const FADE_MS = 220;
 
 type CalArgs = unknown[];
 
@@ -49,8 +57,10 @@ interface CalHost {
 let initialised = false;
 let themeBound = false;
 let bookingWatched = false;
+let readyWatched = false;
 let thanksOpened = false;
 let frameWatch: MutationObserver | undefined;
+let drawTimer: number | undefined;
 let loadTimer: number | undefined;
 // The length of the format on screen, read when a booking is confirmed.
 let activeMinutes: BookingMinutes | undefined;
@@ -102,13 +112,26 @@ const currentTheme = (): CalTheme =>
 
 const localeOf = (section: HTMLElement): Locale => (section.dataset.locale === 'ru' ? 'ru' : 'en');
 
+const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 const setState = (embed: HTMLElement, state: 'loading' | 'ready' | 'failed') => {
   embed.dataset.state = state;
 };
 
-// Cal draws its iframe into the stage at once, but the calendar inside it
-// loads later. The loading line stays until that frame has loaded.
-const watchFrame = (embed: HTMLElement, stage: HTMLElement): MutationObserver => {
+// Cal reports a calendar ready once it has drawn. A report that arrives while
+// the next format still waits to be drawn belongs to the old calendar, so it is
+// ignored; the new one reports its own.
+const markReady = () => {
+  const embed = document.querySelector<HTMLElement>('[data-call-embed]');
+  if (!embed || drawTimer !== undefined) return;
+  window.clearTimeout(loadTimer);
+  setState(embed, 'ready');
+};
+
+// The frame's own load event is the fallback for the ready report. It only
+// counts for the frame on screen: a frame a later format switch replaced must
+// not mark the new one ready.
+const watchFrame = (stage: HTMLElement): MutationObserver => {
   const observer = new MutationObserver(() => {
     const frame = stage.querySelector('iframe');
     if (!frame) return;
@@ -116,8 +139,7 @@ const watchFrame = (embed: HTMLElement, stage: HTMLElement): MutationObserver =>
     frame.addEventListener(
       'load',
       () => {
-        // A frame that a later format switch replaced must not mark the new one ready.
-        if (stage.querySelector('iframe') === frame) setState(embed, 'ready');
+        if (stage.querySelector('iframe') === frame) markReady();
       },
       { once: true },
     );
@@ -132,7 +154,35 @@ const minutesOf = (input: HTMLInputElement): BookingMinutes | undefined => {
   return isBookingMinutes(minutes) ? minutes : undefined;
 };
 
-const renderFormat = (section: HTMLElement, format: HTMLInputElement) => {
+// The panel's title, note and facts follow the format picked: one detail block
+// is shown, the others stay hidden.
+const showDetail = (section: HTMLElement, eventSlug: string) => {
+  for (const detail of section.querySelectorAll<HTMLElement>('[data-call-detail]')) {
+    detail.hidden = detail.dataset.callDetail !== eventSlug;
+  }
+};
+
+const drawCalendar = (
+  embed: HTMLElement,
+  stage: HTMLElement,
+  user: string,
+  eventSlug: string,
+  locale: Locale,
+) => {
+  drawTimer = undefined;
+  // The page may have been swapped out by a soft navigation while the timer ran.
+  if (!stage.isConnected) return;
+  stage.replaceChildren();
+  frameWatch = watchFrame(stage);
+  loadTimer = window.setTimeout(() => {
+    if (embed.dataset.state === 'loading') setState(embed, 'failed');
+  }, LOAD_TIMEOUT_MS);
+
+  callCal('inline', buildCalInlineOptions(user, eventSlug, locale, STAGE_SELECTOR));
+  callCal('ui', calUiOptions(currentTheme()));
+};
+
+const showFormat = (section: HTMLElement, format: HTMLInputElement) => {
   const embed = section.querySelector<HTMLElement>('[data-call-embed]');
   const stage = section.querySelector<HTMLElement>(STAGE_SELECTOR);
   const fallback = section.querySelector<HTMLAnchorElement>('[data-call-open]');
@@ -143,18 +193,28 @@ const renderFormat = (section: HTMLElement, format: HTMLInputElement) => {
   const locale = localeOf(section);
   fallback.href = buildCalPublicUrl(user, eventSlug, locale);
   activeMinutes = minutesOf(format);
+  showDetail(section, eventSlug);
+
+  // A switch fades the old calendar out before the new one is drawn. The first
+  // draw on the page has no calendar to fade.
+  const replacing = stage.querySelector('iframe') !== null && !reducedMotion();
 
   frameWatch?.disconnect();
+  window.clearTimeout(drawTimer);
   window.clearTimeout(loadTimer);
-  stage.replaceChildren();
   setState(embed, 'loading');
-  frameWatch = watchFrame(embed, stage);
-  loadTimer = window.setTimeout(() => {
-    if (embed.dataset.state === 'loading') setState(embed, 'failed');
-  }, LOAD_TIMEOUT_MS);
+  drawTimer = window.setTimeout(
+    () => drawCalendar(embed, stage, user, eventSlug, locale),
+    replacing ? FADE_MS : 0,
+  );
+};
 
-  callCal('inline', buildCalInlineOptions(user, eventSlug, locale, STAGE_SELECTOR));
-  callCal('ui', calUiOptions(currentTheme()));
+// Cal's embed reports the calendar ready. The subscription lives on the Cal
+// namespace, so it is made once per document.
+const watchReady = () => {
+  if (readyWatched) return;
+  readyWatched = true;
+  callCal('on', { action: calReadyAction, callback: markReady });
 };
 
 // A confirmed booking moves the visitor to the thank-you page of their locale.
@@ -202,12 +262,13 @@ const boot = () => {
     ensureCal()('init', NAMESPACE, { origin: calOrigin });
     initialised = true;
   }
+  watchReady();
   watchBookings();
 
   section.querySelector<HTMLElement>('[data-call-formats]')?.addEventListener('change', (event) => {
     const input = event.target;
     if (!(input instanceof HTMLInputElement) || !input.checked) return;
-    renderFormat(section, input);
+    showFormat(section, input);
     // Only a switch the visitor makes is reported, not the format the page opens on.
     const minutes = minutesOf(input);
     if (minutes) emitSignal('booking:select', { minutes });
@@ -216,7 +277,7 @@ const boot = () => {
   const picked =
     section.querySelector<HTMLInputElement>('input[name="call-format"]:checked') ??
     section.querySelector<HTMLInputElement>('input[name="call-format"]');
-  if (picked) renderFormat(section, picked);
+  if (picked) showFormat(section, picked);
 
   bindThemeSync();
 };

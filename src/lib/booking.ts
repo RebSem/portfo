@@ -38,6 +38,10 @@ export const isBookingMinutes = (value: unknown): value is BookingMinutes =>
 // one; the older one is listened to as well, in case a version sends only that.
 export const calBookedActions = ['bookingSuccessfulV2', 'bookingSuccessful'] as const;
 
+// The embed event that means the calendar is drawn and can be shown. The stage
+// fades in on it; the frame's own load event is the fallback.
+export const calReadyAction = 'linkReady';
+
 // The embed names the calendar as "user/event" and builds its own iframe URL
 // from it, so the user slug is passed unencoded: encoding it here would make
 // the embed encode it a second time.

@@ -640,6 +640,14 @@ export const uiCopy = {
       en: 'Pick a format and a time that suits you. Times show in your time zone; I am in GMT+5.',
     },
     formatLegend: { ru: 'Формат', en: 'Format' },
+    // The details panel beside the calendar (CallBooking.astro): the photo's
+    // alt text, and the two facts that do not change with the format (the
+    // duration comes from each format's time).
+    portraitAlt: { ru: 'Портрет Михаила Семенова', en: 'Portrait of Mikhail Semenov' },
+    facts: {
+      meet: { ru: 'Google Meet', en: 'Google Meet' },
+      timezone: { ru: 'Ваш часовой пояс', en: 'Your time zone' },
+    },
     formats: {
       intro: {
         time: { ru: '15 минут', en: '15 min' },
