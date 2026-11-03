@@ -45,7 +45,6 @@ html[data-theme='light'] {
   --dur-fast: 160ms;
   --dur-page: 180ms;
   --dur-base: 220ms;
-  --dur-reveal: 700ms;
 
   /* Editorial grid of the home page (see "Editorial system" below): the
      label rail, the gutter beside it, the space between sections and the
@@ -874,6 +873,9 @@ html[data-theme='dark'] .theme-icon-sun {
   grid-template-columns: repeat(var(--weeks), minmax(9px, 1fr));
   grid-template-rows: repeat(7, 9px);
   gap: 3px;
+  /* Cells arrive in week order (AboutContent.astro), so filling by column
+     places each one without an inline grid-column and grid-row. */
+  grid-auto-flow: column;
   /* overflow-x auto for narrow viewports, but Y must stay visible —
      otherwise the cell border and the hover scale on the top row get
      clipped by the scroll container. */
@@ -882,16 +884,6 @@ html[data-theme='dark'] .theme-icon-sun {
   /* Breathing room above the top row (and below) so hover scale(1.4)
      and outlines never get eaten by the container edge. */
   padding: 6px 0 0.4rem;
-
-  /* Reveal-on-view: starts clipped from the right, animates open
-     left → right when JS toggles data-revealed="true". Wave reads
-     as "activity accumulating over the year". */
-  clip-path: inset(0 100% 0 0);
-  transition: clip-path var(--dur-reveal) var(--ease-in-out-strong);
-}
-
-.contribution-grid[data-revealed='true'] {
-  clip-path: inset(0 0 0 0);
 }
 
 .contribution-cell {
@@ -975,15 +967,6 @@ html[data-theme='dark'] .theme-icon-sun {
 .contribution-tooltip {
   font-size: 0.82rem;
   color: color-mix(in oklab, var(--foreground) 74%, transparent);
-}
-
-.github-error {
-  color: #d65252;
-  font-size: 0.84rem;
-}
-
-.hidden {
-  display: none !important;
 }
 
 /* Primary action: this product is live, so the visit-the-product link
@@ -1614,10 +1597,6 @@ html[data-theme='dark'] .theme-icon-sun {
   html[data-theme='dark'] .theme-icon-sun,
   html[data-theme='dark'] .theme-icon-moon {
     filter: none;
-  }
-
-  .contribution-grid {
-    clip-path: none;
   }
 
   .contribution-cell {

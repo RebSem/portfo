@@ -11,6 +11,7 @@ import {
   telegramUrl,
   uiCopy,
 } from '../data/site-content';
+import { buildContributionGrid, contributionLabel } from '../lib/contribution-grid';
 import { getGithubContributions } from '../lib/github';
 import { buildIntroMailto } from '../lib/intro-mail';
 import { chunks, HYPHENATED } from '../lib/nb';
@@ -23,12 +24,13 @@ interface Props {
 
 const { locale } = Astro.props;
 
-// Read at build time so the total is in the HTML without JavaScript: link
-// previews and LLM fetchers do not run it. No data at all leaves the band out
-// rather than printing 0. GitHub lists every day of the year, so an empty
-// calendar means the markup changed, not a quiet year.
+// Read at build time so the total and the calendar are in the HTML without
+// JavaScript: link previews and LLM fetchers do not run it. No data at all leaves
+// the band out rather than printing 0. GitHub lists every day of the year, so an
+// empty calendar means the markup changed, not a quiet year.
 const fetchedContributions = await getGithubContributions(githubUsername).catch(() => undefined);
 const contributions = fetchedContributions && fetchedContributions.days.length > 0 ? fetchedContributions : undefined;
+const heatmap = buildContributionGrid(contributions?.days ?? []);
 const numberLocale = locale === 'ru' ? 'ru-RU' : 'en-US';
 
 const copy = {
@@ -49,10 +51,6 @@ const copy = {
   heatmapHint: {
     ru: 'Наведите на ячейку, чтобы увидеть дату и число вкладов.',
     en: 'Hover a cell to see the exact date and number of contributions.',
-  },
-  githubError: {
-    ru: 'Не удалось загрузить GitHub-данные. Попробуйте обновить страницу позже.',
-    en: 'Unable to load GitHub data. Please refresh later.',
   },
 } as const;
 ---
@@ -120,15 +118,15 @@ const copy = {
   {/* Moved here from the home page. A commit calendar on the front page of a
       product manager's site read as "engineer" before anything else; beside
       "how I validate ideas" it is context, not the headline. It sits above
-      the call to action, so the page still ends on the ask. The total is
-      printed at build; src/scripts/github-activity.js draws the grid and
-      refreshes the same ids. */}
+      the call to action, so the page still ends on the ask. The total and
+      the cells are printed at build; src/scripts/github-activity.js only adds
+      the hover hint. */}
   {contributions && (
     <section class="section-block github-band" aria-labelledby="github-title">
       <div class="github-inline">
         <div class="github-inline-meta">
           <span class="label">{copy.githubLabel[locale]}</span>
-          <strong id="contributions-total">{contributions.totalLastYear.toLocaleString(numberLocale)}</strong>
+          <strong>{contributions.totalLastYear.toLocaleString(numberLocale)}</strong>
           <span class="label" id="github-title">{copy.githubUnit[locale]}</span>
           <a class="github-profile-link link" href={`https://github.com/${githubUsername}`} target="_blank" rel="noreferrer">
             github.com/{githubUsername}
@@ -136,7 +134,24 @@ const copy = {
         </div>
 
         <div class="github-heatmap">
-          <div id="contribution-grid" class="contribution-grid" role="group" aria-label={copy.heatmapAria[locale]}></div>
+          {/* Plain presentational cells: the total is announced in the section copy,
+              so cells stay out of the tab order (371 tab stops is keyboard hostile). */}
+          <div
+            id="contribution-grid"
+            class="contribution-grid"
+            role="group"
+            aria-label={copy.heatmapAria[locale]}
+            style={`--weeks: ${heatmap.weeks}`}
+          >
+            {heatmap.cells.map((cell) => (
+              <div
+                class={`contribution-cell level-${cell.level}`}
+                data-date={cell.date}
+                data-count={cell.count}
+                title={contributionLabel(cell.count, cell.date, locale)}
+              ></div>
+            ))}
+          </div>
 
           <div class="heatmap-legend" aria-hidden="true">
             <span>0</span>
@@ -156,8 +171,6 @@ const copy = {
           >
             {copy.heatmapHint[locale]}
           </p>
-
-          <p id="github-error" class="github-error hidden">{copy.githubError[locale]}</p>
         </div>
       </div>
     </section>
