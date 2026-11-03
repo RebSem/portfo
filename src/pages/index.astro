@@ -8,6 +8,7 @@ import HomeProjects from '../components/HomeProjects.astro';
 import HomeResults from '../components/HomeResults.astro';
 import {
   buildPersonSchema,
+  buildWebSiteSchema,
   githubUsername,
   heroFallbackName,
 } from '../data/site-content';
@@ -18,13 +19,14 @@ const projectEntries = await getCollection('projects', ({ data }) => !data.draft
 const zvonobotEntry = projectEntries.find((e) => e.data.projectId === 'zvonobot-ai');
 const zvonobotCaseHref = zvonobotEntry ? `/projects/${zvonobotEntry.id}/` : `/#projects`;
 
-const personSchema = buildPersonSchema('https://rebsem.ru/');
+const personSchema = buildPersonSchema('https://rebsem.ru/', 'en');
+const websiteSchema = buildWebSiteSchema();
 ---
 
 <Layout
   title={`${heroFallbackName} - Product Manager`}
   description="Product manager, B2B SaaS and AI. Launched a voice AI agent line from scratch: 80 paying B2B customers in under a year. Open to work now. Remote, GMT+5."
-  schema={personSchema}
+  schema={[personSchema, websiteSchema]}
   alternate="/ru/"
 >
   <a id="skip-to-content" href="#main-content" class="skip-link">Skip to content</a>

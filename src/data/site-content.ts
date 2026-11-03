@@ -229,19 +229,34 @@ export const knowsAbout: string[] = [
 ];
 
 /**
+ * Stable IRIs for the site-wide JSON-LD nodes. Every page that names the
+ * person (the Person entity, a case study's or a post's author) points at
+ * personSchemaId, so a reader that takes several pages sees one entity with
+ * one image, not a new anonymous Person on each.
+ */
+export const personSchemaId = 'https://rebsem.ru/#person';
+export const websiteSchemaId = 'https://rebsem.ru/#website';
+
+const personDescription: LocalizedText = {
+  ru: 'Продакт-менеджер, открыт к работе и готов выйти сразу. В Zvonobot (группа Prof-IT) с февраля 2022 по октябрь 2026 запустил с нуля направление голосовых AI-агентов для B2B: 80 платящих клиентов и 500 000+ минут живых разговоров в проде меньше чем за год. Отвечал за прайсинг, юнит-экономику и вывод на рынок. Базируется в Перми, Россия. Удалённо, GMT+5, открыт к релокации.',
+  en: 'Product Manager, open to work and available to start immediately. At Zvonobot (Prof-IT Group) from February 2022 to October 2026, launched a B2B voice AI agent line from zero: 80 paying customers and 500,000+ minutes of live conversations in production in under a year. Owned pricing, unit economics and go-to-market. Based in Perm, Russia. Remote, GMT+5, open to relocation.',
+};
+
+/**
  * Single source of truth for the Person entity in JSON-LD.
  * Used by every page so structured data never drifts between routes.
- * `url` is page-specific and passed in by the caller.
+ * `url` is page-specific and passed in by the caller; `locale` picks the
+ * description, so a Russian page does not describe its owner in English.
  */
-export function buildPersonSchema(url: string): Record<string, unknown> {
+export function buildPersonSchema(url: string, locale: Locale): Record<string, unknown> {
   return {
     '@context': 'https://schema.org',
     '@type': 'Person',
+    '@id': personSchemaId,
     name: heroDisplayName.en,
     alternateName: heroDisplayName.ru,
     jobTitle: 'Product Manager',
-    description:
-      'Product Manager, open to work and available to start immediately. At Zvonobot (Prof-IT Group) from February 2022 to October 2026, launched a B2B voice AI agent line from zero: 80 paying customers and 500,000+ minutes of live conversations in production in under a year. Owned pricing, unit economics and go-to-market. Based in Perm, Russia. Remote, GMT+5, open to relocation.',
+    description: personDescription[locale],
     url,
     image: 'https://rebsem.ru/main-hero.jpg',
     email: `mailto:${email}`,
@@ -278,6 +293,23 @@ export function buildPersonSchema(url: string): Record<string, unknown> {
       telegramUrl,
       linkedinUrl,
     ],
+  };
+}
+
+/**
+ * The WebSite node, emitted on each home page. Its publisher is the Person by
+ * @id, so the site and its owner are linked in the structured data itself.
+ */
+export function buildWebSiteSchema(): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': websiteSchemaId,
+    url: 'https://rebsem.ru/',
+    name: heroFallbackName,
+    alternateName: heroDisplayName.ru,
+    inLanguage: ['en', 'ru'],
+    publisher: { '@id': personSchemaId },
   };
 }
 

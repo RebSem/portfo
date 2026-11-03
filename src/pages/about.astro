@@ -4,15 +4,12 @@ import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import {
   buildPersonSchema,
-  githubUsername,
   heroFallbackName,
 } from '../data/site-content';
 import Layout from '../layouts/Layout.astro';
 import githubScriptUrl from '../scripts/github-activity.js?url';
 
-const avatarUrl = `https://avatars.githubusercontent.com/${githubUsername}?size=560`;
-const personEntity = buildPersonSchema('https://rebsem.ru/about/');
-personEntity.image = avatarUrl;
+const personEntity = buildPersonSchema('https://rebsem.ru/about/', 'en');
 const aboutSchema = {
   '@context': 'https://schema.org',
   '@type': 'ProfilePage',

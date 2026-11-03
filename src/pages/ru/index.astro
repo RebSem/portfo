@@ -8,6 +8,7 @@ import HomeProjects from '../../components/HomeProjects.astro';
 import HomeResults from '../../components/HomeResults.astro';
 import {
   buildPersonSchema,
+  buildWebSiteSchema,
   githubUsername,
   heroDisplayName,
 } from '../../data/site-content';
@@ -18,13 +19,14 @@ const projectEntries = await getCollection('projects', ({ data }) => !data.draft
 const zvonobotEntry = projectEntries.find((e) => e.data.projectId === 'zvonobot-ai');
 const zvonobotCaseHref = zvonobotEntry ? `/ru/projects/${zvonobotEntry.id}/` : `/ru/#projects`;
 
-const personSchema = buildPersonSchema('https://rebsem.ru/ru/');
+const personSchema = buildPersonSchema('https://rebsem.ru/ru/', 'ru');
+const websiteSchema = buildWebSiteSchema();
 ---
 
 <Layout
   title={`${heroDisplayName.ru} - Product Manager`}
   description="Продакт-менеджер, B2B SaaS и AI. Запустил с нуля направление голосовых AI-агентов: 80 платящих B2B-клиентов меньше чем за год. Ищу работу. Удалённо, GMT+5."
-  schema={personSchema}
+  schema={[personSchema, websiteSchema]}
   alternate="/"
 >
   <a id="skip-to-content" href="#main-content" class="skip-link">Перейти к содержимому</a>

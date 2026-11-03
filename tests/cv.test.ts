@@ -325,6 +325,44 @@ describeBuilt('cv build output', () => {
     }
   });
 
+  it('marks past jobs as alumniOf with their dates, never as worksFor', () => {
+    // worksFor reads as a current employer, and the last role ended in October
+    // 2026. Every dated role sits under alumniOf, and the word worksFor must not
+    // appear on the page, JSON-LD included.
+    for (const [page, locale] of [
+      ['cv/index.html', 'en'],
+      ['ru/cv/index.html', 'ru'],
+    ] as Array<[string, Locale]>) {
+      const html = readDist(page);
+      expect(html, `${page} carries worksFor`).not.toContain('worksFor');
+
+      const blocks = [
+        ...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g),
+      ].map((match) => JSON.parse(match[1]) as Record<string, unknown>);
+      expect(blocks.length, `${page} JSON-LD blocks`).toBeGreaterThan(0);
+
+      const profile = blocks.find((block) => block['@type'] === 'ProfilePage');
+      const person = profile?.mainEntity as Record<string, unknown> | undefined;
+      expect(person, `${page} has no ProfilePage entity`).toBeDefined();
+      const alumniOf = person?.alumniOf as Array<Record<string, unknown>>;
+      expect(alumniOf[0], `${page} keeps the university`).toMatchObject({
+        '@type': 'CollegeOrUniversity',
+      });
+
+      const roles = alumniOf.filter((entry) => entry['@type'] === 'OrganizationRole');
+      expect(roles, `${page} dated roles under alumniOf`).toHaveLength(cvExperience.length);
+      cvExperience.forEach((role, index) => {
+        expect(roles[index], `${page} role ${index}`).toMatchObject({
+          '@type': 'OrganizationRole',
+          roleName: role.role[locale],
+          startDate: role.startDate,
+          endDate: role.endDate,
+          alumniOf: { '@type': 'Organization', name: role.company[locale] },
+        });
+      });
+    }
+  });
+
   it('exposes the plain-text resume in both locales', () => {
     // Same text as the page: the page/file split died with the anti-fit
     // section, so an LLM reader gets identical content from either surface.
