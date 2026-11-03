@@ -2,7 +2,7 @@
 
 Product manager in B2B SaaS, open to work and available to start immediately (no
 notice period). At Zvonobot (Prof-IT Group) from February 2022 to October 2026, where
-he launched the voice AI agent line from zero in the fall of 2025: 80 paying B2B
+he launched the voice AI agent line from scratch in the fall of 2025: 80 paying B2B
 customers and 500,000+ minutes of live conversations in production in under a year.
 Owned pricing, unit economics and go-to-market; prototypes with AI coding agents
 (Claude Code, Codex) so hypotheses get tested in days.

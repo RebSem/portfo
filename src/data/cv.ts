@@ -213,7 +213,7 @@ export const cvMetrics: CvMetric[] = [
     value: { ru: '~10%', en: '~10%' },
     label: {
       ru: 'выручки группы давало направление, запущенное с нуля за год',
-      en: 'of group revenue came from a line launched from zero in a year',
+      en: 'of group revenue came from a line launched from scratch in a year',
     },
   },
   {
@@ -305,7 +305,7 @@ export const cvExperience: CvExperienceRole[] = [
             ),
           ],
           [
-            t('С нуля до рынка за несколько недель: запустил ', 'From zero to market in weeks: launched '),
+            t('С нуля до рынка за несколько недель: запустил ', 'From scratch to market in weeks: launched '),
             link('Zvonobot AI', 'Zvonobot AI', { caseId: 'zvonobot-ai' }),
             t(
               ', направление голосовых AI-агентов, на white-label платформе и доказал спрос на живых клиентах. Затем обосновал цифрами переход на собственную, более гибкую платформу и начал перевод направления на неё.',
@@ -448,7 +448,7 @@ export const cvProducts: CvProduct[] = [
     // the proof line makes the different claim: zero to a revenue line.
     proof: {
       ru: 'Доказывает запуск нового направления с нуля до заметной доли выручки группы за год.',
-      en: 'Proves a new line launched from zero to a visible share of group revenue in a year.',
+      en: 'Proves a new line launched from scratch to a visible share of group revenue in a year.',
     },
   },
   {
@@ -628,7 +628,7 @@ export const cvWorkFormat: LocalizedText = {
  */
 export const cvLookingFor: LocalizedText = {
   ru: 'Роль Product Manager или Product Owner уровня middle+ в продуктовой команде. Домены, где мой опыт работает сразу: B2B SaaS, AI/LLM-продукты, платежи и биллинг, телеком и CPaaS, инфраструктурные платформы с интеграциями и API. Сильнее всего я там, где продукт надо запустить с нуля или вывести из MVP в рост.',
-  en: 'A Product Manager or Product Owner role on a product team. Domains where my experience works from day one: B2B SaaS, AI and LLM products, payments and billing, telecom and CPaaS, infrastructure platforms with integrations and APIs. I am at my best where a product needs to be launched from zero or taken from MVP to growth.',
+  en: 'A Product Manager or Product Owner role on a product team. Domains where my experience works from day one: B2B SaaS, AI and LLM products, payments and billing, telecom and CPaaS, infrastructure platforms with integrations and APIs. I am at my best where a product needs to be launched from scratch or taken from MVP to growth.',
 };
 
 // --- Export file names ----------------------------------------------------
