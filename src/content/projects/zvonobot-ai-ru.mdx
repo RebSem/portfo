@@ -15,6 +15,15 @@ import ProjectScreenshot from '../../components/ProjectScreenshot.astro';
 import LiveCabinetButton from '../../components/LiveCabinetButton.astro';
 import ShotGrid from '../../components/ShotGrid.astro';
 
+<nav aria-label="На этой странице">
+  <ul class="case-jump">
+    <li><a href="#результат">Результат</a></li>
+    <li><a href="#главное-решение-сначала-продать-потом-строить">Главное решение</a></li>
+    <li><a href="#how-the-console-works">Как устроен кабинет</a></li>
+    <li><a href="#my-part">Моя роль</a></li>
+  </ul>
+</nav>
+
 ## Результат
 
 - **80 платящих B2B-клиентов** меньше чем за год после запуска.
@@ -102,7 +111,7 @@ Zvonobot AI это кабинет, в котором B2B-клиент собир
 
 </details>
 
-<details>
+<details id="how-the-console-works">
 <summary>Как устроен кабинет: регистрация, кампании, биллинг</summary>
 
 Одна консоль на все роли: сборка агентов, дозвон, биллинг и аналитика.
@@ -118,7 +127,7 @@ Zvonobot AI это кабинет, в котором B2B-клиент собир
 
 </details>
 
-<details>
+<details id="my-part">
 <summary>Что делал я, а что команда</summary>
 
 Направление было на мне: что строим, сколько это стоит, кому продаём, прайсинг и маржа по типам звонков. Постановка, приоритеты и ревью были моими. Когда гипотезе нужен был рабочий ответ быстрее спринта, я собирал прототип сам с AI-агентами (Claude Code, Codex) и передавал команде вывод, а не код.
