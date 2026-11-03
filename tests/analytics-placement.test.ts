@@ -64,9 +64,12 @@ describe('analytics placements in the built pages', () => {
     expect(footer).toMatch(/<a class="footer-cv" href="\/cv\/"/);
   });
 
-  it.skipIf(!hasDist)('marks the case availability strip, with the Resume link inside it', () => {
-    const strip = built('projects', caseSlug ?? '').match(new RegExp(`<p[^>]*${placed('case')}[\\s\\S]*?</p>`))?.[0] ?? '';
-    expect(strip).toMatch(/href="\/cv\/"/);
+  it.skipIf(!hasDist)('keeps the Resume link out of the case strip, in the case closing footer instead', () => {
+    const html = built('projects', caseSlug ?? '');
+    const strip = html.match(new RegExp(`<p[^>]*${placed('case')}[\\s\\S]*?</p>`))?.[0] ?? '';
+    expect(strip).not.toMatch(/href="\/cv\/"/);
+    const footer = html.match(new RegExp(`<footer[^>]*${placed('footer')}[\\s\\S]*?</footer>`))?.[0] ?? '';
+    expect(footer).toMatch(/<a class="footer-cv" href="\/cv\/"/);
   });
 
   it.skipIf(!hasDist)('marks the next-case block on every case page', () => {

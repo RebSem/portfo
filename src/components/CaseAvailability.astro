@@ -10,47 +10,65 @@ interface Props {
 
 const { locale } = Astro.props;
 const copy = uiCopy.caseAvailability;
-const prefix = locale === 'ru' ? '/ru' : '';
 ---
 
 {/*
-  The availability line, repeated on every case study right under the quick
-  facts. In the October 2026 analytics, the visitors who actually read a
-  case went from it straight into the live Zvonobot cabinet and did not
-  reach the footer, the only other place on the page with a way to write.
-  The case is where interest peaks, so the next step has to be visible
-  there, not thousands of pixels further down. data-analytics-placement
-  attributes the clicks to it. The resume comes third: a reader who has
-  just read a case is the one most likely to ask for the CV.
+  The availability line under the quick facts of every case study. In the
+  October 2026 analytics, the visitors who read a case went from it straight
+  into the live Zvonobot cabinet and did not reach the footer, so the two
+  fastest ways to write, Telegram and email, sit here as icons, and the call
+  link follows them. The resume is not in this row: a reader who has reached
+  the end of a case finds it in the closing footer. data-analytics-placement
+  attributes the clicks to this line.
 */}
 <p class="case-availability" data-analytics-placement="case">
-  <span class="case-availability-status">
-    <span class="case-availability-dot" aria-hidden="true"></span>
-    {uiCopy.home.heroStatus[locale]}
+  <span class="case-availability-main">
+    <span class="case-availability-status">
+      <span class="case-availability-dot" aria-hidden="true"></span>
+      {uiCopy.home.heroStatus[locale]}
+    </span>
+    <span class="case-availability-reply">{uiCopy.footer.replyTime[locale]}</span>
   </span>
   <span class="case-availability-links">
-    <a href={telegramUrl} target="_blank" rel="noreferrer">{copy.telegram[locale]}</a>
-    <a href={buildIntroMailto(locale)}>{copy.email[locale]}</a>
-    <a href={`${prefix}/cv/`} rel="nofollow">{uiCopy.footer.resume[locale]}</a>
-    <a href={callPagePath(locale)}>{uiCopy.call.linkLabel[locale]}</a>
+    <a
+      class="social-link case-availability-icon"
+      href={telegramUrl}
+      target="_blank"
+      rel="noreferrer"
+      aria-label={copy.telegram[locale]}
+    >
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 11l16 -8l-4 18l-5 -4l-3 3l1 -5l8 -7" />
+      </svg>
+    </a>
+    <a class="social-link case-availability-icon" href={buildIntroMailto(locale)} aria-label={copy.emailAria[locale]}>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" />
+        <path d="M3 7l9 6l9 -6" />
+      </svg>
+    </a>
+    <a class="case-availability-call" href={callPagePath(locale)}>{uiCopy.call.linkLabel[locale]}</a>
   </span>
-  <span class="case-availability-reply">{uiCopy.footer.replyTime[locale]}</span>
 </p>
 
 <style>
+  /* No box of its own: the row is the last line of the facts block above it. */
   .case-availability {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.4;
+  }
+
+  .case-availability-main {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem 1.25rem;
-    margin: 0;
-    padding: 0.7rem 0.95rem;
-    border: 1px solid color-mix(in oklab, var(--accent) 30%, var(--border));
-    border-radius: 0.65rem;
-    background: color-mix(in oklab, var(--surface) 90%, var(--accent) 10%);
-    font-size: 0.92rem;
-    line-height: 1.4;
+    gap: 0.25rem 1rem;
+    min-width: 0;
   }
 
   .case-availability-status {
@@ -69,25 +87,59 @@ const prefix = locale === 'ru' ? '/ru' : '';
     background: currentColor;
   }
 
-  .case-availability-links {
-    display: inline-flex;
-    flex-wrap: wrap;
-    gap: 0.25rem 1rem;
-    font-weight: 500;
-  }
-
-  /* The reply time takes a row of its own under the links: a quiet note in the
-     muted tone, not a fourth link to tap. */
+  /* The reply time is a quiet note in the muted tone, not a link to tap. */
   .case-availability-reply {
-    flex: 0 0 100%;
+    font-size: 0.875rem;
     color: var(--text-muted);
   }
 
-  /* The three links are the only contact on a case's first screen. At 21px
-     tall they pass WCAG 2.5.8 on spacing alone, so touch screens get a 44px
-     box per link. A mouse keeps the text-height line. */
+  .case-availability-links {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .case-availability-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .case-availability-call {
+    margin-left: 0.75rem;
+    font-weight: 500;
+    text-decoration-color: var(--text-muted);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .case-availability-call:hover {
+      text-decoration-color: var(--accent-text);
+    }
+  }
+
+  /* Phones: the status and the reply on top, the icons and the call link on
+     their own line below, aligned left. The reply steps down a little so the
+     Russian line stays on one row at 390px. */
+  @media (max-width: 639px) {
+    .case-availability {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .case-availability-reply {
+      font-size: 0.8125rem;
+    }
+  }
+
+  /* A touch screen gets a 44px box per link. A mouse keeps the slimmer row. */
   @media (pointer: coarse) {
-    .case-availability-links a {
+    .case-availability-icon {
+      width: 2.75rem;
+      height: 2.75rem;
+    }
+
+    .case-availability-call {
       display: inline-flex;
       align-items: center;
       min-height: 2.75rem;

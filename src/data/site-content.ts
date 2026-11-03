@@ -630,6 +630,9 @@ export const uiCopy = {
   caseAvailability: {
     telegram: { ru: 'Написать в Telegram', en: 'Message on Telegram' },
     email: { ru: 'Почта', en: 'Email' },
+    // The envelope icon has no visible text, so its name says what it does.
+    // The visible email buttons (SiteFooter, About) keep `email`.
+    emailAria: { ru: 'Написать на почту', en: 'Email me' },
   },
   // The label over the next case, after a case study's last section (CaseNext.astro).
   caseNext: {
