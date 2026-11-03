@@ -12,8 +12,10 @@ import {
   uiCopy,
 } from '../data/site-content';
 import { getGithubContributions } from '../lib/github';
+import { buildIntroMailto } from '../lib/intro-mail';
 import { chunks, HYPHENATED } from '../lib/nb';
 import type { Locale } from '../types/content';
+import HeroFacts from './HeroFacts.astro';
 
 interface Props {
   locale: Locale;
@@ -38,8 +40,8 @@ const copy = {
     en: 'Looking for a Product Manager role in B2B SaaS, payments or AI products. Available now.',
   },
   ctaSub: {
-    ru: 'Расскажите про продукт и задачу. Скажу честно, подхожу ли я и где AI реально даст результат.',
-    en: 'Tell me about the product and the problem. I will tell you honestly whether I am the right person for it, and where AI would actually move the needle.',
+    ru: 'Пришлите вакансию и пару слов о продукте. Честно скажу, подхожу ли я.',
+    en: 'Send me the role and a line about the product. I will tell you honestly whether I am a fit.',
   },
   githubLabel: { ru: 'GitHub · за год', en: 'GitHub · last year' },
   githubUnit: { ru: 'вкладов', en: 'contributions' },
@@ -68,11 +70,9 @@ const copy = {
       <p class="about-eyebrow">{copy.eyebrow[locale]}</p>
       <h1 id="about-title">{heroDisplayName[locale]}</h1>
       <p class="about-lead">{heroSubtitle[locale]}</p>
-      <ul class="about-facts">
-        {uiCopy.home.facts.map((fact) => (
-          <li><span class="about-facts-label">{fact.label[locale]}</span> {fact.value[locale]}</li>
-        ))}
-      </ul>
+      <div class="about-facts">
+        <HeroFacts locale={locale} />
+      </div>
     </div>
     <div class="about-portrait">
       <Image src={heroImage} width={480} height={600} loading="eager" alt={copy.portraitAlt[locale]} />
@@ -117,65 +117,75 @@ const copy = {
     </section>
   </div>
 
+  {/* Moved here from the home page. A commit calendar on the front page of a
+      product manager's site read as "engineer" before anything else; beside
+      "how I validate ideas" it is context, not the headline. It sits above
+      the call to action, so the page still ends on the ask. The total is
+      printed at build; src/scripts/github-activity.js draws the grid and
+      refreshes the same ids. */}
+  {contributions && (
+    <section class="section-block github-band" aria-labelledby="github-title">
+      <div class="github-inline">
+        <div class="github-inline-meta">
+          <span class="label">{copy.githubLabel[locale]}</span>
+          <strong id="contributions-total">{contributions.totalLastYear.toLocaleString(numberLocale)}</strong>
+          <span class="label" id="github-title">{copy.githubUnit[locale]}</span>
+          <a class="github-profile-link link" href={`https://github.com/${githubUsername}`} target="_blank" rel="noreferrer">
+            github.com/{githubUsername}
+          </a>
+        </div>
+
+        <div class="github-heatmap">
+          <div id="contribution-grid" class="contribution-grid" role="group" aria-label={copy.heatmapAria[locale]}></div>
+
+          <div class="heatmap-legend" aria-hidden="true">
+            <span>0</span>
+            <div class="legend-level level-0"></div>
+            <div class="legend-level level-1"></div>
+            <div class="legend-level level-2"></div>
+            <div class="legend-level level-3"></div>
+            <div class="legend-level level-4"></div>
+            <span>max</span>
+          </div>
+
+          <p
+            id="contribution-tooltip"
+            class="contribution-tooltip"
+            data-hint-ru={copy.heatmapHint.ru}
+            data-hint-en={copy.heatmapHint.en}
+          >
+            {copy.heatmapHint[locale]}
+          </p>
+
+          <p id="github-error" class="github-error hidden">{copy.githubError[locale]}</p>
+        </div>
+      </div>
+    </section>
+  )}
+
   <div class="about-cta">
     <div>
       <p class="about-row-eyebrow">{copy.ctaEyebrow[locale]}</p>
       <p class="about-cta-headline">{chunks(copy.ctaHeadline[locale]).map((c) => (HYPHENATED.test(c) ? <span class="nb">{c}</span> : c))}</p>
       <p class="about-cta-sub">{copy.ctaSub[locale]}</p>
     </div>
-    <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M4 11l16 -8l-4 18l-5 -4l-3 3l1 -5l8 -7" />
-      </svg>
-      {uiCopy.home.heroCtaPrimary[locale]}
-    </a>
+    <div class="about-cta-actions">
+      <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 11l16 -8l-4 18l-5 -4l-3 3l1 -5l8 -7" />
+        </svg>
+        {uiCopy.home.heroCtaPrimary[locale]}
+      </a>
+      <a class="cta-button cta-secondary" href={buildIntroMailto(locale)}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" />
+          <path d="M3 7l9 6l9 -6" />
+        </svg>
+        {uiCopy.caseAvailability.email[locale]}
+      </a>
+    </div>
   </div>
 </section>
-
-{/* Moved here from the home page. A commit calendar on the front page of a
-    product manager's site read as "engineer" before anything else; beside
-    "how I validate ideas" it is context, not the headline. The total is
-    printed at build; src/scripts/github-activity.js draws the grid and
-    refreshes the same ids. */}
-{contributions && (
-  <section class="section-block github-band" aria-labelledby="github-title">
-    <div class="github-inline">
-      <div class="github-inline-meta">
-        <span class="label">{copy.githubLabel[locale]}</span>
-        <strong id="contributions-total">{contributions.totalLastYear.toLocaleString(numberLocale)}</strong>
-        <span class="label" id="github-title">{copy.githubUnit[locale]}</span>
-        <a class="github-profile-link link" href={`https://github.com/${githubUsername}`} target="_blank" rel="noreferrer">
-          github.com/{githubUsername}
-        </a>
-      </div>
-
-      <div class="github-heatmap">
-        <div id="contribution-grid" class="contribution-grid" role="group" aria-label={copy.heatmapAria[locale]}></div>
-
-        <div class="heatmap-legend" aria-hidden="true">
-          <span>0</span>
-          <div class="legend-level level-0"></div>
-          <div class="legend-level level-1"></div>
-          <div class="legend-level level-2"></div>
-          <div class="legend-level level-3"></div>
-          <div class="legend-level level-4"></div>
-          <span>max</span>
-        </div>
-
-        <p
-          id="contribution-tooltip"
-          class="contribution-tooltip"
-          data-hint-ru={copy.heatmapHint.ru}
-          data-hint-en={copy.heatmapHint.en}
-        >
-          {copy.heatmapHint[locale]}
-        </p>
-
-        <p id="github-error" class="github-error hidden">{copy.githubError[locale]}</p>
-      </div>
-    </div>
-  </section>
-)}
 
 <style>
   .about {
@@ -207,25 +217,7 @@ const copy = {
   }
 
   .about-facts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-    margin: 1.25rem 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .about-facts li {
-    padding: 0.35rem 0.7rem;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    background: var(--surface);
-    font-size: 0.85rem;
-    color: var(--foreground);
-  }
-
-  .about-facts-label {
-    color: var(--text-muted);
+    margin-top: 1.25rem;
   }
 
   .about-portrait {
@@ -310,6 +302,12 @@ const copy = {
       var(--surface);
   }
 
+  .about-cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+
   .about-cta-headline {
     margin: 0.5rem 0 0;
     max-width: 40rem;
@@ -340,8 +338,14 @@ const copy = {
       grid-template-columns: minmax(0, 1fr);
     }
 
-    .about-cta .cta-button {
+    .about-cta-actions {
       justify-self: start;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .about-cta-actions .cta-button {
+      flex: 1 1 auto;
     }
   }
 
