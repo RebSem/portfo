@@ -153,13 +153,6 @@ const external = '<path d="M7 17 17 7M9 7h8v8"/>';
     border: 1px solid color-mix(in oklab, var(--accent) 22%, var(--border));
     border-radius: 1.1rem;
     background: color-mix(in oklab, var(--accent) 5%, var(--surface));
-    transition: border-color var(--dur-fast) var(--ease-out-strong);
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .hp-featured:hover {
-      border-color: color-mix(in oklab, var(--accent) 42%, var(--border));
-    }
   }
 
   .hp-meta {
@@ -474,8 +467,8 @@ const external = '<path d="M7 17 17 7M9 7h8v8"/>';
   }
 
   /* The global reduce block (global.css) stops .cta-button presses, but these
-     scoped rules outrank it: no arrow slide, no press scale. The card's
-     border-colour change stays, colour transitions are allowed. */
+     scoped rules outrank it: no arrow slide, no press scale. Colour
+     transitions are allowed. */
   @media (prefers-reduced-motion: reduce) {
     .hp-featured-cta svg {
       transition: none;

@@ -24,7 +24,7 @@ const results = uiCopy.projects.featuredResults;
 <section class="home-results ed-row ed-mark ed-draw" aria-labelledby="results-title">
   <div class="home-results-rail">
     <h2 id="results-title" class="ed-label">{uiCopy.home.resultsTitle[locale]}</h2>
-    <p class="ed-context">{uiCopy.home.resultsContext[locale]}</p>
+    <p class="ed-context">{chunks(uiCopy.home.resultsContext[locale]).map((c) => (HYPHENATED.test(c) ? <span class="nb">{c}</span> : c))}</p>
   </div>
   <ul class="home-results-list">
     {results.map((result) => (

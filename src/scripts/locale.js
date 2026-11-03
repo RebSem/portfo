@@ -43,9 +43,10 @@ const syncThemeButton = (theme) => {
   const button = document.getElementById('theme-btn');
   if (!button) return;
 
+  // The label names the action the button will perform. A pressed state on top
+  // of it reads as "Switch to light theme, pressed", so the button has none.
   const label = theme === 'dark' ? button.dataset.labelToLight : button.dataset.labelToDark;
   if (label) button.setAttribute('aria-label', label);
-  button.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
 };
 
 const syncThemeColorMeta = (theme) => {
@@ -160,6 +161,10 @@ document.addEventListener('astro:before-swap', (event) => {
   const theme = state.initialized ? state.activeTheme : readTheme();
   incoming.setAttribute('data-theme', theme);
   incoming.style.colorScheme = theme;
+
+  // Every soft navigation rebuilds the home page's rules, so global.css skips
+  // their draw animation on this marker; only the first load plays it.
+  incoming.setAttribute('data-soft-nav', '');
 });
 
 // Fires on the initial load as well as after every swap, so it is the whole

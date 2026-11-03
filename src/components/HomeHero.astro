@@ -192,6 +192,33 @@ const copy = uiCopy.home;
     height: 20px;
   }
 
+  /* The rule above outranks .social-link:hover, so the icons name their own
+     hover colour here. */
+  @media (hover: hover) and (pointer: fine) {
+    .hero-cta-row :global(.social-link:hover) {
+      color: var(--accent-text);
+    }
+  }
+
+  /* The arrow on "Read the case study" moves 2px on hover, as the other arrow CTAs
+     do. Scoped to the hero: the footer's Email button carries an envelope
+     icon, which must not move. */
+  .hero-cta-row .cta-secondary svg {
+    transition: transform var(--dur-fast) var(--ease-out-strong);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .hero-cta-row .cta-secondary:hover svg {
+      transform: translateX(2px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-cta-row .cta-secondary:hover svg {
+      transform: none;
+    }
+  }
+
   /* Shown on phones only, see the 720px block below. */
   .hero-alt {
     display: none;
