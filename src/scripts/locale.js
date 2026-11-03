@@ -43,9 +43,10 @@ const syncThemeButton = (theme) => {
   const button = document.getElementById('theme-btn');
   if (!button) return;
 
+  // The label names the action the button will perform. A pressed state on top
+  // of it reads as "Switch to light theme, pressed", so the button has none.
   const label = theme === 'dark' ? button.dataset.labelToLight : button.dataset.labelToDark;
   if (label) button.setAttribute('aria-label', label);
-  button.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
 };
 
 const syncThemeColorMeta = (theme) => {

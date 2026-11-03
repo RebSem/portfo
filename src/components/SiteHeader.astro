@@ -113,6 +113,8 @@ const toggleUrl = localeToggleUrl ?? localeToggleByActive[active];
         id="locale-switcher"
         class="locale-toggle"
         href={toggleUrl}
+        lang={isRu ? 'en' : 'ru'}
+        hreflang={isRu ? 'en' : 'ru'}
         aria-label={isRu ? uiCopy.localeToggleLabel.ru : uiCopy.localeToggleLabel.en}
       >
         {isRu ? 'EN' : 'RU'}
@@ -126,7 +128,6 @@ const toggleUrl = localeToggleUrl ?? localeToggleByActive[active];
         data-label-to-dark={isRu ? uiCopy.themeToggle.toDark.ru : uiCopy.themeToggle.toDark.en}
         data-label-to-light={isRu ? uiCopy.themeToggle.toLight.ru : uiCopy.themeToggle.toLight.en}
       >
-        <span class="sr-only">Toggle theme</span>
         <svg
           class="theme-icon theme-icon-moon"
           width="22"

@@ -606,9 +606,11 @@ export const uiCopy = {
       en: 'Source is open',
     },
   },
+  // The accessible name starts with the visible text (WCAG 2.5.3 Label in Name),
+  // so the link reads "EN" on the Russian pages and "RU" on the English ones.
   localeToggleLabel: {
-    ru: 'Switch to English',
-    en: 'Switch to Russian',
+    ru: 'EN, English version',
+    en: 'RU, русская версия',
   },
   themeToggle: themeToggleLabel,
   social: socialLabels,
