@@ -9,15 +9,16 @@ interface Props {
   noteRu?: string;
   noteEn?: string;
   /**
-   * The home page and the case studies end here, so their footer is the
+   * The home page, the case studies and About end here, so their footer is the
    * closing call to action: one question in the headline's type, the pitch
    * under it, Telegram and Email as buttons, a quiet Resume link after them,
    * a quiet line on how fast he replies, and the status line again for the
    * reader who scrolled to the end. The case studies end on the next case
-   * first (CaseNext.astro). About ends on its own call to action and keeps
-   * the pitch at reading size.
+   * first (CaseNext.astro).
    */
   closing?: boolean;
+  /** Pitch line for the closing; defaults to uiCopy.footer.closingPitch. */
+  closingPitch?: { ru: string; en: string };
   /**
    * The label rail is the editorial grid of the home page and the About rows.
    * Pages whose text starts at the container edge (the case studies) turn it
@@ -30,6 +31,7 @@ const {
   noteRu = uiCopy.footer.defaultNote.ru,
   noteEn = uiCopy.footer.defaultNote.en,
   closing = false,
+  closingPitch = uiCopy.footer.closingPitch,
   rail = true,
 } = Astro.props;
 
@@ -50,7 +52,7 @@ const closingTitle = noBreakAfterHyphen(uiCopy.footer.closingTitle[locale]);
         {closing ? (
           <>
             <h2 class="footer-closing-title">{closingTitle}</h2>
-            <p class="footer-pitch">{uiCopy.footer.closingPitch[locale]}</p>
+            <p class="footer-pitch">{closingPitch[locale]}</p>
             <div class="footer-actions">
               <a class="cta-button cta-primary" href={telegramUrl} target="_blank" rel="noreferrer">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">

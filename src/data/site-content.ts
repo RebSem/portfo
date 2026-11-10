@@ -238,7 +238,7 @@ export const skillGroups: SkillGroup[] = [
     // One line, not a framework list: a product manager's stack is a shared
     // language with engineers, not a claim to their job.
     label: { ru: 'Общий язык с инженерами', en: 'Shared language with engineers' },
-    items: ['TypeScript', 'Python', 'SQL', 'REST', { ru: 'Телефония', en: 'Telephony' }],
+    items: ['SQL', 'REST', { ru: 'Телефония', en: 'Telephony' }],
   },
 ];
 
@@ -559,6 +559,12 @@ export const uiCopy = {
       ru: 'Как я работаю: продукт, прайсинг, вывод на рынок и AI там, где он реально нужен.',
       en: 'How I work: product, pricing, go-to-market, and AI where it earns its place.',
     },
+    // The pitch line under "Hiring a product manager?" at the end of About
+    // (SiteFooter.astro, closingPitch).
+    closingPitch: {
+      ru: 'Пришлите вакансию и пару слов о продукте. Честно скажу, подхожу ли я.',
+      en: 'Send me the role and a line about the product. I will tell you honestly whether I am a fit.',
+    },
     skillsEyebrow: { ru: 'Навыки', en: 'Skills' },
     skillsTitle: { ru: 'Ключевые навыки', en: 'Core skills' },
     skillsNote: {
@@ -728,10 +734,10 @@ export const uiCopy = {
       en: 'Social links',
     },
     eyebrow: { ru: 'Контакт', en: 'Contact' },
-    // The home page and the case studies end on this question, set in the
-    // headline's type as a bookend to the H1, with closingPitch below as its
-    // subline (SiteFooter.astro, closing). It must not repeat the question.
-    // Other pages keep the regular pitch alone.
+    // The home page, the case studies and About end on this question, set in
+    // the headline's type as a bookend to the H1, with closingPitch below as
+    // its subline (SiteFooter.astro, closing; About passes its own pitch).
+    // It must not repeat the question. Other pages keep the regular pitch alone.
     closingTitle: { ru: 'Нужен продакт-менеджер?', en: 'Hiring a product manager?' },
     closingPitch: {
       ru: 'B2B SaaS, платежи, AI-продукты. Быстрее всего в Telegram, почта тоже подходит.',
