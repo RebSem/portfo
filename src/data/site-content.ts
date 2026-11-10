@@ -493,7 +493,7 @@ export const uiCopy = {
     // label and its context, nothing more. The numbers themselves are
     // uiCopy.projects.featuredResults, so the band and the case never drift.
     resultsTitle: { ru: 'Результаты', en: 'Results' },
-    resultsContext: { ru: 'Zvonobot AI, 2025-2026', en: 'Zvonobot AI, a B2B call automation platform, 2025-2026' },
+    resultsContext: { ru: 'Zvonobot AI, B2B-платформа автоматизации звонков, 2025-2026', en: 'Zvonobot AI, a B2B call automation platform, 2025-2026' },
     postsTitle: { ru: 'Свежие статьи', en: 'Recent posts' },
     postsSubtitle: {
       ru: 'Заметки о продуктовой логике, delivery-процессах и практическом использовании AI.',
@@ -580,6 +580,11 @@ export const uiCopy = {
     featuredRole: {
       ru: 'Продакт-менеджер направления с октября 2025 по октябрь 2026',
       en: 'Product manager of the line, October 2025 to October 2026',
+    },
+    // Says why the case is worth the click, in the card under the summary.
+    featuredInside: {
+      ru: 'В кейсе: главное решение «сначала продать, потом строить», три компромисса в прайсинге, биллинге и регистрации, как оценивали качество агентов.',
+      en: 'In the case: the key decision (sell first, build later), three trade-offs in pricing, billing and signup, and how agent quality was judged.',
     },
     // Results, not features: three numbers a reader keeps, shown in the band
     // right under the hero. The modest size is deliberate (Mikhail rejected
