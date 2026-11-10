@@ -4,9 +4,9 @@ import { nextCaseProjectId } from '../src/lib/case-order';
 
 describe('nextCaseProjectId', () => {
   it('loops the three flagship cases', () => {
-    expect(nextCaseProjectId('zvonobot-ai')).toBe('cursivo');
-    expect(nextCaseProjectId('cursivo')).toBe('obrabot');
-    expect(nextCaseProjectId('obrabot')).toBe('zvonobot-ai');
+    expect(nextCaseProjectId('zvonobot-ai')).toBe('obrabot');
+    expect(nextCaseProjectId('obrabot')).toBe('cursivo');
+    expect(nextCaseProjectId('cursivo')).toBe('zvonobot-ai');
   });
 
   it('points every other case back to the flagship', () => {

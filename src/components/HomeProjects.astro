@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import { projects } from '../data/projects';
 import { uiCopy } from '../data/site-content';
+import { chunks, HYPHENATED } from '../lib/nb';
 import type { Locale } from '../types/content';
 
 interface Props {
@@ -64,6 +65,7 @@ const external = '<path d="M7 17 17 7M9 7h8v8"/>';
           </div>
           <div class="hp-featured-body">
             <p class="hp-featured-summary">{featured.summary[locale]}</p>
+            <p class="hp-featured-inside">{chunks(copy.featuredInside[locale]).map((c) => (HYPHENATED.test(c) ? <span class="nb">{c}</span> : c))}</p>
             {caseHrefFor(featured.id) && (
               <a class="cta-button hp-featured-cta" href={caseHrefFor(featured.id)}>
                 {copy.caseLink[locale]}
@@ -233,6 +235,15 @@ const external = '<path d="M7 17 17 7M9 7h8v8"/>';
     line-height: 1.55;
     color: color-mix(in oklab, var(--foreground) 84%, transparent);
     text-wrap: pretty;
+  }
+
+  /* One quiet line of what the case covers, under the summary. */
+  .hp-featured-inside {
+    margin: 0;
+    max-width: 36rem;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--text-muted);
   }
 
   /* The strongest secondary action on the page: accent-outlined, so it
