@@ -39,9 +39,11 @@ The repository is **public**. Treat every commit as permanent and world-readable
   the only motion is the hairlines drawing in, so the H1 stays the LCP element.
   Since 2026-11-03 the byline reads "Product Manager since <year>" (year from the
   Zvonobot role in `cv.ts`), the hero tightens on windows up to 770px tall so the
-  results labels fit a laptop's first screen, and the AgentOps proof is two plain
-  receipt lines (merged PR count and deploy hash, both rendered at build), not a
-  terminal window. Since 2026-11-04 the opener starts about 40px under the header
+  results labels fit a laptop's first screen. The note on building with AI agents
+  (`AgentOps.astro`) is short since 2026-11-11: a label, a small heading, one
+  paragraph and one receipt line (the merged PR count, rendered at build). No
+  three-step list and no deploy hash: three review lenses read the long version as
+  an engineer's workflow on a product manager's page; do not grow it back. Since 2026-11-04 the opener starts about 40px under the header
   (the owner saw the empty band above the byline as a white stripe), and the header's
   tint, blur and hairline come in only once content scrolls under it (32-80px on
   the home page; a `data-condensed` fallback in `SiteHeader.astro` for browsers
@@ -226,9 +228,10 @@ is git-ignored; `.env.example` is the template.
 - Unlisted pages (`/cv`, `/ru/cv`, `/cv.txt`, `/call/`, `/call/thanks/`, the blog) stay out of the sitemap,
   header navigation and `llms.txt`; `/cv` keeps `noindex,follow`. Since 2026-11-03
   `/cv/` is reachable only through a quiet `rel="nofollow"` "Resume" text link in the
-  closing footer of the home page, About and every case (since 2026-11-04 no longer
-  in the case availability line; About since 2026-11-10, when it took the shared
-  closing); the resume downloads are nofollow
+  closing footer of the home page, About and every case, and since 2026-11-11 on
+  the home page's first screen (between the buttons and the icons, the closing
+  footer's order; on phones in the line under the buttons). Not in the case
+  availability line (2026-11-04) and not in the header; the resume downloads are nofollow
   too, and `robots.txt` disallows the per-vacancy folders (`/cv/*/`).
 - No link to hh.ru anywhere on the site (owner's call, 2026-11-11): the site leads to
   Telegram, email and the call, not to a job board.
@@ -413,6 +416,10 @@ is git-ignored; `.env.example` is the template.
   named as the account managers' internal tool. Still his to decide: the resume
   (`cv.ts`) defines +30% as two groups of customers and lists RAG, so it disagrees
   with the case until he approves the edit and a `cv:export`; draft PR #94.
+- 2026-11-11, later the same day: the owner said yes to both options of #94 (the
+  short AI-agents note; the quiet Resume link on the first screen, placed where it
+  reads as part of the row) and to aligning the resume with his answers (the +30%
+  definition, no RAG; exports regenerated). He declined an hh.ru link.
 
 ## Gotchas
 

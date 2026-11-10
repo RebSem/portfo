@@ -1,5 +1,4 @@
 ---
-import { execSync } from 'node:child_process';
 import { getMergedPrCount } from '../lib/github';
 import { agentOps, githubUsername } from '../data/site-content';
 import type { Locale } from '../types/content';
@@ -10,15 +9,6 @@ interface Props {
 
 const { locale } = Astro.props;
 const c = agentOps;
-
-// Baked at build time; CI builds run from a real checkout, so this resolves
-// to the deployed commit. Hidden entirely when git is unavailable.
-let commitHash = '';
-try {
-  commitHash = execSync('git rev-parse --short HEAD', { encoding: 'utf8' }).trim();
-} catch {
-  // No git in the build environment — drop the deploy line.
-}
 
 const repoSlug = `${githubUsername}/portfo`;
 
@@ -41,43 +31,22 @@ const mergedPrCount = await getMergedPrCount(repoSlug);
     </div>
     <div class="agent-ops-body">
       <div class="agent-ops-head">
-        <h2 id="agent-ops-title" class="ed-h2">{c.title[locale]}</h2>
+        <h2 id="agent-ops-title" class="agent-ops-title">{c.title[locale]}</h2>
         <p class="agent-ops-lead">{c.lead[locale]}</p>
       </div>
 
-      <ol class="agent-steps">
-        {c.steps.map((step) => (
-          <li class="agent-step">
-            <span class="agent-step-num" aria-hidden="true">{step.k}</span>
-            <div class="agent-step-copy">
-              <h3>{step.title[locale]}</h3>
-              <p>{step.body[locale]}</p>
-            </div>
-          </li>
-        ))}
-      </ol>
-
       {/*
-        The proof, as two receipt lines under the steps. The figure stays with
-        its dot and "PR" on one line through the no-break spaces.
+        The proof: one receipt line with the merged-PR count. The figure stays
+        with its dot and "PR" on one line through the no-break spaces.
       */}
-      {(mergedPrCount !== undefined || commitHash) && (
+      {mergedPrCount !== undefined && (
         <ul class="agent-receipts" data-analytics-placement="agent-receipts">
-          {mergedPrCount !== undefined && (
-            <li class="agent-receipt">
-              <p class="agent-receipt-line">
-                <strong class="agent-receipt-value">{mergedPrCount}</strong>&nbsp;<span class="agent-receipt-sep" aria-hidden="true">·</span>&nbsp;<span>{c.receiptPrs[locale]}</span>
-              </p>
-              <a class="agent-receipt-link" href={mergedPrsUrl} target="_blank" rel="noreferrer">{c.receiptPrsLink[locale]} ↗</a>
-            </li>
-          )}
-          {commitHash && (
-            <li class="agent-receipt">
-              <p class="agent-receipt-line">
-                <strong class="agent-receipt-value">{commitHash}</strong>&nbsp;<span class="agent-receipt-sep" aria-hidden="true">·</span>&nbsp;<span>{c.receiptDeployNote[locale]}</span>
-              </p>
-            </li>
-          )}
+          <li class="agent-receipt">
+            <p class="agent-receipt-line">
+              <strong class="agent-receipt-value">{mergedPrCount}</strong>&nbsp;<span class="agent-receipt-sep" aria-hidden="true">·</span>&nbsp;<span>{c.receiptPrs[locale]}</span>
+            </p>
+            <a class="agent-receipt-link" href={mergedPrsUrl} target="_blank" rel="noreferrer">{c.receiptPrsLink[locale]} ↗</a>
+          </li>
         </ul>
       )}
     </div>

@@ -60,6 +60,17 @@ describe('analytics placements in the built pages', () => {
     }
   });
 
+  it.skipIf(!hasDist)('marks the Resume link in the hero, on the laptop row and the phone line', () => {
+    for (const [html, href] of [
+      [built(), '/cv/'],
+      [built('ru'), '/ru/cv/'],
+    ] as const) {
+      const hero = html.match(new RegExp(`<section[^>]*${placed('hero')}[\\s\\S]*?</section>`))?.[0] ?? '';
+      expect(hero).toMatch(new RegExp(`<a class="footer-cv hero-cv" href="${href}" rel="nofollow"`));
+      expect(hero).toMatch(new RegExp(`<a href="${href}" [^>]*rel="nofollow"`));
+    }
+  });
+
   it.skipIf(!hasDist)('marks the home closing footer, with the Resume link inside it', () => {
     const footer = built().match(new RegExp(`<footer[^>]*${placed('footer')}[\\s\\S]*?</footer>`))?.[0] ?? '';
     expect(footer).toMatch(/<a class="footer-cv" href="\/cv\/"/);
