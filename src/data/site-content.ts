@@ -345,12 +345,6 @@ export function buildWebSiteSchema(): Record<string, unknown> {
   };
 }
 
-export interface AgentOpsStep {
-  k: string;
-  title: LocalizedText;
-  body: LocalizedText;
-}
-
 export const agentOps = {
   // Titled around the product outcome (hypotheses tested fast), not around
   // running agents: the reader is hiring a product manager, and "I run a team
@@ -361,31 +355,13 @@ export const agentOps = {
     ru: 'Прототипы и пет-проекты собираю сам с AI-агентами. Так гипотеза получает рабочий релиз за дни вместо спринта, а с инженерами я говорю на одном языке. Продуктовые решения, постановка и ревью остаются за мной; этот сайт тоже живёт так: каждое изменение это PR, написанный агентом и проверенный мной.',
     en: 'I build prototypes and side projects myself with AI coding agents. A hypothesis gets a working release in days instead of a sprint, and I speak the same language as engineers. Product decisions, specs and review stay with me; this site runs the same way, every change an agent-written PR that I review.',
   },
-  steps: [
-    {
-      k: '01',
-      title: { ru: 'Постановка', en: 'Spec' },
-      body: { ru: 'Формулирую задачу, ограничения и критерий «готово».', en: 'I frame the problem, the constraints, and what “done” means.' },
-    },
-    {
-      k: '02',
-      title: { ru: 'Агенты строят', en: 'Agents build' },
-      body: { ru: 'Claude Code и Codex пишут код, гоняют проверки и открывают pull request.', en: 'Claude Code and Codex write the code, run the checks, and open a pull request.' },
-    },
-    {
-      k: '03',
-      title: { ru: 'Ревью и релиз', en: 'Review and ship' },
-      body: { ru: 'Каждый дифф читаю сам, мерджу только то, что готов защищать. Смердженный PR уезжает в прод.', en: 'I read every diff myself and merge only what I can defend. A merged PR deploys to production.' },
-    },
-  ] satisfies AgentOpsStep[],
-  // The proof is two plain lines with build-time figures, not a terminal
+  // The proof is one plain line with a build-time figure, not a terminal
   // window: a dark box on a light page read as "developer" to a recruiter.
   receiptPrs: {
     ru: 'PR в этом репозитории: написаны агентами, каждый прочитан и смерджен мной',
     en: 'merged PRs on this repo: agent-written, each one read and merged by me',
   },
   receiptPrsLink: { ru: 'смотреть PR на GitHub', en: 'see the PRs on GitHub' },
-  receiptDeployNote: { ru: 'этот деплой собран из такого PR', en: 'this deploy shipped from one of them' },
 } as const;
 
 // The year the product work started, read from the Zvonobot role in cv.ts so
