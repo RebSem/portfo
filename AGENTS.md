@@ -230,6 +230,8 @@ is git-ignored; `.env.example` is the template.
   in the case availability line; About since 2026-11-10, when it took the shared
   closing); the resume downloads are nofollow
   too, and `robots.txt` disallows the per-vacancy folders (`/cv/*/`).
+- No link to hh.ru anywhere on the site (owner's call, 2026-11-11): the site leads to
+  Telegram, email and the call, not to a job board.
 - Internal page links end in `/`: GitHub Pages answers `/about` with a 301 first.
   `scripts/link-check.mjs` fails a page link without the slash. Prefetch is
   `viewport` for every link; file downloads opt out with `data-astro-prefetch="false"`.
@@ -396,6 +398,21 @@ is git-ignored; `.env.example` is the template.
   Resume link on the first screen (built on branch `claude/hiring-opt`, not merged),
   definitions of the headline numbers, what was done about answering machines, how
   the model and voice were chosen, one real "no", the role line "PM or PO".
+- 2026-11-11: the owner answered the review's fact questions (#95). The flagship case
+  now has a "how we counted" line under the results (a paying customer paid at least
+  once; +30% is the growth in average spend among Zvonobot customers who moved from
+  the scripted robot to AI agents, averaged since sales began, part of it price;
+  repeat payments are payments from customers who had paid before), opens the key
+  decision with what was refused first (an in-house build on OpenAI's Realtime API,
+  too expensive for customers), says what the agents' restrictions were and how the
+  model and voice were chosen, and says what went wrong with the one big agent. Every
+  sentence was checked against his verbatim answers by a fact-checker; nothing may be
+  added beyond them. The role fact reads "Product Manager, B2B and AI" (no "PM or
+  PO"; the level is not shown, on purpose). RAG left About and `knowsAbout` (he did
+  not use it); the side-project block is "Tools and side projects" and BazaBot is
+  named as the account managers' internal tool. Still his to decide: the resume
+  (`cv.ts`) defines +30% as two groups of customers and lists RAG, so it disagrees
+  with the case until he approves the edit and a `cv:export`; draft PR #94.
 
 ## Gotchas
 

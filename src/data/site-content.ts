@@ -614,7 +614,7 @@ export const uiCopy = {
     workTitle: { ru: 'Работа и свой продукт', en: 'Work and my own product' },
     petTitle: { ru: 'Инструменты и пет-проекты', en: 'Tools and side projects' },
     petContext: {
-      ru: 'Zodial и Slopiq: сайд-проекты, которые проверял на себе как пользователь.',
+      ru: 'Zodial и Slopiq: пет-проекты, которые я проверял на себе как пользователь.',
       en: 'Zodial and Slopiq are side projects I tested on myself as a user.',
     },
     statusLabel: {
