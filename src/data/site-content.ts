@@ -221,7 +221,6 @@ export const skillGroups: SkillGroup[] = [
       'Conversational AI',
       'LLM orchestration',
       'Prompt engineering',
-      'RAG',
       { ru: 'AI-в-workflow (не demo)', en: 'AI in the workflow (not demos)' },
     ],
   },
@@ -238,7 +237,7 @@ export const skillGroups: SkillGroup[] = [
     // One line, not a framework list: a product manager's stack is a shared
     // language with engineers, not a claim to their job.
     label: { ru: 'Общий язык с инженерами', en: 'Shared language with engineers' },
-    items: ['TypeScript', 'Python', 'SQL', 'REST', { ru: 'Телефония', en: 'Telephony' }],
+    items: ['SQL', 'REST', { ru: 'Телефония', en: 'Telephony' }],
   },
 ];
 
@@ -249,7 +248,6 @@ export const knowsAbout: string[] = [
   'Conversational AI',
   'LLM orchestration',
   'Prompt engineering',
-  'RAG',
   'B2B SaaS',
   'Payments and billing',
   'CPaaS',
@@ -450,7 +448,7 @@ export const uiCopy = {
     facts: [
       {
         label: { ru: 'Роль', en: 'Role' },
-        value: { ru: 'PM или PO, B2B и AI', en: 'PM or PO, B2B and AI' },
+        value: { ru: 'Product Manager, B2B и AI', en: 'Product Manager, B2B and AI' },
       },
       {
         label: { ru: 'Выход', en: 'Start' },
@@ -469,7 +467,7 @@ export const uiCopy = {
     // label and its context, nothing more. The numbers themselves are
     // uiCopy.projects.featuredResults, so the band and the case never drift.
     resultsTitle: { ru: 'Результаты', en: 'Results' },
-    resultsContext: { ru: 'Zvonobot AI, 2025-2026', en: 'Zvonobot AI, a B2B call automation platform, 2025-2026' },
+    resultsContext: { ru: 'Zvonobot AI, B2B-платформа автоматизации звонков, 2025-2026', en: 'Zvonobot AI, a B2B call automation platform, 2025-2026' },
     postsTitle: { ru: 'Свежие статьи', en: 'Recent posts' },
     postsSubtitle: {
       ru: 'Заметки о продуктовой логике, delivery-процессах и практическом использовании AI.',
@@ -535,6 +533,12 @@ export const uiCopy = {
       ru: 'Как я работаю: продукт, прайсинг, вывод на рынок и AI там, где он реально нужен.',
       en: 'How I work: product, pricing, go-to-market, and AI where it earns its place.',
     },
+    // The pitch line under "Hiring a product manager?" at the end of About
+    // (SiteFooter.astro, closingPitch).
+    closingPitch: {
+      ru: 'Пришлите вакансию и пару слов о продукте. Честно скажу, подхожу ли я.',
+      en: 'Send me the role and a line about the product. I will tell you honestly whether I am a fit.',
+    },
     skillsEyebrow: { ru: 'Навыки', en: 'Skills' },
     skillsTitle: { ru: 'Ключевые навыки', en: 'Core skills' },
     skillsNote: {
@@ -556,6 +560,11 @@ export const uiCopy = {
     featuredRole: {
       ru: 'Продакт-менеджер направления с октября 2025 по октябрь 2026',
       en: 'Product manager of the line, October 2025 to October 2026',
+    },
+    // Says why the case is worth the click, in the card under the summary.
+    featuredInside: {
+      ru: 'В кейсе: главное решение «сначала продать, потом строить», три компромисса в прайсинге, биллинге и регистрации, как оценивали качество агентов.',
+      en: 'In the case: the key decision (sell first, build later), three trade-offs in pricing, billing and signup, and how agent quality was judged.',
     },
     // Results, not features: three numbers a reader keeps, shown in the band
     // right under the hero. The modest size is deliberate (Mikhail rejected
@@ -579,7 +588,11 @@ export const uiCopy = {
     caseLink: { ru: 'Читать кейс', en: 'Read the case study' },
     caseShort: { ru: 'Кейс', en: 'Case study' },
     workTitle: { ru: 'Работа и свой продукт', en: 'Work and my own product' },
-    petTitle: { ru: 'Пет-проекты', en: 'Side projects' },
+    petTitle: { ru: 'Инструменты и пет-проекты', en: 'Tools and side projects' },
+    petContext: {
+      ru: 'Zodial и Slopiq: пет-проекты, которые я проверял на себе как пользователь.',
+      en: 'Zodial and Slopiq are side projects I tested on myself as a user.',
+    },
     statusLabel: {
       cursivo: { ru: 'В разработке', en: 'In development' },
       obrabot: { ru: 'Внутреннее рабочее пространство Prof-IT', en: 'Internal Prof-IT workspace' },
@@ -699,10 +712,10 @@ export const uiCopy = {
       en: 'Social links',
     },
     eyebrow: { ru: 'Контакт', en: 'Contact' },
-    // The home page and the case studies end on this question, set in the
-    // headline's type as a bookend to the H1, with closingPitch below as its
-    // subline (SiteFooter.astro, closing). It must not repeat the question.
-    // Other pages keep the regular pitch alone.
+    // The home page, the case studies and About end on this question, set in
+    // the headline's type as a bookend to the H1, with closingPitch below as
+    // its subline (SiteFooter.astro, closing; About passes its own pitch).
+    // It must not repeat the question. Other pages keep the regular pitch alone.
     closingTitle: { ru: 'Нужен продакт-менеджер?', en: 'Hiring a product manager?' },
     closingPitch: {
       ru: 'B2B SaaS, платежи, AI-продукты. Быстрее всего в Telegram, почта тоже подходит.',

@@ -255,20 +255,21 @@ describeBuilt('cv build output', () => {
 
   it('is linked only from the quiet resume links, all nofollow', () => {
     // Unlisted still means no sitemap entry, no menu and no llms.txt line.
-    // The quiet links are the only inbound links, and all are nofollow: the
-    // home hero (laptop row and phone line) and the closing footer on the home
-    // page, and the closing footer of each case.
-    for (const page of ['about/index.html', 'ru/about/index.html']) {
-      expect(readDist(page), `${page} links to the CV`).not.toMatch(/href="\/(ru\/)?cv/);
-    }
-
-    for (const [page, href] of [
-      ['index.html', '/cv/'],
-      ['ru/index.html', '/ru/cv/'],
+    // The quiet links are the only inbound links, and all are nofollow: on the
+    // home page the hero (laptop row and phone line) and the closing footer, on
+    // About the closing footer, and the closing footer of each case. The case
+    // availability strip no longer links to the CV.
+    for (const [page, href, count] of [
+      ['index.html', '/cv/', 3],
+      ['ru/index.html', '/ru/cv/', 3],
+      ['about/index.html', '/cv/', 1],
+      ['ru/about/index.html', '/ru/cv/', 1],
     ] as const) {
       const links = readDist(page).match(new RegExp(`<a [^>]*href="${href}"[^>]*>`, 'g')) ?? [];
-      expect(links, `${page} resume links`).toHaveLength(3);
-      expect(links[0], `${page} resume link is not nofollow`).toMatch(/rel="nofollow"/);
+      expect(links, `${page} resume links`).toHaveLength(count);
+      for (const link of links) {
+        expect(link, `${page} resume link is not nofollow`).toMatch(/rel="nofollow"/);
+      }
     }
 
     for (const [base, href] of [

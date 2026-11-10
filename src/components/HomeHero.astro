@@ -70,13 +70,13 @@ const cvHref = locale === 'ru' ? '/ru/cv/' : '/cv/';
         <path d="M5 12h14" /><path d="M13 6l6 6l-6 6" />
       </svg>
     </a>
+    <a class="footer-cv hero-cv" href={cvHref} rel="nofollow">{uiCopy.footer.resume[locale]}</a>
     <SocialLinks
       className="social-links hero-social-links"
       hideTelegram
       mailHref={buildIntroMailto(locale)}
       label={copy.heroSocialAria[locale]}
     />
-    <a class="footer-cv hero-cv" href={cvHref} rel="nofollow">{uiCopy.footer.resume[locale]}</a>
   </div>
 
   <p class="hero-alt" data-analytics-placement="hero-alt">
@@ -208,13 +208,14 @@ const cvHref = locale === 'ru' ? '/ru/cv/' : '/cv/';
     height: 20px;
   }
 
-  /* The resume, a quiet text link after the icons: set like the footer's
-     Resume link and as tall as the icons, so it is a 44px tap area. */
+  /* The resume, a quiet text link between the buttons and the icons, in the
+     same order and look as the closing footer (buttons, Resume, icons), so
+     the two ends of the page read alike. As tall as the icons: a 44px tap area. */
   .hero-cta-row .hero-cv {
     display: inline-flex;
     align-items: center;
     min-height: 2.75rem;
-    margin-left: 0.4rem;
+    margin-inline: 0.5rem 0.15rem;
     font-size: 0.9rem;
     text-decoration: underline;
     text-underline-offset: 4px;

@@ -39,10 +39,11 @@ describe('analytics placements in the built pages', () => {
     }
   });
 
-  it.skipIf(!hasDist)('marks the booking link in the About call to action, in both locales', () => {
+  it.skipIf(!hasDist)('marks the About closing footer, with the booking link and the Resume link inside it', () => {
     for (const [html, href] of [[built('about'), '/call/'], [built('ru', 'about'), '/ru/call/']] as const) {
-      const cta = html.match(new RegExp(`<div class="about-cta"[^>]*${placed('about-cta')}[\\s\\S]*?</section>`))?.[0] ?? '';
-      expect(cta).toContain(`href="${href}"`);
+      const footer = html.match(new RegExp(`<footer[^>]*${placed('footer')}[\\s\\S]*?</footer>`))?.[0] ?? '';
+      expect(footer).toContain(`href="${href}"`);
+      expect(footer).toMatch(/<a class="footer-cv" href="(\/ru)?\/cv\/"/);
     }
   });
 
@@ -88,9 +89,11 @@ describe('analytics placements in the built pages', () => {
     expect(block).not.toBeNull();
   });
 
-  it.skipIf(!hasDist)('marks the About call to action in both locales', () => {
-    expect(built('about').includes(placed('about-cta'))).toBe(true);
-    expect(built('ru', 'about').includes(placed('about-cta'))).toBe(true);
+  it.skipIf(!hasDist)('marks the About closing footer in both locales, and no About call to action card', () => {
+    for (const html of [built('about'), built('ru', 'about')]) {
+      expect(html.includes(placed('footer'))).toBe(true);
+      expect(html).not.toContain('about-cta');
+    }
   });
 });
 

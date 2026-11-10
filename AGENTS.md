@@ -46,7 +46,7 @@ The repository is **public**. Treat every commit as permanent and world-readable
   tint, blur and hairline come in only once content scrolls under it (32-80px on
   the home page; a `data-condensed` fallback in `SiteHeader.astro` for browsers
   without scroll-driven animations and for reduced motion). Never on at rest.
-- Case studies end on `CaseNext.astro` (loop zvonobot-ai → cursivo → obrabot, side
+- Case studies end on `CaseNext.astro` (loop zvonobot-ai → obrabot → cursivo, side
   projects point to zvonobot-ai; `src/lib/case-order.ts`) and the closing footer with
   `rail={false}`. No tech-stack blocks on case pages (owner's call, 2026-11-03).
   Under the role and timeline facts sits one quiet availability line
@@ -54,7 +54,14 @@ The repository is **public**. Treat every commit as permanent and world-readable
   icons, "Book a call" as text, no box. The case head (`.case-shell` rules in
   `global.css`) is sized so the flagship's Results fit whole on a 13-inch laptop's
   first screen (about 1440x813) in both locales; keep it that way when the head
-  or the first section changes.
+  or the first section changes. Since 2026-11-10 the flagship case shows the
+  product-management work in plain view, in this order: Result (a band,
+  `CaseResults.astro`), the problem, the key decision, what it is, who bought,
+  three trade-offs (`.case-decisions`: the decision on the left, chose / rejected
+  / cost / gave on the right), agent quality, what did not work, my part, and
+  only then the console screenshots. Only the console's feature list is folded.
+  Do not fold the trade-offs, quality or role sections again: they are what a
+  hiring manager reads the case for.
 - Content status: 7 published project case studies per locale (`tubedrop` is
   `draft: true`); one published blog post pair (`welcome`), the `tubedrop` post pair is
   a draft. The blog is **unlisted** since 2026-08-18: kept at its URLs, absent from the
@@ -219,9 +226,12 @@ is git-ignored; `.env.example` is the template.
 - Unlisted pages (`/cv`, `/ru/cv`, `/cv.txt`, `/call/`, `/call/thanks/`, the blog) stay out of the sitemap,
   header navigation and `llms.txt`; `/cv` keeps `noindex,follow`. Since 2026-11-03
   `/cv/` is reachable only through a quiet `rel="nofollow"` "Resume" text link in the
-  closing footer of the home page and of every case (since 2026-11-04 no longer in
-  the case availability line); the resume downloads are nofollow
+  closing footer of the home page, About and every case (since 2026-11-04 no longer
+  in the case availability line; About since 2026-11-10, when it took the shared
+  closing); the resume downloads are nofollow
   too, and `robots.txt` disallows the per-vacancy folders (`/cv/*/`).
+- No link to hh.ru anywhere on the site (owner's call, 2026-11-11): the site leads to
+  Telegram, email and the call, not to a job board.
 - Internal page links end in `/`: GitHub Pages answers `/about` with a 301 first.
   `scripts/link-check.mjs` fails a page link without the slash. Prefetch is
   `viewport` for every link; file downloads opt out with `data-astro-prefetch="false"`.
@@ -373,6 +383,36 @@ is git-ignored; `.env.example` is the template.
   console (the link and "Кабинет уже работает" stay). The home opener moved up to
   about 40px under the header and the header tint no longer shows at rest. Built by
   Haiku developers with Sonnet testers, then reviewed by an Opus critic.
+- 2026-11-10: a review of the site as a hiring page (the commander plus four lenses:
+  recruiter, head of product, designer, a benchmark against PM portfolio guidance,
+  each checked by a sceptic; tracked in the owner's local beads, label
+  `review-2026-11-10`). Common finding: the site proved "builder" louder than
+  "product manager". Shipped with existing copy only: the flagship case unfolded and
+  reordered (see Current state), its results as a band, "what did not work" without
+  the "less a failure than a new hypothesis" line; the next case after the flagship
+  is obrabot; the Russian results label names the platform; the flagship card says
+  what the case holds; About ends once on the shared closing and its skills drop
+  TypeScript and Python (the resume keeps them). Ruled out earlier by the owner and
+  not reopened: the ~10% of group revenue figure outside /cv, the city on public
+  pages. Waiting on the owner: a shorter AI-agents block on the home page and a
+  Resume link on the first screen (built on branch `claude/hiring-opt`, not merged),
+  definitions of the headline numbers, what was done about answering machines, how
+  the model and voice were chosen, one real "no", the role line "PM or PO".
+- 2026-11-11: the owner answered the review's fact questions (#95). The flagship case
+  now has a "how we counted" line under the results (a paying customer paid at least
+  once; +30% is the growth in average spend among Zvonobot customers who moved from
+  the scripted robot to AI agents, averaged since sales began, part of it price;
+  repeat payments are payments from customers who had paid before), opens the key
+  decision with what was refused first (an in-house build on OpenAI's Realtime API,
+  too expensive for customers), says what the agents' restrictions were and how the
+  model and voice were chosen, and says what went wrong with the one big agent. Every
+  sentence was checked against his verbatim answers by a fact-checker; nothing may be
+  added beyond them. The role fact reads "Product Manager, B2B and AI" (no "PM or
+  PO"; the level is not shown, on purpose). RAG left About and `knowsAbout` (he did
+  not use it); the side-project block is "Tools and side projects" and BazaBot is
+  named as the account managers' internal tool. Still his to decide: the resume
+  (`cv.ts`) defines +30% as two groups of customers and lists RAG, so it disagrees
+  with the case until he approves the edit and a `cv:export`; draft PR #94.
 
 ## Gotchas
 
