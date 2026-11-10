@@ -39,7 +39,7 @@ const { items } = Astro.props;
 
   .case-results li {
     display: grid;
-    grid-template-columns: 5.5rem minmax(0, 1fr);
+    grid-template-columns: 7.5rem minmax(0, 1fr);
     align-items: baseline;
     gap: 1rem;
     padding-block: 0.75rem;
@@ -58,6 +58,7 @@ const { items } = Astro.props;
     letter-spacing: -0.02em;
     color: var(--foreground);
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
   }
 
   .case-result-label {

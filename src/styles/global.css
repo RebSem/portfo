@@ -2187,7 +2187,11 @@ a.project-shot-zoom {
   .case-decisions {
     display: grid;
     grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
-    column-gap: 2.5rem;
+    column-gap: 0;
+  }
+
+  .prose .case-decisions h3 {
+    padding-right: 2.5rem;
   }
 
   .prose .case-decisions ul {
