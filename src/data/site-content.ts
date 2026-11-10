@@ -221,7 +221,6 @@ export const skillGroups: SkillGroup[] = [
       'Conversational AI',
       'LLM orchestration',
       'Prompt engineering',
-      'RAG',
       { ru: 'AI-в-workflow (не demo)', en: 'AI in the workflow (not demos)' },
     ],
   },
@@ -249,7 +248,6 @@ export const knowsAbout: string[] = [
   'Conversational AI',
   'LLM orchestration',
   'Prompt engineering',
-  'RAG',
   'B2B SaaS',
   'Payments and billing',
   'CPaaS',
@@ -474,7 +472,7 @@ export const uiCopy = {
     facts: [
       {
         label: { ru: 'Роль', en: 'Role' },
-        value: { ru: 'PM или PO, B2B и AI', en: 'PM or PO, B2B and AI' },
+        value: { ru: 'Product Manager, B2B и AI', en: 'Product Manager, B2B and AI' },
       },
       {
         label: { ru: 'Выход', en: 'Start' },
@@ -614,7 +612,11 @@ export const uiCopy = {
     caseLink: { ru: 'Читать кейс', en: 'Read the case study' },
     caseShort: { ru: 'Кейс', en: 'Case study' },
     workTitle: { ru: 'Работа и свой продукт', en: 'Work and my own product' },
-    petTitle: { ru: 'Пет-проекты', en: 'Side projects' },
+    petTitle: { ru: 'Инструменты и пет-проекты', en: 'Tools and side projects' },
+    petContext: {
+      ru: 'Zodial и Slopiq: пет-проекты, которые я проверял на себе как пользователь.',
+      en: 'Zodial and Slopiq are side projects I tested on myself as a user.',
+    },
     statusLabel: {
       cursivo: { ru: 'В разработке', en: 'In development' },
       obrabot: { ru: 'Внутреннее рабочее пространство Prof-IT', en: 'Internal Prof-IT workspace' },

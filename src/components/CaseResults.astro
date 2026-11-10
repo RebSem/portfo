@@ -3,9 +3,11 @@ import { chunks, HYPHENATED } from '../lib/nb';
 
 interface Props {
   items: { value: string; label: string }[];
+  noteLabel?: string;
+  note?: string;
 }
 
-const { items } = Astro.props;
+const { items, noteLabel, note } = Astro.props;
 
 // Same rule as the home band: a hyphenated token ("B2B-клиентов") stays in
 // one piece when the balanced label wraps (src/lib/nb.ts).
@@ -16,6 +18,7 @@ const { items } = Astro.props;
   band's language but smaller. Its own class, so the .prose list rules
   (40rem measure, markers) never reach it.
 */}
+<div class="case-results-wrap">
 <ul class="case-results">
   {items.map((item) => (
     <li>
@@ -26,8 +29,28 @@ const { items } = Astro.props;
     </li>
   ))}
 </ul>
+{note && (
+  <p class="case-results-note">
+    {noteLabel && <strong>{noteLabel}</strong>}{' '}
+    {chunks(note).map((c) => (HYPHENATED.test(c) ? <span class="nb">{c}</span> : c))}
+  </p>
+)}
+</div>
 
 <style>
+  .case-results-note {
+    margin: 0.75rem 0 0;
+    max-width: none;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+  }
+
+  .case-results-note strong {
+    font-weight: 500;
+    color: var(--foreground);
+  }
+
   .case-results {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
