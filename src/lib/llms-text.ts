@@ -141,7 +141,7 @@ export const buildLlmsText = (cases: LlmsCase[]): string => {
     '',
     '## Skills',
     'Product: product strategy, roadmap, discovery, customer interviews, metrics and unit economics, pricing, A/B experiments, go-to-market, B2B SaaS, CRM.',
-    'AI / LLM: voice AI agents, conversational AI, LLM orchestration, prompt engineering, RAG, LLM evals, ASR, TTS, contact centers, SIP telephony.',
+    'AI / LLM: voice AI agents, conversational AI, LLM orchestration, prompt engineering, LLM evals, ASR, TTS, contact centers, SIP telephony.',
     'Delivery: spec, review, release cycle; prototyping with AI coding agents (Claude Code, Codex); fast hypothesis validation, 0 to 1.',
     'Shared language with engineers: TypeScript, Python, SQL, REST, telephony.',
     '',

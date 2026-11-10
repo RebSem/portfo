@@ -230,8 +230,8 @@ export const cvMetrics: CvMetric[] = [
     id: 'average-spend',
     value: { ru: '+30%', en: '+30%' },
     label: {
-      ru: 'средний чек: клиенты на AI-агентах против классического робота',
-      en: 'average spend: customers on AI agents vs the scripted robot',
+      ru: 'средний чек у клиентов, перешедших с классического робота на AI-агентов',
+      en: 'average spend among customers who moved from the scripted robot to AI agents',
     },
   },
   {
@@ -239,7 +239,7 @@ export const cvMetrics: CvMetric[] = [
     value: { ru: '30%', en: '30%' },
     label: {
       ru: 'выручки направления приносили повторные оплаты',
-      en: 'of line revenue came from repeat purchases',
+      en: 'of line revenue came from repeat payments',
     },
   },
   {
@@ -301,7 +301,7 @@ export const cvExperience: CvExperienceRole[] = [
           [
             t(
               '~10% выручки группы меньше чем за год: 80 платящих B2B-клиентов и 500 000+ минут живых разговоров в проде к августу 2026. Повторные оплаты давали 30% выручки направления.',
-              '~10% of group revenue in under a year: 80 paying B2B customers and 500,000+ minutes of live conversations in production by August 2026. Repeat purchases brought 30% of the line revenue.',
+              '~10% of group revenue in under a year: 80 paying B2B customers and 500,000+ minutes of live conversations in production by August 2026. Repeat payments brought 30% of the line revenue.',
             ),
           ],
           [
@@ -314,8 +314,8 @@ export const cvExperience: CvExperienceRole[] = [
           ],
           [
             t(
-              '+30% к среднему чеку: чек клиентов на AI-агентах против клиентов на классическом линейном IVR-роботе. На тёплых базах AI-агенты в наших тестах обходили линейных роботов по конверсии в целевое действие, это стало основой прайсинга.',
-              '+30% in average customer spend: customers on AI agents versus customers on the legacy linear IVR robot. On warm lead lists, AI agents beat the legacy robots on conversion to the target action in our tests, which became the basis for pricing.',
+              '+30% к среднему чеку у клиентов Zvonobot, которые перешли с классического линейного IVR-робота на AI-агентов, в среднем со старта продаж; часть роста дала цена: агенты дороже робота. На тёплых базах AI-агенты в наших тестах обходили линейных роботов по конверсии в целевое действие, это стало основой прайсинга.',
+              '+30% in average spend among Zvonobot customers who moved from the legacy linear IVR robot to AI agents, averaged since sales began; part of the growth is price: the agents cost more than the robot. On warm lead lists, AI agents beat the legacy robots on conversion to the target action in our tests, which became the basis for pricing.',
             ),
           ],
           [
@@ -527,7 +527,7 @@ export const cvSkillGroups: CvSkillGroup[] = [
       { ru: 'генеративный AI', en: 'generative AI (GenAI)' },
       { ru: 'голосовые AI-агенты, разговорный ИИ', en: 'voice AI agents, conversational AI' },
       { ru: 'LLM-оркестрация', en: 'LLM orchestration' },
-      { ru: 'промпт-инжиниринг, RAG', en: 'prompt engineering, RAG' },
+      { ru: 'промпт-инжиниринг', en: 'prompt engineering' },
       { ru: 'оценка качества моделей (evals)', en: 'LLM evals' },
       { ru: 'ASR, TTS', en: 'ASR, TTS' },
       { ru: 'контакт-центры, SIP-телефония', en: 'contact centers, SIP telephony' },
