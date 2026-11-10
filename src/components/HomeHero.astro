@@ -13,6 +13,9 @@ interface Props {
 
 const { locale, caseHref } = Astro.props;
 const copy = uiCopy.home;
+// The resume is unlisted (/cv/ stays out of the menu, sitemap and llms.txt);
+// the quiet nofollow link here is the one way a recruiter reaches it fast.
+const cvHref = locale === 'ru' ? '/ru/cv/' : '/cv/';
 
 // The standfirst is balanced, and a balanced line happily breaks a compound
 // word at its hyphen ("B2B-" / "клиентов"), so hyphenated tokens go in a
@@ -67,6 +70,7 @@ const copy = uiCopy.home;
         <path d="M5 12h14" /><path d="M13 6l6 6l-6 6" />
       </svg>
     </a>
+    <a class="footer-cv hero-cv" href={cvHref} rel="nofollow">{uiCopy.footer.resume[locale]}</a>
     <SocialLinks
       className="social-links hero-social-links"
       hideTelegram
@@ -80,6 +84,8 @@ const copy = uiCopy.home;
     <a href={buildIntroMailto(locale)}>{copy.heroAlt.email[locale]}</a>
     <span class="hero-alt-sep" aria-hidden="true">·</span>
     <a href={linkedinUrl} target="_blank" rel="noreferrer">{copy.heroAlt.linkedin[locale]}</a>
+    <span class="hero-alt-sep" aria-hidden="true">·</span>
+    <a href={cvHref} rel="nofollow">{uiCopy.footer.resume[locale]}</a>
   </p>
 
   {/* The availability line: the status as a badge in the rail, the four
@@ -202,6 +208,24 @@ const copy = uiCopy.home;
     height: 20px;
   }
 
+  /* The resume, a quiet text link between the buttons and the icons, in the
+     same order and look as the closing footer (buttons, Resume, icons), so
+     the two ends of the page read alike. As tall as the icons: a 44px tap area. */
+  .hero-cta-row .hero-cv {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    margin-inline: 0.5rem 0.15rem;
+    font-size: 0.9rem;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    color: color-mix(in oklab, var(--foreground) 72%, transparent);
+  }
+
+  .hero-cta-row .hero-cv:focus-visible {
+    color: var(--accent-text);
+  }
+
   /* The rule above outranks .social-link:hover, so the icons name their own
      hover colour here. */
   @media (hover: hover) and (pointer: fine) {
@@ -300,7 +324,8 @@ const copy = uiCopy.home;
       font-size: 0.9rem;
     }
 
-    .hero-cta-row :global(.hero-social-links) {
+    .hero-cta-row :global(.hero-social-links),
+    .hero-cta-row .hero-cv {
       display: none;
     }
 
