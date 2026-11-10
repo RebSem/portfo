@@ -68,8 +68,8 @@ export const projects: ProjectItem[] = [
       en: 'BazaBot',
     },
     appType: {
-      ru: 'Telegram-бот для очистки клиентских баз',
-      en: 'Telegram bot for cleaning contact lists',
+      ru: 'Рабочий инструмент аккаунт-менеджеров: чистка клиентских баз в Telegram',
+      en: 'Working tool for our account managers: cleaning contact lists in Telegram',
     },
     summary: {
       ru: 'Бот принимает CSV/XLSX, нормализует номера, фильтрует операторов и возвращает готовую базу без дублей. Внутренний инструмент, ускоряющий подготовку данных для обзвонов.',

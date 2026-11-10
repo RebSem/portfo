@@ -111,7 +111,10 @@ const external = '<path d="M7 17 17 7M9 7h8v8"/>';
   </div>
 
   <div class="ed-row hp-group">
-    <h3 class="ed-label">{copy.petTitle[locale]}</h3>
+    <div>
+      <h3 class="ed-label">{copy.petTitle[locale]}</h3>
+      <p class="ed-context">{copy.petContext[locale]}</p>
+    </div>
     <ul class="hp-pets">
       {pets.map((project) => {
         const href = caseHrefFor(project.id);
