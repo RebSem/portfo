@@ -8,7 +8,7 @@ impact: "80 paying B2B customers and 500,000+ minutes of live calls in under a y
 cover: "/og/case-zvonobot-ai-en.png"
 draft: false
 lang: "en"
-tags: ["Voice AI agents", "LLM orchestration", "B2B SaaS", "Per-second billing", "SIP telephony", "Multi-tenant"]
+tags: ["Voice AI agents", "B2B SaaS", "0 to 1 launch", "Pricing", "Per-second billing", "LLM orchestration", "SIP telephony"]
 ---
 
 import ProjectScreenshot from '../../components/ProjectScreenshot.astro';
@@ -34,13 +34,18 @@ import CaseResults from '../../components/CaseResults.astro';
   { value: '500,000+', label: 'minutes of live conversations in production' },
   { value: '30%', label: 'of the line’s revenue came from repeat payments' },
   { value: '+30%', label: 'higher average spend on AI agents than on our scripted robot' },
-]} />
+]}
+  noteLabel="How we counted:"
+  note="a paying customer paid at least once; +30% is the growth in average spend among Zvonobot customers who moved from the scripted robot to AI agents, averaged since sales began (the agents cost more than the robot, and customers paid for them); repeat payments are payments from customers who had paid before."
+/>
 
 ## The problem: why outbound and why now
 
 October 2025. Zvonobot was a mature outbound calling platform: robots dialing contact lists with pre-recorded scripts. LLMs had just learned to hold a real conversation. Recorded scripts would only get us so far, and if we did not build live agents, someone else would take the category. The question was not whether to build voice AI, but how to find out fast and cheaply whether our customers would pay for it.
 
 ## Key decision: sell first, build later
+
+**What we said no to first.** The first idea was different: build our own platform from scratch right away, on OpenAI's Realtime API, which had just come out. It was the leadership's idea. It would have meant building the old way: AI coding agents were not mature enough yet. I ran the economics, and it showed that such a product would be too expensive for customers. We dropped that path.
 
 Instead of building a platform first, we went to market on a **white-label voice AI platform in a few weeks**. That put a real product in front of real customers at almost no engineering cost and answered the only question that mattered: do they pay, and do they come back.
 
@@ -108,9 +113,13 @@ We compared three metrics:
 
 The biggest problem was answering machines. The agent talked to them, the client paid for those minutes, and the client's cost per lead went up.
 
+So the agents' restrictions were about the client's budget: do not talk to answering machines and do not go off topic.
+
+We chose the model and the voice by price against quality, with one more condition: the response speed had to stay acceptable. Account managers ran the comparison and built each agent's logic for the client.
+
 <h2 id="what-did-not-work-at-first">What did not work at first</h2>
 
-The first version was one big all-in-one scenario: one agent for the whole conversation. It came out too expensive, so we split the task and replaced the big agent with several small ones. The lesson we carried forward: agents should be small.
+The first version was one big all-in-one scenario: one agent for the whole conversation. Too much ended up in one prompt: the agent stopped coping, quality dropped and the cost climbed steeply. So we split the task and replaced the big agent with several small ones. The lesson we carried forward: agents should be small.
 
 <h2 id="my-part">My part and the team’s</h2>
 
