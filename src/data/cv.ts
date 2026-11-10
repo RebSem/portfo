@@ -239,7 +239,7 @@ export const cvMetrics: CvMetric[] = [
     value: { ru: '30%', en: '30%' },
     label: {
       ru: 'выручки направления приносили повторные оплаты',
-      en: 'of line revenue came from repeat purchases',
+      en: 'of line revenue came from repeat payments',
     },
   },
   {

@@ -11,7 +11,7 @@ NUMBERS
 - 80 paying B2B customers
 - 500,000+ minutes of conversations in production
 - +30% average spend among customers who moved from the scripted robot to AI agents
-- 30% of line revenue came from repeat purchases
+- 30% of line revenue came from repeat payments
 - 130+ countries: the group CPaaS products, bulk calls and SMS
 
 EXPERIENCE
