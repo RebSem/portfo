@@ -69,7 +69,7 @@ export const projects: ProjectItem[] = [
     },
     appType: {
       ru: 'Рабочий инструмент аккаунт-менеджеров: чистка клиентских баз в Telegram',
-      en: 'Working tool for our account managers: cleaning contact lists in Telegram',
+      en: 'Internal tool for our account managers: cleaning contact lists in Telegram',
     },
     summary: {
       ru: 'Бот принимает CSV/XLSX, нормализует номера, фильтрует операторов и возвращает готовую базу без дублей. Внутренний инструмент, ускоряющий подготовку данных для обзвонов.',
