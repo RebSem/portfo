@@ -255,15 +255,14 @@ describeBuilt('cv build output', () => {
 
   it('is linked only from the quiet resume links, all nofollow', () => {
     // Unlisted still means no sitemap entry, no menu and no llms.txt line.
-    // The one link after Email on each home page and the one in each case's
-    // availability strip are the only inbound links, and both are nofollow.
-    for (const page of ['about/index.html', 'ru/about/index.html']) {
-      expect(readDist(page), `${page} links to the CV`).not.toMatch(/href="\/(ru\/)?cv/);
-    }
-
+    // The one link after Email on each home page and About, and the one in each
+    // case's closing footer, are the inbound links, and all are nofollow. The
+    // case availability strip no longer links to the CV.
     for (const [page, href] of [
       ['index.html', '/cv/'],
       ['ru/index.html', '/ru/cv/'],
+      ['about/index.html', '/cv/'],
+      ['ru/about/index.html', '/ru/cv/'],
     ] as const) {
       const links = readDist(page).match(new RegExp(`<a [^>]*href="${href}"[^>]*>`, 'g')) ?? [];
       expect(links, `${page} resume links`).toHaveLength(1);

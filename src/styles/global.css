@@ -840,22 +840,6 @@ html[data-theme='dark'] .theme-icon-sun {
   }
 }
 
-.about-cta-headline {
-  font-family: var(--font-sans);
-  font-size: 1.35rem;
-  font-weight: 600;
-  letter-spacing: -0.015em;
-  line-height: 1.22;
-  max-width: 30ch;
-}
-
-.about-cta-sub {
-  font-size: 0.98rem;
-  line-height: 1.55;
-  max-width: 52ch;
-  color: color-mix(in oklab, var(--foreground) 72%, transparent);
-}
-
 .cta-button {
   display: inline-flex;
   align-items: center;
