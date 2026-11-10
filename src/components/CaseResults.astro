@@ -1,0 +1,90 @@
+---
+import { chunks, HYPHENATED } from '../lib/nb';
+
+interface Props {
+  items: { value: string; label: string }[];
+}
+
+const { items } = Astro.props;
+
+// Same rule as the home band: a hyphenated token ("B2B-клиентов") stays in
+// one piece when the balanced label wraps (src/lib/nb.ts).
+---
+
+{/*
+  The flagship's results as a band under the Result heading, in the home
+  band's language but smaller. Its own class, so the .prose list rules
+  (40rem measure, markers) never reach it.
+*/}
+<ul class="case-results">
+  {items.map((item) => (
+    <li>
+      <span class="case-result-value">{item.value}</span>
+      <span class="case-result-label">
+        {chunks(item.label).map((c) => (HYPHENATED.test(c) ? <span class="nb">{c}</span> : c))}
+      </span>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .case-results {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    margin: 1rem 0 0;
+    padding: 0;
+    max-width: none;
+    list-style: none;
+  }
+
+  .case-results li {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    align-items: baseline;
+    gap: 1rem;
+    padding-block: 0.75rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .case-results li:first-child {
+    padding-top: 0.25rem;
+    border-top: 0;
+  }
+
+  .case-result-value {
+    font-size: 1.75rem;
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--foreground);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .case-result-label {
+    font-size: 0.92rem;
+    line-height: 1.45;
+    color: var(--text-muted);
+    text-wrap: balance;
+  }
+
+  @media (min-width: 900px) {
+    .case-results {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .case-results li {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      align-content: start;
+      gap: 0.4rem;
+      padding: 0 clamp(1rem, 2vw, 1.5rem);
+      border-top: 0;
+      border-left: 1px solid var(--border);
+    }
+
+    .case-results li:first-child {
+      padding: 0 clamp(1rem, 2vw, 1.5rem) 0 0;
+      border-left: 0;
+    }
+  }
+</style>

@@ -14,22 +14,31 @@ tags: ["Voice AI agents", "LLM orchestration", "B2B SaaS", "Per-second billing",
 import ProjectScreenshot from '../../components/ProjectScreenshot.astro';
 import LiveCabinetButton from '../../components/LiveCabinetButton.astro';
 import ShotGrid from '../../components/ShotGrid.astro';
+import CaseResults from '../../components/CaseResults.astro';
 
 <nav aria-label="On this page">
   <ul class="case-jump">
     <li><a href="#result">Result</a></li>
     <li><a href="#key-decision-sell-first-build-later">Key decision</a></li>
-    <li><a href="#how-the-console-works">How the console works</a></li>
+    <li><a href="#decisions-and-trade-offs">Trade-offs</a></li>
+    <li><a href="#how-we-judged-agent-quality">Agent quality</a></li>
     <li><a href="#my-part">My part</a></li>
+    <li><a href="#how-the-console-works">The console</a></li>
   </ul>
 </nav>
 
 ## Result
 
-- **80 paying B2B customers** in under a year from launch.
-- **500,000+ minutes** of live conversations in production.
-- **30% of the line's revenue** came from repeat payments.
-- **+30% average spend:** customers on AI agents spent 30% more than customers on our scripted robot.
+<CaseResults items={[
+  { value: '80', label: 'paying B2B customers in under a year from launch' },
+  { value: '500,000+', label: 'minutes of live conversations in production' },
+  { value: '30%', label: "of the line's revenue came from repeat payments" },
+  { value: '+30%', label: 'higher average spend on AI agents than on our scripted robot' },
+]} />
+
+## The problem: why calling, why now
+
+October 2025. Zvonobot was a mature outbound calling platform: robots dialing contact lists with pre-recorded scripts. LLMs had just learned to hold a real conversation. Recorded scripts would only get us so far, and if we did not build live agents, someone else would take the category. The question was not whether to build voice AI, but how to find out fast and cheaply whether our customers would pay for it.
 
 ## Key decision: sell first, build later
 
@@ -51,6 +60,69 @@ Zvonobot AI is a console where a B2B client builds a voice AI agent, gives it a 
   secondaryHref="https://zvonobot.ru/ai-agent"
   secondaryLabel="Product landing: zvonobot.ru/ai-agent"
 />
+
+<h2 id="who-bought">Who bought and how we sold it</h2>
+
+Buyers were companies in finance (banks, microfinance), HR and recruiting, online education, real estate, clinics and car dealers. The typical jobs were lead qualification, booking a visit or a call, confirming an order, delivery or booking, reactivating old customers, and the first screening of job candidates.
+
+We sold through four channels: our existing Zvonobot customers, cold calls from our sales managers, Yandex Direct ads, and word of mouth with referrals.
+
+<h2 id="decisions-and-trade-offs">Three trade-offs: pricing, billing, signup</h2>
+
+<div class="case-decisions">
+
+### Price per second, built from the cost of each part
+
+- **We chose:** a price per second of a call, built from what each part costs us: telephony, speech recognition, speech synthesis and the LLM.
+- **We rejected:** a flat price per minute.
+- **What it cost:** the tariffs became harder to explain, so we trained sales and support on the product every week.
+- **What it gave:** the price follows what a call really costs us, part by part, and the client pays for the seconds the conversation takes.
+
+### A client never goes negative mid-campaign
+
+- **We chose:** when a campaign starts, its estimated cost is held from the client's balance. Each call's real cost is settled when the call ends, and the unused part of the hold goes back if the campaign stops early.
+- **We rejected:** starting a campaign with no hold, charging each call as it ends from whatever balance is there.
+- **What it cost:** the money has to be on the balance before the campaign starts, and the estimate is only a forecast, so until the campaign closes the hold can be larger than what the calls end up spending.
+- **What it gave:** the balance does not go negative in the middle of a campaign, and money held for a campaign that stopped early returns to the client.
+
+### The phone is verified before the first call, not at signup
+
+- **We chose:** the phone is verified inside the console before the client's first call.
+- **We rejected:** verifying the phone at signup, as the condition for getting into the console.
+- **What it cost:** the check moved to the first call. A client who has not confirmed the number cannot dial yet, so the check arrives at the moment they want to try the agent, not at the door.
+- **What it gave:** signup stays short, and only the clients who actually start calling go through the check.
+
+</div>
+
+<h2 id="how-we-judged-agent-quality">How we judged agent quality</h2>
+
+A successful call was one that met the client's own criteria, and those criteria differed from client to client. For some clients the agent had to segment the list, deciding who was worth a call at all. For others it had to bring the contact to a target action. So there was no single bar for every agent: each one was checked against what its client asked for.
+
+Changes were tested on calls from test accounts before they went to clients.
+
+We compared three metrics:
+
+- **Share of target actions:** how many calls ended with the step the client wanted.
+- **Hang-ups in the first seconds:** calls the person dropped almost at once.
+- **Calls flagged by the LLM for a human:** conversations the model itself sent for a person to review.
+
+The biggest problem was answering machines. The agent talked to them, the client paid for those minutes, and the client's cost per lead went up.
+
+<h2 id="what-did-not-work-at-first">What did not work at first</h2>
+
+The first version was one big all-in-one scenario: one agent for the whole conversation. It came out too expensive, so we split the task and replaced the big agent with several small ones. The lesson we carried forward: agents should be small.
+
+<h2 id="my-part">My part and the team’s</h2>
+
+I owned the line: what got built, what it cost, whom we sold it to, pricing and per-call-type margins. Specs, priorities and review were mine. When a hypothesis needed a working answer faster than a sprint, I prototyped it myself with AI coding agents (Claude Code, Codex) and handed the team the learning, not the code.
+
+I ran go-to-market with sales, support and finance; the sales team selling the line grew from 4 to 15.
+
+- The loop: **hypothesis → smallest surface → live customers → decision**, in days, not quarters. White-label first was that loop applied to the whole line.
+- Boring infrastructure is product work: holds, reconciliation, idempotency and masked personal data decide whether a SaaS feels stable or fragile.
+- Start with the smallest stable surface and grow it. The console started with one role and one report; by October 2026 it had four roles, billing, an agent builder, analytics and a real call pipeline.
+
+<h2 id="how-the-console-works">What the console looks like</h2>
 
 <ProjectScreenshot
   lightSrc="/projects/zvonobot-dashboard-light.png"
@@ -96,21 +168,6 @@ Zvonobot AI is a console where a B2B client builds a voice AI agent, gives it a 
 </ShotGrid>
 
 <details>
-<summary>The problem: why outbound and why now</summary>
-
-### The problem
-
-October 2025. Zvonobot was a mature outbound calling platform: robots dialing contact lists with pre-recorded scripts. LLMs had just learned to hold a real conversation. Recorded scripts would only get us so far, and if we did not build live agents, someone else would take the category. The question was not whether to build voice AI, but how to find out fast and cheaply whether our customers would pay for it.
-
-### Who bought and how we sold it
-
-Buyers were companies in finance (banks, microfinance), HR and recruiting, online education, real estate, clinics and car dealers. The typical jobs were lead qualification, booking a visit or a call, confirming an order, delivery or booking, reactivating old customers, and the first screening of job candidates.
-
-We sold through four channels: our existing Zvonobot customers, cold calls from our sales managers, Yandex Direct ads, and word of mouth with referrals.
-
-</details>
-
-<details id="how-the-console-works">
 <summary>How the console works: signup, campaigns, billing</summary>
 
 One console for every role: agent assembly, dialing, billing and analytics.
@@ -125,69 +182,6 @@ One console for every role: agent assembly, dialing, billing and analytics.
 
 </details>
 
-<details id="decisions-and-trade-offs">
-<summary>Decisions and trade-offs: pricing, billing, signup</summary>
-
-### Price per second, built from the cost of each part
-
-- **We chose:** a price per second of a call, built from what each part costs us: telephony, speech recognition, speech synthesis and the LLM.
-- **We rejected:** a flat price per minute.
-- **What it cost:** the tariffs became harder to explain, so we trained sales and support on the product every week.
-- **What it gave:** the price follows what a call really costs us, part by part, and the client pays for the seconds the conversation takes.
-
-### A client never goes negative mid-campaign
-
-- **We chose:** when a campaign starts, its estimated cost is held from the client's balance. Each call's real cost is settled when the call ends, and the unused part of the hold goes back if the campaign stops early.
-- **We rejected:** starting a campaign with no hold, charging each call as it ends from whatever balance is there.
-- **What it cost:** the money has to be on the balance before the campaign starts, and the estimate is only a forecast, so until the campaign closes the hold can be larger than what the calls end up spending.
-- **What it gave:** the balance does not go negative in the middle of a campaign, and money held for a campaign that stopped early returns to the client.
-
-### The phone is verified before the first call, not at signup
-
-- **We chose:** the phone is verified inside the console before the client's first call.
-- **We rejected:** verifying the phone at signup, as the condition for getting into the console.
-- **What it cost:** the check moved to the first call. A client who has not confirmed the number cannot dial yet, so the check arrives at the moment they want to try the agent, not at the door.
-- **What it gave:** signup stays short, and only the clients who actually start calling go through the check.
-
-</details>
-
-<details id="how-we-judged-agent-quality">
-<summary>How we judged agent quality</summary>
-
-A successful call was one that met the client's own criteria, and those criteria differed from client to client. For some clients the agent had to segment the list, deciding who was worth a call at all. For others it had to bring the contact to a target action. So there was no single bar for every agent: each one was checked against what its client asked for.
-
-Changes were tested on calls from test accounts before they went to clients.
-
-We compared three metrics:
-
-- **Share of target actions:** how many calls ended with the step the client wanted.
-- **Hang-ups in the first seconds:** calls the person dropped almost at once.
-- **Calls flagged by the LLM for a human:** conversations the model itself sent for a person to review.
-
-The biggest problem was answering machines. The agent talked to them, the client paid for those minutes, and the client's cost per lead went up.
-
-</details>
-
-<details id="what-did-not-work-at-first">
-<summary>What did not work at first</summary>
-
-The first version was one big all-in-one scenario: one agent for the whole conversation. It came out too expensive, so we split the task and replaced the big agent with several small ones. It was less a failure than a new hypothesis: agents should be small.
-
-</details>
-
-<details id="my-part">
-<summary>My part and the team’s</summary>
-
-I owned the line: what got built, what it cost, whom we sold it to, pricing and per-call-type margins. Specs, priorities and review were mine. When a hypothesis needed a working answer faster than a sprint, I prototyped it myself with AI coding agents (Claude Code, Codex) and handed the team the learning, not the code.
-
-I ran go-to-market with sales, support and finance; the sales team selling the line grew from 4 to 15.
-
-- The loop: **hypothesis → smallest surface → live customers → decision**, in days, not quarters. White-label first was that loop applied to the whole line.
-- Boring infrastructure is product work: holds, reconciliation, idempotency and masked personal data decide whether a SaaS feels stable or fragile.
-- Start with the smallest stable surface and grow it. The console started with one role and one report; by October 2026 it had four roles, billing, an agent builder, analytics and a real call pipeline.
-
-</details>
-
-Built on our own stack by a team of four engineers; happy to walk through the architecture in an interview.
+Built on our own stack by a team of four engineers; happy to walk through the product decisions and the architecture in an interview.
 
 Screenshots come from the live product on a demo account with generated, anonymised data. Under NDA: client names, their prompts and contact lists, the voice provider and the money.

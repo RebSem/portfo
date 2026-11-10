@@ -2145,6 +2145,71 @@ a.project-shot-zoom {
   }
 }
 
+/* The flagship's trade-offs, unfolded: the wrapper holds flat h3, ul, h3, ul,
+   h3, ul. Phones stack each decision; from 900px the title sits left and its
+   four cells (key on its own line) form a 2x2 grid right, one hairline across
+   both columns between decisions. */
+.prose .case-decisions h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.35;
+}
+
+.prose .case-decisions ul {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  max-width: none;
+  list-style: none;
+}
+
+.case-decisions li {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.case-decisions li > strong:first-child {
+  display: block;
+  margin-bottom: 0.15rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.prose .case-decisions h3 ~ h3 {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+@media (min-width: 900px) {
+  .case-decisions {
+    display: grid;
+    grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
+    column-gap: 2.5rem;
+  }
+
+  .prose .case-decisions ul {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 2rem;
+    margin: 0;
+  }
+
+  .prose .case-decisions h3 ~ h3,
+  .prose .case-decisions h3 ~ ul {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .prose .case-decisions h3:first-child + ul {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: 0;
+  }
+}
+
 /* A readable measure for case text: at 1440 the prose used to run the full
    container, 150-170 characters a line, which is what made even short
    sections look like walls. Screenshots, the grid and the live-product box
