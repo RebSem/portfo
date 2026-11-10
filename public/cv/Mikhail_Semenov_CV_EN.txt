@@ -10,7 +10,7 @@ NUMBERS
 - ~10% of group revenue came from a line launched from scratch in a year
 - 80 paying B2B customers
 - 500,000+ minutes of conversations in production
-- +30% average spend: customers on AI agents vs the scripted robot
+- +30% average spend among customers who moved from the scripted robot to AI agents
 - 30% of line revenue came from repeat purchases
 - 130+ countries: the group CPaaS products, bulk calls and SMS
 
@@ -20,9 +20,9 @@ Product Manager, Zvonobot (Prof-IT Group) | Feb 2022 - Oct 2026
 Zvonobot is a B2B call automation platform: voice bots and AI agents for lead generation, sales outreach and customer reactivation.
 
 Zvonobot AI (Oct 2025 - Oct 2026)
-- ~10% of group revenue in under a year: 80 paying B2B customers and 500,000+ minutes of live conversations in production by August 2026. Repeat purchases brought 30% of the line revenue.
+- ~10% of group revenue in under a year: 80 paying B2B customers and 500,000+ minutes of live conversations in production by August 2026. Repeat payments brought 30% of the line revenue.
 - From scratch to market in weeks: launched Zvonobot AI, the voice AI agent line, on a white-label platform and proved demand with live customers. Then made the case, with numbers, for an in-house, more flexible platform and started moving the line onto it.
-- +30% in average customer spend: customers on AI agents versus customers on the legacy linear IVR robot. On warm lead lists, AI agents beat the legacy robots on conversion to the target action in our tests, which became the basis for pricing.
+- +30% in average spend among Zvonobot customers who moved from the legacy linear IVR robot to AI agents, averaged since sales began; part of the growth is price: the agents cost more than the robot. On warm lead lists, AI agents beat the legacy robots on conversion to the target action in our tests, which became the basis for pricing.
 - The full product suite of the line: agent and script builder, LLM call analytics (outcome, sentiment, custom post-call fields), per-second billing plans by cost component (LLM, ASR, TTS), balance hold at campaign start.
 - A product team of 4 engineers: engineering reported to the tech lead, while priorities, specs and acceptance were mine. Set quarterly OKRs for the line and defended them with leadership.
 - The sales team grew from 4 to 15 people to sell the line: I ran go-to-market with stakeholders in sales, support and finance, and trained sales and support on the product weekly. Owned pricing, plans, per-call-type margins and the product's unit economics.
@@ -45,7 +45,7 @@ PRODUCTS
 SKILLS
 Roles: Product Manager, Product Owner
 Product: product strategy and roadmap, discovery, customer interviews, metrics and product analytics, unit economics (LTV, CAC, retention and churn, average spend), pricing and monetization, A/B experiments, hypothesis validation, go-to-market, OKRs, stakeholder management, B2B SaaS, CRM
-AI and LLM: generative AI (GenAI), voice AI agents, conversational AI, LLM orchestration, prompt engineering, RAG, LLM evals, ASR, TTS, contact centers, SIP telephony
+AI and LLM: generative AI (GenAI), voice AI agents, conversational AI, LLM orchestration, prompt engineering, LLM evals, ASR, TTS, contact centers, SIP telephony
 Delivery: PRDs and specs, decomposition, acceptance criteria, reviews, release cycle, working with engineers and sales, fast hypothesis validation, 0 to 1
 Tools: Jira, Confluence, Figma, Yandex Metrica, PostHog
 AI tools: Claude Code, Codex, prototyping with AI agents
