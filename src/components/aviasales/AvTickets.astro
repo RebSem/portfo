@@ -1,0 +1,36 @@
+---
+import { avTickets } from '../../data/aviasales';
+---
+
+{/* A4: the whole strip is a joke, so calm mode removes it. The track shifts with scroll on wide
+    screens; on phones it is a plain swipe. The price strings in the markup are the final values. */}
+{/* The heading is for assistive tech and for analytics, which counts a section as seen only
+    through aria-labelledby. The strip itself needs no visible title. */}
+<section class="av-tickets av-section" aria-labelledby="av-tickets-title" data-av-meme data-av-progress data-av-once>
+  <h2 id="av-tickets-title" class="av-sr">Тарифы</h2>
+  <ul class="av-tickets__track">
+    {avTickets.map((t) => (
+      <li class="av-ticket">
+        <div class="av-ticket__paper">
+          <div class="av-ticket__main">
+            <span class="av-badge av-ticket__badge" data-kind={t.kind}>{t.badge}</span>
+            <p class="av-ticket__route">{t.from} <span aria-hidden="true">→</span> {t.to}</p>
+            <p class="av-ticket__note">{t.note}</p>
+            <p class="av-ticket__price">
+              {t.old && <s class="av-ticket__old">{t.old}</s>}
+              <strong
+                data-av-drop={t.drop ? '' : undefined}
+                data-from={t.drop?.from}
+                data-to={t.drop?.to}
+                data-suffix={t.drop?.suffix}
+              >{t.price}</strong>
+            </p>
+          </div>
+          <div class="av-ticket__stub" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false"><path d="M2 13.5 22 4l-6.5 17-3.2-7.3z"></path></svg>
+          </div>
+        </div>
+      </li>
+    ))}
+  </ul>
+</section>

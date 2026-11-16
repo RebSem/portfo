@@ -17,6 +17,11 @@ export type HiddenBucket = 'under-1m' | '1-10m' | 'over-10m';
 
 type Validator = (value: unknown) => boolean;
 
+const oneOf =
+  (allowed: readonly string[]): Validator =>
+  (value) =>
+    typeof value === 'string' && allowed.includes(value);
+
 const SIGNALS = {
   // First return to a tab after the away title was shown, bucketed. A
   // human coming back after 1-10 minutes is someone comparing candidates.
@@ -31,6 +36,15 @@ const SIGNALS = {
   'booking:done': {
     minutes: isBookingMinutes,
   },
+  // The Aviasales landing (/ru/aviasales/): calm mode, the toasts, the vacancy
+  // filter that was pressed and the easter eggs. Fixed ids only, never page text.
+  'aviasales:calm': { on: (value: unknown) => typeof value === 'boolean' },
+  'aviasales:toast': {
+    id: oneOf(['price', 'mission', 'baroness']),
+    action: oneOf(['shown', 'closed']),
+  },
+  'aviasales:filter': { req: oneOf(['r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'r7']) },
+  'aviasales:egg': { id: oneOf(['baroness', 'turbulence', 'search']) },
 } satisfies Record<string, Record<string, Validator>>;
 
 export type SignalName = keyof typeof SIGNALS;

@@ -1,0 +1,44 @@
+---
+import AvNb from './AvNb.astro';
+import { avTurb, meme } from '../../data/aviasales';
+
+const dog = meme('dog');
+---
+
+{/* A8: on first entry the seat-belt sign lights up, the bars grow left to right and the cabin shakes once. */}
+<section class="av-turb av-container av-section" aria-labelledby="av-turb-title" data-av-once>
+  <div class="av-turb__cabin">
+    <div class="av-turb__story">
+      <p class="av-turb__belt" aria-hidden="true" data-av-meme>{avTurb.belt}</p>
+      <h2 id="av-turb-title" class="av-h2">
+        <span data-av-meme>{avTurb.title}</span><span data-av-plain hidden>{avTurb.titlePlain}</span>
+      </h2>
+      <p class="av-turb__lead"><AvNb text={avTurb.lead} /></p>
+
+      <ul class="av-turb__scale" data-av-meme>
+        {avTurb.phases.map((p, i) => (
+          <li style={`--v:${p.level};--i:${i}`}>
+            <span class="av-turb__phase">{p.name}</span>
+            <span class="av-turb__bar"><i></i></span>
+            <span class="av-turb__say">{p.say}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="av-turb__side">
+      <div class="av-turb__dog" data-av-meme>
+        <img src="/pixel-pug-peek.svg" alt="" width="60" height="42" />
+        <div class="av-turb__lines">
+          <p class="av-turb__punch">{avTurb.punch}</p>
+          {dog && <p class="av-turb__meme">{dog}</p>}
+        </div>
+      </div>
+
+      <p class="av-turb__serious"><AvNb text={avTurb.serious} /></p>
+      <ul class="av-turb__trips" aria-label="Поездки за последние два года">
+        {avTurb.trips.map((t) => <li>{t}</li>)}
+      </ul>
+    </div>
+  </div>
+</section>

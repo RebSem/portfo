@@ -1,0 +1,21 @@
+---
+import { meme } from '../../data/aviasales';
+import { gtaRibbon } from '../../lib/aviasales';
+
+const before = meme('gta-before');
+const after = meme('gta-after');
+const state = gtaRibbon(new Date());
+---
+
+{before && after && (
+  <div class="av-ribbon" data-av-meme data-av-ribbon data-before={before} data-after={after} hidden={state.phase === 'off'}>
+    <p class="av-ribbon__text">
+      {/* No whitespace between the spans: the timer text brings its own leading space. */}
+      <span data-av-ribbon-text>{state.phase === 'after' ? after : before}</span><span class="av-ribbon__timer" data-av-ribbon-timer></span>
+    </p>
+  </div>
+)}
+<div class="av-progress" aria-hidden="true">
+  <span class="av-progress__track"></span>
+  <svg class="av-progress__plane" viewBox="0 0 24 24" focusable="false"><path d="M2 13.5 22 4l-6.5 17-3.2-7.3z" fill="currentColor"></path></svg>
+</div>

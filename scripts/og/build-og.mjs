@@ -76,6 +76,16 @@ const CALL = {
   },
 };
 
+// The Aviasales landing card (/ru/aviasales/). Russian only. The numbers are
+// copied by hand from cvMetric('customers') and cvMetric('minutes') in cv.ts.
+const AVIASALES = {
+  ru: {
+    name: COPY.ru.name,
+    headline: ['Здесь бронируют', 'балдёжного продакта'],
+    proof: 'Отклик на Product Manager (Hotels) · 80 клиентов · 500 000+ минут',
+  },
+};
+
 // The eyebrow is the only part that differs between pages: it says where the
 // link leads. Everything else is the same card for every page of a locale.
 const CARDS = [
@@ -87,6 +97,7 @@ const CARDS = [
   { page: 'cv', locale: 'ru', eyebrow: 'rebsem.ru / резюме' },
   { page: 'call', locale: 'en', eyebrow: 'rebsem.ru / call', copy: CALL.en },
   { page: 'call', locale: 'ru', eyebrow: 'rebsem.ru / созвон', copy: CALL.ru },
+  { page: 'aviasales', locale: 'ru', eyebrow: 'rebsem.ru / aviasales', copy: AVIASALES.ru },
   { page: 'case-zvonobot-ai', locale: 'en', eyebrow: 'rebsem.ru / case', copy: CASE.en },
   { page: 'case-zvonobot-ai', locale: 'ru', eyebrow: 'rebsem.ru / кейс', copy: CASE.ru },
 ];

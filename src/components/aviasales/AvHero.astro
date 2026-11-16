@@ -1,0 +1,77 @@
+---
+import AvNb from './AvNb.astro';
+import { avHero } from '../../data/aviasales';
+import { email, telegramHandle } from '../../data/cv';
+---
+
+<section class="av-hero" aria-labelledby="av-hero-title" data-av-progress>
+  <div class="av-container av-hero__inner">
+    <div class="av-hero__top">
+      <nav class="av-tabs" aria-label="Разделы">
+        {avHero.tabs.map((tab) => (
+          <a
+            class="av-tab"
+            href={tab.href}
+            rel={tab.nofollow ? 'nofollow' : undefined}
+            aria-current={tab.current ? 'page' : undefined}
+          >{tab.label}</a>
+        ))}
+      </nav>
+      <button type="button" class="av-calm" data-av-calm-toggle aria-pressed="false" title={avHero.calm.title} hidden>
+        <svg class="av-calm__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M2 13.5 22 4l-6.5 17-3.2-7.3z" fill="currentColor"></path>
+          <path class="av-calm__strike" d="M3 3 21 21"></path>
+        </svg>
+        <span data-av-calm-label>{avHero.calm.off}</span>
+      </button>
+    </div>
+
+    <h1 id="av-hero-title" class="av-hero__title">
+      <span data-av-meme>{avHero.h1}</span>
+      <span data-av-plain hidden>{avHero.h1Plain}</span>
+    </h1>
+    <p class="av-hero__lead"><AvNb text={avHero.lead} /></p>
+
+    <div class="av-hero__sky" aria-hidden="true" data-av-meme>
+      {/* A1: the flight, inside the grid so it never covers the text. A5 clouds are a later pass.
+           The resting transform puts the plane at the end of the arc. */}
+      <svg class="av-flight" viewBox="0 0 600 220" aria-hidden="true" focusable="false">
+        <defs>
+          <mask id="av-route-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="600" height="220">
+            <path class="av-flight__reveal" d="M20 190 C160 20 400 10 532 150" pathLength="1"></path>
+          </mask>
+        </defs>
+        <path class="av-flight__route" d="M20 190 C160 20 400 10 532 150" mask="url(#av-route-mask)"></path>
+        <g class="av-flight__bed">
+          <circle cx="566" cy="158" r="24"></circle>
+          <path d="M553 166v-13m0 5h9a4 4 0 0 1 4 4h9a4 4 0 0 1 4 4m-26 0h26v4"></path>
+        </g>
+        <g class="av-flight__plane" data-av-plane transform="translate(532 150) rotate(47)">
+          <path d="M13 0 -12 -9 -5 0 -12 9z"></path>
+        </g>
+      </svg>
+    </div>
+
+    {/* Paper only. The H1 and the lead already name him twice, so this line keeps just the place. */}
+    <div class="av-print-only">
+      <p>Пермь, GMT+5 · удалённо</p>
+      <p>Telegram: {telegramHandle} · {email} · rebsem.ru</p>
+      <p>Интерактивная версия этого резюме: rebsem.ru/ru/aviasales</p>
+    </div>
+
+    <div class="av-search" role="group" aria-label={avHero.searchAria}>
+      <div class="av-search__fields">
+        {avHero.search.map((f) => (
+          <div class="av-search__field">
+            <span class="av-search__label">{f.label}</span>
+            <span class="av-search__value">{f.value}</span>
+          </div>
+        ))}
+      </div>
+      <a class="av-btn av-btn--primary av-search__go" href="#av-results" data-av-search-go>{avHero.searchButton}</a>
+    </div>
+    <p class="av-loader" data-av-loader data-av-meme data-lines={JSON.stringify(avHero.loader)} role="status"></p>
+
+    <p class="av-board" data-av-board data-av-meme>{avHero.board.join(' · ')}</p>
+  </div>
+</section>

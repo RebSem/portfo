@@ -45,6 +45,17 @@ export default defineConfig({
       fallbacks: ['JetBrains Mono', 'Menlo', 'monospace'],
     },
     {
+      // Display face of /ru/aviasales/ only: that page asks for it through the
+      // `head` slot of Layout.astro, so no other page downloads or preloads it.
+      provider: fontProviders.google(),
+      name: 'Unbounded',
+      cssVariable: '--font-unbounded',
+      weights: ['700 900'],
+      styles: ['normal'],
+      subsets: ['latin', 'cyrillic'],
+      fallbacks: ['Arial', 'sans-serif'],
+    },
+    {
       // Local file instead of the google provider: the provider resolves
       // static instances and drops the optical-size axis, flattening the
       // hero serif to its 16pt text cut. This woff2 keeps opsz 6-72 so

@@ -1,0 +1,55 @@
+---
+import { Font } from 'astro:assets';
+import AvBooking from '../../components/aviasales/AvBooking.astro';
+import AvDetails from '../../components/aviasales/AvDetails.astro';
+import AvFooter from '../../components/aviasales/AvFooter.astro';
+import AvHero from '../../components/aviasales/AvHero.astro';
+import AvResults from '../../components/aviasales/AvResults.astro';
+import AvRibbon from '../../components/aviasales/AvRibbon.astro';
+import AvSerpNotes from '../../components/aviasales/AvSerpNotes.astro';
+import AvTickets from '../../components/aviasales/AvTickets.astro';
+import AvToasts from '../../components/aviasales/AvToasts.astro';
+import AvTurbulence from '../../components/aviasales/AvTurbulence.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import { avCard } from '../../data/aviasales';
+import { cvName, telegramUrl } from '../../data/cv';
+import Layout from '../../layouts/Layout.astro';
+import '../../styles/aviasales.css';
+---
+
+<Layout
+  title={`${cvName.ru}: отклик на Product Manager (Hotels)`}
+  description="Резюме продакт-менеджера в виде отельной выдачи: требования вакансии как фильтры, опыт как карточка отеля. Отклик на Product Manager (Hotels)."
+  image="/og/aviasales-ru.png"
+  imageAlt="Здесь бронируют балдёжного продакта. Михаил Семенов, Product Manager."
+  noIndex
+  followLinks
+>
+  <Font slot="head" cssVariable="--font-unbounded" preload />
+
+  <a id="skip-to-content" href="#main-content" class="skip-link">К содержимому</a>
+
+  <SiteHeader active="none" localeToggleUrl="/cv/" />
+
+  <div class="av-page" data-aviasales>
+    <AvRibbon />
+    <main id="main-content" tabindex="-1">
+      <AvHero />
+      <AvResults />
+      <AvDetails />
+      <AvSerpNotes />
+      <AvTickets />
+      <AvTurbulence />
+      <AvBooking />
+    </main>
+    <AvFooter />
+    <AvToasts />
+    <div class="av-sticky" data-analytics-placement="aviasales-sticky">
+      <a class="av-btn av-btn--primary" href={telegramUrl} target="_blank" rel="noopener">{avCard.cta}</a>
+    </div>
+  </div>
+
+  <script>
+    import '../../scripts/aviasales';
+  </script>
+</Layout>

@@ -73,6 +73,82 @@ describe('sanitizeSignal for the booking page', () => {
   });
 });
 
+describe('sanitizeSignal for the Aviasales landing', () => {
+  it('passes the allowed ids and actions', () => {
+    for (const id of ['price', 'mission', 'baroness']) {
+      for (const action of ['shown', 'closed']) {
+        expect(sanitizeSignal({ name: 'aviasales:toast', props: { id, action } })).toEqual({
+          name: 'aviasales:toast',
+          props: { id, action },
+        });
+      }
+    }
+    for (const req of ['r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'r7']) {
+      expect(sanitizeSignal({ name: 'aviasales:filter', props: { req } })).toEqual({
+        name: 'aviasales:filter',
+        props: { req },
+      });
+    }
+    for (const id of ['baroness', 'turbulence', 'search']) {
+      expect(sanitizeSignal({ name: 'aviasales:egg', props: { id } })).toEqual({
+        name: 'aviasales:egg',
+        props: { id },
+      });
+    }
+  });
+
+  it('drops values outside the lists', () => {
+    expect(sanitizeSignal({ name: 'aviasales:toast', props: { id: 'other', action: 'opened' } })).toEqual({
+      name: 'aviasales:toast',
+      props: {},
+    });
+    for (const req of ['r8', 'R1', '', 1, null]) {
+      expect(sanitizeSignal({ name: 'aviasales:filter', props: { req } })).toEqual({
+        name: 'aviasales:filter',
+        props: {},
+      });
+    }
+    expect(sanitizeSignal({ name: 'aviasales:egg', props: { id: 'pug' } })).toEqual({
+      name: 'aviasales:egg',
+      props: {},
+    });
+  });
+
+  it('keeps nothing but the allowed keys', () => {
+    expect(
+      sanitizeSignal({
+        name: 'aviasales:filter',
+        props: { req: 'r3', text: 'Опыт с B2B', query: 'отель', email: 'a@example.com' },
+      }),
+    ).toEqual({ name: 'aviasales:filter', props: { req: 'r3' } });
+    expect(
+      sanitizeSignal({ name: 'aviasales:egg', props: { id: 'search', typed: 'hello', constructor: 'x' } }),
+    ).toEqual({ name: 'aviasales:egg', props: { id: 'search' } });
+  });
+
+  it('accepts only a boolean for calm mode', () => {
+    expect(sanitizeSignal({ name: 'aviasales:calm', props: { on: true } })).toEqual({
+      name: 'aviasales:calm',
+      props: { on: true },
+    });
+    expect(sanitizeSignal({ name: 'aviasales:calm', props: { on: false } })).toEqual({
+      name: 'aviasales:calm',
+      props: { on: false },
+    });
+    for (const on of ['true', 1, 0, null, undefined]) {
+      expect(sanitizeSignal({ name: 'aviasales:calm', props: { on } })).toEqual({
+        name: 'aviasales:calm',
+        props: {},
+      });
+    }
+  });
+
+  it('does not accept names outside the allow-list', () => {
+    expect(sanitizeSignal({ name: 'aviasales:click', props: { id: 'price' } })).toBeNull();
+    expect(sanitizeSignal({ name: 'aviasales', props: {} })).toBeNull();
+  });
+});
+
 describe('hiddenBucket', () => {
   it('buckets the time away', () => {
     expect(hiddenBucket(5_000)).toBe('under-1m');

@@ -1,0 +1,34 @@
+---
+import AvNb from './AvNb.astro';
+import { avNotes, meme } from '../../data/aviasales';
+
+const hermes = meme('hermes');
+---
+
+{/* The main content block: no motion, and the copy stays questions, never advice. */}
+<section class="av-notes av-container av-section" aria-labelledby="av-notes-title">
+  {hermes && <p class="av-notes__kicker" data-av-meme>{hermes}</p>}
+  <h2 id="av-notes-title" class="av-h2">{avNotes.title}</h2>
+  <p class="av-notes__intro"><AvNb text={avNotes.intro} /></p>
+
+  <ol class="av-notes__list">
+    {avNotes.items.map((n, i) => (
+      <li class="av-note">
+        <p class="av-note__n">Наблюдение {i + 1}</p>
+        <h3 class="av-note__title"><AvNb text={n.title} /></h3>
+        <dl class="av-note__dl">
+          <dt>{avNotes.labels.seen}</dt><dd><AvNb text={n.seen} /></dd>
+          <dt>{avNotes.labels.idea}</dt><dd><AvNb text={n.idea} /></dd>
+          <dt>{avNotes.labels.metric}</dt><dd><AvNb text={n.metric} /></dd>
+          <dt>{avNotes.labels.test}</dt><dd><AvNb text={n.test} /></dd>
+        </dl>
+      </li>
+    ))}
+  </ol>
+
+  <div class="av-notes__more">
+    <h3 class="av-notes__more-title">{avNotes.moreTitle}</h3>
+    <ul>{avNotes.more.map((m) => <li>{m}</li>)}</ul>
+  </div>
+  <p class="av-notes__outro">{avNotes.outro}</p>
+</section>

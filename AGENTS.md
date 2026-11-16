@@ -64,6 +64,14 @@ The repository is **public**. Treat every commit as permanent and world-readable
   only then the console screenshots. Only the console's feature list is folded.
   Do not fold the trade-offs, quality or role sections again: they are what a
   hiring manager reads the case for.
+- `/ru/aviasales/` is a one-off, Russian-only landing resume for one vacancy (Aviasales,
+  Product Manager, Hotels). It parodies a hotel search page: the vacancy's seven
+  requirements are the filters, the candidate is the single result. Unlisted:
+  `noindex,follow`, not in the nav, sitemap or `llms.txt`. Copy lives in
+  `src/data/aviasales.ts`, pure logic in `src/lib/aviasales.ts`, behaviour in
+  `src/scripts/aviasales.ts`, styles in `src/styles/aviasales.css`, components in
+  `src/components/aviasales/`. Its PDF, `public/cv/aviasales/Mikhail_Semenov_PM_Hotels.pdf`,
+  is the same page printed by `cv:export`.
 - Content status: 7 published project case studies per locale (`tubedrop` is
   `draft: true`); one published blog post pair (`welcome`), the `tubedrop` post pair is
   a draft. The blog is **unlisted** since 2026-08-18: kept at its URLs, absent from the
@@ -79,14 +87,17 @@ The repository is **public**. Treat every commit as permanent and world-readable
 
 ```
 astro.config.mjs        site URL, i18n (en default unprefixed, ru under /ru), self-hosted
-                        fonts (top-level `fonts`), /projects -> /#projects redirects,
+                        fonts (top-level `fonts`; Unbounded is loaded by /ru/aviasales/
+                        only), /projects -> /#projects redirects,
                         compressHTML and the Vite CSS target (see Gotchas)
 src/
   pages/                file routes; ru/ mirrors the root. cv.astro, cv.txt.ts (resume),
                         llms.txt.ts (generated from cv.ts and the case collection),
                         sitemap.xml.ts, robots.txt.ts, api/github/*.json.ts (build-time JSON)
-  layouts/Layout.astro  the single page shell: head, meta, JSON-LD, robots, transitions
-  components/           Astro components (HomeHero, CvDocument, FeaturedCase, Analytics, ...)
+  layouts/Layout.astro  the single page shell: head (with a `head` slot for page-specific
+                        tags), meta, JSON-LD, robots, transitions
+  components/           Astro components (HomeHero, CvDocument, FeaturedCase, Analytics, ...);
+                        components/aviasales/ belongs to the /ru/aviasales/ landing only
   content/blog/         MDX posts, RU/EN pairs linked by translationKey
   content/projects/     MDX case studies, one file per locale (<id>-en.mdx / <id>-ru.mdx)
   content.config.ts     glob loaders + zod schemas for both collections (entry.id = slug)
@@ -196,7 +207,8 @@ is git-ignored; `.env.example` is the template.
   `main`, squash merge, never force-push `main` (see `docs/workflow.md`). The one
   exception was the 2026-10-21 privacy purge (see History).
 - Every page exists in both locales: change EN and RU together. English is the
-  default (unprefixed), Russian lives under `/ru`.
+  default (unprefixed), Russian lives under `/ru`. The one exception is the
+  Russian-only `/ru/aviasales/` landing.
 - No UI framework: Astro components plus small vanilla modules in `src/scripts/`.
   Logic worth testing goes into `src/lib/` without DOM or SDK imports.
 - Content: no em dashes in site or resume text (removed site-wide in #36; enforced for
@@ -225,7 +237,7 @@ is git-ignored; `.env.example` is the template.
   files together with the change. Check PDFs with `pdftotext file.pdf - | head -40`.
 - Per-vacancy resumes are the candidate's document: `cv:vacancy` only strips the phone,
   it does not edit the text. Slugs and file names stay ASCII.
-- Unlisted pages (`/cv`, `/ru/cv`, `/cv.txt`, `/call/`, `/call/thanks/`, the blog) stay out of the sitemap,
+- Unlisted pages (`/cv`, `/ru/cv`, `/cv.txt`, `/call/`, `/call/thanks/`, `/ru/aviasales/`, the blog) stay out of the sitemap,
   header navigation and `llms.txt`; `/cv` keeps `noindex,follow`. Since 2026-11-03
   `/cv/` is reachable only through a quiet `rel="nofollow"` "Resume" text link in the
   closing footer of the home page, About and every case, and since 2026-11-11 on
@@ -252,6 +264,15 @@ is git-ignored; `.env.example` is the template.
   on any page, meta descriptions at most 160 characters, no client-side GitHub API
   calls (`tests/regression-guards.test.ts`); no em dash in published MDX or the web
   manifest (`tests/no-em-dash.test.ts`).
+- The Aviasales landing is the only page with playful motion, and the exception is narrow:
+  every animation is finite, scroll-linked or triggered by the visitor; nothing loops
+  forever (the `infinite` guard still applies); the resting state equals the last frame,
+  so the page is complete without JavaScript, under `prefers-reduced-motion` and in its
+  own calm mode (`?calm=1`). Facts never move: the name, the resume numbers and the proof
+  texts are static.
+- Jokes on that page come from `avMemes` in `src/data/aviasales.ts`. Only the owner flips
+  `approved`. No names, faces or third-party images of real people, ever. No Aviasales
+  logo, font, illustrations or screenshots, and nothing from the game its ribbon mentions.
 - Analytics stays storage-free and anonymous: `persistence: 'memory'`, no `identify()`,
   no session replay. The only device write is the owner's `?me=1` opt-out flag.
   UI code never imports posthog: it emits `rebsem:signal`, and only names and values
@@ -420,6 +441,22 @@ is git-ignored; `.env.example` is the template.
   short AI-agents note; the quiet Resume link on the first screen, placed where it
   reads as part of the row) and to aligning the resume with his answers (the +30%
   definition, no RAG; exports regenerated). He declined an hh.ru link.
+- 2026-11-16: `/ru/aviasales/`, a landing resume for one vacancy, built from the owner's
+  written spec. His decisions, for that page only: the "~10% of group revenue" figure and
+  the city (Perm) are allowed there (the earlier ban stays for every other page); the page
+  is Russian-only (the exception to "every page exists in both locales"); every contact
+  button opens the Telegram dialog with no prefilled text; two self-appearing toasts at
+  most; travel facts (6-8 flights a year, Dubai, Almaty, Armenia, Georgia, books stays on
+  Airbnb) were given by him on 16 Nov and live in `src/data/aviasales.ts`, not in `cv.ts`.
+  The vacancy PDF is printed from the landing itself by `cv:export` into
+  `public/cv/aviasales/` instead of `cv:vacancy`: one source of facts, no separate
+  markdown resume. `Layout.astro` gained a `head` slot so the page can load its display
+  font (Unbounded) without touching other pages. Four allow-listed signals
+  (`aviasales:calm`, `:toast`, `:filter`, `:egg`) carry fixed ids only. The test for his
+  exclusion list matches digests, so the public repo does not spell those words out.
+  Remove the page, its data, lib, script, styles, components, tests, OG card, signals,
+  the print step in `cv:export`, the font entry and `public/cv/aviasales/` when the
+  process with the company ends, and leave one line here that the page existed.
 
 ## Gotchas
 
@@ -433,6 +470,11 @@ is git-ignored; `.env.example` is the template.
 - Chrome rasterizes `mix-blend-mode` in print (a 9 MB PDF), letter-spacing splits
   headings in the text layer, hyphens vanish at line breaks: details in
   `scripts/cv/README.md`.
+- `cv:export` re-renders every file under `public/cv/`, and a re-rendered PDF or DOCX
+  differs byte for byte even when its content did not change. When only the Aviasales
+  landing changed, keep `public/cv/aviasales/` and restore the general resumes with
+  `git checkout -- public/cv/Mikhail_Semenov_CV_*`. The landing PDF fits two A4 pages
+  with about five lines to spare: after any copy change check `pdfinfo` for the page count.
 - Project and blog slugs carry the locale suffix: `/projects/<id>-en/`,
   `/ru/projects/<id>-ru/`. `/projects` itself has no page and redirects to `/#projects`.
 - `og:build` uses the macOS Google Chrome path; it won't run on Linux CI as is. When
