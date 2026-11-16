@@ -1,6 +1,6 @@
 ---
 import AvNb from './AvNb.astro';
-import { avAmenities, avDetails, avHero, avStays, meme } from '../../data/aviasales';
+import { avAmenities, avBaggage, avDetails, avHero, avStays, meme } from '../../data/aviasales';
 import { cvExperience, cvSkillGroups, cvSummary, runHref, siteUrl } from '../../data/cv';
 
 // Absolute, as on /ru/cv/: the PDF is printed from a local server, so a relative link would point at 127.0.0.1.
@@ -30,6 +30,7 @@ const hotels = roleIds.flatMap((roleId) => {
 
 const plainSkills = cvSkillGroups.filter((group) => ['Продукт', 'Delivery', 'Технологии'].includes(group.label.ru));
 const jacket = meme('jacket');
+const baroness = meme('baroness');
 
 // Simple 24-unit stroke icons, drawn for this page (1.5px stroke at 20px).
 const icons: Record<string, string> = {
@@ -133,6 +134,30 @@ const icons: Record<string, string> = {
     <ul class="av-skills" data-av-plain hidden>
       {plainSkills.map((group) => (
         <li><strong>{group.label.ru}:</strong> <AvNb text={group.items.map((item) => item.ru).join(', ')} /></li>
+      ))}
+    </ul>
+  </div>
+
+  {/* A9: the baggage belt. Decoration over the same skills the plain list carries, so calm mode and
+       paper drop it (data-av-meme). The handbag goes second: on a phone it is in the first view, and
+       from 768px the belt shows every item at some point of its scroll-linked sweep. */}
+  <div class="av-belt" role="group" aria-label="Багаж: навыки" data-av-meme data-av-progress>
+    <ul class="av-belt__track">
+      {avBaggage.map((skill, i) => (
+        <Fragment>
+          <li class="av-bag" data-tone={i % 4}><span class="av-bag__label">{skill}</span></li>
+          {i === 0 && baroness && (
+            <li class="av-bag av-bag--purse">
+              <button type="button" class="av-purse" data-av-egg="baroness" aria-label="Сумочка">
+                <svg viewBox="0 0 48 40" aria-hidden="true" focusable="false">
+                  <path class="av-purse__handle" d="M15 16v-4a9 9 0 0 1 18 0v4"></path>
+                  <path class="av-purse__body" d="M9 15h30l4 19a4 4 0 0 1-4 4.8H9a4 4 0 0 1-4-4.8z"></path>
+                  <path class="av-purse__flap" d="M8.5 21h31"></path>
+                </svg>
+              </button>
+            </li>
+          )}
+        </Fragment>
       ))}
     </ul>
   </div>

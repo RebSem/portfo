@@ -411,6 +411,45 @@ html[data-theme='dark'] body:has(.av-page) {
   border-radius: 0 0 24px 24px;
   background: var(--av-blue);
   color: #fff;
+  /* The cloud layer below sits at z-index -1: over the band's background, under its content. */
+  isolation: isolate;
+}
+
+/* A5: clouds. White on the band takes contrast from the white text over it, and the layer covers
+   the whole band, so it does not rely on dodging the text. The layer's opacity caps the white
+   everywhere at once (overlapping clouds do not add up): at 0.06 on #1166e3 white text keeps
+   4.7:1, at 0.12 on the dark #1459c2 it keeps 5.0:1. The clouds inside only go fainter. */
+.av-hero__clouds {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  border-radius: inherit;
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+html[data-theme='dark'] .av-hero__clouds {
+  opacity: 0.12;
+}
+
+.av-cloud {
+  position: absolute;
+  display: block;
+  height: auto;
+  fill: #fff;
+}
+
+/* Placed from the band's top in px: a % or bottom anchor would move the clouds whenever the band's
+   height settles after load, and the layout-shift score would count them. */
+.av-cloud--1 { top: 14px; left: 44%; width: 130px; --av-drift: -90px; }
+.av-cloud--2 { top: 150px; left: 70%; width: 200px; opacity: 0.8; --av-drift: -160px; }
+.av-cloud--3 { top: 270px; left: 8%; width: 110px; opacity: 0.9; --av-drift: -50px; }
+
+/* Scroll-linked, so nothing moves on its own; at rest the clouds stand where they are drawn. */
+.av-motion .av-cloud {
+  transform: translate3d(calc(var(--av-p, 0) * var(--av-drift)), 0, 0);
+  will-change: transform;
 }
 
 .av-hero :is(a, button):focus-visible {
@@ -626,6 +665,12 @@ html[data-theme='dark'] body:has(.av-page) {
   fill: rgb(6 30 82 / 0.28);
 }
 
+/* Painted nothing, still hit: `all` takes pointer events whatever the fill. */
+.av-flight__hit {
+  fill: none;
+  pointer-events: all;
+}
+
 .av-flight__bed,
 .av-flight__ring {
   transform-box: fill-box;
@@ -789,7 +834,8 @@ html[data-theme='dark'] body:has(.av-page) {
   grid-area: loader;
   margin: 6px 0 0;
   min-height: 22px;
-  color: rgb(255 255 255 / 0.92);
+  /* Full white: a cloud can pass behind this line, and 0.92 white kept only 4.2:1 over one. */
+  color: #fff;
   font: 500 15px / 22px var(--av-font-text);
 }
 
@@ -2138,7 +2184,7 @@ html[data-theme='dark'] .av-page {
   --av-perf: rgb(238 241 245 / 0.24);
 }
 
-/* ===================== 11. Details: about, amenities, stays (7.5) ===================== */
+/* ===================== 11. Details: about, amenities, stays, baggage belt (7.5, A9) ===================== */
 
 .av-details {
   display: grid;
@@ -2360,6 +2406,174 @@ html[data-theme='dark'] .av-page {
 @media (max-width: 767px) {
   .av-details__block {
     padding: 18px 16px;
+  }
+}
+
+/* A9: the baggage belt, last in the details. Suitcases are rounded boxes with a handle and two
+   wheels, tinted with the badge pairs (each 4.5:1 or better). Without motion (no script, reduced
+   motion) it is a plain horizontal scroller, so every item stays reachable. */
+.av-belt {
+  overflow-x: auto;
+  padding: 4px 0 14px;
+  border-block: 2px dashed var(--av-line);
+  scrollbar-width: thin;
+  /* 100cqw below is the belt's own width: the sweep is sized in CSS, without measuring. */
+  container-type: inline-size;
+}
+
+.av-belt__track {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  width: max-content;
+  padding-inline: 4px;
+}
+
+.av-bag {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  margin-top: 16px; /* room for the handle */
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: var(--av-blue-50);
+  color: var(--av-text);
+  font: 600 14px / 1.25 var(--av-font-text);
+  white-space: nowrap;
+}
+
+.av-bag[data-tone='1'] { background: var(--av-ok-bg); color: var(--av-ok-text); }
+.av-bag[data-tone='2'] { background: var(--av-best-bg); color: var(--av-best-text); }
+.av-bag[data-tone='3'] { background: var(--av-direct-bg); color: var(--av-direct-text); }
+
+/* The handle. */
+.av-bag:not(.av-bag--purse)::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  width: 30px;
+  height: 11px;
+  margin-left: -15px;
+  border: 3px solid currentColor;
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  opacity: 0.55;
+}
+
+/* Two wheels. */
+.av-bag:not(.av-bag--purse)::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 14px;
+  right: 14px;
+  height: 6px;
+  background:
+    radial-gradient(circle 3px at 3px 3px, currentColor 95%, transparent) left / 6px 6px no-repeat,
+    radial-gradient(circle 3px at 3px 3px, currentColor 95%, transparent) right / 6px 6px no-repeat;
+  opacity: 0.55;
+}
+
+.av-bag--purse {
+  margin-top: 0;
+  padding: 0;
+  background: none;
+}
+
+/* The baroness egg: a plain bag shape, no brand marks. A 56x52 target. */
+.av-purse {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 52px;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  color: var(--av-orange-s);
+  cursor: pointer;
+  transition: transform var(--dur-press) var(--ease-out-strong);
+}
+
+.av-purse:active {
+  transform: scale(var(--press-scale));
+}
+
+.av-purse svg {
+  width: 46px;
+  height: 38px;
+  overflow: visible;
+}
+
+.av-purse__body {
+  fill: currentColor;
+}
+
+.av-purse__handle,
+.av-purse__flap {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.av-purse__flap {
+  stroke: rgb(255 255 255 / 0.45);
+  stroke-width: 2;
+}
+
+html[data-theme='dark'] .av-purse {
+  color: var(--av-orange);
+}
+
+/* From a tablet up the belt is clipped and sweeps with the scroll, opposite to the tickets: the
+   track starts shifted left by all its overflow (100cqw - 100%) and comes back to 0 while --av-p
+   goes from 0.1 to 0.6, so every suitcase crosses the view. The sweep ends before 0.7 so that the
+   handbag (second) is whole once the belt reaches the middle of the screen, even at 768px where
+   the overflow is largest. A keyboard focus inside drops the
+   sweep and lets the belt scroll, so the focused handbag is never parked out of sight. */
+@media (min-width: 768px) {
+  @supports (container-type: inline-size) {
+    .av-motion .av-belt {
+      overflow: hidden;
+      overflow: clip;
+    }
+
+    .av-motion .av-belt__track {
+      transform: translateX(calc(min(0px, 100cqw - 100%) * (1 - clamp(0, (var(--av-p, 0.7) - 0.1) / 0.5, 1))));
+      will-change: transform;
+    }
+
+    .av-motion .av-belt:has(:focus-visible) {
+      overflow-x: auto;
+    }
+
+    /* Slide, not jump: Esc on the baroness toast hands focus back to the handbag too. */
+    .av-motion .av-belt:has(:focus-visible) .av-belt__track {
+      transform: none;
+      transition: transform var(--dur-base) var(--ease-out-strong);
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  .av-belt {
+    grid-column: 1 / -1;
+    grid-row: 4;
+  }
+}
+
+/* Phones: a plain swipe. */
+@media (max-width: 767px) {
+  .av-belt {
+    scrollbar-width: none;
+  }
+
+  .av-belt::-webkit-scrollbar {
+    display: none;
   }
 }
 
@@ -3240,7 +3454,7 @@ html[data-theme='dark'] .av-page {
   }
 }
 
-/* ===================== 16. Footer (7.9): the pug stands still in this pass ===================== */
+/* ===================== 16. Footer (7.9, A12): the pug runs in once, then stands ===================== */
 
 .av-footer {
   display: flex;
@@ -3262,6 +3476,30 @@ html[data-theme='dark'] .av-page {
   image-rendering: pixelated;
 }
 
+/* A12. Until the footer is in view the pug is not shown, so it does not stand on its spot and then
+   jump to the right when the run starts. The run ends on the resting place, and the bob (13 hops of
+   200ms) ends with it. Once per visit: av-replayed keeps it from running again. */
+.av-motion:not(.av-replayed) .av-footer:not(.is-in) .av-pug {
+  opacity: 0;
+}
+
+.av-motion:not(.av-replayed) .av-footer.is-in .av-pug {
+  animation: av-pug-run 2600ms steps(26) 1 both;
+}
+
+.av-motion:not(.av-replayed) .av-footer.is-in .av-pug img {
+  animation: av-pug-bob 200ms steps(2) 13 alternate;
+}
+
+@keyframes av-pug-run {
+  from { transform: translateX(min(60vw, 520px)); }
+  to { transform: none; }
+}
+
+@keyframes av-pug-bob {
+  to { transform: translateY(-3px); }
+}
+
 .av-footer__legal {
   max-width: 72ch;
   color: var(--av-text-2);
@@ -3281,6 +3519,27 @@ html[data-theme='dark'] .av-page {
   .av-page {
     padding-bottom: calc(var(--av-section-gap) + 72px);
   }
+}
+
+/* ===================== 16b. Page-wide turbulence egg (A13) ===================== */
+
+/* Five quick clicks on the hero plane (planeClick in the script). The shake sits on main, not on
+   .av-page: a transformed ancestor would turn the fixed progress line, toasts and sticky bar into
+   absolutely placed boxes, and those live outside main for this reason. The pivot is the middle of
+   the first screen, where the plane is, so the small rotation does not swing the visible part far. */
+.av-motion.is-turbulent > main {
+  transform-origin: 50% 50vh;
+  animation: av-shake-big 900ms linear 1 both;
+}
+
+@keyframes av-shake-big {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  10% { transform: translate(-6px, 3px) rotate(-0.6deg); }
+  25% { transform: translate(6px, -4px) rotate(0.5deg); }
+  40% { transform: translate(-5px, -2px) rotate(-0.4deg); }
+  55% { transform: translate(4px, 3px) rotate(0.3deg); }
+  70% { transform: translate(-3px, 1px) rotate(-0.2deg); }
+  85% { transform: translate(2px, -1px) rotate(0.1deg); }
 }
 
 /* ===================== 17. Print (14): the strict resume, no jokes, no buttons ===================== */

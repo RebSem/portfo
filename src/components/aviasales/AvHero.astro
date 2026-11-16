@@ -6,6 +6,15 @@ import { email, telegramHandle } from '../../data/cv';
 ---
 
 <section class="av-hero" aria-labelledby="av-hero-title" data-av-progress>
+  {/* A5: a band-wide layer under the content. Each cloud is three circles and a pill, all drawn
+       clockwise so the nonzero fill merges them into one shape. */}
+  <div class="av-hero__clouds" aria-hidden="true" data-av-meme>
+    {[1, 2, 3].map((n) => (
+      <svg class={`av-cloud av-cloud--${n}`} viewBox="0 0 120 60" focusable="false">
+        <path d="M18 38h84a10 10 0 0 1 0 20h-84a10 10 0 0 1 0-20zM18 38a17 17 0 0 1 34 0a17 17 0 0 1-34 0zM38 30a24 24 0 0 1 48 0a24 24 0 0 1-48 0zM72 38a16 16 0 0 1 32 0a16 16 0 0 1-32 0z"></path>
+      </svg>
+    ))}
+  </div>
   <div class="av-container av-hero__inner">
     <div class="av-hero__top">
       <nav class="av-tabs" aria-label="Разделы">
@@ -36,7 +45,7 @@ import { email, telegramHandle } from '../../data/cv';
     <p class="av-hero__lead"><AvNb text={avHero.lead} /></p>
 
     <div class="av-hero__sky" aria-hidden="true" data-av-meme>
-      {/* A1: the flight, inside the grid so it never covers the text. A5 clouds are a later pass.
+      {/* A1: the flight, inside the grid so it never covers the text. The clouds live in their own layer above.
            The markup is the last frame: the route drawn, the plane landed beside the bed pin.
            The script flies the plane and its shadow along the route and then puts these
            transforms back. */}
@@ -54,7 +63,9 @@ import { email, telegramHandle } from '../../data/cv';
           <path d="M530 172v-21m0 9h13a6 6 0 0 1 6 6h11a6 6 0 0 1 6 6m-36 0h36v6"></path>
         </g>
         <g class="av-flight__shadow" transform="translate(490 124) rotate(32) scale(2)"><AvPlane bare /></g>
-        <g class="av-flight__plane" data-av-plane transform="translate(490 124) rotate(32) scale(2)"><AvPlane bare /></g>
+        {/* The page-wide turbulence needs five quick clicks on the plane: an invisible disc gives the
+             pointer a fair target of about 40px. It sits in the plane group, so it flies with it. */}
+        <g class="av-flight__plane" data-av-plane transform="translate(490 124) rotate(32) scale(2)"><circle class="av-flight__hit" r="20"></circle><AvPlane bare /></g>
       </svg>
     </div>
 
