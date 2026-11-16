@@ -1,0 +1,3484 @@
+/*
+ * /ru/aviasales/ only: the landing resume that parodies a hotel search page.
+ * Every class starts with av-, every token lives on .av-page and never leaks.
+ *
+ * Motion contract: the resting state is the last frame. Start states and
+ * keyframes live only under .av-motion (set by the script when it runs, calm
+ * mode is off and reduced motion is not asked for). One-shot intros sit under
+ * .av-motion:not(.av-replayed). Only transform, opacity, clip-path and
+ * stroke-dashoffset animate, and every animation is finite. Facts never move.
+ *
+ * Sections, in order: tokens, page base, shared primitives, ribbon and
+ * progress, hero, results (filters, card, proofs, dialog), toasts, sticky bar,
+ * calm mode and reduced motion. Part 2 (details, notes, tickets, turbulence,
+ * booking, footer, print) is appended after these and reuses the primitives.
+ */
+
+/* ===================== 1. Tokens (spec 5.1) ===================== */
+
+.av-page {
+  /* brand-like, shifted from the originals on purpose */
+  --av-blue: #1166e3; /* band background; white text on it is 5.2:1 */
+  --av-blue-strong: #0b55c4;
+  --av-blue-50: #e4eefc;
+  /* Blue used as ink on the page surface (icons, rings, links): 5.2:1 on the card. */
+  --av-blue-ink: #1166e3;
+  --av-orange: #e8621f; /* primary button; white 19px/700 text is 3.4:1, large-text AA */
+  --av-orange-press: #cf5415;
+  /* Small buttons carry 16px text, which needs 4.5:1: white on this is 4.9:1. */
+  --av-orange-s: #bf4d14;
+  --av-orange-s-press: #a8430f;
+  --av-bg: #f1f3f6;
+  --av-card: #ffffff;
+  --av-card-alt: #f7f8fa;
+  --av-text: #0d1420;
+  --av-text-2: #556070;
+  --av-line: #dce1e8;
+  --av-direct-bg: #d9f1fe; /* "direct" badge */
+  --av-direct-text: #00669e;
+  --av-ok-bg: #def4e3; /* green badge */
+  --av-ok-text: #0e7325;
+  --av-warn: #c2410c;
+  --av-ticket: #fffaf0;
+
+  --av-r-s: 10px;
+  --av-r-m: 16px;
+  --av-r-l: 20px;
+  --av-r-pill: 100px;
+  --av-shadow-s: 0 4px 8px rgb(0 0 0 / 0.06);
+  --av-shadow-m: 0 8px 16px rgb(0 0 0 / 0.08);
+  --av-shadow-l: 0 12px 24px rgb(0 0 0 / 0.1);
+
+  --av-font-display: var(--font-unbounded), var(--font-geist), system-ui, sans-serif;
+  --av-font-text: var(--font-geist), system-ui, sans-serif;
+  --av-font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /* Motion: the site tokens (--dur-*, --ease-out-strong) do the plain moves. Two more for this page:
+     a soft overshoot for things that land (pin, toast, ticket, price) and a duration for them. */
+  --av-ease-spring: cubic-bezier(0.3, 1.45, 0.45, 1);
+  --av-dur-land: 420ms;
+
+  --av-container: 72.5rem; /* 1160px */
+  --av-gutter: clamp(1rem, 4vw, 2.5rem);
+  --av-section-gap: clamp(3rem, 7vw, 5.5rem);
+
+  background: var(--av-bg);
+  color: var(--av-text);
+  font-family: var(--av-font-text);
+}
+
+html[data-theme='dark'] .av-page {
+  --av-blue: #1459c2;
+  --av-blue-strong: #0f4aa5;
+  --av-blue-50: #172a47;
+  /* #1459c2 is 2.6:1 on the dark card, too faint for icons and rings: 5.2:1 here. */
+  --av-blue-ink: #4d8ff0;
+  --av-orange: #e8621f;
+  --av-orange-press: #cf5415;
+  --av-bg: #101317;
+  --av-card: #1a1e25;
+  --av-card-alt: #20252d;
+  --av-text: #eef1f5;
+  --av-text-2: #a3adba;
+  --av-line: #2c333d;
+  --av-direct-bg: #10354a;
+  --av-direct-text: #8bd4fb;
+  --av-ok-bg: #13301f;
+  --av-ok-text: #7fda9a;
+  --av-warn: #fb923c;
+  --av-ticket: #23201a;
+  --av-shadow-s: 0 4px 8px rgb(0 0 0 / 0.3);
+  --av-shadow-m: 0 8px 16px rgb(0 0 0 / 0.36);
+  --av-shadow-l: 0 12px 24px rgb(0 0 0 / 0.42);
+}
+
+/* ===================== 2. Page base ===================== */
+
+/* The site header sits outside .av-page: give the body the page grey so the two meet without a seam. */
+body:has(.av-page) {
+  background: #f1f3f6;
+}
+
+html[data-theme='dark'] body:has(.av-page) {
+  background: #101317;
+}
+
+.av-page {
+  overflow-x: clip;
+  padding-bottom: var(--av-section-gap);
+  font-size: 17px;
+  line-height: 1.55;
+}
+
+.av-page main {
+  outline: 0;
+}
+
+.av-page :where(h1, h2, h3, h4) {
+  margin: 0;
+  color: inherit;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+.av-page :where(ul, ol) {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.av-page :is(a, button, select, summary):focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+/* ===================== 3. Shared primitives ===================== */
+
+/* Centred column with the page gutter. Use on any section. */
+.av-container {
+  width: min(100% - 2 * var(--av-gutter), var(--av-container));
+  margin-inline: auto;
+}
+
+/* Vertical rhythm between sections. */
+.av-section {
+  margin-top: var(--av-section-gap);
+}
+
+/* Section heading: display face, 30px on desktop, 22px on phones. */
+.av-h2 {
+  font: 800 clamp(1.375rem, 1rem + 1.4vw, 1.875rem) / 1.15 var(--av-font-display);
+}
+
+/* Small grey line above or under a heading. The resets above use :where, so one class wins over them. */
+.av-eyebrow {
+  margin: 0 0 8px;
+  color: var(--av-text-2);
+  font: 500 14px / 1.35 var(--av-font-text);
+}
+
+/* White rounded card on the grey page. */
+.av-surface {
+  border-radius: var(--av-r-l);
+  background: var(--av-card);
+  box-shadow: var(--av-shadow-s);
+  padding: 24px;
+}
+
+/* Buttons (A14). Links get .av-page in front so the site's green a:hover does not win. */
+.av-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 0 22px;
+  border-radius: var(--av-r-m);
+  font: 700 19px / 1.1 var(--av-font-text);
+  text-align: center;
+  text-decoration: none;
+  overflow-wrap: normal;
+  cursor: pointer;
+  transition:
+    transform var(--dur-press) var(--ease-out-strong),
+    box-shadow var(--dur-fast) var(--ease-out-strong),
+    background-color var(--dur-fast) var(--ease-out-strong);
+}
+
+.av-page .av-btn--primary {
+  border: 0;
+  background: var(--av-orange);
+  color: #fff;
+  box-shadow: var(--av-shadow-m);
+}
+
+.av-page .av-btn--primary:is(:hover, :focus-visible) {
+  background: var(--av-orange-press);
+  color: #fff;
+}
+
+/* One hover language for things that can be picked up: a small lift and a longer shadow.
+   Only where there is a mouse. The press below wins over it. */
+@media (hover: hover) {
+  .av-page .av-btn--primary:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--av-shadow-l);
+  }
+}
+
+.av-page .av-btn:active {
+  transform: scale(var(--press-scale));
+}
+
+.av-page .av-btn--ghost {
+  border: 1.5px solid var(--av-line);
+  background: transparent;
+  color: var(--av-text);
+}
+
+.av-page .av-btn--ghost:is(:hover, :focus-visible) {
+  border-color: var(--av-text-2);
+  color: var(--av-text);
+}
+
+.av-btn--s {
+  min-height: 44px;
+  padding: 0 16px;
+  font-size: 16px;
+}
+
+.av-page .av-btn--primary.av-btn--s {
+  background: var(--av-orange-s);
+}
+
+.av-page .av-btn--primary.av-btn--s:is(:hover, :focus-visible) {
+  background: var(--av-orange-s-press);
+}
+
+.av-btn--xl {
+  min-height: 60px;
+  padding: 0 28px;
+}
+
+/* Pill badges: 28px high, 13px/600. */
+.av-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: var(--av-r-pill);
+  font: 600 13px / 1.2 var(--av-font-text);
+  text-decoration: none;
+}
+
+.av-page .av-badge--direct {
+  background: var(--av-direct-bg);
+  color: var(--av-direct-text);
+}
+
+.av-page .av-badge--ok {
+  background: var(--av-ok-bg);
+  color: var(--av-ok-text);
+}
+
+/* Visually hidden, still read aloud. */
+.av-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Shown on paper only (the print block turns it on). */
+.av-print-only {
+  display: none;
+}
+
+/* Folded depth: a native <details>, so it opens without the script and from the keyboard, and
+   calm mode opens them all. It opens at once: facts do not slide in, and nothing here animates. */
+/* Block with an inline chevron, not flex: a long phase title wraps and the chevron follows its
+   last word instead of drifting to the far edge. The padding makes a 32px row (44px on phones). */
+.av-more__summary {
+  display: block;
+  width: fit-content;
+  padding-block: 6px;
+  border-radius: var(--av-r-s);
+  color: var(--av-blue-ink);
+  font: 600 15px / 1.35 var(--av-font-text);
+  list-style: none;
+  cursor: pointer;
+}
+
+.av-more__summary::-webkit-details-marker {
+  display: none;
+}
+
+.av-more__summary:hover {
+  color: var(--av-text);
+}
+
+.av-more__chevron {
+  display: inline-block;
+  margin-left: 4px;
+  vertical-align: -4px;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.av-more[open] > .av-more__summary .av-more__chevron {
+  transform: rotate(180deg);
+}
+
+/* A thumb needs a 44px row. */
+@media (max-width: 767px) {
+  .av-more__summary {
+    padding-block: 12px;
+  }
+}
+
+/* ===================== 4. GTA ribbon and scroll progress (7.1, A3) ===================== */
+
+.av-ribbon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 4px var(--av-gutter);
+  background: var(--av-text);
+  color: var(--av-bg);
+  font: 500 13px / 1.4 var(--av-font-mono);
+  text-align: center;
+}
+
+.av-ribbon__text {
+  margin: 0;
+}
+
+/* Below 520px the countdown the script writes in wraps the line in two. Reserve the second line in
+   the server HTML, so writing the timer does not push the page down (CLS). */
+@media (max-width: 519px) {
+  .av-ribbon {
+    min-height: calc(2 * 1.4em + 8px);
+  }
+}
+
+.av-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 18px;
+  z-index: 50;
+  pointer-events: none;
+}
+
+/* The way ahead: a faint dotted route across the window. */
+.av-progress__track {
+  position: absolute;
+  inset: 8px 0 auto 0;
+  height: 2px;
+  background: radial-gradient(circle at 1px 1px, var(--av-blue-ink) 1px, transparent 1.2px) 0 0 / 9px 2px repeat-x;
+  opacity: 0.45;
+}
+
+/* A3: the only thing a scroll moves here. The plane and the line behind it share this one transform. */
+.av-progress__fly {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 18px;
+  transform: translateX(calc(var(--av-scroll, 0) * (100vw - 18px)));
+  /* A little inertia: the plane glides to where the scroll is, also when the page jumps. */
+  transition: transform var(--dur-base) var(--ease-out-strong);
+  will-change: transform;
+}
+
+/* The way flown: a solid line from the left edge of the window to the plane. It is a window wide
+   and hangs off the plane's tail, so most of it sits left of the screen and never adds a scrollbar. */
+.av-progress__done {
+  position: absolute;
+  top: 8px;
+  right: 9px;
+  width: 100vw;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--av-blue-ink);
+}
+
+/* The airplane is drawn nose right: it needs no turn to fly along the line. */
+.av-progress__plane {
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 18px;
+  color: var(--av-blue-ink);
+}
+
+.av-page:not(.av-motion) .av-progress {
+  display: none;
+}
+
+/* ===================== 5. Blue band (7.2, A1, A2, A7) ===================== */
+
+.av-hero {
+  position: relative;
+  padding: 12px 0 12px;
+  border-radius: 0 0 24px 24px;
+  background: var(--av-blue);
+  color: #fff;
+}
+
+.av-hero :is(a, button):focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.av-hero__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'top'
+    'title'
+    'lead'
+    'print'
+    'search'
+    'loader'
+    'board';
+}
+
+.av-hero__top {
+  grid-area: top;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+}
+
+.av-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.av-page .av-tab {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: var(--av-r-pill);
+  color: #fff;
+  font: 600 15px / 1 var(--av-font-text);
+  text-decoration: none;
+  transition: background-color var(--dur-fast) var(--ease-out-strong);
+}
+
+.av-page .av-tab:is(:hover, :focus-visible) {
+  /* A dark tint: a white one took the white label under 4.5:1 on the light band. */
+  background: rgb(0 0 0 / 0.16);
+  color: #fff;
+}
+
+.av-page .av-tab[aria-current='page'] {
+  background: #fff;
+  color: var(--av-blue-strong);
+}
+
+.av-calm {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1.5px solid rgb(255 255 255 / 0.6);
+  border-radius: var(--av-r-pill);
+  background: transparent;
+  color: #fff;
+  font: 600 15px / 1 var(--av-font-text);
+  cursor: pointer;
+  transition:
+    transform var(--dur-press) var(--ease-out-strong),
+    background-color var(--dur-fast) var(--ease-out-strong);
+}
+
+.av-calm:hover {
+  background: rgb(0 0 0 / 0.16);
+}
+
+.av-calm:active {
+  transform: scale(var(--press-scale));
+}
+
+.av-calm[aria-pressed='true'] {
+  border-color: #fff;
+  background: #fff;
+  color: var(--av-blue-strong);
+}
+
+.av-calm__icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  overflow: visible;
+}
+
+.av-calm__plane {
+  fill: currentColor;
+  transform: rotate(-45deg);
+}
+
+/* Calm on: the plane is grounded, a little smaller and crossed out. The wide line under the
+   strike is the colour of the pressed button, so the strike shows where it crosses the wings. */
+.av-calm[aria-pressed='true'] .av-calm__plane {
+  transform: rotate(-45deg) scale(0.84);
+}
+
+.av-calm__gap,
+.av-calm__strike {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+
+.av-calm__gap {
+  stroke: #fff;
+  stroke-width: 5;
+  stroke-linecap: butt;
+}
+
+.av-calm[aria-pressed='true'] :is(.av-calm__gap, .av-calm__strike) {
+  stroke-dashoffset: 0;
+}
+
+/* Switching calm on removes av-motion, so all of that lands at once. Switching it off brings
+   av-motion back: the strike draws away and the plane springs up to size. Transitions, not
+   keyframes: they answer the switch and can never play again on their own. */
+.av-motion .av-calm__strike {
+  transition: stroke-dashoffset var(--dur-base) var(--ease-out-strong);
+}
+
+.av-motion .av-calm__plane {
+  transition: transform var(--dur-base) var(--av-ease-spring);
+}
+
+.av-hero__title {
+  grid-area: title;
+  margin-top: 4px;
+  font: 800 clamp(1.75rem, 0.9rem + 2.6vw, 2.75rem) / 1.08 var(--av-font-display);
+}
+
+.av-hero__lead {
+  grid-area: lead;
+  max-width: 68ch;
+  margin-top: 8px;
+  color: #fff;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.av-hero__inner > .av-print-only {
+  grid-area: print;
+}
+
+/* The flight sits beside the lead on wide screens and above the title on tablets. */
+.av-hero__sky {
+  grid-area: sky;
+  pointer-events: none;
+}
+
+.av-flight {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.av-flight__route {
+  fill: none;
+  stroke: rgb(255 255 255 / 0.75);
+  stroke-width: 4;
+  stroke-dasharray: 0.1 13;
+  stroke-linecap: round;
+}
+
+/* The mask stroke: the script moves its dash offset with the plane, so the route appears behind it. */
+.av-flight__reveal {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 14;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+/* Where the flight starts. */
+.av-flight__from {
+  fill: none;
+  stroke: rgb(255 255 255 / 0.75);
+  stroke-width: 4;
+}
+
+.av-flight__plane {
+  fill: #fff;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* The plane can be pressed (five presses are an easter egg): it gives a little, like a button. */
+.av-flight__plane path {
+  transition: transform var(--dur-press) var(--ease-out-strong);
+}
+
+.av-flight__plane:active path {
+  transform: scale(0.9);
+}
+
+/* Height above the map: the script slides this copy out from under the plane in flight and back
+   under it on landing, so at rest it is covered. */
+.av-flight__shadow {
+  fill: rgb(6 30 82 / 0.28);
+}
+
+.av-flight__bed,
+.av-flight__ring {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.av-flight__bed circle {
+  fill: #fff;
+}
+
+.av-flight__bed path {
+  fill: none;
+  stroke: var(--av-blue);
+  stroke-width: 3.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* One ring answers the landing and is gone: its last frame is the resting state. */
+.av-flight__ring {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 3;
+  opacity: 0;
+}
+
+/* The script boots a moment after the first paint and moves the plane from the pin back to the
+   start of the route. A short fade makes that a soft cut, not a jump. */
+.av-motion:not(.av-replayed) .av-flight.is-flying :is(.av-flight__plane, .av-flight__shadow) {
+  animation: av-appear 280ms var(--ease-out-strong) 1 backwards;
+}
+
+@keyframes av-appear {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* The script marks the flight with is-flying, then is-landed. While the plane is in the air the
+   pin waits a little smaller; on touchdown it springs up to size and sends out one ring. */
+.av-motion:not(.av-replayed) .av-flight.is-flying .av-flight__bed {
+  transform: scale(0.84);
+}
+
+.av-motion:not(.av-replayed) .av-flight.is-landed .av-flight__bed {
+  animation: av-pop 620ms var(--av-ease-spring) 1 backwards;
+}
+
+.av-motion:not(.av-replayed) .av-flight.is-landed .av-flight__ring {
+  animation: av-ring 820ms var(--ease-out-strong) 60ms 1 backwards;
+}
+
+@keyframes av-pop {
+  from { transform: scale(0.84); }
+  to { transform: none; }
+}
+
+@keyframes av-ring {
+  from { transform: scale(1); opacity: 0.6; }
+  to { transform: scale(1.75); opacity: 0; }
+}
+
+@media (min-width: 480px) {
+  .av-hero__inner {
+    grid-template-areas:
+      'top'
+      'sky'
+      'title'
+      'lead'
+      'print'
+      'search'
+      'loader'
+      'board';
+  }
+
+  .av-hero__sky {
+    justify-self: end;
+    width: 220px;
+    margin-top: 8px;
+    opacity: 0.7;
+  }
+}
+
+@media (max-width: 479px) {
+  .av-hero__sky {
+    display: none;
+  }
+}
+
+/* From a tablet up the flight sits beside the title: on a row of its own it left an empty blue band. */
+@media (min-width: 768px) {
+  .av-hero__inner {
+    grid-template-columns: minmax(0, 1fr) min(26vw, 300px);
+    column-gap: 32px;
+    grid-template-areas:
+      'top top'
+      'title sky'
+      'lead lead'
+      'print print'
+      'search search'
+      'loader loader'
+      'board board';
+  }
+
+  .av-hero__sky {
+    align-self: end;
+    width: 100%;
+    margin: 0;
+    opacity: 1;
+  }
+}
+
+@media (min-width: 1024px) {
+  /* Two lines on a laptop: the lead is a standfirst, and a third line would push the card's numbers off the first screen. */
+  .av-hero__lead {
+    max-width: 90ch;
+  }
+}
+
+/* The search "form": labelled values, no inputs. Its only control is the link button. */
+.av-search {
+  grid-area: search;
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.av-search__fields {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr;
+  gap: 2px;
+  overflow: hidden;
+  border-radius: var(--av-r-m);
+}
+
+.av-search__field {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 56px;
+  padding: 6px 16px;
+  background: var(--av-card);
+  color: var(--av-text);
+}
+
+.av-search__label {
+  color: var(--av-text-2);
+  font: 500 12px / 1.3 var(--av-font-text);
+}
+
+.av-search__value {
+  font: 600 16px / 1.3 var(--av-font-text);
+}
+
+.av-search__go {
+  min-height: 56px;
+  padding-inline: 26px;
+}
+
+.av-loader {
+  grid-area: loader;
+  margin: 6px 0 0;
+  min-height: 22px;
+  color: rgb(255 255 255 / 0.92);
+  font: 500 15px / 22px var(--av-font-text);
+}
+
+/* A7: a short dotted route in front of the caption, and a plane that crosses it once per caption. */
+.av-loader::before {
+  content: '';
+  display: none;
+  width: var(--av-run);
+  height: 2px;
+  margin-right: 10px;
+  vertical-align: middle;
+  background: radial-gradient(circle at 1px 1px, #fff 1px, transparent 1.2px) 0 0 / 7px 2px repeat-x;
+  opacity: 0.8;
+}
+
+.av-loader.is-busy::before {
+  display: inline-block;
+}
+
+/* The length of the route. On phones it is shorter and the caption a size smaller, so that the
+   longest caption still fits on one line from 360px up and the band does not jump. */
+.av-hero__inner {
+  --av-run: 44px;
+}
+
+@media (max-width: 479px) {
+  .av-hero__inner {
+    --av-run: 30px;
+  }
+
+  .av-loader {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 379px) {
+  .av-loader {
+    font-size: 12px;
+  }
+}
+
+/* The plane shares the loader's grid cell and lies on the route, on the first line of the caption. */
+.av-loader__plane {
+  grid-area: loader;
+  align-self: start;
+  justify-self: start;
+  display: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 8px;
+  color: #fff;
+  pointer-events: none;
+}
+
+/* Three captions, three crossings: the count is the caption count. */
+.av-loader.is-busy + .av-loader__plane {
+  display: block;
+  animation: av-cross 450ms var(--ease-in-out-strong) 3 both;
+}
+
+@keyframes av-cross {
+  from { transform: translateX(-8px); opacity: 0; }
+  22%, 76% { opacity: 1; }
+  to { transform: translateX(calc(var(--av-run) - 14px)); opacity: 0; }
+}
+
+/* Each caption is a new node, so this plays for every one of them. Opacity only: the caption
+   stays inline and wraps like plain text on the narrowest phones. */
+.av-motion .av-loader > span {
+  animation: av-appear var(--dur-fast) var(--ease-out-strong) 1 backwards;
+}
+
+/* A2: the flip board. Fixed-width cells, so flipping never moves the layout. */
+.av-board {
+  grid-area: board;
+  justify-self: start;
+  margin: 8px 0 0;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: #0b1220;
+  color: #ffd166;
+  font: 600 14px / 1 var(--av-font-mono);
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+
+.av-board__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 0.6em;
+}
+
+.av-board__word {
+  display: inline-flex;
+  white-space: nowrap;
+}
+
+/* Each cell is two flaps on a hinge: a lighter upper half, a darker lower half, a dark line between. */
+.av-board__cell {
+  position: relative;
+  display: inline-block;
+  width: 1.05em;
+  padding: 3px 0;
+  margin: 0 1px;
+  border-radius: 3px;
+  background: linear-gradient(#1d2841 calc(50% - 0.5px), #0b1220 calc(50% - 0.5px) calc(50% + 0.5px), #151d30 calc(50% + 0.5px));
+  text-align: center;
+}
+
+/* A2: one flip. The cell already shows the new letter; these two carry the old one (data-was).
+   The upper flap folds down to the hinge, then the lower one is covered from the hinge down, as
+   when the new flap lands on it. At rest both are folded away. */
+.av-motion .av-board__cell::before,
+.av-motion .av-board__cell::after {
+  content: attr(data-was);
+  position: absolute;
+  inset: 0;
+  padding: inherit;
+  border-radius: inherit;
+  background: inherit;
+}
+
+.av-motion .av-board__cell::before {
+  clip-path: inset(0 0 50% 0);
+  transform: scaleY(0);
+}
+
+.av-motion .av-board__cell::after {
+  clip-path: inset(100% 0 0 0);
+}
+
+/* The script flips data-flip between a and b for each new letter. The two sets of keyframes are
+   the same: a new animation name is what restarts the flip without a forced layout. */
+.av-motion .av-board__cell[data-flip='a']::before { animation: av-flap-up-a 80ms linear 1; }
+.av-motion .av-board__cell[data-flip='b']::before { animation: av-flap-up-b 80ms linear 1; }
+.av-motion .av-board__cell[data-flip='a']::after { animation: av-flap-down-a 80ms linear 1; }
+.av-motion .av-board__cell[data-flip='b']::after { animation: av-flap-down-b 80ms linear 1; }
+
+@keyframes av-flap-up-a {
+  from { transform: scaleY(1); }
+  55%, to { transform: scaleY(0); }
+}
+
+@keyframes av-flap-up-b {
+  from { transform: scaleY(1); }
+  55%, to { transform: scaleY(0); }
+}
+
+@keyframes av-flap-down-a {
+  from, 45% { clip-path: inset(50% 0 0 0); }
+  to { clip-path: inset(100% 0 0 0); }
+}
+
+@keyframes av-flap-down-b {
+  from, 45% { clip-path: inset(50% 0 0 0); }
+  to { clip-path: inset(100% 0 0 0); }
+}
+
+/* Until the script splits the sentence into cells the board is plain text, and its lines are
+   lower than rows of cells. Give a plain line the pitch of a row (a cell is 1em + 6px, the row
+   gap 4px), less the gap once in the padding: with the same number of lines as rows the board
+   keeps its height when it is split, and the page under it does not move. */
+.av-board:not([data-split]) {
+  padding-block: 6px;
+  line-height: calc(1em + 10px);
+}
+
+/* Taller windows have room above the H1; at 768px tall those pixels keep the card's numbers on screen. */
+@media (min-width: 768px) and (min-height: 801px) {
+  .av-hero__title {
+    margin-top: 20px;
+  }
+}
+
+/* Low laptop windows: the board gives its row to the candidate card. */
+@media (max-height: 800px) and (min-width: 768px) {
+  .av-board {
+    display: none;
+  }
+}
+
+/* Below a laptop the button goes under the fields; below 600px the fields go 2x2. */
+@media (max-width: 1023px) {
+  .av-search {
+    flex-direction: column;
+  }
+
+  .av-search__go {
+    width: 100%;
+  }
+}
+
+@media (max-width: 599px) {
+  .av-search__fields {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .av-hero {
+    padding-bottom: 18px;
+  }
+
+  .av-search__field {
+    min-height: 52px;
+    padding-inline: 12px;
+  }
+
+  .av-search__value {
+    font-size: 15px;
+  }
+
+  .av-search__go {
+    width: 100%;
+  }
+
+  .av-board {
+    font-size: 11px;
+  }
+
+  .av-page .av-tab {
+    padding-inline: 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .av-page .av-tab {
+    padding-inline: 8px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 359px) {
+  .av-tabs {
+    gap: 0;
+  }
+
+  .av-page .av-tab {
+    padding-inline: 7px;
+    font-size: 13px;
+  }
+}
+
+/* ===================== 6. Results: filters, card, proofs, dialog (7.3, A6) ===================== */
+
+.av-results {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  padding-top: 16px;
+}
+
+.av-results__main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  gap: 12px 16px;
+}
+
+.av-results__count {
+  font: 800 clamp(1.25rem, 1rem + 0.6vw, 1.5rem) / 1.2 var(--av-font-display);
+}
+
+/* Filter panel */
+.av-filters {
+  align-self: start;
+  padding: 16px;
+  border-radius: var(--av-r-l);
+  background: var(--av-card);
+  box-shadow: var(--av-shadow-s);
+}
+
+.av-sort {
+  margin-bottom: 16px;
+}
+
+.av-sort__label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--av-text-2);
+  font: 500 14px / 1.35 var(--av-font-text);
+}
+
+.av-sort__control {
+  position: relative;
+}
+
+.av-sort__select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 40px 0 14px;
+  border: 1.5px solid var(--av-line);
+  border-radius: var(--av-r-s);
+  background: var(--av-card);
+  color: var(--av-text);
+  font: 500 15px / 1.2 var(--av-font-text);
+  appearance: none;
+  cursor: pointer;
+}
+
+.av-sort__chevron {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  fill: none;
+  stroke: var(--av-text-2);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.av-sort__reply {
+  min-height: 20px;
+  margin: 8px 0 0;
+  color: var(--av-text-2);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.av-motion .av-sort__reply:not(:empty) {
+  animation: av-fade-up var(--dur-fast) var(--ease-out-strong) 1 both;
+}
+
+@keyframes av-fade-up {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+.av-filters__title {
+  font: 800 15px / 1.3 var(--av-font-display);
+  text-transform: uppercase;
+}
+
+.av-filters__hint {
+  margin: 4px 0 10px;
+  color: var(--av-text-2);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.av-filters__list {
+  display: grid;
+  gap: 2px;
+}
+
+.av-page .av-filter {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: var(--av-r-s);
+  color: var(--av-text);
+  font: 500 15px / 1.35 var(--av-font-text);
+  text-decoration: none;
+  transition: background-color var(--dur-fast) var(--ease-out-strong);
+}
+
+.av-page .av-filter:is(:hover, :focus-visible) {
+  background: var(--av-blue-50);
+  color: var(--av-text);
+}
+
+.av-filter__box {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 0;
+}
+
+.av-filter__box rect {
+  fill: var(--av-blue-ink);
+}
+
+.av-filter__box path {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+
+/* A6: the box is pressed and springs back, and the tick is drawn again a beat later. */
+.av-motion .av-filter.is-pinged .av-filter__box {
+  animation: av-press-in 340ms var(--av-ease-spring) 1 backwards;
+}
+
+.av-motion .av-filter.is-pinged .av-filter__box path {
+  animation: av-tick 300ms var(--ease-out-strong) 90ms 1 both;
+}
+
+@keyframes av-press-in {
+  from { transform: scale(0.8); }
+  to { transform: none; }
+}
+
+@keyframes av-tick {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* Candidate card. Phones: one column. 768 up: media beside the text, price row at the bottom.
+   1280 up (room for three columns): the price column on the right, as on the real results page. */
+.av-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'media'
+    'body'
+    'metrics'
+    'price';
+  gap: 16px;
+  padding: 16px;
+  border-radius: var(--av-r-l);
+  background: var(--av-card);
+  box-shadow: var(--av-shadow-s);
+}
+
+@media (hover: hover) {
+  .av-card {
+    transition: box-shadow var(--dur-base) var(--ease-out-strong);
+  }
+
+  .av-card:hover {
+    box-shadow: var(--av-shadow-m);
+  }
+}
+
+.av-card__media {
+  grid-area: media;
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+  border-radius: var(--av-r-m);
+  background: var(--av-blue-50);
+}
+
+.av-slides {
+  display: flex;
+  height: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.av-slides::-webkit-scrollbar {
+  display: none;
+}
+
+/* The strip is a keyboard-focusable scroller. Its own ring is clipped by the media box and painted
+   under the scrolled slides, so the media box draws the site ring for it. */
+.av-slides:focus-visible {
+  outline: 0;
+}
+
+.av-card__media:has(.av-slides:focus-visible) {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+.av-slide {
+  flex: 0 0 100%;
+  min-width: 0; /* a wide plate must not stretch its slide past the strip, or the snap points drift */
+  height: 100%;
+  scroll-snap-align: start;
+}
+
+.av-slide__shot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left top;
+}
+
+/* Slide 1: the typographic plate. No photo of the owner, on purpose. */
+.av-plate {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  padding: 0 20px;
+  background: var(--av-blue-50);
+  color: var(--av-blue-ink);
+}
+
+.av-plate__title {
+  font: 900 64px / 0.95 var(--av-font-display);
+}
+
+.av-plate__sub {
+  margin-top: 6px;
+  color: var(--av-text);
+  font: 800 20px / 1.1 var(--av-font-display);
+}
+
+.av-plate__pug {
+  position: absolute;
+  right: 12px;
+  bottom: 0;
+  width: 60px;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+/* Dots: a 24px target around an 8px dot. Shown by the script; without it the slides still swipe. */
+/* Bottom left, clear of the pug that peeks in from the bottom right. */
+.av-dots {
+  position: absolute;
+  left: 6px;
+  bottom: 4px;
+  display: flex;
+}
+
+.av-dot {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.av-dot::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.75);
+  box-shadow: 0 0 0 1px rgb(13 20 32 / 0.6);
+  transition: transform var(--dur-base) var(--av-ease-spring);
+}
+
+.av-dot:active::before {
+  transform: scale(0.85);
+}
+
+.av-dot[aria-current='true']::before {
+  background: #fff;
+  box-shadow: 0 0 0 1.5px rgb(13 20 32 / 0.8);
+  transform: scale(1.25);
+}
+
+.av-card__body {
+  grid-area: body;
+  min-width: 0;
+  /* The badge and facts are inline, so this block's line box sets their spacing. */
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.av-card__name {
+  font: 800 clamp(1.375rem, 1.1rem + 0.6vw, 1.625rem) / 1.15 var(--av-font-display);
+}
+
+.av-card__type {
+  margin-top: 4px;
+  color: var(--av-text-2);
+  font: 500 15px / 1.35 var(--av-font-text);
+}
+
+/* Badge and facts share one flowing line, as on the real card: the badge, then the dotted facts. */
+.av-card__row {
+  display: inline;
+  margin-right: 6px;
+}
+
+.av-card__row .av-badge {
+  vertical-align: middle;
+}
+
+.av-page .av-badge--direct:is(:hover, :focus-visible) {
+  color: var(--av-direct-text);
+  box-shadow: inset 0 0 0 1.5px currentColor;
+}
+
+.av-badge__icon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.av-badge__tick {
+  fill: none;
+  stroke: var(--av-direct-bg);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.av-card__facts {
+  display: inline;
+  color: var(--av-text-2);
+  font: 500 14px / 1.35 var(--av-font-text);
+}
+
+.av-card__type {
+  margin-bottom: 8px;
+}
+
+/* The three resume numbers: static facts, never animated. */
+.av-card__metrics {
+  grid-area: metrics;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  margin: 0;
+  border-block: 1px solid var(--av-line);
+}
+
+.av-metric {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  align-items: baseline;
+  align-content: start;
+  gap: 12px;
+  padding: 10px 0;
+}
+
+.av-metric + .av-metric {
+  border-top: 1px solid var(--av-line);
+}
+
+.av-metric dt {
+  font: 800 22px / 1.1 var(--av-font-display);
+  white-space: nowrap;
+}
+
+.av-metric dd {
+  margin: 0;
+  color: var(--av-text-2);
+  font: 500 13px / 1.3 var(--av-font-text);
+}
+
+.av-card__price {
+  grid-area: price;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.av-card__price-label {
+  text-align: start;
+  color: var(--av-text-2);
+  font: 500 14px / 1.3 var(--av-font-text);
+}
+
+.av-card__price-value {
+  margin-top: -6px;
+  font: 800 18px / 1.25 var(--av-font-display);
+}
+
+.av-card__price .av-btn {
+  width: 100%;
+}
+
+.av-card__price .av-btn--ghost {
+  min-height: 44px;
+  font-size: 16px;
+}
+
+.av-page .av-card__plain {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  color: var(--av-text-2);
+  font: 500 14px / 1.3 var(--av-font-text);
+  text-decoration: underline;
+  text-decoration-color: var(--av-line);
+}
+
+.av-page .av-card__plain:is(:hover, :focus-visible) {
+  color: var(--av-text);
+}
+
+@media (min-width: 560px) {
+  /* The third label is the longest, so its column gets the most room. */
+  .av-card__metrics {
+    /* min-content, not 0: the nowrap number sets the floor, so "500 000+" never runs into the divider. */
+    grid-template-columns: minmax(min-content, 0.8fr) minmax(min-content, 1.05fr) minmax(min-content, 1.35fr);
+  }
+
+  .av-metric {
+    grid-template-columns: minmax(min-content, 1fr);
+    align-items: start;
+    gap: 4px;
+    padding: 12px 16px 12px 0;
+  }
+
+  .av-metric + .av-metric {
+    padding-left: 16px;
+    border-top: 0;
+    border-left: 1px solid var(--av-line);
+  }
+
+  .av-metric dt {
+    font-size: 24px;
+  }
+}
+
+@media (min-width: 768px) {
+  .av-card {
+    grid-template-columns: 220px minmax(0, 1fr);
+    grid-template-areas:
+      'media body'
+      'metrics metrics'
+      'price price';
+    gap: 16px 20px;
+  }
+
+  .av-card__media {
+    height: auto;
+    min-height: 180px;
+  }
+
+  /* The price row's own hairline (or, from 1280, the card edge) closes the numbers here. */
+  .av-card__metrics {
+    border-bottom: 0;
+  }
+
+  .av-card__price {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      'label label'
+      'value value'
+      'cta pdf'
+      'plain plain';
+    align-items: center;
+    gap: 0 12px;
+    padding-top: 16px;
+    border-top: 1px solid var(--av-line);
+  }
+
+  .av-card__price-label { grid-area: label; }
+  .av-card__price-value { grid-area: value; margin: 0 0 12px; }
+  .av-card__price .av-btn { width: auto; }
+  .av-card__price .av-btn--primary { grid-area: cta; }
+  .av-card__price .av-btn--ghost { grid-area: pdf; }
+  .av-card__plain { grid-area: plain; justify-self: start; margin-top: 6px; }
+}
+
+@media (min-width: 1280px) {
+  .av-card {
+    /* The price column fits the 19px button label with 12px sides; the name keeps one line in the middle. */
+    grid-template-columns: 168px minmax(0, 1fr) 288px;
+    grid-template-areas:
+      'media body price'
+      'metrics metrics price';
+    gap: 12px 14px;
+    padding: 14px;
+  }
+
+  .av-card__media {
+    min-height: 150px;
+  }
+
+  /* The 168px media column: 16px sides keep the 64px "PM" inside the plate. */
+  .av-plate {
+    padding-inline: 16px;
+  }
+
+  .av-card__price {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 0 0 0 16px;
+    border-top: 0;
+    border-left: 1px solid var(--av-line);
+  }
+
+  .av-card__price-value { margin-top: -6px; margin-bottom: 4px; }
+  /* 19px bold stays: it is large text, which the white-on-orange contrast (3.4:1) relies on. */
+  .av-card__price .av-btn { width: 100%; padding-inline: 12px; }
+  .av-card__plain { justify-self: auto; }
+
+  .av-metric {
+    padding-block: 8px;
+  }
+}
+
+/* Proofs: the vacancy line, one headline a recruiter can scan, the full fact one click away. */
+.av-proofs__title {
+  margin-top: 8px;
+  font: 800 clamp(1.25rem, 1rem + 0.8vw, 1.5rem) / 1.2 var(--av-font-display);
+}
+
+.av-proofs {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
+.av-proof {
+  position: relative;
+  isolation: isolate; /* the flash layer below sits over the card's background, under its text */
+  padding: 16px 18px;
+  border-radius: var(--av-r-m);
+  background: var(--av-card);
+  box-shadow: var(--av-shadow-s);
+  scroll-margin-top: 1rem; /* the sticky header is already covered by scroll-padding-top on html */
+  outline: 0;
+}
+
+.av-proof__quote {
+  color: var(--av-text-2);
+  font: 500 14px / 1.4 var(--av-font-text);
+}
+
+.av-proof__headline {
+  margin-top: 8px;
+  font: 700 18px / 1.4 var(--av-font-text);
+  text-wrap: pretty;
+}
+
+.av-proof .av-more {
+  margin-top: 4px;
+}
+
+.av-proof__text {
+  margin-top: 4px;
+  color: var(--av-text-2);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.av-page .av-proof__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  color: var(--av-blue-ink);
+  font: 600 15px / 1.3 var(--av-font-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.av-page .av-proof__link:is(:hover, :focus-visible) {
+  color: var(--av-text);
+}
+
+/* The ring stays after the flash: it marks the proof that was picked. */
+.av-proof.is-pinged {
+  box-shadow: 0 0 0 2px var(--av-blue-ink);
+}
+
+.av-motion .av-proof.is-pinged::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: var(--av-blue-50);
+  pointer-events: none;
+  animation: av-lit 1500ms var(--ease-out-strong) 1 both;
+}
+
+/* Opacity only, per the motion contract; the last frame is the resting state (no tint).
+   The tint comes up fast instead of flashing on, holds while the eye arrives, then lets go. */
+@keyframes av-lit {
+  from { opacity: 0; animation-timing-function: var(--ease-out-strong); }
+  10%, 40% { opacity: 1; animation-timing-function: ease-in-out; }
+  to { opacity: 0; }
+}
+
+@media (min-width: 768px) {
+  .av-proofs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .av-proof:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  /* Closed rows keep equal cards. Once one card of a pair opens, its closed neighbour keeps its
+     own height instead of stretching into an empty white block. Screen only: paper has its own grid. */
+  @media screen {
+    .av-proof:nth-child(odd):not(:has(.av-more[open])):has(+ .av-proof .av-more[open]),
+    .av-proof:nth-child(odd):has(.av-more[open]) + .av-proof:not(:has(.av-more[open])) {
+      align-self: start;
+    }
+  }
+
+  /* Tablet: filters above the card, the seven rows in two columns. */
+  .av-filters__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .av-results {
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 24px;
+  }
+
+  .av-filters {
+    position: sticky;
+    top: 96px;
+  }
+
+  .av-filters__list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Phones: the filters move under the card, above the proofs, as a row of chips. */
+@media (max-width: 767px) {
+  .av-results__main {
+    display: contents;
+  }
+
+  .av-results__count { order: 1; }
+  .av-card { order: 2; }
+  .av-filters { order: 3; }
+  .av-proofs__title { order: 4; }
+  .av-proofs { order: 5; }
+
+  .av-results {
+    gap: 16px;
+  }
+
+  .av-card {
+    padding: 12px 12px 16px;
+  }
+
+  /* The 44px fold row carries its own air, so the card ends closer under it. */
+  .av-proof {
+    padding-bottom: 6px;
+  }
+
+  .av-filters {
+    position: relative;
+    padding: 16px 0 12px;
+  }
+
+  .av-sort,
+  .av-filters__title,
+  .av-filters__hint {
+    margin-inline: 16px;
+  }
+
+  .av-filters__list {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 2px 40px 6px 16px;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: 16px;
+    scrollbar-width: none;
+  }
+
+  .av-filters__list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .av-filters__list > li {
+    flex: none;
+    scroll-snap-align: start;
+  }
+
+  .av-page .av-filter {
+    align-items: center;
+    padding: 0 14px 0 10px;
+    border: 1.5px solid var(--av-line);
+    border-radius: var(--av-r-pill);
+    white-space: nowrap;
+  }
+
+  /* Fade on the right edge says the row scrolls. */
+  .av-filters::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 12px;
+    width: 64px;
+    height: 52px;
+    z-index: 1;
+    border-radius: 0 0 var(--av-r-l) 0;
+    background: linear-gradient(90deg, transparent, var(--av-card) 70%);
+    pointer-events: none;
+  }
+}
+
+/* The only modal: padding sits on the inner block, so a click on the dialog itself is the backdrop. */
+.av-dialog {
+  padding: 0;
+  border: 0;
+  border-radius: 24px;
+  max-width: min(480px, calc(100vw - 32px));
+  background: var(--av-card);
+  color: var(--av-text);
+  box-shadow: var(--av-shadow-l);
+}
+
+.av-dialog::backdrop {
+  background: rgb(0 0 0 / 0.45);
+}
+
+/* The dialog answers a click the way a toast arrives: a short rise, no drama. backwards: nothing
+   is left on it afterwards. It closes at once. */
+.av-motion .av-dialog[open] {
+  animation: av-rise var(--dur-base) var(--ease-out-strong) 1 backwards;
+}
+
+.av-motion .av-dialog[open]::backdrop {
+  animation: av-appear var(--dur-base) var(--ease-out-strong) 1 backwards;
+}
+
+@keyframes av-rise {
+  from { transform: translateY(10px) scale(0.97); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+.av-dialog__inner {
+  position: relative;
+  padding: 28px;
+}
+
+.av-dialog__close {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--av-text-2);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.av-dialog__close:hover {
+  color: var(--av-text);
+}
+
+.av-dialog__title {
+  padding-right: 32px;
+  font: 800 22px / 1.2 var(--av-font-display);
+}
+
+.av-dialog__intro {
+  margin-top: 12px;
+}
+
+.av-page .av-dialog__list {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0 22px;
+}
+
+.av-dialog__list li {
+  position: relative;
+  padding-left: 30px;
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+/* A green tick in a circle, the "direct" benefit mark. */
+.av-dialog__list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M6 10.5 8.6 13 14 7' fill='none' stroke='%230e7325' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 20px no-repeat,
+    var(--av-ok-bg);
+}
+
+html[data-theme='dark'] .av-dialog__list li::before {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M6 10.5 8.6 13 14 7' fill='none' stroke='%237fda9a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 20px no-repeat,
+    var(--av-ok-bg);
+}
+
+.av-dialog .av-btn {
+  width: 100%;
+}
+
+/* ===================== 7. Toasts (8.1, 8.2, A10) ===================== */
+
+.av-toasts {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 60;
+  width: min(360px, calc(100vw - 32px));
+}
+
+.av-toast {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  padding: 16px 44px 16px 16px;
+  border-radius: var(--av-r-l);
+  background: var(--av-card);
+  color: var(--av-text);
+  box-shadow: var(--av-shadow-l);
+}
+
+.av-toast--price {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+/* A10: up from the corner with a soft overshoot. backwards: no transform is left on the toast. */
+.av-motion .av-toast {
+  transform-origin: 100% 100%;
+  animation: av-toast-in var(--av-dur-land) var(--av-ease-spring) 1 backwards;
+}
+
+@keyframes av-toast-in {
+  from { transform: translateY(20px) scale(0.95); opacity: 0; }
+  45% { opacity: 1; }
+  to { transform: none; opacity: 1; }
+}
+
+/* The plane in the price toast takes one small hop once the toast has landed. */
+.av-motion .av-toast--price .av-toast__icon svg {
+  animation: av-hop 560ms ease-in-out 360ms 1 backwards;
+}
+
+@keyframes av-hop {
+  from, to { transform: rotate(-45deg); }
+  38% { transform: translate(2px, -6px) rotate(-56deg); }
+  72% { transform: translate(0, 1px) rotate(-42deg); }
+}
+
+.av-toast__icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--av-blue);
+  color: #fff;
+}
+
+.av-toast__icon svg {
+  width: 22px;
+  height: 22px;
+  transform: rotate(-45deg);
+}
+
+.av-toast__title {
+  font: 700 16px / 1.3 var(--av-font-text);
+}
+
+.av-toast__text {
+  margin-top: 4px;
+  color: var(--av-text-2);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.av-toast__body .av-btn {
+  margin-top: 12px;
+}
+
+.av-toast__close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--av-text-2);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.av-toast__close:hover {
+  color: var(--av-text);
+}
+
+.av-toast__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+}
+
+/* Mission toast: our own "task complete" screen. No game fonts, logos or frames. */
+.av-toast--mission {
+  background: #0b0f14;
+  color: #fff;
+}
+
+.av-toast--mission .av-toast__title {
+  color: #c8f04a;
+  font: 800 20px / 1.15 var(--av-font-display);
+  text-transform: uppercase;
+}
+
+.av-toast--mission .av-toast__text,
+.av-toast--mission .av-toast__close {
+  color: #fff;
+}
+
+.av-toast__later {
+  min-height: 44px;
+  margin-top: 12px;
+  padding: 0 6px;
+  border: 0;
+  background: none;
+  color: #fff;
+  font: 600 15px / 1 var(--av-font-text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.av-toast--mission :is(a, button):focus-visible {
+  outline-color: #fff;
+}
+
+@media (max-width: 767px) {
+  .av-toasts {
+    right: 16px;
+    left: 16px;
+    bottom: calc(84px + env(safe-area-inset-bottom));
+    width: auto;
+  }
+}
+
+/* An open toast covers the bottom of the window and never leaves by itself (8.1). The script measures
+   that band into --av-toast-room on <html>: the page gets that much room under the footer, so the
+   legal line and the booking links can be scrolled clear of it, and keyboard focus scrolls clear too. */
+.av-page:has(.av-toasts [data-av-toast]) {
+  padding-bottom: max(var(--av-section-gap), var(--av-toast-room, 0px));
+}
+
+@media (max-width: 767px) {
+  html:has(.av-page .av-sticky.is-shown) {
+    scroll-padding-bottom: 88px;
+  }
+}
+
+html:has(.av-page .av-toasts [data-av-toast]) {
+  scroll-padding-bottom: var(--av-toast-room, 0px);
+}
+
+/* ===================== 8. Sticky bottom button, phones only (8.4) ===================== */
+
+.av-sticky {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 55;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  background: var(--av-card);
+  box-shadow: 0 -6px 16px rgb(0 0 0 / 0.08);
+  transform: translateY(110%);
+  /* Off screen it must not take keyboard focus: visibility flips after the slide out. */
+  visibility: hidden;
+  transition:
+    transform var(--dur-base) var(--ease-out-strong),
+    visibility 0s linear var(--dur-base);
+}
+
+.av-sticky.is-shown {
+  transform: none;
+  visibility: visible;
+  transition: transform var(--dur-base) var(--ease-out-strong);
+}
+
+.av-sticky .av-btn {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .av-sticky {
+    display: none;
+  }
+}
+
+/* ===================== 9. Calm mode, [hidden], reduced motion (11) ===================== */
+
+/* Component classes set their own display, so the hidden attribute needs this to win. */
+.av-page [hidden] {
+  display: none !important;
+}
+
+/* The calm toggle is hidden until the script runs. On phones it takes a row of its own, so showing
+   it then pushed the whole band down (CLS): keep its box from the first paint, just invisible. */
+.av-page .av-calm[hidden] {
+  display: inline-flex !important;
+  visibility: hidden;
+}
+
+.av-page[data-av-calm] [data-av-meme] {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .av-page *,
+  .av-page *::before,
+  .av-page *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Calm mode is still. Its switch promises no animations, so the plain hover and press
+   transitions stop with the rest, and whatever was mid-move lands at once. */
+.av-page[data-av-calm] *,
+.av-page[data-av-calm] *::before,
+.av-page[data-av-calm] *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* ===================== end of part 1 ===================== */
+
+/* ===================== 10. Part 2 tokens ===================== */
+
+.av-page {
+  /* "Optimal" ticket badge, the orange one: 6.1:1 */
+  --av-best-bg: #fde7d9;
+  --av-best-text: #93380b;
+  /* Ticket perforation and the pass tear line: decoration on the ticket paper. */
+  --av-perf: rgb(13 20 32 / 0.22);
+}
+
+html[data-theme='dark'] .av-page {
+  --av-best-bg: #3b2414;
+  --av-best-text: #fdb48a;
+  --av-perf: rgb(238 241 245 / 0.24);
+}
+
+/* ===================== 11. Details: about, amenities, stays (7.5) ===================== */
+
+.av-details {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+
+.av-details > .av-h2 {
+  margin-bottom: 4px;
+}
+
+.av-details__block {
+  padding: 24px;
+  border-radius: var(--av-r-l);
+  background: var(--av-card);
+  box-shadow: var(--av-shadow-s);
+}
+
+.av-details__h3 {
+  margin-bottom: 14px;
+  font: 800 18px / 1.25 var(--av-font-display);
+}
+
+.av-details__summary {
+  max-width: 68ch;
+}
+
+.av-amenities {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 20px;
+}
+
+.av-amenity {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+/* 1.8 units of a 24-unit box drawn at 20px is a 1.5px line. */
+.av-amenity__icon {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: var(--av-blue-ink);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.av-skills {
+  display: grid;
+  gap: 8px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.av-skills strong {
+  font-weight: 700;
+}
+
+.av-stays {
+  display: grid;
+}
+
+.av-stay + .av-stay {
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid var(--av-line);
+}
+
+.av-stay__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px 24px;
+}
+
+.av-stay__company {
+  font: 800 17px / 1.3 var(--av-font-display);
+}
+
+.av-stay__role {
+  margin-top: 2px;
+  color: var(--av-text-2);
+  font: 500 15px / 1.4 var(--av-font-text);
+}
+
+/* Check-in and check-out, the way a booking shows them. */
+.av-stay__dates {
+  display: flex;
+  gap: 8px;
+  margin: 0;
+}
+
+.av-stay__dates > div {
+  padding: 6px 12px;
+  border: 1px solid var(--av-line);
+  border-radius: var(--av-r-s);
+  background: var(--av-card-alt);
+}
+
+.av-stay__dates dt {
+  color: var(--av-text-2);
+  font: 500 12px / 1.3 var(--av-font-text);
+}
+
+.av-stay__dates dd {
+  margin: 0;
+  font: 600 14px / 1.3 var(--av-font-text);
+}
+
+.av-stay__period {
+  color: var(--av-text-2);
+  font-size: 15px;
+}
+
+.av-stay__context {
+  max-width: 68ch;
+  margin-top: 10px;
+  color: var(--av-text-2);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.av-stay__phases {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2px;
+  margin-top: 10px;
+}
+
+/* Paper only: on screen the phase title is the summary of its fold. */
+.av-stay__phase-title {
+  font: 700 15px / 1.35 var(--av-font-text);
+}
+
+.av-stay__bullets.av-print-only {
+  display: none;
+}
+
+.av-stay .av-more__summary {
+  text-align: start;
+}
+
+.av-stay .av-more[open] > .av-stay__bullets {
+  margin: 6px 0 12px;
+}
+
+.av-stay__bullets,
+.av-notes__more ul {
+  display: grid;
+  gap: 8px;
+}
+
+.av-stay__bullets li,
+.av-notes__more li {
+  position: relative;
+  padding-left: 18px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.av-stay__bullets li::before,
+.av-notes__more li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0.62em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--av-blue-ink);
+}
+
+.av-page .av-stay__bullets a {
+  color: var(--av-blue-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.av-page .av-stay__bullets a:is(:hover, :focus-visible) {
+  color: var(--av-text);
+}
+
+/* Laptop: the compact experience and the amenities side by side. The about block (calm mode only)
+   spans both columns above them; hidden, it leaves no row behind. */
+@media (min-width: 1024px) {
+  .av-details {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 22rem);
+    align-items: start;
+    gap: 24px;
+  }
+
+  .av-details > .av-h2 {
+    grid-column: 1 / -1;
+    margin-bottom: -4px;
+  }
+
+  .av-details__about { grid-column: 1 / -1; }
+  .av-details__stays { grid-column: 1; }
+  .av-details__amenities { grid-column: 2; }
+
+  .av-details__amenities .av-amenities {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 479px) {
+  .av-amenities {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .av-details__block {
+    padding: 18px 16px;
+  }
+}
+
+/* ===================== 12. Notes on their search (7.6): no motion at all ===================== */
+
+.av-notes__kicker {
+  margin: 0 0 8px;
+  color: var(--av-text-2);
+  font: 500 15px / 1.4 var(--av-font-text);
+}
+
+.av-notes__intro {
+  max-width: 68ch;
+  margin-top: 12px;
+}
+
+.av-notes__list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.av-note {
+  position: relative;
+  overflow: hidden;
+  padding: 26px 24px 24px;
+  border-radius: var(--av-r-l);
+  background: var(--av-card);
+  box-shadow: var(--av-shadow-s);
+}
+
+.av-note::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: var(--av-blue);
+}
+
+.av-note__n {
+  color: var(--av-text-2);
+  font: 600 13px / 1.35 var(--av-font-text);
+}
+
+.av-note__title {
+  margin-top: 6px;
+  font: 800 19px / 1.3 var(--av-font-display);
+}
+
+.av-note__dl {
+  margin: 0;
+}
+
+.av-note__dl dt {
+  margin-top: 14px;
+  color: var(--av-text-2);
+  font: 600 13px / 1.35 var(--av-font-text);
+}
+
+.av-note__dl dd {
+  margin: 3px 0 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.av-notes__more {
+  margin-top: 16px;
+  padding: 20px 24px;
+  box-shadow: var(--av-shadow-s);
+  border-radius: var(--av-r-l);
+  background: var(--av-card);
+}
+
+.av-notes__more-title {
+  margin-bottom: 12px;
+  font: 800 17px / 1.3 var(--av-font-display);
+}
+
+.av-notes__outro {
+  margin-top: 18px;
+  font: 700 18px / 1.4 var(--av-font-text);
+}
+
+@media (min-width: 1024px) {
+  .av-notes__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .av-notes__more ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 32px;
+  }
+}
+
+@media (max-width: 767px) {
+  .av-note {
+    padding: 22px 16px 18px;
+  }
+
+  .av-notes__more {
+    padding: 18px 16px;
+  }
+}
+
+/* ===================== 13. Ticket strip (7.4, A4) ===================== */
+
+.av-tickets {
+  overflow: hidden;
+  padding-block: 8px 16px;
+}
+
+.av-tickets__track {
+  display: flex;
+  gap: 16px;
+  width: max-content;
+  margin: 0 auto;
+  padding: 0 var(--av-gutter);
+}
+
+/* The shadow sits on the li, the notches on the paper: a mask would cut a box-shadow off. */
+.av-ticket {
+  display: flex;
+  flex: none;
+  width: 260px;
+  filter: drop-shadow(var(--av-shadow-s));
+}
+
+@media (hover: hover) {
+  .av-ticket {
+    transition:
+      transform var(--dur-fast) var(--ease-out-strong),
+      filter var(--dur-fast) var(--ease-out-strong);
+  }
+
+  .av-ticket:hover {
+    transform: translateY(-4px);
+    filter: drop-shadow(var(--av-shadow-m));
+  }
+}
+
+.av-ticket__paper {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 64px;
+  min-height: 132px;
+  border-radius: 14px;
+  background: var(--av-ticket);
+  /* Two half-round notches, one on each side. */
+  -webkit-mask:
+    radial-gradient(circle 9px at 0 50%, transparent 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 9px at 100% 50%, transparent 98%, #000) right / 51% 100% no-repeat;
+  mask:
+    radial-gradient(circle 9px at 0 50%, transparent 98%, #000) left / 51% 100% no-repeat,
+    radial-gradient(circle 9px at 100% 50%, transparent 98%, #000) right / 51% 100% no-repeat;
+}
+
+.av-ticket__main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 0;
+  padding: 12px 10px 12px 16px;
+}
+
+/* The stub, 64px wide. Its left edge is the perforation, drawn as a line of its own so that it
+   can be punched top to bottom when the ticket arrives. */
+.av-ticket__stub {
+  position: relative;
+  display: grid;
+  place-items: center;
+  color: var(--av-text-2);
+}
+
+.av-ticket__stub::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-left: 2px dashed var(--av-perf);
+}
+
+/* The airplane is drawn nose right, the way the route reads. */
+.av-ticket__stub svg {
+  width: 26px;
+  height: 26px;
+}
+
+.av-page .av-ticket__badge[data-kind='fast'] {
+  background: var(--av-direct-bg);
+  color: var(--av-direct-text);
+}
+
+.av-page .av-ticket__badge[data-kind='cheap'] {
+  background: var(--av-ok-bg);
+  color: var(--av-ok-text);
+}
+
+.av-page .av-ticket__badge[data-kind='best'] {
+  background: var(--av-best-bg);
+  color: var(--av-best-text);
+}
+
+.av-ticket__badge {
+  margin-bottom: 4px;
+}
+
+.av-ticket__route {
+  font: 600 14px / 1.3 var(--av-font-mono);
+  letter-spacing: 0.06em;
+}
+
+.av-ticket__note {
+  color: var(--av-text-2);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.av-ticket__price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+  margin-top: auto;
+  padding-top: 4px;
+}
+
+.av-ticket__old {
+  position: relative;
+  color: var(--av-text-2);
+  font: 500 14px / 1.2 var(--av-font-text);
+  font-variant-numeric: tabular-nums;
+  text-decoration: none;
+}
+
+.av-ticket__old::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 52%;
+  height: 2px;
+  background: var(--av-warn);
+  transform-origin: left;
+}
+
+.av-ticket__price strong {
+  font: 800 22px / 1 var(--av-font-display);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* A4: the price drop. While it runs, the script puts two things in the <strong>: the final string,
+   kept in the flow but unseen, so the box never changes size, and over it a reel of markdowns
+   whose top line is that same final string. The reel rolls down one line at a time and stops on
+   it; then the script puts the plain server string back. */
+.av-ticket__price .is-rolling {
+  position: relative;
+  display: inline-block;
+  /* One line tall, open to the right: a wider markdown is not cut. */
+  clip-path: inset(0 -12em 0 0);
+}
+
+/* Unseen, but still read aloud: the reel over it is hidden from assistive tech. */
+.av-ticket__price .is-rolling > :first-child {
+  opacity: 0;
+}
+
+.av-reel {
+  position: absolute;
+  inset: 0 auto auto 0;
+  display: grid;
+}
+
+.av-reel > i {
+  font-style: normal;
+}
+
+.av-motion .av-reel {
+  animation: av-reel 1200ms cubic-bezier(0.2, 0.75, 0.25, 1) calc(360ms + var(--i, 0) * 110ms) 1 backwards;
+}
+
+/* Five lines: it starts on the last one and comes to rest on the first, a hair past it and back. */
+@keyframes av-reel {
+  from { transform: translateY(-80%); }
+  86% { transform: translateY(1.4%); animation-timing-function: ease-in-out; }
+  to { transform: none; }
+}
+
+/* A word price instead of a number: smaller, so the wide display face fits the stub. */
+.av-ticket__price strong:not([data-av-drop]) {
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+/* A4: the entrance, once. Until the strip is seen the tickets wait unseen; then they are dealt
+   one after another, each lands with a little weight, its perforation is punched top to bottom,
+   the plane on the stub pulls in, the old price is struck out and the new one rolls down.
+   backwards on all of them: after the last frame nothing is left to fight the hover lift. */
+.av-motion:not(.av-replayed) .av-tickets:not(.is-in) .av-ticket {
+  opacity: 0;
+}
+
+.av-motion:not(.av-replayed) .av-tickets.is-in .av-ticket {
+  animation: av-deal 560ms var(--av-ease-spring) calc(var(--i, 0) * 110ms) 1 backwards;
+}
+
+.av-motion:not(.av-replayed) .av-tickets.is-in .av-ticket__stub::before {
+  animation: av-punch 380ms var(--ease-out-strong) calc(300ms + var(--i, 0) * 110ms) 1 backwards;
+}
+
+.av-motion:not(.av-replayed) .av-tickets.is-in .av-ticket__stub svg {
+  animation: av-pull-in 520ms var(--ease-out-strong) calc(380ms + var(--i, 0) * 110ms) 1 backwards;
+}
+
+@keyframes av-deal {
+  from { transform: translateY(36px) rotate(-2.5deg) scale(0.96); opacity: 0; }
+  40% { opacity: 1; }
+  to { transform: none; opacity: 1; }
+}
+
+@keyframes av-punch {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0); }
+}
+
+@keyframes av-pull-in {
+  from { transform: translateX(-18px) scale(0.7); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+.av-motion:not(.av-replayed) .av-tickets:not(.is-in) .av-ticket__old::after {
+  transform: scaleX(0);
+}
+
+.av-motion:not(.av-replayed) .av-tickets.is-in .av-ticket__old::after {
+  animation: av-strike 420ms var(--ease-out-strong) calc(420ms + var(--i, 0) * 110ms) 1 backwards;
+}
+
+@keyframes av-strike {
+  from { transform: scaleX(0); }
+  to { transform: none; }
+}
+
+/* The drift never exceeds the free room beside the centred track (about 900px wide), so no ticket is cut. */
+@media (min-width: 1024px) {
+  .av-motion .av-tickets__track {
+    transform: translateX(calc((0.5 - var(--av-p, 0.5)) * clamp(0px, 100vw - 940px, 420px)));
+    will-change: transform;
+  }
+}
+
+/* Below a laptop the three tickets do not fit: a finger or trackpad scroll with snap. */
+@media (max-width: 1023px) {
+  .av-tickets {
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: var(--av-gutter);
+    scrollbar-width: none;
+  }
+
+  .av-tickets::-webkit-scrollbar {
+    display: none;
+  }
+
+  .av-tickets__track {
+    margin: 0;
+  }
+
+  .av-ticket {
+    scroll-snap-align: start;
+  }
+}
+
+@media (max-width: 767px) {
+  .av-ticket__route {
+    font-size: 12px;
+  }
+}
+
+/* ===================== 14. Turbulence (7.7, A8) ===================== */
+
+.av-turb__cabin {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 28px;
+  padding: clamp(20px, 4vw, 40px);
+  border-radius: 28px;
+  background: var(--av-card);
+  box-shadow: var(--av-shadow-s);
+}
+
+.av-turb__belt {
+  display: inline-block;
+  margin: 0 0 14px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #0b1220;
+  color: #ffb020;
+  font: 600 12px / 1 var(--av-font-mono);
+  letter-spacing: 0.08em;
+}
+
+/* A8, once, on first sight: the sign comes on the way a cabin sign does (two soft blinks, then
+   steady), the cabin sways and settles, the bars fill in order. */
+.av-motion:not(.av-replayed) .av-turb:not(.is-in) .av-turb__belt {
+  opacity: 0.3;
+}
+
+.av-motion:not(.av-replayed) .av-turb.is-in .av-turb__belt {
+  animation: av-sign 640ms linear 120ms 1 backwards;
+}
+
+@keyframes av-sign {
+  from { opacity: 0.3; }
+  14% { opacity: 1; }
+  27% { opacity: 0.5; }
+  45% { opacity: 1; }
+  57% { opacity: 0.75; }
+  72%, to { opacity: 1; }
+}
+
+.av-motion:not(.av-replayed) .av-turb.is-in .av-turb__cabin {
+  animation: av-shake 700ms ease-in-out 300ms 1;
+}
+
+/* Small on purpose: under 3px and a third of a degree, each swing smaller than the last, once. */
+@keyframes av-shake {
+  from, to { transform: none; }
+  16% { transform: translate(-2.5px, 1.5px) rotate(-0.3deg); }
+  34% { transform: translate(2.5px, -1.5px) rotate(0.26deg); }
+  52% { transform: translate(-1.5px, -1px) rotate(-0.18deg); }
+  70% { transform: translate(1px, 1px) rotate(0.1deg); }
+  86% { transform: translate(-0.5px, 0) rotate(-0.04deg); }
+}
+
+.av-turb__lead {
+  max-width: 52ch;
+  margin-top: 10px;
+}
+
+.av-turb__scale {
+  display: grid;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.av-turb__scale li {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr) 9.5rem;
+  align-items: center;
+  gap: 14px;
+  font-size: 15px;
+  line-height: 1.3;
+}
+
+.av-turb__phase {
+  font-weight: 600;
+}
+
+.av-turb__say {
+  color: var(--av-text-2);
+  font-size: 14px;
+}
+
+.av-turb__bar {
+  display: block;
+  height: 10px;
+  overflow: hidden;
+  border-radius: 5px;
+  background: var(--av-line);
+}
+
+/* blue-ink, not blue: the dark theme's band blue is too faint on the dark card. */
+.av-turb__bar > i {
+  display: block;
+  width: calc(var(--v) * 1%);
+  height: 100%;
+  border-radius: 5px;
+  background: var(--av-blue-ink);
+  transform-origin: left;
+}
+
+.av-turb__scale li:nth-child(3) .av-turb__bar > i {
+  background: var(--av-warn);
+}
+
+/* The fill slides in from the left inside the rounded track, so its end stays round all the way. */
+.av-motion:not(.av-replayed) .av-turb:not(.is-in) .av-turb__bar > i {
+  transform: translateX(-101%);
+}
+
+.av-motion:not(.av-replayed) .av-turb.is-in .av-turb__bar > i {
+  animation: av-fill 800ms var(--ease-out-strong) calc(460ms + var(--i) * 110ms) 1 backwards;
+}
+
+@keyframes av-fill {
+  from { transform: translateX(-101%); }
+  to { transform: none; }
+}
+
+.av-turb__side {
+  align-self: center;
+}
+
+/* The punch line and the meme are two lines of dialogue next to the pug, not one sentence. */
+.av-turb__dog {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+}
+
+.av-turb__dog img {
+  flex: none;
+  width: 60px;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+.av-turb__lines {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+}
+
+.av-turb__punch {
+  font: 700 18px / 1.35 var(--av-font-text);
+}
+
+.av-turb__meme {
+  padding: 8px 14px;
+  border-radius: 16px 16px 16px 4px;
+  background: var(--av-blue-50);
+  font: 600 16px / 1.35 var(--av-font-text);
+}
+
+.av-turb__serious {
+  max-width: 60ch;
+  margin-top: 22px;
+}
+
+/* Passport stamps: a static tilt, nothing moves. */
+.av-turb__trips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+  margin-top: 18px;
+}
+
+.av-turb__trips li {
+  padding: 7px 14px;
+  border: 1.5px dashed var(--av-text-2);
+  border-radius: 8px;
+  color: var(--av-text-2);
+  font: 600 13px / 1.2 var(--av-font-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transform: rotate(-2deg);
+}
+
+.av-turb__trips li:nth-child(even) {
+  transform: rotate(1.5deg);
+}
+
+@media (min-width: 1024px) {
+  .av-turb__cabin {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: 56px;
+  }
+}
+
+/* Calm mode hides the scale and the pug: one column, no half-empty card. */
+.av-page[data-av-calm] .av-turb__cabin {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+}
+
+@media (max-width: 559px) {
+  .av-turb__scale li {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'phase say'
+      'bar bar';
+    gap: 6px 12px;
+  }
+
+  .av-turb__phase { grid-area: phase; }
+  .av-turb__bar { grid-area: bar; }
+  .av-turb__say { grid-area: say; text-align: end; }
+}
+
+/* ===================== 15. Booking and boarding pass (7.8, A11) ===================== */
+
+.av-booking__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.av-booking__summary {
+  margin: 0;
+  padding: 6px 24px;
+  border-radius: var(--av-r-l);
+  background: var(--av-card);
+  box-shadow: var(--av-shadow-s);
+}
+
+.av-booking__summary > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+}
+
+.av-booking__summary > div + div {
+  border-top: 1px dashed var(--av-line);
+}
+
+.av-booking__summary dt {
+  color: var(--av-text-2);
+  font-size: 15px;
+}
+
+.av-booking__summary dd {
+  margin: 0;
+  font: 600 16px / 1.4 var(--av-font-text);
+  text-align: end;
+}
+
+.av-booking__act {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.av-booking__act .av-btn {
+  margin-bottom: 10px;
+}
+
+.av-booking__handle {
+  font: 600 17px / 1.4 var(--av-font-text);
+}
+
+.av-booking__hours {
+  color: var(--av-text-2);
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.av-booking__alt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 10px;
+  margin-top: 10px;
+  color: var(--av-text-2);
+  font-size: 15px;
+}
+
+.av-page .av-booking__alt a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  color: var(--av-blue-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.av-page .av-booking__alt a:is(:hover, :focus-visible) {
+  color: var(--av-text);
+}
+
+@media (max-width: 767px) {
+  .av-booking__alt {
+    gap: 2px 18px;
+  }
+
+  .av-booking__alt > span[aria-hidden] {
+    display: none;
+  }
+}
+
+@media (min-width: 768px) {
+  .av-booking__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 32px;
+    align-items: start;
+  }
+
+  .av-booking__act {
+    align-items: flex-start;
+  }
+
+  .av-booking__act .av-btn {
+    min-width: min(100%, 340px);
+  }
+}
+
+.av-pass {
+  display: none;
+  grid-template-columns: minmax(0, 1fr) 150px;
+  max-width: 560px;
+  margin-top: 28px;
+  font-family: var(--av-font-mono);
+}
+
+.av-pass.is-printed {
+  display: grid;
+}
+
+.av-pass__main,
+.av-pass__stub {
+  padding: 18px 20px;
+  background: var(--av-ticket);
+  box-shadow: var(--av-shadow-m);
+}
+
+.av-pass__main {
+  border-right: 2px dashed var(--av-perf);
+  border-radius: 16px 6px 6px 16px;
+}
+
+.av-pass__stub {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  border-radius: 6px 16px 16px 6px;
+  transform-origin: left bottom;
+}
+
+.av-pass__label {
+  color: var(--av-text-2);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.av-pass__name {
+  margin-top: 6px;
+  font: 700 19px / 1.2 var(--av-font-mono);
+  letter-spacing: 0.04em;
+}
+
+.av-pass__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 16px;
+  margin: 14px 0 0;
+}
+
+.av-pass__grid dt {
+  color: var(--av-text-2);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.av-pass__grid dd {
+  margin: 2px 0 0;
+  font: 600 14px / 1.3 var(--av-font-mono);
+  letter-spacing: 0.04em;
+}
+
+.av-pass__stub p {
+  color: var(--av-text-2);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.av-pass__code {
+  position: relative;
+  height: 54px;
+  overflow: hidden;
+  background: repeating-linear-gradient(90deg, var(--av-text) 0 2px, transparent 2px 5px, var(--av-text) 5px 6px, transparent 6px 10px);
+}
+
+/* The scanner: a thin beam on the right edge of a faint glow that trails behind it. */
+.av-pass__scan {
+  position: absolute;
+  inset: 0;
+  border-right: 2px solid var(--av-warn);
+  background: linear-gradient(90deg, transparent 68%, var(--av-warn));
+  opacity: 0;
+}
+
+/* A11, on each press. The pass leaves a printer: it slides down out of a slot that stays where the
+   top edge of the pass will rest (the clip rises exactly as far as the paper falls), in three
+   pushes with a pause between them, and drops a hair as it comes free. Then the stub is torn off
+   and the code is scanned once.
+   backwards, not both: the clip must go away after printing or it cuts the top shadow. The other
+   three sides of the clip stand off the paper so the shadow is there from the first push. */
+.av-motion .av-pass.is-printed {
+  animation: av-print 960ms var(--ease-out-strong) 1 backwards;
+}
+
+@keyframes av-print {
+  from { clip-path: inset(100% -40px -40px -40px); transform: translateY(-100%); }
+  24%, 33% { clip-path: inset(64% -40px -40px -40px); transform: translateY(-64%); }
+  57%, 66% { clip-path: inset(28% -40px -40px -40px); transform: translateY(-28%); }
+  90% { clip-path: inset(0 -40px -40px -40px); transform: translateY(3px); animation-timing-function: ease-in-out; }
+  to { clip-path: inset(0 -40px -40px -40px); transform: none; }
+}
+
+/* The slot is drawn under the booking block, just above the pass, and only while it prints. */
+.av-booking__grid {
+  position: relative;
+}
+
+.av-motion .av-booking__grid:has(+ .av-pass.is-printed)::after {
+  content: '';
+  position: absolute;
+  inset: auto auto -27px -6px;
+  width: min(100% + 6px, 572px);
+  height: 5px;
+  border-radius: 3px;
+  background: var(--av-text-2);
+  opacity: 0;
+  animation: av-slot 1150ms linear 1 backwards;
+}
+
+@keyframes av-slot {
+  from { opacity: 0; }
+  8%, 84% { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* The tear: the paper bends on the perforation first, then lets go, swings past and settles. */
+.av-motion .av-pass.is-printed .av-pass__stub {
+  animation: av-tear 520ms var(--ease-out-strong) 1040ms 1 both;
+}
+
+@keyframes av-tear {
+  from { transform: none; animation-timing-function: ease-in; }
+  30% { transform: rotate(1.3deg); }
+  62% { transform: translateX(11px) rotate(6deg); animation-timing-function: ease-in-out; }
+  82% { transform: translateX(8px) rotate(3.2deg); animation-timing-function: ease-in-out; }
+  to { transform: translateX(9px) rotate(4deg); }
+}
+
+.av-motion .av-pass.is-printed .av-pass__scan {
+  animation: av-scan 720ms var(--ease-in-out-strong) 1560ms 1 both;
+}
+
+@keyframes av-scan {
+  from { transform: translateX(-100%); opacity: 0; }
+  14%, 80% { opacity: 0.85; }
+  to { transform: none; opacity: 0; }
+}
+
+/* The torn stub leans 9px right and turns 4deg: keep that inside the page gutter. */
+@media (max-width: 767px) {
+  .av-pass {
+    margin-right: 16px;
+  }
+
+  /* The slot follows the narrower pass. */
+  .av-motion .av-booking__grid:has(+ .av-pass.is-printed)::after {
+    width: calc(100% - 4px);
+  }
+}
+
+@media (max-width: 479px) {
+  .av-pass {
+    grid-template-columns: minmax(0, 1fr) 104px;
+  }
+
+  .av-pass__main,
+  .av-pass__stub {
+    padding: 14px;
+  }
+
+  .av-pass__name {
+    font-size: 16px;
+  }
+}
+
+/* ===================== 16. Footer (7.9): the pug stands still in this pass ===================== */
+
+.av-footer {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  margin-top: var(--av-section-gap);
+  padding-top: 20px;
+  border-top: 1px solid var(--av-line);
+}
+
+.av-pug {
+  flex: none;
+}
+
+.av-pug img {
+  display: block;
+  width: 64px;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+.av-footer__legal {
+  max-width: 72ch;
+  color: var(--av-text-2);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.av-footer__made {
+  margin-top: 4px;
+  color: var(--av-text-2);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* The sticky bar covers the bottom of the page on phones: leave room for it. */
+@media (max-width: 767px) {
+  .av-page {
+    padding-bottom: calc(var(--av-section-gap) + 72px);
+  }
+}
+
+/* ===================== 17. Print (14): the strict resume, no jokes, no buttons ===================== */
+
+/* This block is the vacancy PDF (scripts/cv/build-exports.ts prints the page). Goal: two A4 pages
+   that read in order in a parser: name, vacancy line, contacts, numbers, proofs, experience, notes,
+   travel, contacts. The lessons from scripts/cv/README.md apply here too. */
+@media print {
+  /* !important: in the built page the site's print stylesheet loads after this one, and Chrome lets
+     its later @page (14mm 14mm 16mm) win even over a named page. Those margins cost the PDF a page. */
+  @page { size: A4; margin: 10mm 13mm 10mm !important; }
+
+  /* The dark theme sets its tokens with a stronger selector, so paper overrides both. */
+  .av-page,
+  html[data-theme='dark'] .av-page {
+    --av-bg: #fff;
+    --av-card: #fff;
+    --av-card-alt: #fff;
+    --av-text: #000;
+    --av-text-2: #333;
+    --av-line: #bbb;
+    --av-blue-ink: #0b55c4;
+    --av-blue-50: #fff;
+    --av-ticket: #fff;
+    padding: 0;
+    background: #fff;
+    color: #000;
+    font-size: 8.6pt;
+    line-height: 1.32;
+  }
+
+  /* The theme script writes color-scheme inline; a dark one paints the sheet margins black in a
+     Chrome that follows a dark system appearance. Paper is always light. */
+  html:has(.av-page),
+  body:has(.av-page) {
+    color-scheme: light !important;
+  }
+
+  body:has(.av-page),
+  html[data-theme='dark'] body:has(.av-page) {
+    background: #fff;
+  }
+
+  /* Unbounded and letter-spaced mono text bloat the PDF and break words in its text layer. */
+  .av-page,
+  .av-page * {
+    font-family: var(--font-geist), Arial, sans-serif !important;
+    letter-spacing: normal !important;
+    text-transform: none !important;
+  }
+
+  /* Jokes, buttons, decoration and repeats stay on screen. The card's name, role and facts line
+     repeat the header (and the facts carry a joke). The proof headlines and the folds are the
+     screen's short version: paper prints the full text from its .av-print-only copies.
+     "Ещё заметил", the trip stamps and the closing question are extras beyond the three notes. */
+  .av-page [data-av-meme],
+  .av-page .av-ribbon,
+  .av-page .av-progress,
+  .av-page .av-hero__sky,
+  .av-page .av-hero__top,
+  .av-page .av-search,
+  .av-page .av-loader,
+  .av-page .av-board,
+  .av-page .av-filters,
+  .av-page .av-card__media,
+  .av-page .av-card__body,
+  .av-page .av-card__price,
+  .av-page .av-proof__headline,
+  .av-page .av-more,
+  .av-page .av-booking__reply,
+  .av-page .av-toasts,
+  .av-page .av-sticky,
+  .av-page .av-dialog,
+  .av-page .av-pass,
+  .av-page .av-pug,
+  .av-page .av-btn,
+  .av-page .av-tickets,
+  .av-page .av-notes__more,
+  .av-page .av-notes__outro,
+  .av-page .av-note__n,
+  .av-page .av-turb__trips,
+  .av-page .av-footer {
+    display: none !important;
+  }
+
+  /* Calm replacements carry the hidden attribute on screen. `display: revert` would fall back to the
+     browser's own [hidden] rule, so name the display value. These selectors outrank `.av-page [hidden]`. */
+  .av-page span[data-av-plain][hidden] { display: inline !important; }
+  .av-page :is(div, p, ul)[data-av-plain][hidden] { display: block !important; }
+
+  /* No boxes, shadows or tints on paper: hairlines and spacing carry the structure. */
+  .av-page :is(.av-card, .av-proof, .av-note, .av-details__block, .av-booking__summary, .av-turb__cabin, .av-stay) {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    transform: none;
+  }
+  .av-page :is(.av-container, .av-section) { width: auto; max-width: none; margin: 0; padding: 0; }
+  .av-page :is(p, li, dd, dt, h1, h2, h3, h4) { margin: 0; }
+  /* One body size: the screen sizes are px and per component, paper wants one rhythm. */
+  .av-page :is(p, li, dd, dt, a, strong, div) { font-size: 8.6pt; line-height: 1.32; }
+
+  .av-page .av-h2,
+  .av-page .av-results__count,
+  .av-page .av-proofs__title {
+    margin: 8pt 0 3pt;
+    padding-bottom: 1.5pt;
+    border-bottom: 0.6pt solid #000;
+    font-size: 11pt;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .av-page :is(.av-details__h3, .av-stay__company, .av-note__title) { font-size: 9.4pt; font-weight: 700; line-height: 1.25; }
+  .av-page :is(h2, h3, h4) { break-after: avoid; }
+
+  /* Header: name, the vacancy line, location, contacts, the link to the page. */
+  .av-page .av-hero,
+  html[data-theme='dark'] .av-hero { padding: 0; background: none; color: #000; border-radius: 0; }
+  .av-page .av-hero__inner { display: block; padding: 0; }
+  .av-page .av-hero__title { font-size: 17pt; font-weight: 700; line-height: 1.15; color: #000; }
+  .av-page .av-hero__lead { max-width: none; margin-top: 3pt; color: #000; font-size: 9.4pt; }
+  .av-page .av-print-only { display: block !important; margin-top: 3pt; }
+  .av-page .av-print-only p { margin: 0; }
+
+  /* Brief: the three numbers, each value on one line with its label so a parser keeps the pair. */
+  .av-page .av-results,
+  .av-page .av-results__main,
+  .av-page .av-card { display: block; padding: 0; gap: 0; }
+  .av-page .av-card__metrics { display: block; margin: 0; padding: 0; border: 0; }
+  .av-page .av-metric { display: block; padding: 0; border: 0; }
+  .av-page .av-metric dt,
+  .av-page .av-metric dd { display: inline; font-size: 9pt; color: #000; }
+  .av-page .av-metric dt { font-weight: 700; }
+  .av-page .av-metric dt::after { content: ' '; }
+
+  /* Proofs: two columns, each pair kept whole. */
+  .av-page .av-proofs { display: grid; grid-template-columns: 1fr 1fr; gap: 5pt 14pt; margin: 0; padding: 0; }
+  .av-page .av-proof { break-inside: avoid; }
+  .av-page .av-proof:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .av-page .av-proof__quote { font-weight: 700; color: #000; }
+  .av-page .av-proof__text { margin-top: 1pt; color: #000; }
+  .av-page .av-proof__link { display: inline-block; margin-top: 1pt; color: #0b55c4; font-size: 8.6pt; }
+  .av-page .av-proof::before,
+  .av-page .av-proof::after { display: none; }
+
+  /* Experience. */
+  .av-page .av-details { display: block; }
+  .av-page .av-details__block + .av-details__block { margin-top: 4pt; }
+  .av-page .av-details__h3 { margin-bottom: 1.5pt; }
+  .av-page .av-details__summary { max-width: none; }
+  .av-page .av-skills { display: block; margin: 0; padding: 0; list-style: none; }
+  .av-page .av-skills li + li { margin-top: 1pt; }
+  .av-page .av-details__amenities { break-inside: avoid; }
+  .av-page .av-stays { margin: 0; padding: 0; list-style: none; }
+  .av-page .av-stay + .av-stay { margin-top: 5pt; }
+  .av-page .av-stay__head { display: flex; justify-content: space-between; align-items: baseline; gap: 10pt; }
+  .av-page .av-stay__role { font-size: 8.6pt; }
+  /* The plain period, not the check-in and check-out joke: one "month year - month year" string. */
+  .av-page .av-stay__period { margin: 0; color: #000; font-weight: 600; font-size: 8.6pt; white-space: nowrap; }
+  .av-page .av-stay__context { margin-top: 1pt; color: #333; }
+  /* Phases stack: side by side, their lines interleave in the text layer (scripts/cv/README.md). */
+  .av-page .av-stay__phases { display: block; margin-top: 3pt; }
+  .av-page .av-stay__phase + .av-stay__phase { margin-top: 3pt; }
+  .av-page .av-stay__phase-title { margin: 0; font-weight: 700; }
+  .av-page .av-stay__bullets { display: block; margin: 1pt 0 0; padding-left: 10pt; list-style: disc; }
+  .av-page .av-stay__bullets li { break-inside: avoid; }
+  .av-page .av-stay__bullets li + li { margin-top: 1.5pt; }
+  .av-page .av-stay__bullets li::before { display: none; }
+
+  /* Notes on their hotel search: three columns, each note kept whole. */
+  .av-page .av-notes__intro { max-width: none; }
+  .av-page .av-notes__list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5pt 12pt; margin: 4pt 0 0; padding: 0; list-style: none; }
+  .av-page .av-note { break-inside: avoid; }
+  .av-page .av-note::before { display: none; }
+  .av-page .av-note__dl { margin: 1pt 0 0; }
+  .av-page .av-note__dl dt { margin-top: 2pt; font-weight: 700; font-size: 8.2pt; color: #000; }
+  .av-page .av-note__dl dd { font-size: 8.2pt; line-height: 1.28; }
+
+  /* Travel and contacts. */
+  .av-page .av-turb__cabin,
+  .av-page .av-turb__story,
+  .av-page .av-turb__side { display: block; }
+  .av-page .av-turb__lead,
+  .av-page .av-turb__serious { display: inline; max-width: none; font-size: 8.6pt; color: #000; }
+  .av-page .av-turb__lead::after { content: ' '; }
+
+  .av-page .av-booking__grid,
+  .av-page .av-booking__act { display: block; margin: 0; }
+  .av-page .av-booking__handle { font-size: 8.6pt; }
+  /* The PDF and /ru/cv/ links are relative and would point at the print server: only the email stays. */
+  .av-page .av-booking__alt { display: block; margin: 0; }
+  .av-page .av-booking__alt > :not([href^='mailto:']) { display: none; }
+  .av-page .av-booking__alt a { display: inline; min-height: 0; padding: 0; }
+
+  .av-page a { color: #000; text-decoration: none; }
+  .av-page .av-proof__link,
+  .av-page .av-stay__bullets a { color: #0b55c4; }
+}

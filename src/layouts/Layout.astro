@@ -179,6 +179,8 @@ const hreflangRu = lang === 'ru' ? canonicalUrl : alternateUrl;
     <link rel="manifest" href="/manifest.webmanifest" />
     {resolvedSchemas.map((entry) => <script is:inline type="application/ld+json" set:html={JSON.stringify(entry)}></script>)}
     <Analytics />
+    {/* Page-specific head tags, e.g. the display font of /ru/aviasales/. */}
+    <slot name="head" />
   </head>
   <body id="top">
     <ClientRouter fallback="swap" />

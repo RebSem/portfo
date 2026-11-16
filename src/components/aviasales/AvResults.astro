@@ -1,0 +1,165 @@
+---
+import AvNb from './AvNb.astro';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { avCard, avDirect, avRequirements, avResults, avSort } from '../../data/aviasales';
+import { cvMetric, siteUrl, telegramUrl } from '../../data/cv';
+
+// The vacancy PDF, printed from this page by `npm run cv:export` (scripts/cv/build-exports.ts).
+const pdfHref = '/cv/aviasales/Mikhail_Semenov_PM_Hotels.pdf';
+// Absolute, as on /ru/cv/: the print version must not carry links to the local print server.
+const abs = (href?: string): string | undefined => (href?.startsWith('/') ? `${siteUrl}${href}` : href);
+
+// The card media is 220px wide on a laptop, so the 1440px variants next to the
+// sources are plenty. A dark twin is used only when the file exists.
+const smaller = (src: string): string => src.replace(/\.webp$/, '-1440.webp');
+const inPublic = (src: string): boolean => existsSync(join(process.cwd(), 'public', src));
+const slides = avCard.slides.map((slide) => {
+  if (slide.kind !== 'shot') return slide;
+  const light = inPublic(smaller(slide.src)) ? smaller(slide.src) : slide.src;
+  const darkCandidate = light.replace('-light', '-dark');
+  const dark = darkCandidate !== light && inPublic(darkCandidate) ? darkCandidate : undefined;
+  return { ...slide, light, dark };
+});
+---
+
+<section class="av-results av-container" id="av-results" aria-labelledby="av-results-title">
+  <aside class="av-filters" aria-label="Фильтры из вакансии">
+    <div class="av-sort" data-av-meme>
+      <label class="av-sort__label" for="av-sort">Сортировка</label>
+      <div class="av-sort__control">
+        <select id="av-sort" class="av-sort__select" data-av-sort>
+          {avSort.map((o) => <option value={o.id} data-reply={o.reply}>{o.label}</option>)}
+        </select>
+        <svg class="av-sort__chevron" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="m5 8 5 5 5-5"></path></svg>
+      </div>
+      <p class="av-sort__reply" data-av-sort-reply role="status"></p>
+    </div>
+
+    <h2 class="av-filters__title">{avResults.filtersTitle}</h2>
+    <p class="av-filters__hint">{avResults.filtersHint}</p>
+    <ul class="av-filters__list">
+      {avRequirements.map((r) => (
+        <li>
+          <a class="av-filter" href={`#av-proof-${r.id}`} data-av-filter={r.id}>
+            <svg class="av-filter__box" viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+              <rect x="1" y="1" width="18" height="18" rx="5"></rect>
+              <path d="M5 10.5 8.5 14 15 6.5" pathLength="1"></path>
+            </svg>
+            <span>{r.short}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </aside>
+
+  <div class="av-results__main">
+    <h2 id="av-results-title" class="av-results__count">
+      <span data-av-meme>{avResults.count}</span>
+      <span data-av-plain hidden>{avResults.countPlain}</span>
+    </h2>
+
+    <article class="av-card" data-analytics-placement="aviasales-card">
+      <div class="av-card__media">
+        <div class="av-slides" data-av-slides>
+          {slides.map((slide, i) => (
+            <div class="av-slide" id={`av-slide-${i + 1}`}>
+              {slide.kind === 'plate' ? (
+                <div class="av-plate">
+                  <span class="av-plate__title">{slide.title}</span>
+                  <span class="av-plate__sub">{slide.sub}</span>
+                  <img class="av-plate__pug" src="/pixel-pug-peek.svg" alt="" width="60" height="42" />
+                </div>
+              ) : (
+                <img
+                  class="av-slide__shot"
+                  src={slide.light}
+                  data-light-src={slide.dark ? slide.light : undefined}
+                  data-dark-src={slide.dark}
+                  alt={slide.alt}
+                  width="1440"
+                  height="900"
+                  loading="lazy"
+                  decoding="async"
+                />
+              )}
+            </div>
+          ))}
+        </div>
+        <div class="av-dots" data-av-dots hidden>
+          {slides.map((_, i) => (
+            <button
+              type="button"
+              class="av-dot"
+              data-av-dot={i}
+              aria-label={`${i + 1} из ${slides.length}`}
+              aria-current={i === 0 ? 'true' : undefined}
+            ></button>
+          ))}
+        </div>
+      </div>
+
+      <div class="av-card__body">
+        <p class="av-card__name">{avCard.name}</p>
+        <p class="av-card__type">{avCard.type}</p>
+        <p class="av-card__row">
+          <a class="av-badge av-badge--direct" href={telegramUrl} target="_blank" rel="noopener" data-av-direct-open>
+            <svg class="av-badge__icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 1.5 9.6 3l2.2-.2.4 2.2 1.9 1.1-.9 2 .9 2-1.9 1.1-.4 2.2-2.2-.2L8 14.5 6.4 13l-2.2.2-.4-2.2-1.9-1.1.9-2-.9-2 1.9-1.1.4-2.2 2.2.2z"></path><path class="av-badge__tick" d="m5.6 8.2 1.7 1.7 3.2-3.5"></path></svg>
+            {avCard.direct}
+          </a>
+        </p>
+        <p class="av-card__facts">{avCard.facts.join(' • ')}</p>
+      </div>
+
+      <dl class="av-card__metrics">
+        {avCard.metrics.map((id) => {
+          const m = cvMetric(id);
+          return (
+            <div class="av-metric">
+              <dt>{m.value.ru}</dt>
+              <dd><AvNb text={m.label.ru} /></dd>
+            </div>
+          );
+        })}
+      </dl>
+
+      <div class="av-card__price">
+        <p class="av-card__price-label">{avCard.priceLabel}</p>
+        <p class="av-card__price-value">{avCard.price}</p>
+        <a class="av-btn av-btn--primary" href={telegramUrl} target="_blank" rel="noopener">{avCard.cta}</a>
+        <a class="av-btn av-btn--ghost" href={pdfHref} download rel="nofollow" data-astro-prefetch="false">{avCard.ctaPdf}</a>
+        <a class="av-card__plain" href="/ru/cv/" rel="nofollow">{avCard.ctaCv}</a>
+      </div>
+    </article>
+
+    <h3 class="av-proofs__title">{avResults.proofsTitle}</h3>
+    <ol class="av-proofs">
+      {avRequirements.map((r) => (
+        <li class="av-proof" id={`av-proof-${r.id}`} tabindex="-1">
+          <p class="av-proof__quote">«<AvNb text={r.quote} />»</p>
+          <p class="av-proof__headline"><AvNb text={r.headline} /></p>
+          {/* A closed <details> does not print, so paper gets its own copy of the full proof. */}
+          <p class="av-proof__text av-print-only"><AvNb text={r.proof} /></p>
+          <details class="av-more" data-av-more>
+            <summary class="av-more__summary">
+              {avResults.more}
+              <svg class="av-more__chevron" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="m5 8 5 5 5-5"></path></svg>
+            </summary>
+            <p class="av-proof__text"><AvNb text={r.proof} /></p>
+          </details>
+          {r.link && <a class="av-proof__link" href={abs(r.link.href)}>{r.link.label}</a>}
+        </li>
+      ))}
+    </ol>
+  </div>
+
+  <dialog class="av-dialog" data-av-direct aria-labelledby="av-direct-title">
+    <div class="av-dialog__inner" data-analytics-placement="aviasales-direct">
+      <button type="button" class="av-dialog__close" data-av-direct-close aria-label={avDirect.close}>×</button>
+      <h3 id="av-direct-title" class="av-dialog__title">{avDirect.title}</h3>
+      <p class="av-dialog__intro">{avDirect.intro}</p>
+      <ul class="av-dialog__list">{avDirect.points.map((point) => <li>{point}</li>)}</ul>
+      <a class="av-btn av-btn--primary" href={telegramUrl} target="_blank" rel="noopener">{avDirect.cta}</a>
+    </div>
+  </dialog>
+</section>

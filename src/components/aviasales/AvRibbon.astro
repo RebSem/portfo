@@ -1,0 +1,26 @@
+---
+import AvPlane from './AvPlane.astro';
+import { meme } from '../../data/aviasales';
+import { gtaRibbon } from '../../lib/aviasales';
+
+const before = meme('gta-before');
+const after = meme('gta-after');
+const state = gtaRibbon(new Date());
+---
+
+{before && after && (
+  <div class="av-ribbon" data-av-meme data-av-ribbon data-before={before} data-after={after} hidden={state.phase === 'off'}>
+    <p class="av-ribbon__text">
+      {/* No whitespace between the spans: the timer text brings its own leading space. */}
+      <span data-av-ribbon-text>{state.phase === 'after' ? after : before}</span><span class="av-ribbon__timer" data-av-ribbon-timer></span>
+    </p>
+  </div>
+)}
+{/* A3: the plane flies the page. One transform moves the plane and the solid line it leaves behind. */}
+<div class="av-progress" aria-hidden="true">
+  <span class="av-progress__track"></span>
+  <span class="av-progress__fly">
+    <span class="av-progress__done"></span>
+    <AvPlane class="av-progress__plane" />
+  </span>
+</div>

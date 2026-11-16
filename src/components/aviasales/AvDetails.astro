@@ -1,0 +1,139 @@
+---
+import AvNb from './AvNb.astro';
+import { avAmenities, avDetails, avHero, avStays, meme } from '../../data/aviasales';
+import { cvExperience, cvSkillGroups, cvSummary, runHref, siteUrl } from '../../data/cv';
+
+// Absolute, as on /ru/cv/: the PDF is printed from a local server, so a relative link would point at 127.0.0.1.
+const abs = (href?: string): string | undefined => (href?.startsWith('/') ? `${siteUrl}${href}` : href);
+
+// "Check-in" and "check-out" labels come from the search form copy, so the two never drift.
+const checkIn = avHero.search[1]?.label ?? '';
+const checkOut = avHero.search[2]?.label ?? '';
+
+// One "hotel" per employer: the two Zvonobot phases share their company, dates and context line,
+// so they sit under one heading instead of repeating it. Indexes come from avStays.
+const roleIds = [...new Set(avStays.map((stay) => stay.role))];
+const hotels = roleIds.flatMap((roleId) => {
+  const role = cvExperience[roleId];
+  if (!role) return [];
+  const [from, to] = role.period.ru.split(' - ');
+  const phases = avStays
+    .filter((stay) => stay.role === roleId)
+    .flatMap((stay) => {
+      const phase = role.phases[stay.phase];
+      if (!phase) return [];
+      const bullets = stay.bullets.map((i) => phase.bullets[i]).filter((runs) => runs !== undefined);
+      return [{ title: phase.title.ru, bullets }];
+    });
+  return [{ role, from, to, phases }];
+});
+
+const plainSkills = cvSkillGroups.filter((group) => ['Продукт', 'Delivery', 'Технологии'].includes(group.label.ru));
+const jacket = meme('jacket');
+
+// Simple 24-unit stroke icons, drawn for this page (1.5px stroke at 20px).
+const icons: Record<string, string> = {
+  chart: 'M4 20V11M10 20V5M16 20v-6M2.5 20h19',
+  plug: 'M9 3v5M15 3v5M6.5 8h11v3a5.5 5.5 0 0 1-11 0zM12 16.5V21',
+  route: 'M5 20.5a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM19 7.5a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM6.5 16.5C9 12 15 14 17.5 7.5',
+  chat: 'M4 4.5h16v11.5H9.5L4 20.5z M8 9h8M8 12.5h5',
+  paw: 'M12 20c-3 0-5-1.6-5-3.6 0-2.4 2.4-4.9 5-4.9s5 2.5 5 4.9c0 2-2 3.6-5 3.6zM6 10.5a1.6 2 0 1 0 0-.01zM9.5 7a1.6 2 0 1 0 0-.01zM14.5 7a1.6 2 0 1 0 0-.01zM18 10.5a1.6 2 0 1 0 0-.01z',
+  hanger: 'M10 6a2 2 0 1 1 2 2v2.2L3.5 16.5c-.7.5-.4 1.5.5 1.5h16c.9 0 1.2-1 .5-1.5L12 10.2',
+};
+---
+
+<section class="av-details av-container av-section" aria-labelledby="av-details-title">
+  <h2 id="av-details-title" class="av-h2">
+    <span data-av-meme>{avDetails.title}</span><span data-av-plain hidden>{avDetails.titlePlain}</span>
+  </h2>
+
+  {/* DOM and print order as in spec 7.5: about, experience, amenities. The about block is the
+       fifth retelling of the same result, so the screen shows it only in calm mode; paper keeps it.
+       On a laptop the compact experience and the amenities sit side by side. */}
+  <div class="av-details__block av-details__about" data-av-plain hidden>
+    <h3 class="av-details__h3">{avDetails.about}</h3>
+    <p class="av-details__summary"><AvNb text={cvSummary.ru} /></p>
+  </div>
+
+  <div class="av-details__block av-details__stays">
+    <h3 class="av-details__h3">
+      <span data-av-meme>{avDetails.stays}</span><span data-av-plain hidden>{avDetails.staysPlain}</span>
+    </h3>
+    <ol class="av-stays">
+      {hotels.map(({ role, from, to, phases }) => (
+        <li class="av-stay">
+          <div class="av-stay__head">
+            <div>
+              <h4 class="av-stay__company">{role.company.ru}</h4>
+              <p class="av-stay__role">{role.role.ru}</p>
+            </div>
+            {/* The check-in and check-out labels are the joke. Calm mode and paper show the plain
+                 cv.ts period instead: the PDF goes through ATS date parsers, which expect
+                 "month year - month year" and nothing in between. */}
+            {to && (
+              <dl class="av-stay__dates" data-av-meme>
+                <div><dt>{checkIn}</dt><dd>{from}</dd></div>
+                <div><dt>{checkOut}</dt><dd>{to}</dd></div>
+              </dl>
+            )}
+            <p class="av-stay__period" data-av-plain={to ? '' : undefined} hidden={Boolean(to)}>{role.period.ru}</p>
+          </div>
+          {role.context && <p class="av-stay__context"><AvNb text={role.context.ru} /></p>}
+          {/* The bullets fold on screen under the phase title. A closed <details> does not print,
+               so paper gets its own copy of the title and the bullets. */}
+          <div class="av-stay__phases">
+          {phases.map((phase) => {
+            // A function, so each copy renders its own nodes.
+            const bullets = () => phase.bullets.map((runs) => (
+              <li>
+                {runs.map((run) => {
+                  const href = abs(runHref(run, 'ru'));
+                  return href ? <a href={href}><AvNb text={run.text.ru} /></a> : <AvNb text={run.text.ru} />;
+                })}
+              </li>
+            ));
+            return (
+              <div class="av-stay__phase">
+                {phase.title && <p class="av-stay__phase-title av-print-only">{phase.title}</p>}
+                <ul class="av-stay__bullets av-print-only">{bullets()}</ul>
+                <details class="av-more" data-av-more>
+                  <summary class="av-more__summary">
+                    {phase.title || avDetails.more}
+                    <svg class="av-more__chevron" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="m5 8 5 5 5-5"></path></svg>
+                  </summary>
+                  <ul class="av-stay__bullets">{bullets()}</ul>
+                </details>
+              </div>
+            );
+          })}
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+
+  <div class="av-details__block av-details__amenities">
+    <h3 class="av-details__h3">
+      <span data-av-meme>{avDetails.amenities}</span><span data-av-plain hidden>{avDetails.amenitiesPlain}</span>
+    </h3>
+    <ul class="av-amenities" data-av-meme>
+      {avAmenities.map((a) => (
+        <li class="av-amenity">
+          <svg class="av-amenity__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d={icons[a.icon]}></path></svg>
+          <span>{a.text}</span>
+        </li>
+      ))}
+      {jacket && (
+        <li class="av-amenity" data-av-meme>
+          <svg class="av-amenity__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d={icons.hanger}></path></svg>
+          <span>{jacket}</span>
+        </li>
+      )}
+    </ul>
+    <ul class="av-skills" data-av-plain hidden>
+      {plainSkills.map((group) => (
+        <li><strong>{group.label.ru}:</strong> <AvNb text={group.items.map((item) => item.ru).join(', ')} /></li>
+      ))}
+    </ul>
+  </div>
+</section>

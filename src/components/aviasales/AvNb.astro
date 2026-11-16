@@ -1,0 +1,15 @@
+---
+import { chunks, HYPHENATED } from '../../lib/nb';
+
+// Text with every hyphenated compound ("AI-агентов", "go-to-market") in a nowrap span, as on /ru/cv/.
+// Chrome drops the hyphen from the PDF text layer when a line breaks at it ("CPaaSпродукты"), and a
+// word joiner would land in the text layer too. The characters stay the same.
+// A number with digit groups ("500 000+") gets the same span: broken at its space it reads as two numbers.
+interface Props {
+  text: string;
+}
+const { text } = Astro.props;
+const GROUPED = /(\d{1,3}(?:[  ]\d{3})+\+?)/;
+const parts = text.split(GROUPED).flatMap((piece, i) => (i % 2 === 1 ? [{ nb: true, text: piece }] : chunks(piece).map((chunk) => ({ nb: HYPHENATED.test(chunk), text: chunk }))));
+---
+{parts.map((part) => (part.nb ? <span class="nb">{part.text}</span> : part.text))}

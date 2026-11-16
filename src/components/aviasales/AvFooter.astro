@@ -1,0 +1,12 @@
+---
+import { avFooter } from '../../data/aviasales';
+---
+
+{/* A real <footer>: site analytics counts it as its own section. The pug stands still in this pass. */}
+<footer class="av-footer av-container" data-av-once>
+  <div class="av-pug" data-av-meme aria-hidden="true"><img src="/pixel-pug-runner.svg" alt="" width="64" height="40" /></div>
+  <div class="av-footer__text">
+    <p class="av-footer__legal">{avFooter.legal}</p>
+    <p class="av-footer__made" data-av-meme>{avFooter.made}</p>
+  </div>
+</footer>

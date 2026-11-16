@@ -1,0 +1,48 @@
+---
+import AvPlane from './AvPlane.astro';
+import { avToasts, meme } from '../../data/aviasales';
+import { telegramUrl } from '../../data/cv';
+
+const baroness = meme('baroness');
+---
+
+<div class="av-toasts" role="region" aria-label="Уведомления" aria-live="polite"></div>
+
+<template data-av-toast-tpl="price">
+  <div class="av-toast av-toast--price" data-av-toast="price" data-analytics-placement="aviasales-toast-price">
+    <span class="av-toast__icon" aria-hidden="true">
+      <AvPlane />
+    </span>
+    <div class="av-toast__body">
+      <p class="av-toast__title">{avToasts.price.title}</p>
+      <p class="av-toast__text">{avToasts.price.text}</p>
+      <a class="av-btn av-btn--primary av-btn--s" href={telegramUrl} target="_blank" rel="noopener">{avToasts.price.cta}</a>
+    </div>
+    <button type="button" class="av-toast__close" data-av-toast-close aria-label="Закрыть">×</button>
+  </div>
+</template>
+
+{meme('mission') && (
+  <template data-av-toast-tpl="mission">
+    <div class="av-toast av-toast--mission" data-av-toast="mission" data-analytics-placement="aviasales-toast-mission">
+      <div class="av-toast__body">
+        <p class="av-toast__title">{avToasts.mission.title}</p>
+        <p class="av-toast__text">{avToasts.mission.text}</p>
+        <div class="av-toast__actions">
+          <a class="av-btn av-btn--primary av-btn--s" href={telegramUrl} target="_blank" rel="noopener">{avToasts.mission.cta}</a>
+          <button type="button" class="av-toast__later" data-av-toast-close>{avToasts.mission.later}</button>
+        </div>
+      </div>
+      <button type="button" class="av-toast__close" data-av-toast-close aria-label="Закрыть">×</button>
+    </div>
+  </template>
+)}
+
+{baroness && (
+  <template data-av-toast-tpl="baroness">
+    <div class="av-toast" data-av-toast="baroness">
+      <div class="av-toast__body"><p class="av-toast__text">{baroness}</p></div>
+      <button type="button" class="av-toast__close" data-av-toast-close aria-label="Закрыть">×</button>
+    </div>
+  </template>
+)}

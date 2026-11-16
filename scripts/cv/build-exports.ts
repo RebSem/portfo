@@ -312,6 +312,31 @@ const main = async () => {
 
       console.log(`${locale}: ${base}.pdf, .docx, .txt -> ${outputDir}`);
     }
+
+    // The Aviasales landing (/ru/aviasales/) prints as its own resume for that
+    // one vacancy: the application form needs a file, and printing the page
+    // keeps one source of facts. Public run only, like the dist copy above.
+    if (!phone) {
+      const landingPath = '/ru/aviasales/';
+      try {
+        await stat(join(PUBLIC_DIST, 'ru', 'aviasales', 'index.html'));
+      } catch {
+        throw new Error(`${PUBLIC_DIST}/ru/aviasales/index.html is missing. Run \`npm run build\` first.`);
+      }
+
+      const landingDir = join(ROOT, 'public', 'cv', 'aviasales');
+      const landingFile = 'Mikhail_Semenov_PM_Hotels.pdf';
+      await mkdir(landingDir, { recursive: true });
+      const landingPdf = join(landingDir, landingFile);
+      await rm(landingPdf, { force: true });
+      await renderPdf(chrome, `http://127.0.0.1:${server.port}${landingPath}`, landingPdf);
+
+      const distLanding = join(PUBLIC_DIST, 'cv', 'aviasales');
+      await mkdir(distLanding, { recursive: true });
+      await copyFile(landingPdf, join(distLanding, landingFile));
+
+      console.log(`ru: aviasales/${landingFile} -> ${landingDir}`);
+    }
   } finally {
     await server.close();
   }
