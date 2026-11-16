@@ -1,4 +1,5 @@
 ---
+import AvPlane from './AvPlane.astro';
 import { avTickets } from '../../data/aviasales';
 ---
 
@@ -9,8 +10,8 @@ import { avTickets } from '../../data/aviasales';
 <section class="av-tickets av-section" aria-labelledby="av-tickets-title" data-av-meme data-av-progress data-av-once>
   <h2 id="av-tickets-title" class="av-sr">Тарифы</h2>
   <ul class="av-tickets__track">
-    {avTickets.map((t) => (
-      <li class="av-ticket">
+    {avTickets.map((t, i) => (
+      <li class="av-ticket" style={`--i:${i}`}>
         <div class="av-ticket__paper">
           <div class="av-ticket__main">
             <span class="av-badge av-ticket__badge" data-kind={t.kind}>{t.badge}</span>
@@ -27,7 +28,7 @@ import { avTickets } from '../../data/aviasales';
             </p>
           </div>
           <div class="av-ticket__stub" aria-hidden="true">
-            <svg viewBox="0 0 24 24" focusable="false"><path d="M2 13.5 22 4l-6.5 17-3.2-7.3z"></path></svg>
+            <AvPlane />
           </div>
         </div>
       </li>

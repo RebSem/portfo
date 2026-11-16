@@ -1,5 +1,6 @@
 ---
 import AvNb from './AvNb.astro';
+import AvPlane from './AvPlane.astro';
 import { avHero } from '../../data/aviasales';
 import { email, telegramHandle } from '../../data/cv';
 ---
@@ -18,9 +19,11 @@ import { email, telegramHandle } from '../../data/cv';
         ))}
       </nav>
       <button type="button" class="av-calm" data-av-calm-toggle aria-pressed="false" title={avHero.calm.title} hidden>
-        <svg class="av-calm__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-          <path d="M2 13.5 22 4l-6.5 17-3.2-7.3z" fill="currentColor"></path>
-          <path class="av-calm__strike" d="M3 3 21 21"></path>
+        {/* The plane climbs to the upper right, as on a phone's flight-mode switch. */}
+        <svg class="av-calm__icon" viewBox="-12 -12 24 24" aria-hidden="true" focusable="false">
+          <g class="av-calm__plane"><AvPlane bare /></g>
+          <path class="av-calm__gap" d="M-9 -9 9 9" pathLength="1"></path>
+          <path class="av-calm__strike" d="M-9 -9 9 9" pathLength="1"></path>
         </svg>
         <span data-av-calm-label>{avHero.calm.off}</span>
       </button>
@@ -34,21 +37,24 @@ import { email, telegramHandle } from '../../data/cv';
 
     <div class="av-hero__sky" aria-hidden="true" data-av-meme>
       {/* A1: the flight, inside the grid so it never covers the text. A5 clouds are a later pass.
-           The resting transform puts the plane at the end of the arc. */}
+           The markup is the last frame: the route drawn, the plane landed beside the bed pin.
+           The script flies the plane and its shadow along the route and then puts these
+           transforms back. */}
       <svg class="av-flight" viewBox="0 0 600 220" aria-hidden="true" focusable="false">
         <defs>
           <mask id="av-route-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="600" height="220">
-            <path class="av-flight__reveal" d="M20 190 C160 20 400 10 532 150" pathLength="1"></path>
+            <path class="av-flight__reveal" d="M30 188C128 49 363 45 490 124" pathLength="1"></path>
           </mask>
         </defs>
-        <path class="av-flight__route" d="M20 190 C160 20 400 10 532 150" mask="url(#av-route-mask)"></path>
+        <circle class="av-flight__from" cx="30" cy="188" r="7"></circle>
+        <path class="av-flight__route" d="M30 188C128 49 363 45 490 124" mask="url(#av-route-mask)"></path>
+        <circle class="av-flight__ring" cx="548" cy="160" r="34"></circle>
         <g class="av-flight__bed">
-          <circle cx="566" cy="158" r="24"></circle>
-          <path d="M553 166v-13m0 5h9a4 4 0 0 1 4 4h9a4 4 0 0 1 4 4m-26 0h26v4"></path>
+          <circle cx="548" cy="160" r="34"></circle>
+          <path d="M530 172v-21m0 9h13a6 6 0 0 1 6 6h11a6 6 0 0 1 6 6m-36 0h36v6"></path>
         </g>
-        <g class="av-flight__plane" data-av-plane transform="translate(532 150) rotate(47)">
-          <path d="M13 0 -12 -9 -5 0 -12 9z"></path>
-        </g>
+        <g class="av-flight__shadow" transform="translate(490 124) rotate(32) scale(2)"><AvPlane bare /></g>
+        <g class="av-flight__plane" data-av-plane transform="translate(490 124) rotate(32) scale(2)"><AvPlane bare /></g>
       </svg>
     </div>
 
@@ -71,6 +77,8 @@ import { email, telegramHandle } from '../../data/cv';
       <a class="av-btn av-btn--primary av-search__go" href="#av-results" data-av-search-go>{avHero.searchButton}</a>
     </div>
     <p class="av-loader" data-av-loader data-av-meme data-lines={JSON.stringify(avHero.loader)} role="status"></p>
+    {/* A7: flies the short route in front of each caption. A sibling, not a child: the script owns the loader's text. */}
+    <AvPlane class="av-loader__plane" />
 
     <p class="av-board" data-av-board data-av-meme>{avHero.board.join(' · ')}</p>
   </div>

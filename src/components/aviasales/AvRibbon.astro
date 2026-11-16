@@ -1,4 +1,5 @@
 ---
+import AvPlane from './AvPlane.astro';
 import { meme } from '../../data/aviasales';
 import { gtaRibbon } from '../../lib/aviasales';
 
@@ -15,7 +16,11 @@ const state = gtaRibbon(new Date());
     </p>
   </div>
 )}
+{/* A3: the plane flies the page. One transform moves the plane and the solid line it leaves behind. */}
 <div class="av-progress" aria-hidden="true">
   <span class="av-progress__track"></span>
-  <svg class="av-progress__plane" viewBox="0 0 24 24" focusable="false"><path d="M2 13.5 22 4l-6.5 17-3.2-7.3z" fill="currentColor"></path></svg>
+  <span class="av-progress__fly">
+    <span class="av-progress__done"></span>
+    <AvPlane class="av-progress__plane" />
+  </span>
 </div>

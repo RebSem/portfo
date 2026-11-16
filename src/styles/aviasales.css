@@ -53,6 +53,11 @@
   --av-font-text: var(--font-geist), system-ui, sans-serif;
   --av-font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
+  /* Motion: the site tokens (--dur-*, --ease-out-strong) do the plain moves. Two more for this page:
+     a soft overshoot for things that land (pin, toast, ticket, price) and a duration for them. */
+  --av-ease-spring: cubic-bezier(0.3, 1.45, 0.45, 1);
+  --av-dur-land: 420ms;
+
   --av-container: 72.5rem; /* 1160px */
   --av-gutter: clamp(1rem, 4vw, 2.5rem);
   --av-section-gap: clamp(3rem, 7vw, 5.5rem);
@@ -192,7 +197,16 @@ html[data-theme='dark'] body:has(.av-page) {
   color: #fff;
 }
 
-.av-btn:active {
+/* One hover language for things that can be picked up: a small lift and a longer shadow.
+   Only where there is a mouse. The press below wins over it. */
+@media (hover: hover) {
+  .av-page .av-btn--primary:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--av-shadow-l);
+  }
+}
+
+.av-page .av-btn:active {
   transform: scale(var(--press-scale));
 }
 
@@ -344,24 +358,45 @@ html[data-theme='dark'] body:has(.av-page) {
   pointer-events: none;
 }
 
+/* The way ahead: a faint dotted route across the window. */
 .av-progress__track {
   position: absolute;
-  inset: 0 0 auto 0;
+  inset: 8px 0 auto 0;
   height: 2px;
-  background: repeating-linear-gradient(90deg, var(--av-blue-ink) 0 6px, transparent 6px 12px);
-  opacity: 0.55;
+  background: radial-gradient(circle at 1px 1px, var(--av-blue-ink) 1px, transparent 1.2px) 0 0 / 9px 2px repeat-x;
+  opacity: 0.45;
 }
 
-/* The icon points up and right; 45deg lays it level, nose forward. */
-.av-progress__plane {
+/* A3: the only thing a scroll moves here. The plane and the line behind it share this one transform. */
+.av-progress__fly {
   position: absolute;
-  top: 1px;
-  left: 0;
-  width: 16px;
-  height: 16px;
-  color: var(--av-blue-ink);
-  transform: translateX(calc(var(--av-scroll, 0) * (100vw - 16px))) rotate(45deg);
+  inset: 0 auto 0 0;
+  width: 18px;
+  transform: translateX(calc(var(--av-scroll, 0) * (100vw - 18px)));
+  /* A little inertia: the plane glides to where the scroll is, also when the page jumps. */
+  transition: transform var(--dur-base) var(--ease-out-strong);
   will-change: transform;
+}
+
+/* The way flown: a solid line from the left edge of the window to the plane. It is a window wide
+   and hangs off the plane's tail, so most of it sits left of the screen and never adds a scrollbar. */
+.av-progress__done {
+  position: absolute;
+  top: 8px;
+  right: 9px;
+  width: 100vw;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--av-blue-ink);
+}
+
+/* The airplane is drawn nose right: it needs no turn to fly along the line. */
+.av-progress__plane {
+  position: relative;
+  display: block;
+  width: 18px;
+  height: 18px;
+  color: var(--av-blue-ink);
 }
 
 .av-page:not(.av-motion) .av-progress {
@@ -466,20 +501,52 @@ html[data-theme='dark'] body:has(.av-page) {
 }
 
 .av-calm__icon {
-  width: 18px;
-  height: 18px;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  overflow: visible;
 }
 
+.av-calm__plane {
+  fill: currentColor;
+  transform: rotate(-45deg);
+}
+
+/* Calm on: the plane is grounded, a little smaller and crossed out. The wide line under the
+   strike is the colour of the pressed button, so the strike shows where it crosses the wings. */
+.av-calm[aria-pressed='true'] .av-calm__plane {
+  transform: rotate(-45deg) scale(0.84);
+}
+
+.av-calm__gap,
 .av-calm__strike {
   fill: none;
   stroke: currentColor;
-  stroke-width: 2.2;
+  stroke-width: 2;
   stroke-linecap: round;
-  opacity: 0;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
 }
 
-.av-calm[aria-pressed='true'] .av-calm__strike {
-  opacity: 1;
+.av-calm__gap {
+  stroke: #fff;
+  stroke-width: 5;
+  stroke-linecap: butt;
+}
+
+.av-calm[aria-pressed='true'] :is(.av-calm__gap, .av-calm__strike) {
+  stroke-dashoffset: 0;
+}
+
+/* Switching calm on removes av-motion, so all of that lands at once. Switching it off brings
+   av-motion back: the strike draws away and the plane springs up to size. Transitions, not
+   keyframes: they answer the switch and can never play again on their own. */
+.av-motion .av-calm__strike {
+  transition: stroke-dashoffset var(--dur-base) var(--ease-out-strong);
+}
+
+.av-motion .av-calm__plane {
+  transition: transform var(--dur-base) var(--av-ease-spring);
 }
 
 .av-hero__title {
@@ -516,18 +583,26 @@ html[data-theme='dark'] body:has(.av-page) {
 
 .av-flight__route {
   fill: none;
-  stroke: rgb(255 255 255 / 0.6);
-  stroke-width: 2;
-  stroke-dasharray: 2 9;
+  stroke: rgb(255 255 255 / 0.75);
+  stroke-width: 4;
+  stroke-dasharray: 0.1 13;
   stroke-linecap: round;
 }
 
+/* The mask stroke: the script moves its dash offset with the plane, so the route appears behind it. */
 .av-flight__reveal {
   fill: none;
   stroke: #fff;
-  stroke-width: 10;
+  stroke-width: 14;
   stroke-dasharray: 1;
   stroke-dashoffset: 0;
+}
+
+/* Where the flight starts. */
+.av-flight__from {
+  fill: none;
+  stroke: rgb(255 255 255 / 0.75);
+  stroke-width: 4;
 }
 
 .av-flight__plane {
@@ -536,7 +611,23 @@ html[data-theme='dark'] body:has(.av-page) {
   cursor: pointer;
 }
 
-.av-flight__bed {
+/* The plane can be pressed (five presses are an easter egg): it gives a little, like a button. */
+.av-flight__plane path {
+  transition: transform var(--dur-press) var(--ease-out-strong);
+}
+
+.av-flight__plane:active path {
+  transform: scale(0.9);
+}
+
+/* Height above the map: the script slides this copy out from under the plane in flight and back
+   under it on landing, so at rest it is covered. */
+.av-flight__shadow {
+  fill: rgb(6 30 82 / 0.28);
+}
+
+.av-flight__bed,
+.av-flight__ring {
   transform-box: fill-box;
   transform-origin: center;
 }
@@ -548,29 +639,52 @@ html[data-theme='dark'] body:has(.av-page) {
 .av-flight__bed path {
   fill: none;
   stroke: var(--av-blue);
-  stroke-width: 2.4;
+  stroke-width: 3.4;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
-/* cubic-bezier(0.65, 0, 0.35, 1) is the CSS twin of easeInOutCubic used by flyPlane */
-.av-motion:not(.av-replayed) .av-flight__reveal {
-  animation: av-draw 2400ms cubic-bezier(0.65, 0, 0.35, 1) 300ms 1 both;
+/* One ring answers the landing and is gone: its last frame is the resting state. */
+.av-flight__ring {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 3;
+  opacity: 0;
 }
 
-.av-motion:not(.av-replayed) .av-flight__bed {
-  animation: av-pop 520ms var(--ease-out-strong) 2650ms 1 both;
+/* The script boots a moment after the first paint and moves the plane from the pin back to the
+   start of the route. A short fade makes that a soft cut, not a jump. */
+.av-motion:not(.av-replayed) .av-flight.is-flying :is(.av-flight__plane, .av-flight__shadow) {
+  animation: av-appear 280ms var(--ease-out-strong) 1 backwards;
 }
 
-@keyframes av-draw {
-  from { stroke-dashoffset: 1; }
-  to { stroke-dashoffset: 0; }
+@keyframes av-appear {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* The script marks the flight with is-flying, then is-landed. While the plane is in the air the
+   pin waits a little smaller; on touchdown it springs up to size and sends out one ring. */
+.av-motion:not(.av-replayed) .av-flight.is-flying .av-flight__bed {
+  transform: scale(0.84);
+}
+
+.av-motion:not(.av-replayed) .av-flight.is-landed .av-flight__bed {
+  animation: av-pop 620ms var(--av-ease-spring) 1 backwards;
+}
+
+.av-motion:not(.av-replayed) .av-flight.is-landed .av-flight__ring {
+  animation: av-ring 820ms var(--ease-out-strong) 60ms 1 backwards;
 }
 
 @keyframes av-pop {
-  0% { scale: 0.5; }
-  60% { scale: 1.15; }
-  100% { scale: 1; }
+  from { transform: scale(0.84); }
+  to { transform: none; }
+}
+
+@keyframes av-ring {
+  from { transform: scale(1); opacity: 0.6; }
+  to { transform: scale(1.75); opacity: 0; }
 }
 
 @media (min-width: 480px) {
@@ -679,28 +793,73 @@ html[data-theme='dark'] body:has(.av-page) {
   font: 500 15px / 22px var(--av-font-text);
 }
 
+/* A7: a short dotted route in front of the caption, and a plane that crosses it once per caption. */
 .av-loader::before {
   content: '';
   display: none;
-  /* 44px seen through the clip, plus one stripe period (16.97px) to slide. */
-  width: 60.97px;
-  height: 6px;
-  margin-right: -6.97px;
+  width: var(--av-run);
+  height: 2px;
+  margin-right: 10px;
   vertical-align: middle;
-  background: repeating-linear-gradient(135deg, #fff 0 6px, transparent 6px 12px);
-  clip-path: inset(0 16.97px 0 0 round 3px);
+  background: radial-gradient(circle at 1px 1px, #fff 1px, transparent 1.2px) 0 0 / 7px 2px repeat-x;
+  opacity: 0.8;
 }
 
 .av-loader.is-busy::before {
   display: inline-block;
-  animation: av-stripe 450ms linear 3 both;
 }
 
-/* Transform and clip-path only: the bar moves left as its clip window moves right, so the window
-   stays in place and the stripes run through it. */
-@keyframes av-stripe {
-  from { transform: none; clip-path: inset(0 16.97px 0 0 round 3px); }
-  to { transform: translateX(-16.97px); clip-path: inset(0 0 0 16.97px round 3px); }
+/* The length of the route. On phones it is shorter and the caption a size smaller, so that the
+   longest caption still fits on one line from 360px up and the band does not jump. */
+.av-hero__inner {
+  --av-run: 44px;
+}
+
+@media (max-width: 479px) {
+  .av-hero__inner {
+    --av-run: 30px;
+  }
+
+  .av-loader {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 379px) {
+  .av-loader {
+    font-size: 12px;
+  }
+}
+
+/* The plane shares the loader's grid cell and lies on the route, on the first line of the caption. */
+.av-loader__plane {
+  grid-area: loader;
+  align-self: start;
+  justify-self: start;
+  display: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 8px;
+  color: #fff;
+  pointer-events: none;
+}
+
+/* Three captions, three crossings: the count is the caption count. */
+.av-loader.is-busy + .av-loader__plane {
+  display: block;
+  animation: av-cross 450ms var(--ease-in-out-strong) 3 both;
+}
+
+@keyframes av-cross {
+  from { transform: translateX(-8px); opacity: 0; }
+  22%, 76% { opacity: 1; }
+  to { transform: translateX(calc(var(--av-run) - 14px)); opacity: 0; }
+}
+
+/* Each caption is a new node, so this plays for every one of them. Opacity only: the caption
+   stays inline and wraps like plain text on the narrowest phones. */
+.av-motion .av-loader > span {
+  animation: av-appear var(--dur-fast) var(--ease-out-strong) 1 backwards;
 }
 
 /* A2: the flip board. Fixed-width cells, so flipping never moves the layout. */
@@ -728,14 +887,74 @@ html[data-theme='dark'] body:has(.av-page) {
   white-space: nowrap;
 }
 
+/* Each cell is two flaps on a hinge: a lighter upper half, a darker lower half, a dark line between. */
 .av-board__cell {
+  position: relative;
   display: inline-block;
   width: 1.05em;
   padding: 3px 0;
   margin: 0 1px;
   border-radius: 3px;
-  background: #172033;
+  background: linear-gradient(#1d2841 calc(50% - 0.5px), #0b1220 calc(50% - 0.5px) calc(50% + 0.5px), #151d30 calc(50% + 0.5px));
   text-align: center;
+}
+
+/* A2: one flip. The cell already shows the new letter; these two carry the old one (data-was).
+   The upper flap folds down to the hinge, then the lower one is covered from the hinge down, as
+   when the new flap lands on it. At rest both are folded away. */
+.av-motion .av-board__cell::before,
+.av-motion .av-board__cell::after {
+  content: attr(data-was);
+  position: absolute;
+  inset: 0;
+  padding: inherit;
+  border-radius: inherit;
+  background: inherit;
+}
+
+.av-motion .av-board__cell::before {
+  clip-path: inset(0 0 50% 0);
+  transform: scaleY(0);
+}
+
+.av-motion .av-board__cell::after {
+  clip-path: inset(100% 0 0 0);
+}
+
+/* The script flips data-flip between a and b for each new letter. The two sets of keyframes are
+   the same: a new animation name is what restarts the flip without a forced layout. */
+.av-motion .av-board__cell[data-flip='a']::before { animation: av-flap-up-a 80ms linear 1; }
+.av-motion .av-board__cell[data-flip='b']::before { animation: av-flap-up-b 80ms linear 1; }
+.av-motion .av-board__cell[data-flip='a']::after { animation: av-flap-down-a 80ms linear 1; }
+.av-motion .av-board__cell[data-flip='b']::after { animation: av-flap-down-b 80ms linear 1; }
+
+@keyframes av-flap-up-a {
+  from { transform: scaleY(1); }
+  55%, to { transform: scaleY(0); }
+}
+
+@keyframes av-flap-up-b {
+  from { transform: scaleY(1); }
+  55%, to { transform: scaleY(0); }
+}
+
+@keyframes av-flap-down-a {
+  from, 45% { clip-path: inset(50% 0 0 0); }
+  to { clip-path: inset(100% 0 0 0); }
+}
+
+@keyframes av-flap-down-b {
+  from, 45% { clip-path: inset(50% 0 0 0); }
+  to { clip-path: inset(100% 0 0 0); }
+}
+
+/* Until the script splits the sentence into cells the board is plain text, and its lines are
+   lower than rows of cells. Give a plain line the pitch of a row (a cell is 1em + 6px, the row
+   gap 4px), less the gap once in the padding: with the same number of lines as rows the board
+   keeps its height when it is split, and the page under it does not move. */
+.av-board:not([data-split]) {
+  padding-block: 6px;
+  line-height: calc(1em + 10px);
 }
 
 /* Taller windows have room above the H1; at 768px tall those pixels keep the card's numbers on screen. */
@@ -959,8 +1178,18 @@ html[data-theme='dark'] body:has(.av-page) {
   stroke-dashoffset: 0;
 }
 
+/* A6: the box is pressed and springs back, and the tick is drawn again a beat later. */
+.av-motion .av-filter.is-pinged .av-filter__box {
+  animation: av-press-in 340ms var(--av-ease-spring) 1 backwards;
+}
+
 .av-motion .av-filter.is-pinged .av-filter__box path {
-  animation: av-tick 260ms var(--ease-out-strong) 1 both;
+  animation: av-tick 300ms var(--ease-out-strong) 90ms 1 both;
+}
+
+@keyframes av-press-in {
+  from { transform: scale(0.8); }
+  to { transform: none; }
 }
 
 @keyframes av-tick {
@@ -1101,7 +1330,11 @@ html[data-theme='dark'] body:has(.av-page) {
   border-radius: 50%;
   background: rgb(255 255 255 / 0.75);
   box-shadow: 0 0 0 1px rgb(13 20 32 / 0.6);
-  transition: transform var(--dur-fast) var(--ease-out-strong);
+  transition: transform var(--dur-base) var(--av-ease-spring);
+}
+
+.av-dot:active::before {
+  transform: scale(0.85);
 }
 
 .av-dot[aria-current='true']::before {
@@ -1422,12 +1655,14 @@ html[data-theme='dark'] body:has(.av-page) {
   border-radius: inherit;
   background: var(--av-blue-50);
   pointer-events: none;
-  animation: av-lit 1400ms ease-out 1 both;
+  animation: av-lit 1500ms var(--ease-out-strong) 1 both;
 }
 
-/* Opacity only, per the motion contract; the last frame is the resting state (no tint). */
+/* Opacity only, per the motion contract; the last frame is the resting state (no tint).
+   The tint comes up fast instead of flashing on, holds while the eye arrives, then lets go. */
 @keyframes av-lit {
-  from { opacity: 1; }
+  from { opacity: 0; animation-timing-function: var(--ease-out-strong); }
+  10%, 40% { opacity: 1; animation-timing-function: ease-in-out; }
   to { opacity: 0; }
 }
 
@@ -1564,6 +1799,21 @@ html[data-theme='dark'] body:has(.av-page) {
   background: rgb(0 0 0 / 0.45);
 }
 
+/* The dialog answers a click the way a toast arrives: a short rise, no drama. backwards: nothing
+   is left on it afterwards. It closes at once. */
+.av-motion .av-dialog[open] {
+  animation: av-rise var(--dur-base) var(--ease-out-strong) 1 backwards;
+}
+
+.av-motion .av-dialog[open]::backdrop {
+  animation: av-appear var(--dur-base) var(--ease-out-strong) 1 backwards;
+}
+
+@keyframes av-rise {
+  from { transform: translateY(10px) scale(0.97); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
 .av-dialog__inner {
   position: relative;
   padding: 28px;
@@ -1660,13 +1910,27 @@ html[data-theme='dark'] .av-dialog__list li::before {
   grid-template-columns: auto minmax(0, 1fr);
 }
 
+/* A10: up from the corner with a soft overshoot. backwards: no transform is left on the toast. */
 .av-motion .av-toast {
-  animation: av-toast-in 260ms var(--ease-out-strong) 1 both;
+  transform-origin: 100% 100%;
+  animation: av-toast-in var(--av-dur-land) var(--av-ease-spring) 1 backwards;
 }
 
 @keyframes av-toast-in {
-  from { transform: translateY(18px) scale(0.98); opacity: 0.4; }
+  from { transform: translateY(20px) scale(0.95); opacity: 0; }
+  45% { opacity: 1; }
   to { transform: none; opacity: 1; }
+}
+
+/* The plane in the price toast takes one small hop once the toast has landed. */
+.av-motion .av-toast--price .av-toast__icon svg {
+  animation: av-hop 560ms ease-in-out 360ms 1 backwards;
+}
+
+@keyframes av-hop {
+  from, to { transform: rotate(-45deg); }
+  38% { transform: translate(2px, -6px) rotate(-56deg); }
+  72% { transform: translate(0, 1px) rotate(-42deg); }
 }
 
 .av-toast__icon {
@@ -1680,8 +1944,9 @@ html[data-theme='dark'] .av-dialog__list li::before {
 }
 
 .av-toast__icon svg {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
+  transform: rotate(-45deg);
 }
 
 .av-toast__title {
@@ -1844,6 +2109,15 @@ html:has(.av-page .av-toasts [data-av-toast]) {
     transition: none !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Calm mode is still. Its switch promises no animations, so the plain hover and press
+   transitions stop with the rest, and whatever was mid-move lands at once. */
+.av-page[data-av-calm] *,
+.av-page[data-av-calm] *::before,
+.av-page[data-av-calm] *::after {
+  animation: none !important;
+  transition: none !important;
 }
 
 /* ===================== end of part 1 ===================== */
@@ -2253,19 +2527,26 @@ html[data-theme='dark'] .av-page {
   padding: 12px 10px 12px 16px;
 }
 
-/* The perforation, 64px from the right edge. */
+/* The stub, 64px wide. Its left edge is the perforation, drawn as a line of its own so that it
+   can be punched top to bottom when the ticket arrives. */
 .av-ticket__stub {
+  position: relative;
   display: grid;
   place-items: center;
-  border-left: 2px dashed var(--av-perf);
   color: var(--av-text-2);
 }
 
+.av-ticket__stub::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-left: 2px dashed var(--av-perf);
+}
+
+/* The airplane is drawn nose right, the way the route reads. */
 .av-ticket__stub svg {
-  width: 22px;
-  height: 22px;
-  fill: currentColor;
-  transform: rotate(45deg);
+  width: 26px;
+  height: 26px;
 }
 
 .av-page .av-ticket__badge[data-kind='fast'] {
@@ -2332,19 +2613,96 @@ html[data-theme='dark'] .av-page {
   white-space: nowrap;
 }
 
+/* A4: the price drop. While it runs, the script puts two things in the <strong>: the final string,
+   kept in the flow but unseen, so the box never changes size, and over it a reel of markdowns
+   whose top line is that same final string. The reel rolls down one line at a time and stops on
+   it; then the script puts the plain server string back. */
+.av-ticket__price .is-rolling {
+  position: relative;
+  display: inline-block;
+  /* One line tall, open to the right: a wider markdown is not cut. */
+  clip-path: inset(0 -12em 0 0);
+}
+
+/* Unseen, but still read aloud: the reel over it is hidden from assistive tech. */
+.av-ticket__price .is-rolling > :first-child {
+  opacity: 0;
+}
+
+.av-reel {
+  position: absolute;
+  inset: 0 auto auto 0;
+  display: grid;
+}
+
+.av-reel > i {
+  font-style: normal;
+}
+
+.av-motion .av-reel {
+  animation: av-reel 1200ms cubic-bezier(0.2, 0.75, 0.25, 1) calc(360ms + var(--i, 0) * 110ms) 1 backwards;
+}
+
+/* Five lines: it starts on the last one and comes to rest on the first, a hair past it and back. */
+@keyframes av-reel {
+  from { transform: translateY(-80%); }
+  86% { transform: translateY(1.4%); animation-timing-function: ease-in-out; }
+  to { transform: none; }
+}
+
 /* A word price instead of a number: smaller, so the wide display face fits the stub. */
 .av-ticket__price strong:not([data-av-drop]) {
   font-size: 15px;
   line-height: 1.2;
 }
 
-.av-motion .av-tickets .av-ticket__old::after {
-  transform: scaleX(0);
-  transition: transform 500ms var(--ease-out-strong) 200ms;
+/* A4: the entrance, once. Until the strip is seen the tickets wait unseen; then they are dealt
+   one after another, each lands with a little weight, its perforation is punched top to bottom,
+   the plane on the stub pulls in, the old price is struck out and the new one rolls down.
+   backwards on all of them: after the last frame nothing is left to fight the hover lift. */
+.av-motion:not(.av-replayed) .av-tickets:not(.is-in) .av-ticket {
+  opacity: 0;
 }
 
-.av-motion .av-tickets.is-in .av-ticket__old::after {
-  transform: scaleX(1);
+.av-motion:not(.av-replayed) .av-tickets.is-in .av-ticket {
+  animation: av-deal 560ms var(--av-ease-spring) calc(var(--i, 0) * 110ms) 1 backwards;
+}
+
+.av-motion:not(.av-replayed) .av-tickets.is-in .av-ticket__stub::before {
+  animation: av-punch 380ms var(--ease-out-strong) calc(300ms + var(--i, 0) * 110ms) 1 backwards;
+}
+
+.av-motion:not(.av-replayed) .av-tickets.is-in .av-ticket__stub svg {
+  animation: av-pull-in 520ms var(--ease-out-strong) calc(380ms + var(--i, 0) * 110ms) 1 backwards;
+}
+
+@keyframes av-deal {
+  from { transform: translateY(36px) rotate(-2.5deg) scale(0.96); opacity: 0; }
+  40% { opacity: 1; }
+  to { transform: none; opacity: 1; }
+}
+
+@keyframes av-punch {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0); }
+}
+
+@keyframes av-pull-in {
+  from { transform: translateX(-18px) scale(0.7); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+.av-motion:not(.av-replayed) .av-tickets:not(.is-in) .av-ticket__old::after {
+  transform: scaleX(0);
+}
+
+.av-motion:not(.av-replayed) .av-tickets.is-in .av-ticket__old::after {
+  animation: av-strike 420ms var(--ease-out-strong) calc(420ms + var(--i, 0) * 110ms) 1 backwards;
+}
+
+@keyframes av-strike {
+  from { transform: scaleX(0); }
+  to { transform: none; }
 }
 
 /* The drift never exceeds the free room beside the centred track (about 900px wide), so no ticket is cut. */
@@ -2406,27 +2764,37 @@ html[data-theme='dark'] .av-page {
   letter-spacing: 0.08em;
 }
 
-.av-motion .av-turb__belt {
+/* A8, once, on first sight: the sign comes on the way a cabin sign does (two soft blinks, then
+   steady), the cabin sways and settles, the bars fill in order. */
+.av-motion:not(.av-replayed) .av-turb:not(.is-in) .av-turb__belt {
   opacity: 0.3;
-  transition: opacity var(--dur-base) var(--ease-out-strong) 150ms;
 }
 
-.av-motion .av-turb.is-in .av-turb__belt {
-  opacity: 1;
+.av-motion:not(.av-replayed) .av-turb.is-in .av-turb__belt {
+  animation: av-sign 640ms linear 120ms 1 backwards;
+}
+
+@keyframes av-sign {
+  from { opacity: 0.3; }
+  14% { opacity: 1; }
+  27% { opacity: 0.5; }
+  45% { opacity: 1; }
+  57% { opacity: 0.75; }
+  72%, to { opacity: 1; }
 }
 
 .av-motion:not(.av-replayed) .av-turb.is-in .av-turb__cabin {
-  animation: av-shake 720ms linear 250ms 1 both;
+  animation: av-shake 700ms ease-in-out 300ms 1;
 }
 
-/* Small on purpose: 3px and under half a degree, once. */
+/* Small on purpose: under 3px and a third of a degree, each swing smaller than the last, once. */
 @keyframes av-shake {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  12% { transform: translate(-3px, 2px) rotate(-0.4deg); }
-  28% { transform: translate(3px, -2px) rotate(0.35deg); }
-  44% { transform: translate(-2px, -1px) rotate(-0.25deg); }
-  60% { transform: translate(2px, 2px) rotate(0.2deg); }
-  78% { transform: translate(-1px, 0) rotate(-0.1deg); }
+  from, to { transform: none; }
+  16% { transform: translate(-2.5px, 1.5px) rotate(-0.3deg); }
+  34% { transform: translate(2.5px, -1.5px) rotate(0.26deg); }
+  52% { transform: translate(-1.5px, -1px) rotate(-0.18deg); }
+  70% { transform: translate(1px, 1px) rotate(0.1deg); }
+  86% { transform: translate(-0.5px, 0) rotate(-0.04deg); }
 }
 
 .av-turb__lead {
@@ -2480,13 +2848,18 @@ html[data-theme='dark'] .av-page {
   background: var(--av-warn);
 }
 
-.av-motion .av-turb__bar > i {
-  transform: scaleX(0);
-  transition: transform 700ms var(--ease-out-strong) calc(400ms + var(--i) * 90ms);
+/* The fill slides in from the left inside the rounded track, so its end stays round all the way. */
+.av-motion:not(.av-replayed) .av-turb:not(.is-in) .av-turb__bar > i {
+  transform: translateX(-101%);
 }
 
-.av-motion .av-turb.is-in .av-turb__bar > i {
-  transform: scaleX(1);
+.av-motion:not(.av-replayed) .av-turb.is-in .av-turb__bar > i {
+  animation: av-fill 800ms var(--ease-out-strong) calc(460ms + var(--i) * 110ms) 1 backwards;
+}
+
+@keyframes av-fill {
+  from { transform: translateX(-101%); }
+  to { transform: none; }
 }
 
 .av-turb__side {
@@ -2767,46 +3140,88 @@ html[data-theme='dark'] .av-page {
   background: repeating-linear-gradient(90deg, var(--av-text) 0 2px, transparent 2px 5px, var(--av-text) 5px 6px, transparent 6px 10px);
 }
 
+/* The scanner: a thin beam on the right edge of a faint glow that trails behind it. */
 .av-pass__scan {
   position: absolute;
-  inset: 0 auto 0 0;
-  width: 3px;
-  background: var(--av-warn);
+  inset: 0;
+  border-right: 2px solid var(--av-warn);
+  background: linear-gradient(90deg, transparent 68%, var(--av-warn));
   opacity: 0;
 }
 
-/* backwards, not both: the clip must go away after printing or it cuts the shadows and the torn stub. */
+/* A11, on each press. The pass leaves a printer: it slides down out of a slot that stays where the
+   top edge of the pass will rest (the clip rises exactly as far as the paper falls), in three
+   pushes with a pause between them, and drops a hair as it comes free. Then the stub is torn off
+   and the code is scanned once.
+   backwards, not both: the clip must go away after printing or it cuts the top shadow. The other
+   three sides of the clip stand off the paper so the shadow is there from the first push. */
 .av-motion .av-pass.is-printed {
-  animation: av-print 700ms var(--ease-out-strong) 1 backwards;
-}
-
-.av-motion .av-pass.is-printed .av-pass__stub {
-  animation: av-tear 380ms var(--ease-out-strong) 760ms 1 both;
-}
-
-.av-motion .av-pass.is-printed .av-pass__scan {
-  animation: av-scan 620ms linear 1180ms 1 both;
+  animation: av-print 960ms var(--ease-out-strong) 1 backwards;
 }
 
 @keyframes av-print {
-  from { clip-path: inset(0 0 100% 0); transform: translateY(-14px); }
-  to { clip-path: inset(0 0 0 0); transform: none; }
+  from { clip-path: inset(100% -40px -40px -40px); transform: translateY(-100%); }
+  24%, 33% { clip-path: inset(64% -40px -40px -40px); transform: translateY(-64%); }
+  57%, 66% { clip-path: inset(28% -40px -40px -40px); transform: translateY(-28%); }
+  90% { clip-path: inset(0 -40px -40px -40px); transform: translateY(3px); animation-timing-function: ease-in-out; }
+  to { clip-path: inset(0 -40px -40px -40px); transform: none; }
+}
+
+/* The slot is drawn under the booking block, just above the pass, and only while it prints. */
+.av-booking__grid {
+  position: relative;
+}
+
+.av-motion .av-booking__grid:has(+ .av-pass.is-printed)::after {
+  content: '';
+  position: absolute;
+  inset: auto auto -27px -6px;
+  width: min(100% + 6px, 572px);
+  height: 5px;
+  border-radius: 3px;
+  background: var(--av-text-2);
+  opacity: 0;
+  animation: av-slot 1150ms linear 1 backwards;
+}
+
+@keyframes av-slot {
+  from { opacity: 0; }
+  8%, 84% { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* The tear: the paper bends on the perforation first, then lets go, swings past and settles. */
+.av-motion .av-pass.is-printed .av-pass__stub {
+  animation: av-tear 520ms var(--ease-out-strong) 1040ms 1 both;
 }
 
 @keyframes av-tear {
+  from { transform: none; animation-timing-function: ease-in; }
+  30% { transform: rotate(1.3deg); }
+  62% { transform: translateX(11px) rotate(6deg); animation-timing-function: ease-in-out; }
+  82% { transform: translateX(8px) rotate(3.2deg); animation-timing-function: ease-in-out; }
   to { transform: translateX(9px) rotate(4deg); }
 }
 
+.av-motion .av-pass.is-printed .av-pass__scan {
+  animation: av-scan 720ms var(--ease-in-out-strong) 1560ms 1 both;
+}
+
 @keyframes av-scan {
-  0% { transform: translateX(0); opacity: 1; }
-  90% { opacity: 1; }
-  100% { transform: translateX(110px); opacity: 0; }
+  from { transform: translateX(-100%); opacity: 0; }
+  14%, 80% { opacity: 0.85; }
+  to { transform: none; opacity: 0; }
 }
 
 /* The torn stub leans 9px right and turns 4deg: keep that inside the page gutter. */
 @media (max-width: 767px) {
   .av-pass {
     margin-right: 16px;
+  }
+
+  /* The slot follows the narrower pass. */
+  .av-motion .av-booking__grid:has(+ .av-pass.is-printed)::after {
+    width: calc(100% - 4px);
   }
 }
 

@@ -1,4 +1,4 @@
-import { clamp01, clockFrom, easeInOutCubic, easeOutCubic, gtaRibbon, ribbonTimerText, viewProgress } from '../lib/aviasales';
+import { clamp01, clockFrom, gtaRibbon, ribbonTimerText, viewProgress } from '../lib/aviasales';
 import { emitSignal } from '../lib/site-signals';
 
 const REDUCED = '(prefers-reduced-motion: reduce)';
@@ -18,11 +18,26 @@ function readCalm(): boolean {
   }
 }
 
+// A lit proof and a printed pass answered a click. Their animations would play again the moment
+// their styles come back (av-motion returning, the page shown again after printing): clear them.
+function settle(root: HTMLElement): void {
+  for (const el of root.querySelectorAll('.is-pinged, .is-printed')) el.classList.remove('is-pinged', 'is-printed');
+}
+
+// Paper hides the jokes; shown again, every finished intro would start over. Printing ends them.
+addEventListener('beforeprint', () => {
+  const root = page();
+  if (!root) return;
+  root.classList.add('av-replayed');
+  settle(root);
+});
+
 function setCalm(root: HTMLElement, calm: boolean, byUser = false): void {
   // Calm mode is the strict resume: every fold opens, and closes again when it is switched off.
   // Only on a real switch, so a reduced-motion change keeps the folds the visitor opened.
   if (calm !== isCalm(root)) for (const el of root.querySelectorAll<HTMLDetailsElement>('[data-av-more]')) el.open = calm;
   root.toggleAttribute('data-av-calm', calm);
+  settle(root);
   root.classList.toggle('av-motion', !calm && !matchMedia(REDUCED).matches);
   for (const el of root.querySelectorAll<HTMLElement>('[data-av-plain]')) el.hidden = !calm;
   const button = root.querySelector<HTMLElement>('[data-av-calm-toggle]');
@@ -199,20 +214,49 @@ function observe(root: HTMLElement): void {
 
 /* ---------- animations and easter eggs (the catalogue) ---------- */
 
+// A1. One clock drives the whole flight: where the plane is, how high it is (its size and how far
+// its shadow has slid out from under it) and how much of the route is drawn behind it.
 function flyPlane(root: HTMLElement): void {
   const plane = root.querySelector<SVGGElement>('[data-av-plane]');
   const route = root.querySelector<SVGPathElement>('.av-flight__route');
-  if (!plane || !route || !root.classList.contains('av-motion')) return;
+  const sky = plane?.ownerSVGElement;
+  // No flight where the band does not show it (narrow phones): the picture stays as drawn.
+  if (!plane || !route || !sky?.getBoundingClientRect().width || !root.classList.contains('av-motion')) return;
+  const shadow = plane.previousElementSibling;
+  const reveal = root.querySelector<SVGPathElement>('.av-flight__reveal');
+  const rest = plane.getAttribute('transform') ?? '';
   const length = route.getTotalLength();
-  const startAt = performance.now() + 300;
+  const startAt = performance.now() + 400;
+  sky.classList.add('is-flying');
+  // The pin answers the landing once. Without this it would answer again whenever the band is
+  // shown anew (a phone turned on its side).
+  sky.addEventListener('animationend', (event) => {
+    if (event.animationName === 'av-ring') sky.classList.remove('is-landed');
+  });
   const frame = (now: number): void => {
-    const k = clamp01((now - startAt) / 2400);
-    const head = Math.max(1, easeInOutCubic(k) * length);
-    const tip = route.getPointAtLength(head);
-    const tail = route.getPointAtLength(head - 1);
-    const angle = (Math.atan2(tip.y - tail.y, tip.x - tail.x) * 180) / Math.PI;
-    plane.setAttribute('transform', `translate(${tip.x.toFixed(1)} ${tip.y.toFixed(1)}) rotate(${angle.toFixed(1)})`);
-    if (k < 1) requestAnimationFrame(frame);
+    // Leaving motion mid-flight (calm mode, a reduced-motion switch, another page) lands the plane at once.
+    const k = plane.isConnected && root.classList.contains('av-motion') ? clamp01((now - startAt) / 2600) : 1;
+    if (k === 1) {
+      // The markup is the resting picture: put it back to the letter.
+      plane.setAttribute('transform', rest);
+      shadow?.setAttribute('transform', rest);
+      reveal?.style.removeProperty('stroke-dashoffset');
+      sky.classList.replace('is-flying', 'is-landed');
+      return;
+    }
+    // Smoothstep: a ground roll, an even cruise, a soft touchdown.
+    const at = k * k * (3 - 2 * k) * length;
+    const p = route.getPointAtLength(at);
+    // The heading is a chord around the plane, clamped to the route, so it never snaps at either end.
+    const a = route.getPointAtLength(Math.max(0, at - 8));
+    const b = route.getPointAtLength(Math.min(length, at + 8));
+    const turn = `rotate(${((Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI).toFixed(1)})`;
+    const height = Math.sin(Math.PI * k) ** 2; // 0 on the ground, 1 at the top of the arc
+    const size = `scale(${(2 + height * 0.5).toFixed(3)})`;
+    plane.setAttribute('transform', `translate(${p.x.toFixed(1)} ${p.y.toFixed(1)}) ${turn} ${size}`);
+    shadow?.setAttribute('transform', `translate(${(p.x + height * 10).toFixed(1)} ${(p.y + height * 18).toFixed(1)}) ${turn} ${size}`);
+    reveal?.style.setProperty('stroke-dashoffset', (1 - at / length).toFixed(4));
+    requestAnimationFrame(frame);
   };
   requestAnimationFrame(frame);
 }
@@ -249,27 +293,37 @@ function initBoard(root: HTMLElement): void {
   }
   el.replaceChildren(sr, row);
 
+  // The board turns as one machine: on every beat each cell still in play drops one flap, through
+  // the alphabet in order, and comes to rest on its own letter. Cells settle left to right.
+  const last = 4 + ((cells.length - 1) >> 1); // the beat on which the last cell settles
   let running = false;
   const run = (): void => {
-    if (running || !root.classList.contains('av-motion')) return;
+    // offsetParent: on a low laptop window the board is not shown, so there is nothing to turn.
+    if (running || !el.offsetParent || !root.classList.contains('av-motion')) return;
     running = true;
     const startedAt = performance.now();
-    let lastSwap = 0;
+    let beat = -1;
     const frame = (now: number): void => {
-      const elapsed = now - startedAt;
-      const swap = now - lastSwap > 55;
-      if (swap) lastSwap = now;
-      let pending = false;
-      cells.forEach((cell, i) => {
-        if (elapsed >= 300 + i * 40) {
-          if (cell.node.textContent !== cell.target) cell.node.textContent = cell.target;
-        } else {
-          pending = true;
-          if (swap) cell.node.textContent = FLAP.charAt(Math.floor(Math.random() * FLAP.length));
-        }
-      });
-      if (pending) requestAnimationFrame(frame);
-      else running = false;
+      const at = Math.floor((now - startedAt) / 80);
+      if (at !== beat) {
+        beat = at;
+        cells.forEach((cell, i) => {
+          // max: a beat missed in a background tab still ends on the right letter.
+          const left = Math.max(0, 4 + (i >> 1) - at);
+          const next = left ? FLAP.charAt((FLAP.indexOf(cell.target) - left + FLAP.length * 9) % FLAP.length) : cell.target;
+          const was = cell.node.textContent ?? '';
+          // One beat after the last flap: a flap left armed would turn again when the board is shown anew.
+          if (at > last) delete cell.node.dataset.flip;
+          else if (was !== next) {
+            cell.node.dataset.was = was; // the two flaps of the flip carry the old letter
+            cell.node.dataset.flip = at % 2 ? 'a' : 'b'; // a new value restarts the flip
+          }
+          if (was !== next) cell.node.textContent = next;
+        });
+      }
+      // isConnected: the visitor went to another page mid-turn.
+      if (at > last || !el.isConnected) running = false;
+      else requestAnimationFrame(frame);
     };
     requestAnimationFrame(frame);
   };
@@ -278,23 +332,33 @@ function initBoard(root: HTMLElement): void {
   el.addEventListener('click', run);
 }
 
+// A4. The price rolls down a reel of markdowns and stops on the server-rendered string, which also
+// stays in the flow unseen the whole time: the box keeps its size, the ticket never reflows.
 function dropPrices(section: HTMLElement): void {
-  const motion = section.closest('.av-page')?.classList.contains('av-motion');
+  if (!section.closest('.av-page')?.classList.contains('av-motion')) return;
   for (const el of section.querySelectorAll<HTMLElement>('[data-av-drop]')) {
     const from = Number(el.dataset.from);
     const to = Number(el.dataset.to);
-    const suffix = el.dataset.suffix ?? '';
     const finalText = el.textContent ?? '';
-    if (!motion || Number.isNaN(from) || Number.isNaN(to)) continue;
-    const startedAt = performance.now();
-    const frame = (now: number): void => {
-      const k = Math.min(1, (now - startedAt) / 1100);
-      const value = Math.round(from + (to - from) * easeOutCubic(k));
-      el.textContent = `${value.toLocaleString('ru-RU')}${suffix}`;
-      if (k < 1) requestAnimationFrame(frame);
-      else el.textContent = finalText; // the server-rendered string always wins
+    if (Number.isNaN(from) || Number.isNaN(to)) continue;
+    const hold = document.createElement('span');
+    hold.textContent = finalText;
+    const reel = document.createElement('span');
+    reel.className = 'av-reel';
+    reel.setAttribute('aria-hidden', 'true');
+    // Top line first: the final string, then ever higher prices. The reel starts on the last line.
+    for (const part of [0, 0.07, 0.18, 0.36, 0.6]) {
+      const line = document.createElement('i');
+      line.textContent = part ? `${Math.round(to + (from - to) * part).toLocaleString('ru-RU')}${el.dataset.suffix ?? ''}` : finalText;
+      reel.append(line);
+    }
+    // The server-rendered string always wins, also when calm mode cuts the roll short.
+    reel.onanimationend = reel.onanimationcancel = (): void => {
+      el.classList.remove('is-rolling');
+      el.textContent = finalText;
     };
-    requestAnimationFrame(frame);
+    el.classList.add('is-rolling');
+    el.replaceChildren(hold, reel);
   }
 }
 
@@ -327,7 +391,10 @@ function runSearch(root: HTMLElement, event: Event): void {
     if (!loader.isConnected) return; // the visitor navigated away mid-search
     const line = lines[i];
     if (line !== undefined) {
-      loader.textContent = line;
+      // A new node for every caption: its small entrance plays again.
+      const caption = document.createElement('span');
+      caption.textContent = line;
+      loader.replaceChildren(caption);
       i += 1;
       setTimeout(next, 450);
       return;
