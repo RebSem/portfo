@@ -263,6 +263,53 @@ html[data-theme='dark'] body:has(.av-page) {
   display: none;
 }
 
+/* Folded depth: a native <details>, so it opens without the script and from the keyboard, and
+   calm mode opens them all. It opens at once: facts do not slide in, and nothing here animates. */
+/* Block with an inline chevron, not flex: a long phase title wraps and the chevron follows its
+   last word instead of drifting to the far edge. The padding makes a 32px row (44px on phones). */
+.av-more__summary {
+  display: block;
+  width: fit-content;
+  padding-block: 6px;
+  border-radius: var(--av-r-s);
+  color: var(--av-blue-ink);
+  font: 600 15px / 1.35 var(--av-font-text);
+  list-style: none;
+  cursor: pointer;
+}
+
+.av-more__summary::-webkit-details-marker {
+  display: none;
+}
+
+.av-more__summary:hover {
+  color: var(--av-text);
+}
+
+.av-more__chevron {
+  display: inline-block;
+  margin-left: 4px;
+  vertical-align: -4px;
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.av-more[open] > .av-more__summary .av-more__chevron {
+  transform: rotate(180deg);
+}
+
+/* A thumb needs a 44px row. */
+@media (max-width: 767px) {
+  .av-more__summary {
+    padding-block: 12px;
+  }
+}
+
 /* ===================== 4. GTA ribbon and scroll progress (7.1, A3) ===================== */
 
 .av-ribbon {
@@ -930,7 +977,6 @@ html[data-theme='dark'] body:has(.av-page) {
     'media'
     'body'
     'metrics'
-    'summary'
     'price';
   gap: 16px;
   padding: 16px;
@@ -1121,13 +1167,6 @@ html[data-theme='dark'] body:has(.av-page) {
   margin-bottom: 8px;
 }
 
-.av-card__summary {
-  grid-area: summary;
-  max-width: 68ch;
-  font-size: 16px;
-  line-height: 1.55;
-}
-
 /* The three resume numbers: static facts, never animated. */
 .av-card__metrics {
   grid-area: metrics;
@@ -1235,7 +1274,6 @@ html[data-theme='dark'] body:has(.av-page) {
     grid-template-areas:
       'media body'
       'metrics metrics'
-      'summary summary'
       'price price';
     gap: 16px 20px;
   }
@@ -1243,6 +1281,11 @@ html[data-theme='dark'] body:has(.av-page) {
   .av-card__media {
     height: auto;
     min-height: 180px;
+  }
+
+  /* The price row's own hairline (or, from 1280, the card edge) closes the numbers here. */
+  .av-card__metrics {
+    border-bottom: 0;
   }
 
   .av-card__price {
@@ -1273,8 +1316,7 @@ html[data-theme='dark'] body:has(.av-page) {
     grid-template-columns: 168px minmax(0, 1fr) 288px;
     grid-template-areas:
       'media body price'
-      'metrics metrics price'
-      'summary summary price';
+      'metrics metrics price';
     gap: 12px 14px;
     padding: 14px;
   }
@@ -1308,7 +1350,7 @@ html[data-theme='dark'] body:has(.av-page) {
   }
 }
 
-/* Proofs: the vacancy line, then the fact. */
+/* Proofs: the vacancy line, one headline a recruiter can scan, the full fact one click away. */
 .av-proofs__title {
   margin-top: 8px;
   font: 800 clamp(1.25rem, 1rem + 0.8vw, 1.5rem) / 1.2 var(--av-font-display);
@@ -1336,9 +1378,20 @@ html[data-theme='dark'] body:has(.av-page) {
   font: 500 14px / 1.4 var(--av-font-text);
 }
 
-.av-proof__text {
+.av-proof__headline {
   margin-top: 8px;
-  font-size: 17px;
+  font: 700 18px / 1.4 var(--av-font-text);
+  text-wrap: pretty;
+}
+
+.av-proof .av-more {
+  margin-top: 4px;
+}
+
+.av-proof__text {
+  margin-top: 4px;
+  color: var(--av-text-2);
+  font-size: 16px;
   line-height: 1.55;
 }
 
@@ -1346,7 +1399,6 @@ html[data-theme='dark'] body:has(.av-page) {
   display: inline-flex;
   align-items: center;
   min-height: 32px;
-  margin-top: 6px;
   color: var(--av-blue-ink);
   font: 600 15px / 1.3 var(--av-font-text);
   text-decoration: underline;
@@ -1386,6 +1438,15 @@ html[data-theme='dark'] body:has(.av-page) {
 
   .av-proof:last-child:nth-child(odd) {
     grid-column: 1 / -1;
+  }
+
+  /* Closed rows keep equal cards. Once one card of a pair opens, its closed neighbour keeps its
+     own height instead of stretching into an empty white block. Screen only: paper has its own grid. */
+  @media screen {
+    .av-proof:nth-child(odd):not(:has(.av-more[open])):has(+ .av-proof .av-more[open]),
+    .av-proof:nth-child(odd):has(.av-more[open]) + .av-proof:not(:has(.av-more[open])) {
+      align-self: start;
+    }
   }
 
   /* Tablet: filters above the card, the seven rows in two columns. */
@@ -1428,6 +1489,11 @@ html[data-theme='dark'] body:has(.av-page) {
 
   .av-card {
     padding: 12px 12px 16px;
+  }
+
+  /* The 44px fold row carries its own air, so the card ends closer under it. */
+  .av-proof {
+    padding-bottom: 6px;
   }
 
   .av-filters {
@@ -1931,13 +1997,25 @@ html[data-theme='dark'] .av-page {
 .av-stay__phases {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 18px 32px;
-  margin-top: 14px;
+  gap: 2px;
+  margin-top: 10px;
 }
 
+/* Paper only: on screen the phase title is the summary of its fold. */
 .av-stay__phase-title {
-  margin-bottom: 8px;
   font: 700 15px / 1.35 var(--av-font-text);
+}
+
+.av-stay__bullets.av-print-only {
+  display: none;
+}
+
+.av-stay .av-more__summary {
+  text-align: start;
+}
+
+.av-stay .av-more[open] > .av-stay__bullets {
+  margin: 6px 0 12px;
 }
 
 .av-stay__bullets,
@@ -1976,9 +2054,12 @@ html[data-theme='dark'] .av-page {
   color: var(--av-text);
 }
 
+/* Laptop: the compact experience and the amenities side by side. The about block (calm mode only)
+   spans both columns above them; hidden, it leaves no row behind. */
 @media (min-width: 1024px) {
   .av-details {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 27rem);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 22rem);
+    align-items: start;
     gap: 24px;
   }
 
@@ -1987,12 +2068,12 @@ html[data-theme='dark'] .av-page {
     margin-bottom: -4px;
   }
 
-  .av-details__about { grid-area: 2 / 1; }
-  .av-details__amenities { grid-area: 2 / 2; }
-  .av-details__stays { grid-area: 3 / 1 / 4 / -1; }
+  .av-details__about { grid-column: 1 / -1; }
+  .av-details__stays { grid-column: 1; }
+  .av-details__amenities { grid-column: 2; }
 
-  .av-stay__phases {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .av-details__amenities .av-amenities {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -2837,7 +2918,8 @@ html[data-theme='dark'] .av-page {
   }
 
   /* Jokes, buttons, decoration and repeats stay on screen. The card's name, role and facts line
-     repeat the header (and the facts carry a joke); its summary repeats the experience summary.
+     repeat the header (and the facts carry a joke). The proof headlines and the folds are the
+     screen's short version: paper prints the full text from its .av-print-only copies.
      "Ещё заметил", the trip stamps and the closing question are extras beyond the three notes. */
   .av-page [data-av-meme],
   .av-page .av-ribbon,
@@ -2850,8 +2932,10 @@ html[data-theme='dark'] .av-page {
   .av-page .av-filters,
   .av-page .av-card__media,
   .av-page .av-card__body,
-  .av-page .av-card__summary,
   .av-page .av-card__price,
+  .av-page .av-proof__headline,
+  .av-page .av-more,
+  .av-page .av-booking__reply,
   .av-page .av-toasts,
   .av-page .av-sticky,
   .av-page .av-dialog,
@@ -2948,7 +3032,7 @@ html[data-theme='dark'] .av-page {
   /* Phases stack: side by side, their lines interleave in the text layer (scripts/cv/README.md). */
   .av-page .av-stay__phases { display: block; margin-top: 3pt; }
   .av-page .av-stay__phase + .av-stay__phase { margin-top: 3pt; }
-  .av-page .av-stay__phase-title { font-weight: 700; }
+  .av-page .av-stay__phase-title { margin: 0; font-weight: 700; }
   .av-page .av-stay__bullets { display: block; margin: 1pt 0 0; padding-left: 10pt; list-style: disc; }
   .av-page .av-stay__bullets li { break-inside: avoid; }
   .av-page .av-stay__bullets li + li { margin-top: 1.5pt; }

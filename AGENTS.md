@@ -457,6 +457,12 @@ is git-ignored; `.env.example` is the template.
   Remove the page, its data, lib, script, styles, components, tests, OG card, signals,
   the print step in `cv:export`, the font entry and `public/cv/aviasales/` when the
   process with the company ends, and leave one line here that the page existed.
+- 2026-11-16, later the same day: the owner's readability pass on `/ru/aviasales/`. Each
+  proof shows one headline line, with the full text under a native `<details>`; the card
+  paragraph and the description left the screen (calm mode and paper keep the
+  description); experience bullets fold under their phase titles. The `paris` meme is
+  off because it read as a limit on availability, and the site's reply-time line stands
+  in its place. Calm mode opens every fold; the PDF text is unchanged.
 
 ## Gotchas
 

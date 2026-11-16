@@ -19,6 +19,9 @@ function readCalm(): boolean {
 }
 
 function setCalm(root: HTMLElement, calm: boolean, byUser = false): void {
+  // Calm mode is the strict resume: every fold opens, and closes again when it is switched off.
+  // Only on a real switch, so a reduced-motion change keeps the folds the visitor opened.
+  if (calm !== isCalm(root)) for (const el of root.querySelectorAll<HTMLDetailsElement>('[data-av-more]')) el.open = calm;
   root.toggleAttribute('data-av-calm', calm);
   root.classList.toggle('av-motion', !calm && !matchMedia(REDUCED).matches);
   for (const el of root.querySelectorAll<HTMLElement>('[data-av-plain]')) el.hidden = !calm;
@@ -300,6 +303,9 @@ function lightProof(root: HTMLElement, filter: HTMLAnchorElement): void {
   const proof = root.querySelector<HTMLElement>(`#av-proof-${id}`);
   if (!proof) return;
   for (const el of root.querySelectorAll('.is-pinged')) el.classList.remove('is-pinged');
+  // Before the scroll: the open fold sets the height that centring works with.
+  const more = proof.querySelector<HTMLDetailsElement>('[data-av-more]');
+  if (more) more.open = true;
   // 'auto' would follow the site's smooth scroll-behavior.
   proof.scrollIntoView({ behavior: root.classList.contains('av-motion') ? 'smooth' : 'instant', block: 'center' });
   proof.focus({ preventScroll: true });

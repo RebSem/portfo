@@ -29,7 +29,8 @@ describe('memes', () => {
   });
   it('keeps the approved set exactly as the owner signed it off', () => {
     const approved = data.avMemes.filter((item) => item.approved).map((item) => item.id).sort();
-    expect(approved).toEqual(['baroness', 'dog', 'gta-after', 'gta-before', 'hermes', 'jacket', 'mission', 'paris']);
+    // 'paris' was switched off on 16 Nov 2026: it read as a limit on the owner's availability.
+    expect(approved).toEqual(['baroness', 'dog', 'gta-after', 'gta-before', 'hermes', 'jacket', 'mission']);
   });
 });
 
@@ -58,6 +59,12 @@ describe('landing copy', () => {
 
   it('has seven requirements with unique ids', () => {
     expect(data.avRequirements.map((item) => item.id)).toEqual(['r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'r7']);
+  });
+  it('gives every requirement one scannable headline', () => {
+    for (const item of data.avRequirements) {
+      expect(item.headline.trim()).not.toBe('');
+      expect(item.headline.length).toBeLessThanOrEqual(90);
+    }
   });
   it('has no em or en dash and no phone-like string', () => {
     for (const text of strings) {

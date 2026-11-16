@@ -123,8 +123,6 @@ const slides = avCard.slides.map((slide) => {
         })}
       </dl>
 
-      <p class="av-card__summary">{avCard.summary}</p>
-
       <div class="av-card__price">
         <p class="av-card__price-label">{avCard.priceLabel}</p>
         <p class="av-card__price-value">{avCard.price}</p>
@@ -139,7 +137,16 @@ const slides = avCard.slides.map((slide) => {
       {avRequirements.map((r) => (
         <li class="av-proof" id={`av-proof-${r.id}`} tabindex="-1">
           <p class="av-proof__quote">«<AvNb text={r.quote} />»</p>
-          <p class="av-proof__text"><AvNb text={r.proof} /></p>
+          <p class="av-proof__headline"><AvNb text={r.headline} /></p>
+          {/* A closed <details> does not print, so paper gets its own copy of the full proof. */}
+          <p class="av-proof__text av-print-only"><AvNb text={r.proof} /></p>
+          <details class="av-more" data-av-more>
+            <summary class="av-more__summary">
+              {avResults.more}
+              <svg class="av-more__chevron" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="m5 8 5 5 5-5"></path></svg>
+            </summary>
+            <p class="av-proof__text"><AvNb text={r.proof} /></p>
+          </details>
           {r.link && <a class="av-proof__link" href={abs(r.link.href)}>{r.link.label}</a>}
         </li>
       ))}

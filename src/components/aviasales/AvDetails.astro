@@ -47,9 +47,10 @@ const icons: Record<string, string> = {
     <span data-av-meme>{avDetails.title}</span><span data-av-plain hidden>{avDetails.titlePlain}</span>
   </h2>
 
-  {/* DOM and print order as in spec 7.5: about, experience, amenities. On a laptop the grid puts
-       the amenities beside the about block, so the screen layout keeps its two columns. */}
-  <div class="av-details__block av-details__about">
+  {/* DOM and print order as in spec 7.5: about, experience, amenities. The about block is the
+       fifth retelling of the same result, so the screen shows it only in calm mode; paper keeps it.
+       On a laptop the compact experience and the amenities sit side by side. */}
+  <div class="av-details__block av-details__about" data-av-plain hidden>
     <h3 class="av-details__h3">{avDetails.about}</h3>
     <p class="av-details__summary"><AvNb text={cvSummary.ru} /></p>
   </div>
@@ -78,22 +79,33 @@ const icons: Record<string, string> = {
             <p class="av-stay__period" data-av-plain={to ? '' : undefined} hidden={Boolean(to)}>{role.period.ru}</p>
           </div>
           {role.context && <p class="av-stay__context"><AvNb text={role.context.ru} /></p>}
+          {/* The bullets fold on screen under the phase title. A closed <details> does not print,
+               so paper gets its own copy of the title and the bullets. */}
           <div class="av-stay__phases">
-          {phases.map((phase) => (
-            <div class="av-stay__phase">
-              {phase.title && <p class="av-stay__phase-title">{phase.title}</p>}
-              <ul class="av-stay__bullets">
-                {phase.bullets.map((runs) => (
-                  <li>
-                    {runs.map((run) => {
-                      const href = abs(runHref(run, 'ru'));
-                      return href ? <a href={href}><AvNb text={run.text.ru} /></a> : <AvNb text={run.text.ru} />;
-                    })}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {phases.map((phase) => {
+            // A function, so each copy renders its own nodes.
+            const bullets = () => phase.bullets.map((runs) => (
+              <li>
+                {runs.map((run) => {
+                  const href = abs(runHref(run, 'ru'));
+                  return href ? <a href={href}><AvNb text={run.text.ru} /></a> : <AvNb text={run.text.ru} />;
+                })}
+              </li>
+            ));
+            return (
+              <div class="av-stay__phase">
+                {phase.title && <p class="av-stay__phase-title av-print-only">{phase.title}</p>}
+                <ul class="av-stay__bullets av-print-only">{bullets()}</ul>
+                <details class="av-more" data-av-more>
+                  <summary class="av-more__summary">
+                    {phase.title || avDetails.more}
+                    <svg class="av-more__chevron" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="m5 8 5 5 5-5"></path></svg>
+                  </summary>
+                  <ul class="av-stay__bullets">{bullets()}</ul>
+                </details>
+              </div>
+            );
+          })}
           </div>
         </li>
       ))}

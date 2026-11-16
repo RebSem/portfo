@@ -1,10 +1,13 @@
 ---
 import { avBooking, avHero, avVacancy, meme } from '../../data/aviasales';
 import { cvName, email, telegramHandle, telegramUrl } from '../../data/cv';
+import { uiCopy } from '../../data/site-content';
 
 // The vacancy PDF, printed from this page by `npm run cv:export` (scripts/cv/build-exports.ts).
 const pdfHref = '/cv/aviasales/Mikhail_Semenov_PM_Hotels.pdf';
-const paris = meme('paris');
+const paris = meme('paris'); // switched off by the owner on 16 Nov 2026; renders nothing while off
+// A fact, not a joke: the site's own reply-time line, shown in calm mode too, off paper.
+const replyTime = uiCopy.footer.replyTime.ru;
 
 // The pass prints the name surname first, as on a real boarding pass.
 const [first = '', last = ''] = cvName.ru.split(' ');
@@ -29,6 +32,7 @@ const passRoute = avHero.board[0];
       <p class="av-booking__handle">Telegram: {telegramHandle}</p>
       <p class="av-booking__place">{avBooking.place}</p>
       {paris && <p class="av-booking__hours" data-av-meme>{paris}</p>}
+      <p class="av-booking__hours av-booking__reply">{replyTime}</p>
       <p class="av-booking__alt">
         <a href={pdfHref} download rel="nofollow" data-astro-prefetch="false">Скачать PDF</a>
         <span aria-hidden="true">·</span>
