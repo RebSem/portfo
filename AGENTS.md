@@ -454,7 +454,8 @@ is git-ignored; `.env.example` is the template.
   font (Unbounded) without touching other pages. Four allow-listed signals
   (`aviasales:calm`, `:toast`, `:filter`, `:egg`) carry fixed ids only. The test for his
   exclusion list matches digests, so the public repo does not spell those words out.
-  Remove the page, its data, lib, script, styles, components, tests, OG card, signals,
+  P2 (clouds, the baggage belt with the handbag easter egg, the running pug, the
+  page-wide turbulence egg) followed in a second pull request. Remove the page, its data, lib, script, styles, components, tests, OG card, signals,
   the print step in `cv:export`, the font entry and `public/cv/aviasales/` when the
   process with the company ends, and leave one line here that the page existed.
 - 2026-11-16, later the same day: the owner's readability pass on `/ru/aviasales/`. Each
